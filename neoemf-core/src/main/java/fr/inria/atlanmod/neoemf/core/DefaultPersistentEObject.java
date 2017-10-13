@@ -42,6 +42,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
@@ -154,7 +155,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
         // Define and copy the store if necessary
         StoreAdapter newStore = getOrCreateStore(newResource);
-        eStore(newStore);
+        refreshStore(newStore);
 
         locked = false;
     }
@@ -163,6 +164,12 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public Resource.Internal eInternalResource() {
         return Optional.ofNullable(resource).orElseGet(super::eInternalResource);
+    }
+
+    @Override
+    public void eSetStore(EStore store) {
+        checkArgument(StoreAdapter.class.isInstance(store));
+        refreshStore(StoreAdapter.class.cast(store));
     }
 
     @Override
@@ -307,7 +314,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @see #resource()
      */
-    private void eStore(StoreAdapter newStore) {
+    private void refreshStore(StoreAdapter newStore) {
         checkNotNull(newStore);
 
         if (lazyStore.isLoaded()) {

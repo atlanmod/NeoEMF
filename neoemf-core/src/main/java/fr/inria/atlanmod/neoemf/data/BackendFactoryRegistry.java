@@ -147,7 +147,7 @@ public final class BackendFactoryRegistry {
         checkNotNull(scheme);
         checkNotNull(factory);
 
-        if (isNull(factories.putIfAbsent(scheme, factory))) {
+        if (isNull(factories.put(scheme, factory))) {
             Log.info("{0} registered with scheme \"{1}\"", factory.getClass().getName(), scheme);
 
             Resource.Factory.Registry.INSTANCE

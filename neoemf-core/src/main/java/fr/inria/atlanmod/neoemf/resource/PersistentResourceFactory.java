@@ -16,9 +16,9 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -49,14 +49,14 @@ public class PersistentResourceFactory implements Resource.Factory {
      * <p>
      * The {@code uri} must be registered in the {@link BackendFactoryRegistry}.
      */
-    @Nullable
+    @Nonnull
     @Override
     public PersistentResource createResource(URI uri) {
         checkNotNull(uri);
+        checkArgument(BackendFactoryRegistry.getInstance().isRegistered(uri.scheme()),
+                "Unregistered scheme (%s)", uri.scheme());
 
-        return BackendFactoryRegistry.getInstance().isRegistered(uri.scheme())
-                ? new DefaultPersistentResource(uri)
-                : null;
+        return new DefaultPersistentResource(uri);
     }
 
     /**

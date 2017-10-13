@@ -6,14 +6,16 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.tests.context;
+package fr.inria.atlanmod.neoemf.tests.provider;
 
+import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
+import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 
 import org.eclipse.emf.common.util.URI;
@@ -30,8 +32,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An {@link ArgumentsProvider} that provides all {@link Context} for running tests.
  */
+@Static
 @ParametersAreNonnullByDefault
-public class ContextProvider {
+public final class ContextProvider {
 
     /**
      * Returns a stream of all initialized contexts.
@@ -51,16 +54,6 @@ public class ContextProvider {
                 BerkeleyDbContext.getWithLists().init(),
                 HBaseContext.getDefault().init()
         ).filter(Context::isInitialized);
-    }
-
-    @Nonnull
-    public static Stream<URI> allUris() {
-        return Stream.of(
-                ResourceManager.xmiStandard(),
-                ResourceManager.xmiWithId(),
-                ResourceManager.zxmiStandard(),
-                ResourceManager.zxmiWithId()
-        );
     }
 
     /**
@@ -97,7 +90,7 @@ public class ContextProvider {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return allContexts().flatMap(c -> allUris().map(u -> Arguments.of(c, u)));
+            return allContexts().flatMap(c -> UriProvider.allUris().map(u -> Arguments.of(c, u)));
         }
     }
 

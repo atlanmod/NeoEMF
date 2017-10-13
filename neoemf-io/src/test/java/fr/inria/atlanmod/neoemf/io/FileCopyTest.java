@@ -11,23 +11,20 @@ package fr.inria.atlanmod.neoemf.io;
 import fr.inria.atlanmod.commons.AbstractFileBasedTest;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
+import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -35,7 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about the copy from a file to another.
  */
 @ParametersAreNonnullByDefault
-class CopyTest extends AbstractFileBasedTest {
+class FileCopyTest extends AbstractFileBasedTest {
 
     @BeforeAll
     static void registerPackages() {
@@ -49,7 +46,7 @@ class CopyTest extends AbstractFileBasedTest {
      * @param useCompression {@code true} if the target file must be compressed
      */
     @ParameterizedTest(name = "[{index}] source = {0} ; useCompression = {1}")
-    @ArgumentsSource(UriProvider.class)
+    @ArgumentsSource(UriProvider.WithBooleans.class)
     void testCopy(URI uri, Boolean useCompression) throws IOException {
         final File targetFile = new File(currentTempFile() + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
         Log.info("Exporting to {0}", targetFile);
@@ -67,23 +64,5 @@ class CopyTest extends AbstractFileBasedTest {
 
         actual.eResource().unload();
         expected.eResource().unload();
-    }
-
-    /**
-     * An {@link ArgumentsProvider} with all {@link URI}s managed by {@link ResourceManager}, associated with all {@link
-     * Boolean} variants.
-     */
-    @ParametersAreNonnullByDefault
-    static class UriProvider implements ArgumentsProvider {
-
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(
-                    ResourceManager.xmiStandard(),
-                    ResourceManager.xmiWithId(),
-                    ResourceManager.zxmiStandard(),
-                    ResourceManager.zxmiWithId()
-            ).flatMap(u -> Stream.of(false, true).map(b -> Arguments.of(u, b)));
-        }
     }
 }

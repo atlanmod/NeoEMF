@@ -8,17 +8,14 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.commons.AbstractFileBasedTest;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.CoreContext;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
 import fr.inria.atlanmod.neoemf.data.PersistentBackend;
-import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
@@ -29,22 +26,22 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Paths;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about the import of a model to a {@link Backend}.
+ * A test-case about the copy from a {@link Backend} to another.
  */
 @ParametersAreNonnullByDefault
-class ImportTest extends AbstractUnitTest {
+class MapperCopyTest extends AbstractFileBasedTest {
 
     @BeforeAll
     static void registerPackages() {
@@ -54,13 +51,13 @@ class ImportTest extends AbstractUnitTest {
     /**
      * Creates a {@link PersistentResource} on the given {@code backend}.
      *
-     * @param uri     the URI of the resource
+     * @param file    the file path of the resource
      * @param backend the backend of the resource
      *
      * @return a new {@link PersistentResource}
      */
     @Nonnull
-    private static PersistentResource createMockResource(URI uri, Backend backend) {
+    private static PersistentResource createMockResource(File file, Backend backend) {
         final String name = "mock";
 
         BackendFactoryRegistry.getInstance().register(name, new AbstractBackendFactory() {
@@ -82,35 +79,38 @@ class ImportTest extends AbstractUnitTest {
             }
         });
 
-        return PersistentResourceFactory.getInstance().createResource(AbstractUriBuilder.builder(name).fromUri(uri));
-    }
-
-    @Nonnull
-    @Override
-    protected Context context() {
-        return CoreContext.get();
+        return PersistentResourceFactory.getInstance().createResource(AbstractUriBuilder.builder(name).fromFile(file));
     }
 
     /**
-     * Checks the import from a file to a {@link Backend}.
+     * Checks the copy from a {@link Backend} to another.
      */
     @Tag("slow")
-    @ParameterizedTest(name = "[{index}] source = {0}")
-    @ArgumentsSource(UriProvider.All.class)
-    void testDirectImport(URI uri) throws IOException {
+    @Test
+    void testDirectCopy() throws IOException {
         final File sourceFile = currentTempFile();
-        Log.info("Importing from file... [{0}]", sourceFile);
+        final File targetFile = Paths.get(currentTempFile() + "-copy").toFile();
 
-        try (Backend backend = new DefaultTransientBackend(); InputStream in = new URL(uri.toString()).openStream()) {
-            Migrator.fromXmi(in).toMapper(backend).migrate();
+        URI expectedUri = ResourceManager.xmiStandard();
 
-            EObject actual = createMockResource(uri, backend).getContents().get(0);
-            EObject expected = ResourceManager.load(uri);
+        try (Backend sourceBackend = new DefaultTransientBackend(); InputStream in = new URL(expectedUri.toString()).openStream()) {
+            Migrator.fromXmi(in).toMapper(sourceBackend).migrate();
 
-            // Comparing with EMF
-            ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
+            Log.info("Copying backends...");
 
-            expected.eResource().unload();
+            try (Backend targetBackend = new DefaultTransientBackend()) {
+                Migrator.fromMapper(sourceBackend).toMapper(targetBackend).migrate();
+
+                EObject actual = createMockResource(targetFile, targetBackend).getContents().get(0);
+                EObject expected = createMockResource(sourceFile, sourceBackend).getContents().get(0);
+
+                // Comparing PersistentBackend
+                ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
+
+                // Comparing with EMF
+                expected = ResourceManager.load(expectedUri);
+                ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
+            }
         }
     }
 }

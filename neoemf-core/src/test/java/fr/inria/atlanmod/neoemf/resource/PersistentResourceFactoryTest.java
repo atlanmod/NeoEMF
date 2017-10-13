@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -65,6 +66,8 @@ class PersistentResourceFactoryTest extends AbstractTest {
 
         BackendFactoryRegistry.getInstance().unregister(uri.scheme());
 
-        assertThat(factory.createResource(uri)).isNull();
+        assertThat(
+                catchThrowable(() -> factory.createResource(uri))
+        ).isExactlyInstanceOf(IllegalArgumentException.class);
     }
 }

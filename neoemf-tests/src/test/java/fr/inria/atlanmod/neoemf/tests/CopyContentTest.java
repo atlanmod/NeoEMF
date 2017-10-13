@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.tests;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
+import fr.inria.atlanmod.neoemf.tests.provider.ContextProvider;
 import fr.inria.atlanmod.neoemf.tests.sample.PrimaryObject;
 import fr.inria.atlanmod.neoemf.tests.sample.TargetObject;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;

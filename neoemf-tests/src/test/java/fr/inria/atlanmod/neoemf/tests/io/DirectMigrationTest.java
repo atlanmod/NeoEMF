@@ -15,13 +15,14 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 import fr.inria.atlanmod.neoemf.tests.AbstractResourceBasedTest;
-import fr.inria.atlanmod.neoemf.tests.context.ContextProvider;
+import fr.inria.atlanmod.neoemf.tests.provider.ContextProvider;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.apache.logging.log4j.util.Strings;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
@@ -37,6 +38,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A test-case that checks the behavior of direct I/O methods, by using the `neoemf-io` module.
  */
+@Disabled("See `neoemf-io` tests")
 @ParametersAreNonnullByDefault
 class DirectMigrationTest extends AbstractResourceBasedTest {
 
