@@ -155,15 +155,17 @@
                             org.apache.commons.configuration;version="${commons-configuration.version}"
                         </Import-Package>
                         <Export-Package>
-                            !org.neo4j.*.impl.*,
-                            !org.neo4j.*.internal.*,
-                            org.neo4j.*;version="${neo4j.version}",
-                            org.apache.lucene.*;version="${lucene.version}",
+                            org.neo4j.kernel;version="${neo4j.version}",
+                            org.neo4j.graphdb;version="${neo4j.version}",
+                            org.neo4j.graphdb.index;version="${neo4j.version}",
+                            org.neo4j.graphdb.factory;version="${neo4j.version}",
+                            org.neo4j.cypher.javacompat;version="${neo4j.version}";-split-package:=first,
+                            org.apache.lucene.*;version="${lucene.version}";-split-package:=merge-first,
                             javax.transaction.*;version="${jta.version}",
                             fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*
                         </Export-Package>
                         <_exportcontents>
-                            com.tinkerpop.blueprints.impls.neo4j2.*;version="${blueprints.version}"
+                            com.tinkerpop.blueprints.impls.neo4j2;version="${blueprints.version}"
                         </_exportcontents>
                         <Require-Bundle>
                             ${project.groupId}.core;visibility:=reexport,

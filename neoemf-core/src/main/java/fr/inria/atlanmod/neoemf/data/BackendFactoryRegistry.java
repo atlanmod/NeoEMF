@@ -148,7 +148,7 @@ public final class BackendFactoryRegistry {
         checkNotNull(factory);
 
         if (isNull(factories.put(scheme, factory))) {
-            Log.info("{0} registered with scheme \"{1}\"", factory.getClass().getName(), scheme);
+            Log.info("Registered scheme: \"{0}\" = {1}", scheme, factory.getClass().getName());
 
             Resource.Factory.Registry.INSTANCE
                     .getProtocolToFactoryMap()
