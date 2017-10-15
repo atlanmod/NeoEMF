@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -184,7 +185,7 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testAddAllValues() {
-        assertRecorded(() -> store.addAllValues(mock(ManyFeatureBean.class), mock(List.class)), "addAllValues", CALLS_COUNT);
+        assertRecorded(() -> store.addAllValues(mock(ManyFeatureBean.class), Collections.emptyList()), "addAllValues", CALLS_COUNT);
     }
 
     @Test
@@ -194,7 +195,7 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testAppendAllValues() {
-        assertRecorded(() -> store.appendAllValues(mock(SingleFeatureBean.class), mock(List.class)), "appendAllValues", CALLS_COUNT);
+        assertRecorded(() -> store.appendAllValues(mock(SingleFeatureBean.class), Collections.emptyList()), "appendAllValues", CALLS_COUNT);
     }
 
     @Test

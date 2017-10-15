@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -166,7 +167,7 @@ class ClosedStoreTest extends AbstractTest {
     @Test
     void testAddAllValues() {
         assertThat(
-                catchThrowable(() -> store.addAllValues(mock(ManyFeatureBean.class), mock(List.class)))
+                catchThrowable(() -> store.addAllValues(mock(ManyFeatureBean.class), Collections.emptyList()))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 
@@ -180,7 +181,7 @@ class ClosedStoreTest extends AbstractTest {
     @Test
     void testAppendAllValues() {
         assertThat(
-                catchThrowable(() -> store.appendAllValues(mock(SingleFeatureBean.class), mock(List.class)))
+                catchThrowable(() -> store.appendAllValues(mock(SingleFeatureBean.class), Collections.emptyList()))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 

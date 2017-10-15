@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -166,7 +167,7 @@ class InvalidTransientBackendTest extends AbstractTest {
     @Test
     void testAddAllValues() {
         assertThat(
-                catchThrowable(() -> invalidBackend.addAllValues(mock(ManyFeatureBean.class), mock(List.class)))
+                catchThrowable(() -> invalidBackend.addAllValues(mock(ManyFeatureBean.class), Collections.emptyList()))
         ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
     }
 
@@ -180,7 +181,7 @@ class InvalidTransientBackendTest extends AbstractTest {
     @Test
     void testAppendAllValues() {
         assertThat(
-                catchThrowable(() -> invalidBackend.appendAllValues(mock(SingleFeatureBean.class), mock(List.class)))
+                catchThrowable(() -> invalidBackend.appendAllValues(mock(SingleFeatureBean.class), Collections.emptyList()))
         ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
     }
 
