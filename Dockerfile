@@ -16,15 +16,17 @@
 
 FROM maven:alpine
 
-ENV NEOEMF_HOME /root/ws
+ENV NEOEMF_HOME /root/ws/
 
-WORKDIR /root
+WORKDIR /tmp/neoemf
 
 ADD . src
 
 RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -pl !neoemf-data/hbase,!neoemf-tests -f src/pom.xml \
  && mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f src/benchmarks/pom.xml -Duberjar.directory=/root/ \
- && rm -rf src .m2/* /tmp/* /var/tmp/*
+ && rm -rf /root/.m2/* /tmp/* /var/tmp/*
+
+VOLUME $NEOEMF_HOME
 
 CMD ["-help"]
 ENTRYPOINT ["java", "-jar", "benchmarks.jar"]
