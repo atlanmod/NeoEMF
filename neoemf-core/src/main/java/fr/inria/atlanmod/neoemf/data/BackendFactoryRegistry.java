@@ -180,7 +180,6 @@ public final class BackendFactoryRegistry {
      *
      * @throws NullPointerException if any argument is {@code null}
      */
-    @VisibleForTesting
     public void unregister(String scheme) {
         checkNotNull(scheme);
 
@@ -189,18 +188,6 @@ public final class BackendFactoryRegistry {
                     .getProtocolToFactoryMap()
                     .remove(scheme);
         }
-    }
-
-    /**
-     * Unregisters all registered factories.
-     */
-    @VisibleForTesting
-    public void unregisterAll() {
-        Log.debug("Unregistering all factories");
-
-        factories.keySet().forEach(this::unregister);
-
-        initialized = false;
     }
 
     /**

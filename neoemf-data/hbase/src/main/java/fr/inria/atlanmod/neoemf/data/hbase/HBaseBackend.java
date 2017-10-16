@@ -8,14 +8,23 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.neoemf.data.DistributedPersistentBackend;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
+import fr.inria.atlanmod.neoemf.data.Backend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentBackend} that is responsible of low-level access to a HBase database.
+ * A {@link Backend} that is responsible of low-level access to a HBase database.
  */
 @ParametersAreNonnullByDefault
-public interface HBaseBackend extends DistributedPersistentBackend {
+public interface HBaseBackend extends Backend {
+
+    @Override
+    default boolean isPersistent() {
+        return true;
+    }
+
+    @Override
+    default boolean isDistributed() {
+        return true;
+    }
 }

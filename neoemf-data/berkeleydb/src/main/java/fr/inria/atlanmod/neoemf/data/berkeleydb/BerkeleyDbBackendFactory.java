@@ -20,12 +20,10 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 
 import org.eclipse.emf.common.util.URI;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -78,7 +76,7 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig) {
+    public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
         BerkeleyDbBackend backend;
 
         checkArgument(uri.isFile(), "%s only supports file-based URIs", getClass().getSimpleName());
@@ -118,34 +116,6 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
         }
         catch (Exception e) {
             throw new InvalidBackendException("Unable to open the BerkeleyDB database", e);
-        }
-
-        return backend;
-    }
-
-    @Nonnull
-    @Override
-    public Backend createTransientBackend() {
-        BerkeleyDbBackend backend;
-
-        try {
-            File directory = Files.createTempDirectory("neoemf").toFile();
-
-            EnvironmentConfig environmentConfig = new EnvironmentConfig()
-                    .setAllowCreate(true)
-                    .setConfigParam(EnvironmentConfig.LOG_MEM_ONLY, Boolean.TRUE.toString());
-
-            Environment environment = new Environment(directory, environmentConfig);
-
-            DatabaseConfig databaseConfig = new DatabaseConfig()
-                    .setAllowCreate(true)
-                    .setSortedDuplicates(false)
-                    .setDeferredWrite(true);
-
-            backend = new BerkeleyDbBackendIndices(environment, databaseConfig);
-        }
-        catch (Exception e) {
-            throw new InvalidBackendException(e);
         }
 
         return backend;

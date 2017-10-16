@@ -15,7 +15,7 @@ import fr.inria.atlanmod.commons.primitive.Ints;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
@@ -40,7 +40,7 @@ import static java.util.Objects.isNull;
  * An abstract {@link HBaseBackend} that provides overall behavior for the management of a HBase database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractHBaseBackend extends AbstractPersistentBackend implements HBaseBackend {
+abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBackend {
 
     /**
      * The column family holding properties.

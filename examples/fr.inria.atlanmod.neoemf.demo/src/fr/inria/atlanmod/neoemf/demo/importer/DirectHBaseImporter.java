@@ -41,7 +41,7 @@ public class DirectHBaseImporter {
         File sourceFile = new File("models/sample.xmi");
         URI targetUri = HBaseUri.builder().fromServer("localhost", 2181, "sample2.hbase");
 
-        try (Backend backend = factory.createPersistentBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
+        try (Backend backend = factory.createBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
             Migrator.fromXmi(sourceFile)
                     .toMapper(mapper)
                     .withTimer()

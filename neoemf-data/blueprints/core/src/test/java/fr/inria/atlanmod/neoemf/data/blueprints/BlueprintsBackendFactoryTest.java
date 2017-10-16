@@ -14,9 +14,13 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
+import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
+import fr.inria.atlanmod.neoemf.data.im.util.InMemoryUri;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
@@ -36,39 +40,26 @@ class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
         return BlueprintsContext.getDefault();
     }
 
-    @Override
-    public void testCreateTransientBackend() {
-        Backend backend = context().factory().createTransientBackend();
-        assertThat(backend).isInstanceOf(BlueprintsBackend.class);
-    }
+    @Test
+    public void testCreateDefaultBackend() throws IOException {
+        ImmutableConfig config = BlueprintsTinkerConfig.newConfig();
 
-    @Override
-    public void testCreateDefaultPersistentBackend() throws IOException {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), BlueprintsTinkerConfig.newConfig());
-        assertThat(backend).isInstanceOf(DefaultBlueprintsBackend.class);
+        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
+            assertThat(backend).isInstanceOf(DefaultBlueprintsBackend.class);
+        }
     }
 
     @Override
     public void testCopyBackend() throws IOException {
-        Backend transientBackend = context().factory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(BlueprintsBackend.class);
-
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), BlueprintsTinkerConfig.newConfig());
-        assertThat(persistentBackend).isInstanceOf(DefaultBlueprintsBackend.class);
-
-        transientBackend.copyTo(persistentBackend);
-    }
-
-    /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for Blueprints.
-     * <p>
-     * The mapping {@code indices} is declared explicitly.
-     */
-    @Test
-    public void testCreateIndicesPersistentBackend() throws IOException {
         ImmutableConfig config = BlueprintsTinkerConfig.newConfig();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(backend).isInstanceOf(DefaultBlueprintsBackend.class);
+        File file = currentTempFile();
+        try (Backend transientBackend = InMemoryBackendFactory.getInstance().createBackend(InMemoryUri.builder().fromFile(file), InMemoryConfig.newConfig())) {
+            try (Backend persistentBackend = context().factory().createBackend(context().createUri(file), config)) {
+                assertThat(persistentBackend).isInstanceOf(DefaultBlueprintsBackend.class);
+
+                transientBackend.copyTo(persistentBackend);
+            }
+        }
     }
 }

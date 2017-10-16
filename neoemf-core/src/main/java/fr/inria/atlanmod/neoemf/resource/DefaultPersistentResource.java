@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.resource;
 
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
@@ -19,7 +20,9 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
+import fr.inria.atlanmod.neoemf.data.InvalidBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.data.store.adapter.PersistentStoreAdapter;
@@ -108,8 +111,21 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         factory = BackendFactoryRegistry.getInstance().getFactoryFor(uri.scheme());
 
-        Backend backend = factory.createTransientBackend();
-        Store baseStore = StoreFactory.getInstance().createStore(backend, BaseConfig.newConfig());
+        Backend backend;
+        ImmutableConfig config = BaseConfig.newConfig();
+
+        if (factory.supportsTransient()) {
+            // Creates an in-memory backend until a call to `save()`/`load()`
+            final String imScheme = Bindings.schemeOf(InMemoryBackendFactory.class);
+            BackendFactory imFactory = BackendFactoryRegistry.getInstance().getFactoryFor(imScheme);
+
+            backend = imFactory.createBackend(uri, config);
+        }
+        else {
+            backend = new InvalidBackend("This back-end does not provide a transient layer: you must save/load the associated resource before using it");
+        }
+
+        Store baseStore = StoreFactory.getInstance().createStore(backend, config);
         eStore = new PersistentStoreAdapter(baseStore, this);
 
         rootObject = new RootObject(this);
@@ -172,7 +188,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      */
     protected void doSave(ImmutableConfig config) {
         if (!isLoaded || !eStore.store().backend().isPersistent()) {
-            Backend backend = factory.createPersistentBackend(uri, config);
+            Backend backend = factory.createBackend(uri, config);
             Store baseStore = StoreFactory.getInstance().createStore(backend, config);
             StoreAdapter newStore = new PersistentStoreAdapter(baseStore, this);
 
@@ -206,7 +222,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
                 if (uri.isFile() && new File(uri.toFileString()).exists() || uri.hasAuthority()) {
                     eStore.close();
 
-                    Backend backend = factory.createPersistentBackend(uri, config);
+                    Backend backend = factory.createBackend(uri, config);
                     Store baseStore = StoreFactory.getInstance().createStore(backend, config);
                     eStore = new PersistentStoreAdapter(baseStore, this);
                 }

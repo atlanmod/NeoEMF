@@ -36,7 +36,7 @@ For example, you can combine: `ReferenceAs<String>`, `MergeManyReferenceAs<Strin
 - __[UPD]__ Back-end configuration have been merged, updated and simplified
 - __[UPD]__ Configuration is now managed with a simple `Properties` file *(may change in the near future)*
 - __[UPD]__ `PersistentResource` are no longer linked to their `Backend`s, prefer using `Store`s
-- __[UPD]__ `BackendFactory#createPersistentBackend(***)` take a `URI` as parameter instead of a `File` to handle distributed `PersistentBackend`
+- __[UPD]__ `BackendFactory#createBackend(***)` take a `URI` as parameter instead of a `File` to handle distributed `PersistentBackend`
 - __[DEL]__ All backend-specific implementations of `PersistentStore` have been merged with those at `core`-level
 - __[DEL]__ `InvalidStore` has been replaced by `InvalidBackend`
 - __[DEL]__ `TransientStore`s have been replaced by `BoundTransientStore` (a lightweigth and shared version of `TransientBackend`)

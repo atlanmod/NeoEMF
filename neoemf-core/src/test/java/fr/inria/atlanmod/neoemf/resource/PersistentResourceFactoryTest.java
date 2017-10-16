@@ -13,10 +13,11 @@
 package fr.inria.atlanmod.neoemf.resource;
 
 import fr.inria.atlanmod.commons.AbstractTest;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.TransientBackend;
+import fr.inria.atlanmod.neoemf.data.im.InMemoryBackend;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,10 +43,10 @@ class PersistentResourceFactoryTest extends AbstractTest {
         URI uri = mock(URI.class);
         when(uri.scheme()).thenReturn("mock0");
 
-        Backend backend = mock(TransientBackend.class);
+        Backend backend = mock(InMemoryBackend.class);
 
         BackendFactory backendFactory = mock(BackendFactory.class);
-        when(backendFactory.createTransientBackend()).thenReturn(backend);
+        when(backendFactory.createBackend(any(URI.class), any(ImmutableConfig.class))).thenReturn(backend);
 
         BackendFactoryRegistry.getInstance().register(uri.scheme(), backendFactory);
 
@@ -52,7 +54,6 @@ class PersistentResourceFactoryTest extends AbstractTest {
         assertThat(resource).isNotNull();
         assertThat(resource.getURI()).isSameAs(uri);
         assertThat(resource.eStore()).isNotNull();
-        assertThat(resource.eStore().store().backend()).isSameAs(backend);
 
         BackendFactoryRegistry.getInstance().unregister(uri.scheme());
     }

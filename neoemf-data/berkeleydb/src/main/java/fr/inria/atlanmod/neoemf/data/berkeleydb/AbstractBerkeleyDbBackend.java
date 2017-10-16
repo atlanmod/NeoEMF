@@ -20,7 +20,7 @@ import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
@@ -44,7 +44,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * An abstract {@link BerkeleyDbBackend} that provides overall behavior for the management of a BerkeleyDB database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractBerkeleyDbBackend extends AbstractPersistentBackend implements BerkeleyDbBackend, AllReferenceAs<Long> {
+abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements BerkeleyDbBackend, AllReferenceAs<Long> {
 
     /**
      * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.

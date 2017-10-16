@@ -6,234 +6,240 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data;
+package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
-import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+
 /**
- * A {@link TransientBackend} used with databases that does not support the transient state.
- * <p>
- * All methods throws an {@link UnsupportedOperationException}.
+ * An invalid {@link DataMapper} that throws a {@link RuntimeException} at each call.
  */
 @ParametersAreNonnullByDefault
-public final class InvalidTransientBackend implements TransientBackend {
+public class InvalidDataMapper implements DataMapper {
 
     /**
      * The exception thrown when calling methods.
      */
-    private static final RuntimeException EXCEPTION = new UnsupportedOperationException(
-            "The back-end you are using doesn't provide a transient layer. "
-                    + "You must save/load your resource before using it");
+    @Nonnull
+    protected final Supplier<RuntimeException> e;
+
+    /**
+     * Constructs a new {@code InvalidDataMapper} with the exception thrown when calling unsupported methods.
+     *
+     * @param e the exception thrown when calling unsupported methods
+     */
+    public InvalidDataMapper(Supplier<RuntimeException> e) {
+        this.e = checkNotNull(e);
+    }
+
+    @Override
+    public void copyTo(DataMapper target) {
+        throw e.get();
+    }
+
+    @Override
+    public void close() {
+        // Do nothing (see PersistentResource#unload())
+    }
+
+    @Override
+    public void save() {
+        // Do nothing (see PersistentResource#save())
+    }
 
     @Nonnull
     @Override
     public Optional<ClassBean> metaClassOf(Id id) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Optional<SingleFeatureBean> containerOf(Id id) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void containerFor(Id id, SingleFeatureBean container) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void removeContainer(Id id) {
-        throw EXCEPTION;
-    }
-
-    @Override
-    public void close() {
-        // No need to close anything
-    }
-
-    @Override
-    public void copyTo(DataMapper target) {
-        // No need to copy anything
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void removeValue(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceOf(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void removeReference(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public <V> void addValue(ManyFeatureBean key, V value) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
-    @Nonnegative
     @Override
     public <V> int appendValue(SingleFeatureBean key, V value) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
-    @Nonnegative
     @Override
     public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void removeAllValues(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
-    @Nonnegative
     @Override
     public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceOf(ManyFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Stream<Id> allReferencesOf(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void addReference(ManyFeatureBean key, Id reference) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
-    @Nonnegative
     @Override
     public int appendReference(SingleFeatureBean key, Id reference) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
-    @Nonnegative
     @Override
     public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void removeAllReferences(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
-    @Nonnegative
     @Override
     public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 }

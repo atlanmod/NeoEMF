@@ -41,7 +41,7 @@ public class DirectBlueprintsImporter {
         File sourceFile = new File("models/sample.xmi");
         URI targetUri = BlueprintsUri.builder().fromFile("models/sample2.graphdb");
 
-        try (Backend backend = factory.createPersistentBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
+        try (Backend backend = factory.createBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
             Migrator.fromXmi(sourceFile)
                     .toMapper(mapper)
                     .withTimer()

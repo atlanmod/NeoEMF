@@ -11,7 +11,6 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.GraphFactory;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
-import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph;
 
 import fr.inria.atlanmod.commons.annotation.Static;
@@ -22,7 +21,6 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BaseBlueprintsConfig;
 
 import org.eclipse.emf.common.util.URI;
@@ -81,7 +79,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig) {
+    public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
         BlueprintsBackend backend;
 
         checkArgument(uri.isFile(), "%s only supports file-based URIs", getClass().getSimpleName());
@@ -117,17 +115,6 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
         }
 
         return backend;
-    }
-
-    @Nonnull
-    @Override
-    public Backend createTransientBackend() {
-        try {
-            return new DefaultBlueprintsBackend(new TinkerGraph());
-        }
-        catch (Exception e) {
-            throw new InvalidBackendException(e);
-        }
     }
 
     /**

@@ -17,8 +17,8 @@ import fr.inria.atlanmod.neoemf.core.internal.ContentsList;
 import fr.inria.atlanmod.neoemf.core.internal.LazyStoreFeatureMap;
 import fr.inria.atlanmod.neoemf.core.internal.LazyStoreList;
 import fr.inria.atlanmod.neoemf.core.internal.LazyStoreMap;
-import fr.inria.atlanmod.neoemf.data.BoundTransientBackend;
-import fr.inria.atlanmod.neoemf.data.TransientBackend;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.im.BoundInMemoryBackend;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
@@ -56,7 +56,7 @@ import static java.util.Objects.nonNull;
  * database implementations.
  *
  * @see TransientStoreAdapter
- * @see BoundTransientBackend
+ * @see BoundInMemoryBackend
  * @see PersistenceFactory
  */
 @ParametersAreNonnullByDefault
@@ -301,7 +301,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
         // Create a new transient store
         else {
-            TransientBackend backend = new BoundTransientBackend(id());
+            Backend backend = new BoundInMemoryBackend(id());
             Store baseStore = StoreFactory.getInstance().createStore(backend, BaseConfig.newConfig());
             return new TransientStoreAdapter(baseStore, resource);
         }

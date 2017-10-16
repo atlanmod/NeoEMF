@@ -11,7 +11,7 @@
  * <p>
  * This package provides {@link fr.inria.atlanmod.neoemf.data.hbase.HBaseBackend} and {@link
  * fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory} classes, that correspond to HBase specific implementations
- * of {@link fr.inria.atlanmod.neoemf.data.PersistentBackend} and {@link fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry}.
+ * of {@link fr.inria.atlanmod.neoemf.data.Backend} and {@link fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry}.
  * <p>
  * The {@link fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory} has to be registered to enable {@link
  * fr.inria.atlanmod.neoemf.resource.PersistentResource} creation with a HBase storage:

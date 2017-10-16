@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.provider.ContextProvider;
@@ -86,17 +87,28 @@ class CopyContentTest extends AbstractResourceBasedTest {
         }
     }
 
+    /**
+     * Checks the transfer from a fully-transient {@link fr.inria.atlanmod.neoemf.data.Backend} to a persistent {@link
+     * fr.inria.atlanmod.neoemf.data.Backend}.
+     */
     @Tag("slower")
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1}")
     @ArgumentsSource(ContextProvider.AllWithBooleans.class)
-    void testCopyStandardToPersistentResource(Context context, Boolean isPersistent) throws IOException {
+    void testMoveStandardToPersistentResource(Context context, Boolean isPersistent) throws IOException {
         try (PersistentResource resource = createResource(context, isPersistent)) {
             EObject expected = ResourceManager.load(ResourceManager.xmiStandard());
 
+            // Move the content and check the state of `expected` after transfer
             resource.getContents().add(expected);
+
+            assertThat(expected.eResource()).isEqualTo(resource);
+
+            // Save the persistent resource
             resource.save(context.config().toMap());
 
+            // Load objects and compare them
             EObject actual = resource.getContents().get(0);
+            expected = PersistentEObject.from(ResourceManager.load(ResourceManager.xmiStandard()));
 
             ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
 

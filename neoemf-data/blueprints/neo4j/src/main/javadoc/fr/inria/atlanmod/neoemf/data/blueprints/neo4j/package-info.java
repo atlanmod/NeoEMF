@@ -13,7 +13,7 @@
 /**
  * Provides classes related to data management specific to a Neo4j implementation, under Blueprints.
  * <p>
- * This package does not provide a dedicated {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, see {@link
+ * This package does not provide a dedicated {@link fr.inria.atlanmod.neoemf.data.Backend}, see {@link
  * fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend} to create a new Neo4j-Blueprints backend.
  */
 

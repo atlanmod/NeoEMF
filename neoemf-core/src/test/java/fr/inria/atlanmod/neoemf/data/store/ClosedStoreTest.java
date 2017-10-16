@@ -36,7 +36,7 @@ import static org.mockito.Mockito.mock;
 @ParametersAreNonnullByDefault
 class ClosedStoreTest extends AbstractTest {
 
-    private static final Class<? extends Throwable> CLOSED_EXCEPTION_TYPE = ClosedStoreException.class;
+    private static final Class<? extends Throwable> CLOSED_EXCEPTION_TYPE = IllegalStateException.class;
 
     private Store store;
 

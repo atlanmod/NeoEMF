@@ -12,7 +12,6 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.InvalidTransientBackend;
 import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 
@@ -38,33 +37,17 @@ class HBaseBackendFactoryTest extends AbstractBackendFactoryTest {
         return HBaseContext.getDefault();
     }
 
-    @Override
-    public void testCreateTransientBackend() {
-        Backend backend = context().factory().createTransientBackend();
-        assertThat(backend).isInstanceOf(InvalidTransientBackend.class);
-    }
+    @Test
+    public void testCreateDefaultBackend() throws IOException {
+        ImmutableConfig config = HBaseConfig.newConfig();
 
-    @Override
-    public void testCreateDefaultPersistentBackend() throws IOException {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), HBaseConfig.newConfig());
-        assertThat(backend).isInstanceOf(DefaultHBaseBackend.class);
+        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
+            assertThat(backend).isInstanceOf(DefaultHBaseBackend.class);
+        }
     }
 
     @Disabled("Not supported")
     @Override
     public void testCopyBackend() {
-    }
-
-    /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for HBase.
-     * <p>
-     * The mapping {@code array-strings} is declared explicitly.
-     */
-    @Test
-    void testCreateIndicesPersistentBackend() throws IOException {
-        ImmutableConfig config = HBaseConfig.newConfig();
-
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(backend).isInstanceOf(DefaultHBaseBackend.class);
     }
 }

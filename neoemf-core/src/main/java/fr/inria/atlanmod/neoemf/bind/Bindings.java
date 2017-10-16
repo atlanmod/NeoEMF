@@ -46,6 +46,7 @@ import static java.util.Objects.nonNull;
  */
 @Static
 @ParametersAreNonnullByDefault
+// TODO Handle the case of a name/scheme that refers to several factories (`factoryFor`, `findAny`)
 public final class Bindings {
 
     /**

@@ -6,16 +6,22 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data;
+package fr.inria.atlanmod.neoemf.data.im;
+
+import fr.inria.atlanmod.neoemf.data.Backend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentBackend} that stores data locally, in a embbeded database or a {@link java.io.File}. Concurrent
- * modifications are not supported.
+ * The default {@link Backend} that stores all elements in an in-memory store.
  */
 @ParametersAreNonnullByDefault
-public interface LocalPersistentBackend extends PersistentBackend {
+public interface InMemoryBackend extends Backend {
+
+    @Override
+    default boolean isPersistent() {
+        return false;
+    }
 
     @Override
     default boolean isDistributed() {

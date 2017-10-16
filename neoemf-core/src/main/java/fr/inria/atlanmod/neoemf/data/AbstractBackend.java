@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
@@ -132,38 +133,60 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     @Override
     @SuppressWarnings("unchecked")
     public void copyTo(DataMapper target) {
+        checkNotNull(target);
+
         if (isDistributed()) {
             Log.warn("Copy of a distributed back-end may lead to unexpected errors");
         }
 
-        if (getClass() == target.getClass()) {
-            innerCopyTo(target);
+        if (Backend.class.isInstance(target)) {
+            copyTo(Backend.class.cast(target));
         }
-        else if (Store.class.isInstance(target) && getClass() == Store.class.cast(target).backend().getClass()) {
-            innerCopyTo(Store.class.cast(target).backend());
+        else if (Store.class.isInstance(target)) {
+            copyTo(Store.class.cast(target).backend());
         }
         else {
+            throw new IllegalStateException(String.format("Unable to copy a DataMapper of type %s", target.getClass()));
+        }
+    }
+
+    /**
+     * Copies all the contents from this backend to the {@code target}.
+     *
+     * @param target the backend where to store the copied content
+     */
+    private void copyTo(Backend target) {
+        // This back-end and the target are the same object
+        if (equals(target)) {
+            return;
+        }
+
+        try {
+            if (getClass() == target.getClass()) {
+                innerCopyTo(target);
+            }
+            else {
+                defaultCopyTo(target);
+            }
+        }
+        catch (UnsupportedOperationException e) {
             defaultCopyTo(target);
         }
     }
 
     @SuppressWarnings("unchecked")
     private void defaultCopyTo(DataMapper target) {
-        Copier<DataMapper> copier;
+        final String typeName = "fr.inria.atlanmod.neoemf.io.DirectDataCopier";
 
         try {
-            final String directCopierTypeName = "fr.inria.atlanmod.neoemf.io.DirectDataCopier";
-            final Class<Copier<DataMapper>> directCopierType = (Class<Copier<DataMapper>>) Class.forName(directCopierTypeName);
+            final Class<Copier<DataMapper>> directCopierType = (Class<Copier<DataMapper>>) Class.forName(typeName);
 
-            copier = directCopierType.newInstance();
+            Copier<DataMapper> copier = directCopierType.newInstance();
+            copier.copy(this, target);
         }
         catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            Log.warn("The direct copy is not supported. Make sure the `neoemf-io` module is in the classpath", e);
-
-            copier = new DataCopier();
+            throw new UnsupportedOperationException(String.format("Unable to find class %s. Make sure the `neoemf-io` module is in the classpath", typeName));
         }
-
-        copier.copy(this, target);
     }
 
     /**
@@ -181,18 +204,5 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     @Override
     public String toString() {
         return getClass().getSimpleName() + (isNull(name) ? ("@" + hashCode()) : ("#" + name));
-    }
-
-    /**
-     * The default implementation of a {@link Copier} of {@link DataMapper} instances.
-     */
-    @ParametersAreNonnullByDefault
-    private static class DataCopier implements Copier<DataMapper> {
-
-        @Override
-        public void copy(DataMapper source, DataMapper target) {
-            // TODO Implements this method
-            throw new UnsupportedOperationException("Not implemented yet");
-        }
     }
 }

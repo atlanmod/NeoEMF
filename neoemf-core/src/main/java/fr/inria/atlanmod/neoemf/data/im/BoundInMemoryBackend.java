@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data;
+package fr.inria.atlanmod.neoemf.data.im;
 
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
@@ -38,10 +38,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link TransientBackend}, bound to a unique {@link Id}, that stores all elements in {@link Map}s.
+ * A {@link InMemoryBackend}, bound to a unique {@link Id}, that stores all elements in {@link Map}s.
  */
 @ParametersAreNonnullByDefault
-public final class BoundTransientBackend extends AbstractTransientBackend {
+public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
 
     /**
      * The number of instances of this class.
@@ -67,11 +67,11 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
     private final DataHolder dataHolder = DataHolder.getInstance();
 
     /**
-     * Constructs a new {@code BoundTransientBackend} with the given {@code owner}.
+     * Constructs a new {@code BoundInMemoryBackend} with the given {@code owner}.
      *
      * @param owner the identifier of the owner of this back-end
      */
-    public BoundTransientBackend(Id owner) {
+    public BoundInMemoryBackend(Id owner) {
         super(owner.toHexString());
 
         if (dataHolder.isClosed()) {
@@ -155,12 +155,12 @@ public final class BoundTransientBackend extends AbstractTransientBackend {
             return false;
         }
 
-        BoundTransientBackend that = BoundTransientBackend.class.cast(o);
+        BoundInMemoryBackend that = BoundInMemoryBackend.class.cast(o);
         return Objects.equals(owner, that.owner);
     }
 
     /**
-     * An object that holds shared data for all instances of {@code BoundTransientBackend}.
+     * An object that holds shared data for all instances of {@code BoundInMemoryBackend}.
      */
     @Singleton
     @ParametersAreNonnullByDefault

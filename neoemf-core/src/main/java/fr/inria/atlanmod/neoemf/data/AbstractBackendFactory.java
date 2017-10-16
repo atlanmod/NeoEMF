@@ -11,7 +11,6 @@ package fr.inria.atlanmod.neoemf.data;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperFactory;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -25,16 +24,5 @@ public abstract class AbstractBackendFactory extends AbstractMapperFactory imple
      * Constructs a new {@code AbstractBackendFactory}.
      */
     protected AbstractBackendFactory() {
-    }
-
-    @Nonnull
-    @Override
-    public Backend createTransientBackend() {
-        if (supportsTransient()) {
-            return new DefaultTransientBackend();
-        }
-        else {
-            return new InvalidTransientBackend();
-        }
     }
 }

@@ -6,13 +6,14 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data;
+package fr.inria.atlanmod.neoemf.data.im;
 
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
+import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -39,10 +40,10 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * An abstract {@link TransientBackend} that provides the default behavior of containers and meta-classes management.
+ * An abstract {@link InMemoryBackend} that provides the default behavior of containers and meta-classes management.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractTransientBackend extends AbstractBackend implements TransientBackend, ManyValueWithLists, AllReferenceAs<Long> {
+public abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemoryBackend, ManyValueWithLists, AllReferenceAs<Long> {
 
     /**
      * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
@@ -51,18 +52,18 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
 
     /**
-     * Constructs a new {@code AbstractTransientBackend}.
+     * Constructs a new {@code AbstractInMemoryBackend}.
      */
-    protected AbstractTransientBackend() {
+    protected AbstractInMemoryBackend() {
         super();
     }
 
     /**
-     * Constructs a new {@code AbstractTransientBackend} with the given {@code name}.
+     * Constructs a new {@code AbstractInMemoryBackend} with the given {@code name}.
      *
      * @param name the unique name of this backend
      */
-    protected AbstractTransientBackend(@Nullable String name) {
+    protected AbstractInMemoryBackend(@Nullable String name) {
         super(name);
     }
 
@@ -80,6 +81,11 @@ public abstract class AbstractTransientBackend extends AbstractBackend implement
     @SuppressWarnings("unchecked")
     private static <V> V cast(@Nullable Object value) {
         return (V) value;
+    }
+
+    @Override
+    public void save() {
+        // No need to save anything
     }
 
     /**

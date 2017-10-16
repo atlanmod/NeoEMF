@@ -6,33 +6,24 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data;
+package fr.inria.atlanmod.neoemf.data.im;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.CoreContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
-import java.io.File;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link BoundTransientBackend}.
+ * A test-case about {@link DefaultInMemoryBackend}.
  */
 @ParametersAreNonnullByDefault
-class BoundTransientBackendTest extends AbstractPersistenceMapperTest {
+class DefaultInMemoryBackendTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override
     protected Context context() {
-        return new CoreContext() {
-
-            @Nonnull
-            @Override
-            public Backend createMapper(File file) {
-                return new BoundTransientBackend(idBase);
-            }
-        };
+        return CoreContext.get();
     }
 }

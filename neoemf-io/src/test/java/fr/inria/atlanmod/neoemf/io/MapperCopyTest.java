@@ -10,16 +10,13 @@ package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.commons.AbstractFileBasedTest;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
+import fr.inria.atlanmod.neoemf.data.im.DefaultInMemoryBackend;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.eclipse.emf.common.util.URI;
@@ -57,29 +54,12 @@ class MapperCopyTest extends AbstractFileBasedTest {
      * @return a new {@link PersistentResource}
      */
     @Nonnull
-    private static PersistentResource createMockResource(File file, Backend backend) {
-        final String name = "mock";
+    private static PersistentResource createMockResource(File file, Backend backend) throws IOException {
+        BackendFactoryRegistry.getInstance().register(Bindings.schemeOf(MockBackendFactory.MockUri.class), new MockBackendFactory(backend));
 
-        BackendFactoryRegistry.getInstance().register(name, new AbstractBackendFactory() {
-            @Override
-            public String name() {
-                return name;
-            }
-
-            @Nonnull
-            @Override
-            public PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Nonnull
-            @Override
-            public Backend createTransientBackend() {
-                return backend;
-            }
-        });
-
-        return PersistentResourceFactory.getInstance().createResource(AbstractUriBuilder.builder(name).fromFile(file));
+        PersistentResource resource = PersistentResourceFactory.getInstance().createResource(MockBackendFactory.MockUri.builder().fromFile(file));
+        resource.save(MockBackendFactory.MockConfig.newConfig().toMap());
+        return resource;
     }
 
     /**
@@ -93,18 +73,18 @@ class MapperCopyTest extends AbstractFileBasedTest {
 
         URI expectedUri = ResourceManager.xmiStandard();
 
-        try (Backend sourceBackend = new DefaultTransientBackend(); InputStream in = new URL(expectedUri.toString()).openStream()) {
+        try (Backend sourceBackend = new DefaultInMemoryBackend(); InputStream in = new URL(expectedUri.toString()).openStream()) {
             Migrator.fromXmi(in).toMapper(sourceBackend).migrate();
 
             Log.info("Copying backends...");
 
-            try (Backend targetBackend = new DefaultTransientBackend()) {
+            try (Backend targetBackend = new DefaultInMemoryBackend()) {
                 Migrator.fromMapper(sourceBackend).toMapper(targetBackend).migrate();
 
                 EObject actual = createMockResource(targetFile, targetBackend).getContents().get(0);
                 EObject expected = createMockResource(sourceFile, sourceBackend).getContents().get(0);
 
-                // Comparing PersistentBackend
+                // Comparing back-ends
                 ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
 
                 // Comparing with EMF

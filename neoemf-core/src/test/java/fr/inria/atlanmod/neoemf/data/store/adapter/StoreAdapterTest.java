@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
+import fr.inria.atlanmod.neoemf.data.im.DefaultInMemoryBackend;
 import fr.inria.atlanmod.neoemf.data.store.ClosedStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
@@ -114,7 +114,7 @@ class StoreAdapterTest extends AbstractTest {
 
     @BeforeEach
     void initStoreAdapter() {
-        Store innerStore = StoreFactory.getInstance().createStore(new DefaultTransientBackend(), BaseConfig.newConfig());
+        Store innerStore = StoreFactory.getInstance().createStore(new DefaultInMemoryBackend(), BaseConfig.newConfig());
 
         store = new AbstractStoreAdapter(innerStore, null) {
 

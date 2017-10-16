@@ -125,3 +125,5 @@
 
 **/*.log
 **/java-gen
+
+.keystore

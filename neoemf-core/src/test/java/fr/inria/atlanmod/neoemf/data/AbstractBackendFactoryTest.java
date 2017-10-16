@@ -9,6 +9,10 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
+import fr.inria.atlanmod.neoemf.data.im.InMemoryBackend;
+import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
+import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
+import fr.inria.atlanmod.neoemf.data.im.util.InMemoryUri;
 import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
@@ -28,42 +32,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
 
     /**
-     * Check the creation of chaining between the default {@link Store}s and a {@link TransientBackend}.
+     * Check the creation of chaining between the default {@link Store}s and a {@link InMemoryBackend}.
      */
     @Test
-    public void testCreateTransientStore() {
-        Backend backend = context().factory().createTransientBackend();
+    public void testCreateTransientStore() throws IOException {
+        try (Backend backend = InMemoryBackendFactory.getInstance().createBackend(InMemoryUri.builder().fromFile(currentTempFile()), InMemoryConfig.newConfig())) {
+            try (Store store = StoreFactory.getInstance().createStore(backend, context().config())) {
+                assertThat(store).isInstanceOf(DirectWriteStore.class);
 
-        Store store = StoreFactory.getInstance().createStore(backend, context().config());
-        assertThat(store).isInstanceOf(DirectWriteStore.class);
-
-        assertThat(store.backend()).isSameAs(backend);
+                assertThat(store.backend()).isSameAs(backend);
+            }
+        }
     }
 
     /**
-     * Check the creation of chaining between the default {@link Store}s and a {@link PersistentBackend}.
+     * Check the creation of chaining between the default {@link Store}s and a {@link Backend}.
      */
     @Test
     public void testCreatePersistentStore() throws IOException {
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), context().config());
+        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), context().config())) {
+            try (Store store = StoreFactory.getInstance().createStore(backend, context().config())) {
+                assertThat(store).isInstanceOf(DirectWriteStore.class);
 
-        Store store = StoreFactory.getInstance().createStore(backend, context().config());
-        assertThat(store).isInstanceOf(DirectWriteStore.class);
-
-        assertThat(store.backend()).isSameAs(backend);
+                assertThat(store.backend()).isSameAs(backend);
+            }
+        }
     }
-
-    /**
-     * Checks the creation of a {@link TransientBackend}, specific for each implementation.
-     */
-    @Test
-    public abstract void testCreateTransientBackend() throws IOException;
-
-    /**
-     * Checks the creation of the default {@link PersistentBackend}, specific for each implementation.
-     */
-    @Test
-    public abstract void testCreateDefaultPersistentBackend() throws IOException;
 
     /**
      * Checks the copy of a {@link Backend} to another.

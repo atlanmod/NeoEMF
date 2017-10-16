@@ -42,7 +42,7 @@ public class DirectBerkeleyDbImporter {
         File sourceFile = new File("models/sample.xmi");
         URI targetUri = BerkeleyDbUri.builder().fromFile("models/sample2.berkeleydb");
 
-        try (Backend backend = factory.createPersistentBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
+        try (Backend backend = factory.createBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
             Migrator.fromXmi(sourceFile)
                     .toMapper(mapper)
                     .withTimer()

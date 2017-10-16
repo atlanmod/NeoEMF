@@ -8,13 +8,12 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import fr.inria.atlanmod.neoemf.data.LocalPersistentBackend;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
+import fr.inria.atlanmod.neoemf.data.Backend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentBackend} that is responsible of low-level access to a Blueprints database.
+ * A {@link Backend} that is responsible of low-level access to a Blueprints database.
  * <p>
  * It wraps an existing Blueprints database and provides facilities to create and retrieve elements, map {@link
  * fr.inria.atlanmod.neoemf.core.PersistentEObject}s to {@code Vertex} elements in order to speed up attribute access,
@@ -22,5 +21,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * fr.inria.atlanmod.neoemf.core.PersistentEObject}.
  */
 @ParametersAreNonnullByDefault
-public interface BlueprintsBackend extends LocalPersistentBackend {
+public interface BlueprintsBackend extends Backend {
+
+    @Override
+    default boolean isPersistent() {
+        return true;
+    }
+
+    @Override
+    default boolean isDistributed() {
+        return false;
+    }
 }

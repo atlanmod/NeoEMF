@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data;
+package fr.inria.atlanmod.neoemf.data.im;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
@@ -23,10 +23,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link TransientBackend} that stores all elements in {@link Map}s.
+ * A {@link InMemoryBackend} that stores all elements in {@link Map}s.
  */
 @ParametersAreNonnullByDefault
-public class DefaultTransientBackend extends AbstractTransientBackend {
+public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
 
     /**
      * The number of instances of this class, used to identify each instance.
@@ -56,7 +56,7 @@ public class DefaultTransientBackend extends AbstractTransientBackend {
     @Nonnull
     private final ChronicleMap<SingleFeatureBean, Object> features;
 
-    public DefaultTransientBackend() {
+    public DefaultInMemoryBackend() {
         final int id = COUNTER.getAndIncrement();
         final String prefix = "default/";
 

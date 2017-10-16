@@ -58,7 +58,7 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
     public DataMapper createMapper(File file, Config config) {
         Config mergedConfig = config.merge(getOptions());
 
-        Backend backend = getFactory().createPersistentBackend(URI.createFileURI(file.getAbsolutePath()), mergedConfig);
+        Backend backend = getFactory().createBackend(URI.createFileURI(file.getAbsolutePath()), mergedConfig);
         return StoreFactory.getInstance().createStore(backend, mergedConfig);
     }
 

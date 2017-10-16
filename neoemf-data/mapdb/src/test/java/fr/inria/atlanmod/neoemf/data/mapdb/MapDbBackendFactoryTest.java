@@ -12,11 +12,15 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
+import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
+import fr.inria.atlanmod.neoemf.data.im.util.InMemoryUri;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
@@ -37,68 +41,58 @@ class MapDbBackendFactoryTest extends AbstractBackendFactoryTest {
     }
 
     @Override
-    public void testCreateTransientBackend() {
-        Backend backend = context().factory().createTransientBackend();
-        assertThat(backend).isInstanceOf(MapDbBackend.class);
-    }
-
-    @Override
-    public void testCreateDefaultPersistentBackend() throws IOException {
-        ImmutableConfig config = MapDbConfig.newConfig().withIndices();
-
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
-    }
-
-    @Override
     public void testCopyBackend() throws IOException {
         ImmutableConfig config = MapDbConfig.newConfig().withIndices();
 
-        Backend transientBackend = context().factory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(MapDbBackend.class);
+        File file = currentTempFile();
+        try (Backend transientBackend = InMemoryBackendFactory.getInstance().createBackend(InMemoryUri.builder().fromFile(file), InMemoryConfig.newConfig())) {
+            try (Backend persistentBackend = context().factory().createBackend(context().createUri(file), config)) {
+                assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
-
-        transientBackend.copyTo(persistentBackend);
+                transientBackend.copyTo(persistentBackend);
+            }
+        }
     }
 
     /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for MapDB.
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.Backend}, specific for MapDB.
      * <p>
      * The mapping {@code indices} is declared explicitly.
      */
     @Test
-    void testCreateIndicesPersistentBackend() throws IOException {
+    void testCreateIndicesBackend() throws IOException {
         ImmutableConfig config = MapDbConfig.newConfig().withIndices();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
+        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
+            assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
+        }
     }
 
     /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for MapDB.
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.Backend}, specific for MapDB.
      * <p>
      * The mapping {@code arrays} is declared explicitly.
      */
     @Test
-    void testCreateArraysPersistentBackend() throws IOException {
+    void testCreateArraysBackend() throws IOException {
         ImmutableConfig config = MapDbConfig.newConfig().withArrays();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(backend).isInstanceOf(MapDbBackendArrays.class);
+        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
+            assertThat(backend).isInstanceOf(MapDbBackendArrays.class);
+        }
     }
 
     /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for MapDB.
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.Backend}, specific for MapDB.
      * <p>
      * The mapping {@code lists} is declared explicitly.
      */
     @Test
-    void testCreateListsPersistentBackend() throws IOException {
+    void testCreateListsBackend() throws IOException {
         ImmutableConfig config = MapDbConfig.newConfig().withLists();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(backend).isInstanceOf(MapDbBackendLists.class);
+        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
+            assertThat(backend).isInstanceOf(MapDbBackendLists.class);
+        }
     }
 }

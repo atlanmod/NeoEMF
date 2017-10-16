@@ -173,7 +173,7 @@ final class ContextualResourceBuilder {
      */
     @Nonnull
     public DataMapper createMapper() {
-        Backend backend = context.factory().createPersistentBackend(uri, defaultConfig());
+        Backend backend = context.factory().createBackend(uri, defaultConfig());
         return StoreFactory.getInstance().createStore(backend, defaultConfig());
     }
 }

@@ -8,13 +8,12 @@
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
-import fr.inria.atlanmod.neoemf.data.LocalPersistentBackend;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
+import fr.inria.atlanmod.neoemf.data.Backend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link PersistentBackend} that is responsible of low-level access to a BerkeleyDB database.
+ * A {@link Backend} that is responsible of low-level access to a BerkeleyDB database.
  * <p>
  * It wraps an existing MapDB database and provides facilities to create and retrieve elements.
  * <p>
@@ -24,5 +23,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see BerkeleyDbBackendFactory
  */
 @ParametersAreNonnullByDefault
-public interface BerkeleyDbBackend extends LocalPersistentBackend {
+public interface BerkeleyDbBackend extends Backend {
+
+    @Override
+    default boolean isPersistent() {
+        return true;
+    }
+
+    @Override
+    default boolean isDistributed() {
+        return true;
+    }
 }

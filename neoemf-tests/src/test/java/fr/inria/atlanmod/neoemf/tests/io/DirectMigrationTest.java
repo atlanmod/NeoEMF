@@ -142,7 +142,7 @@ class DirectMigrationTest extends AbstractResourceBasedTest {
 
         EObject actual = targetContext.loadResource(targetFile).getContents().get(0);
 
-        // Comparing PersistentBackend
+        // Comparing back-ends
         EObject expected = sourceContext.loadResource(sourceFile).getContents().get(0);
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
 

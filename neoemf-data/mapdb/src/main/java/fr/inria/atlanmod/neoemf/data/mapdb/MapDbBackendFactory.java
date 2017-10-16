@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 
 import org.eclipse.emf.common.util.URI;
@@ -75,7 +74,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig) {
+    public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
         MapDbBackend backend;
 
         checkArgument(uri.isFile(), "%s only supports file-based URIs", getClass().getSimpleName());
@@ -115,18 +114,6 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
         }
 
         return backend;
-    }
-
-    @Nonnull
-    @Override
-    public Backend createTransientBackend() {
-        try {
-            DB db = DBMaker.memoryDB().make();
-            return new MapDbBackendIndices(db);
-        }
-        catch (Exception e) {
-            throw new InvalidBackendException(e);
-        }
     }
 
     /**

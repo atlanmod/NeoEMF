@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
@@ -42,7 +42,7 @@ import static java.util.Objects.isNull;
  * An abstract {@link MapDbBackend} that provides overall behavior for the management of a MapDB database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractMapDbBackend extends AbstractPersistentBackend implements MapDbBackend, AllReferenceAs<Long> {
+abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBackend, AllReferenceAs<Long> {
 
     /**
      * The {@link BeanSerializerFactory} to use for creating the {@link fr.inria.atlanmod.commons.io.serializer.Serializer}

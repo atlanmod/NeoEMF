@@ -48,23 +48,10 @@ public interface BackendFactory {
      *
      * @return {@code true} if the {@link Backend}s created by this factory support the transient state, {@code false}
      * otherwise
-     *
-     * @see #createTransientBackend()
      */
     default boolean supportsTransient() {
         return true;
     }
-
-    /**
-     * Creates an in-memory {@link Backend}.
-     *
-     * @return a new back-end
-     *
-     * @see #supportsTransient()
-     */
-    @Nonnull
-    // TODO Return a `TransientBackend`: need to re-implement a default `AbstractBackend#copyTo` method
-    Backend createTransientBackend();
 
     /**
      * Creates a persistent {@link Backend} located by the {@code uri}.
@@ -78,5 +65,5 @@ public interface BackendFactory {
      *                                 missing
      */
     @Nonnull
-    PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig);
+    Backend createBackend(URI uri, ImmutableConfig baseConfig);
 }

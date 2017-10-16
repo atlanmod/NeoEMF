@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.io;
 import fr.inria.atlanmod.commons.AbstractFileBasedTest;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
+import fr.inria.atlanmod.neoemf.data.im.DefaultInMemoryBackend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
@@ -53,7 +53,7 @@ class ExportTest extends AbstractFileBasedTest {
         final File targetFile = new File(currentTempFile() + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
         Log.info("Exporting to file... [{0}]", targetFile);
 
-        try (DataMapper mapper = new DefaultTransientBackend(); InputStream in = new URL(uri.toString()).openStream()) {
+        try (DataMapper mapper = new DefaultInMemoryBackend(); InputStream in = new URL(uri.toString()).openStream()) {
             Migrator.fromXmi(in).toMapper(mapper).migrate();
 
             Migrator.fromMapper(mapper)

@@ -8,21 +8,16 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.commons.AbstractFileBasedTest;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.AbstractUnitTest;
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.CoreContext;
-import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.DefaultTransientBackend;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
+import fr.inria.atlanmod.neoemf.data.im.DefaultInMemoryBackend;
 import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.eclipse.emf.common.util.URI;
@@ -44,7 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about the import of a model to a {@link Backend}.
  */
 @ParametersAreNonnullByDefault
-class ImportTest extends AbstractUnitTest {
+class ImportTest extends AbstractFileBasedTest {
 
     @BeforeAll
     static void registerPackages() {
@@ -60,35 +55,12 @@ class ImportTest extends AbstractUnitTest {
      * @return a new {@link PersistentResource}
      */
     @Nonnull
-    private static PersistentResource createMockResource(URI uri, Backend backend) {
-        final String name = "mock";
+    private static PersistentResource createMockResource(URI uri, Backend backend) throws IOException {
+        BackendFactoryRegistry.getInstance().register(Bindings.schemeOf(MockBackendFactory.MockUri.class), new MockBackendFactory(backend));
 
-        BackendFactoryRegistry.getInstance().register(name, new AbstractBackendFactory() {
-            @Override
-            public String name() {
-                return name;
-            }
-
-            @Nonnull
-            @Override
-            public PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Nonnull
-            @Override
-            public Backend createTransientBackend() {
-                return backend;
-            }
-        });
-
-        return PersistentResourceFactory.getInstance().createResource(AbstractUriBuilder.builder(name).fromUri(uri));
-    }
-
-    @Nonnull
-    @Override
-    protected Context context() {
-        return CoreContext.get();
+        PersistentResource resource = PersistentResourceFactory.getInstance().createResource(MockBackendFactory.MockUri.builder().fromUri(uri));
+        resource.save(MockBackendFactory.MockConfig.newConfig().toMap());
+        return resource;
     }
 
     /**
@@ -101,7 +73,7 @@ class ImportTest extends AbstractUnitTest {
         final File sourceFile = currentTempFile();
         Log.info("Importing from file... [{0}]", sourceFile);
 
-        try (Backend backend = new DefaultTransientBackend(); InputStream in = new URL(uri.toString()).openStream()) {
+        try (Backend backend = new DefaultInMemoryBackend(); InputStream in = new URL(uri.toString()).openStream()) {
             Migrator.fromXmi(in).toMapper(backend).migrate();
 
             EObject actual = createMockResource(uri, backend).getContents().get(0);

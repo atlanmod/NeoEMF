@@ -31,10 +31,10 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
 /**
- * A test-case about {@link InvalidTransientBackend}.
+ * A test-case about {@link InvalidBackend}.
  */
 @ParametersAreNonnullByDefault
-class InvalidTransientBackendTest extends AbstractTest {
+class InvalidBackendTest extends AbstractTest {
 
     private static final Class<? extends Throwable> INVALID_EXCEPTION_TYPE = UnsupportedOperationException.class;
 
@@ -42,7 +42,7 @@ class InvalidTransientBackendTest extends AbstractTest {
 
     @BeforeEach
     void setUp() {
-        invalidBackend = new InvalidTransientBackend();
+        invalidBackend = new InvalidBackend("");
     }
 
     @Test

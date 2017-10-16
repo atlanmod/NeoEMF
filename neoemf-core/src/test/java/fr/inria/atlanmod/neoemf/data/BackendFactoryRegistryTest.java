@@ -54,7 +54,8 @@ class BackendFactoryRegistryTest extends AbstractTest {
      */
     @BeforeEach
     void unregisterFactories() {
-        REGISTRY.unregisterAll();
+        REGISTRY.unregister(MOCK_1);
+        REGISTRY.unregister(MOCK_2);
     }
 
     /**
@@ -63,7 +64,7 @@ class BackendFactoryRegistryTest extends AbstractTest {
     @Test
     void testSingleAdd() {
         REGISTRY.register(MOCK_1, factory1);
-        assertThat(REGISTRY.getFactories()).hasSize(1);
+        assertThat(REGISTRY.getFactories()).hasSize(2);
 
         BackendFactory registeredFactory = REGISTRY.getFactoryFor(MOCK_1);
         assertThat(registeredFactory).isNotNull().isSameAs(factory1);
@@ -76,7 +77,7 @@ class BackendFactoryRegistryTest extends AbstractTest {
     void testMultipleAdd() {
         REGISTRY.register(MOCK_1, factory1);
         REGISTRY.register(MOCK_2, factory2);
-        assertThat(REGISTRY.getFactories()).hasSize(2);
+        assertThat(REGISTRY.getFactories()).hasSize(3);
 
         BackendFactory registeredFactory1 = REGISTRY.getFactoryFor(MOCK_1);
         assertThat(registeredFactory1).isNotNull().isSameAs(factory1);

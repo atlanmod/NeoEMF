@@ -14,9 +14,13 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
+import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
+import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
+import fr.inria.atlanmod.neoemf.data.im.util.InMemoryUri;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
@@ -37,68 +41,58 @@ class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
     }
 
     @Override
-    public void testCreateTransientBackend() {
-        Backend backend = context().factory().createTransientBackend();
-        assertThat(backend).isInstanceOf(BerkeleyDbBackend.class);
-    }
-
-    @Override
-    public void testCreateDefaultPersistentBackend() throws IOException {
-        ImmutableConfig config = BerkeleyDbConfig.newConfig().withIndices();
-
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
-    }
-
-    @Override
     public void testCopyBackend() throws IOException {
         ImmutableConfig config = BerkeleyDbConfig.newConfig().withIndices();
 
-        Backend transientBackend = context().factory().createTransientBackend();
-        assertThat(transientBackend).isInstanceOf(BerkeleyDbBackend.class);
+        File file = currentTempFile();
+        try (Backend transientBackend = InMemoryBackendFactory.getInstance().createBackend(InMemoryUri.builder().fromFile(file), InMemoryConfig.newConfig())) {
+            try (Backend persistentBackend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
+                assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class);
 
-        Backend persistentBackend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class);
-
-        transientBackend.copyTo(persistentBackend);
+                transientBackend.copyTo(persistentBackend);
+            }
+        }
     }
 
     /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for BerkeleyDB.
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.Backend}, specific for BerkeleyDB.
      * <p>
      * The mapping {@code indices} is declared explicitly.
      */
     @Test
-    void testCreateIndicesPersistentBackend() throws IOException {
+    void testCreateIndicesBackend() throws IOException {
         ImmutableConfig config = BerkeleyDbConfig.newConfig().withIndices();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
+        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
+            assertThat(backend).isInstanceOf(BerkeleyDbBackendIndices.class);
+        }
     }
 
     /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for BerkeleyDB.
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.Backend}, specific for BerkeleyDB.
      * <p>
      * The mapping {@code arrays} is declared explicitly.
      */
     @Test
-    void testCreateArraysPersistentBackend() throws IOException {
+    void testCreateArraysBackend() throws IOException {
         ImmutableConfig config = BerkeleyDbConfig.newConfig().withArrays();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(backend).isInstanceOf(BerkeleyDbBackendArrays.class);
+        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
+            assertThat(backend).isInstanceOf(BerkeleyDbBackendArrays.class);
+        }
     }
 
     /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.PersistentBackend}, specific for BerkeleyDB.
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.Backend}, specific for BerkeleyDB.
      * <p>
      * The mapping {@code lists} is declared explicitly.
      */
     @Test
-    void testCreateListsPersistentBackend() throws IOException {
+    void testCreateListsBackend() throws IOException {
         ImmutableConfig config = BerkeleyDbConfig.newConfig().withLists();
 
-        Backend backend = context().factory().createPersistentBackend(context().createUri(currentTempFile()), config);
-        assertThat(backend).isInstanceOf(BerkeleyDbBackendLists.class);
+        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
+            assertThat(backend).isInstanceOf(BerkeleyDbBackendLists.class);
+        }
     }
 }

@@ -32,7 +32,7 @@ public abstract class AbstractMapperFactory {
      *
      * @return a new instance of {@link Store}
      *
-     * @throws InvalidMapperException if an error occurs during the instantiation
+     * @throws InvalidDataMapperException if an error occurs during the instantiation
      */
     @Nonnull
     @SuppressWarnings("unchecked")
@@ -44,10 +44,10 @@ public abstract class AbstractMapperFactory {
             return createMapper(type, parameters);
         }
         catch (ClassCastException e) {
-            throw new InvalidMapperException(String.format("%s is not assignable from %s", typeName, DataMapper.class.getName()));
+            throw new InvalidDataMapperException(String.format("%s is not assignable from %s", typeName, DataMapper.class.getName()));
         }
         catch (ClassNotFoundException e) {
-            throw new InvalidMapperException(e);
+            throw new InvalidDataMapperException(e);
         }
     }
 
@@ -59,7 +59,7 @@ public abstract class AbstractMapperFactory {
      *
      * @return a new instance of {@link Store}
      *
-     * @throws InvalidMapperException if an error occurs during the instantiation
+     * @throws InvalidDataMapperException if an error occurs during the instantiation
      */
     @Nonnull
     @SuppressWarnings({"unchecked", "JavaReflectionMemberAccess"})
@@ -79,7 +79,7 @@ public abstract class AbstractMapperFactory {
             return (T) constructor.newInstance(values);
         }
         catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw new InvalidMapperException(e);
+            throw new InvalidDataMapperException(e);
         }
     }
 }

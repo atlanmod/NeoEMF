@@ -26,7 +26,7 @@ import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
-import fr.inria.atlanmod.neoemf.data.AbstractPersistentBackend;
+import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -47,7 +47,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * An abstract {@link BlueprintsBackend} that provides overall behavior for the management of a Blueprints database.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractBlueprintsBackend extends AbstractPersistentBackend implements BlueprintsBackend {
+abstract class AbstractBlueprintsBackend extends AbstractBackend implements BlueprintsBackend {
 
     /**
      * The {@link Converter} to use a long representation instead of {@link Id}.

@@ -13,29 +13,23 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link DataMapper} that stores data.
+ * A {@link DataMapper} that stores all elements in a database and provides specific methods for communicating with the
+ * database that it uses. Each {@code Backend} manage one single instance of a database.
  */
 @ParametersAreNonnullByDefault
 public interface Backend extends DataMapper {
 
     /**
-     * Returns whether this back-end is transient, i.e., if it is stored in memory.
+     * Returns {@code true} if the back-end is stored in a local database.
      *
-     * @return {@code true} if the back-end is transient, {@code false} otherwise.
-     */
-    boolean isTransient();
-
-    /**
-     * Returns whether this back-end is persistent, i.e., if it is stored in a local database.
-     *
-     * @return {@code true} if the back-end is persistent, {@code false} otherwise.
+     * @return {@code true} if the back-end is stored in a local database.
      */
     boolean isPersistent();
 
     /**
-     * Returns whether this back-end is distributed.
+     * Returns {@code true} if the back-end is distributed.
      *
-     * @return {@code true} if the back-end is distributed, {@code false} otherwise.
+     * @return {@code true} if the back-end is distributed.
      */
     boolean isDistributed();
 }

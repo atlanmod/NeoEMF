@@ -12,9 +12,9 @@ import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.config.ConfigValue;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
+import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
-import fr.inria.atlanmod.neoemf.data.PersistentBackend;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -88,7 +88,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public PersistentBackend createPersistentBackend(URI uri, ImmutableConfig baseConfig) {
+    public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
         HBaseBackend backend;
 
         checkArgument(uri.isHierarchical(), "%s only supports hierarchical URIs", getClass().getSimpleName());
