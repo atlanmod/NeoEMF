@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.resource;
 
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
@@ -22,7 +21,6 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.InvalidBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
-import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.data.store.adapter.PersistentStoreAdapter;
@@ -111,26 +109,12 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         factory = BackendFactoryRegistry.getInstance().getFactoryFor(uri.scheme());
 
-        Backend backend;
-        ImmutableConfig config = BaseConfig.newConfig();
-
-        if (factory.supportsTransient()) {
-            // Creates an in-memory backend until a call to `save()`/`load()`
-            final String imScheme = Bindings.schemeOf(InMemoryBackendFactory.class);
-            BackendFactory imFactory = BackendFactoryRegistry.getInstance().getFactoryFor(imScheme);
-
-            backend = imFactory.createBackend(uri, config);
-        }
-        else {
-            backend = new InvalidBackend("This back-end does not provide a transient layer: you must save/load the associated resource before using it");
-        }
-
-        Store baseStore = StoreFactory.getInstance().createStore(backend, config);
-        eStore = new PersistentStoreAdapter(baseStore, this);
+        // Creates an transient backend until a call to `save()`/`load()`
+        eStore = createTransientStore();
 
         rootObject = new RootObject(this);
 
-        Log.info("PersistentResource created: {0}", uri);
+        logState("created");
     }
 
     @Nonnull
@@ -156,13 +140,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     @SuppressWarnings("unchecked")
     public void save(Map<?, ?> options) throws IOException {
-        doSave(Config.forScheme(uri.scheme()).merge((Map<String, Object>) options));
+        save(Config.forScheme(uri.scheme()).merge((Map<String, Object>) options));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void load(Map<?, ?> options) throws IOException {
-        doLoad(Config.forScheme(uri.scheme()).merge((Map<String, Object>) options));
+        load(Config.forScheme(uri.scheme()).merge((Map<String, Object>) options));
     }
 
     @Override
@@ -178,70 +162,48 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         eStore.close();
 
-        Log.info("PersistentResource closed:  {0}", uri);
-    }
-
-    /**
-     * Saves this resource using the specified {@code config}.
-     *
-     * @param config the save configuration
-     */
-    protected void doSave(ImmutableConfig config) {
-        if (!isLoaded || !eStore.store().backend().isPersistent()) {
-            Backend backend = factory.createBackend(uri, config);
-            Store baseStore = StoreFactory.getInstance().createStore(backend, config);
-            StoreAdapter newStore = new PersistentStoreAdapter(baseStore, this);
-
-            // Direct copy
-            eStore.copyTo(newStore);
-
-            // Close the previous store, and assign the new
-            eStore.close();
-            eStore = newStore;
-
-            isLoaded = true;
-        }
-
-        eStore.save();
-
-        Log.info("PersistentResource saved:   {0}", uri);
-    }
-
-    /**
-     * Loads this resource using the specified {@code config}.
-     *
-     * @param config the load configuration
-     *
-     * @throws IOException if an I/O error occurs during the load
-     */
-    protected void doLoad(ImmutableConfig config) throws IOException {
-        try {
-            isLoading = true;
-
-            if (!isLoaded) {
-                if (uri.isFile() && new File(uri.toFileString()).exists() || uri.hasAuthority()) {
-                    eStore.close();
-
-                    Backend backend = factory.createBackend(uri, config);
-                    Store baseStore = StoreFactory.getInstance().createStore(backend, config);
-                    eStore = new PersistentStoreAdapter(baseStore, this);
-                }
-                else {
-                    throw new FileNotFoundException(uri.toFileString());
-                }
-
-                isLoaded = true;
-            }
-        }
-        finally {
-            isLoading = false;
-            Log.info("PersistentResource loaded:  {0}", uri);
-        }
+        logState("closed");
     }
 
     @Override
     public void close() {
         unload();
+    }
+
+    @Override
+    public void save(ImmutableConfig config) throws IOException {
+        if (!isLoaded || !eStore.store().backend().isPersistent()) {
+            mergeStore(config);
+            isLoaded = true;
+        }
+
+        eStore.save();
+
+        logState("saved");
+    }
+
+    @Override
+    public void load(ImmutableConfig config) throws IOException {
+        if (isLoading || isLoaded) {
+            return;
+        }
+
+        try {
+            isLoading = true;
+
+            if (uri.isFile() && new File(uri.toFileString()).exists() || uri.hasAuthority()) {
+                eSetStore(createStore(config));
+            }
+            else {
+                throw new FileNotFoundException(uri.toFileString());
+            }
+
+            isLoaded = true;
+        }
+        finally {
+            isLoading = false;
+            logState("loaded");
+        }
     }
 
     @Nonnull
@@ -276,6 +238,91 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     public StoreAdapter eStore() {
         return eStore;
+    }
+
+    /**
+     * Closes the previous store of this resource and defines the new.
+     *
+     * @param newStore the new store of this resource
+     *
+     * @see StoreAdapter#close()
+     */
+    private void eSetStore(StoreAdapter newStore) {
+        eStore.close();
+        eStore = newStore;
+    }
+
+    /**
+     * Merges the content of the current {@link #eStore} to a newly created {@link Backend}, using the current {@link
+     * #factory}.
+     *
+     * @param config the configuration of the store/back-end
+     */
+    private void mergeStore(ImmutableConfig config) {
+        StoreAdapter newStore = createStore(config);
+        eStore.copyTo(newStore);
+        eSetStore(newStore);
+    }
+
+    /**
+     * Creates a new {@link StoreAdapter} on top of a newly created transient {@link Backend}, using the default {@link
+     * fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory} implementation.
+     *
+     * @return a new store
+     */
+    @Nonnull
+    private StoreAdapter createTransientStore() {
+        Backend backend;
+        ImmutableConfig config;
+
+        if (factory.supportsTransient()) {
+            final String imScheme = "neo-im";
+
+            config = Config.forScheme(imScheme);
+            backend = BackendFactoryRegistry.getInstance().getFactoryFor(imScheme).createBackend(uri, config);
+        }
+        else {
+            config = BaseConfig.newConfig();
+            backend = new InvalidBackend("This back-end does not provide a transient layer: you must save/load the associated resource before using it");
+        }
+
+        return createStore(backend, config);
+    }
+
+    /**
+     * Creates a new {@link StoreAdapter} on top of a newly created {@link Backend}, using the current {@link
+     * #factory}.
+     *
+     * @param config the configuration of the store/back-end
+     *
+     * @return a new store
+     */
+    @Nonnull
+    private StoreAdapter createStore(ImmutableConfig config) {
+        return createStore(factory.createBackend(uri, config), config);
+    }
+
+    /**
+     * Creates a new {@link StoreAdapter} on top a the given {@code backend}.
+     *
+     * @param backend the backend
+     * @param config  the configuration of the store
+     *
+     * @return a new store
+     */
+    @Nonnull
+    private StoreAdapter createStore(Backend backend, ImmutableConfig config) {
+        Store baseStore = StoreFactory.getInstance().createStore(backend, config);
+        return new PersistentStoreAdapter(baseStore, this);
+    }
+
+    /**
+     * Logs the new {@code state} of this resource.
+     *
+     * @param state the new state of this resource
+     */
+    private void logState(String state) {
+        Log.info("PersistentResource {0}: {1}", String.format("%1$-7s", state), uri);
     }
 
     /**

@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -110,6 +111,18 @@ public class PersistentResourceDecorator implements PersistentResource {
 
     @Override
     @OverridingMethodsMustInvokeSuper
+    public void save(Map<?, ?> options) throws IOException {
+        resource.save(options);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void load(Map<?, ?> options) throws IOException {
+        resource.load(options);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
     public void save(OutputStream outputStream, Map<?, ?> options) throws IOException {
         resource.save(outputStream, options);
     }
@@ -181,15 +194,13 @@ public class PersistentResourceDecorator implements PersistentResource {
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void save(Map<?, ?> options) throws IOException {
-        resource.save(options);
+    public void save(ImmutableConfig config) throws IOException {
+        resource.save(config);
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void load(Map<?, ?> options) throws IOException {
-        resource.load(options);
+    public void load(ImmutableConfig config) throws IOException {
+        resource.load(config);
     }
 
     @Nonnull

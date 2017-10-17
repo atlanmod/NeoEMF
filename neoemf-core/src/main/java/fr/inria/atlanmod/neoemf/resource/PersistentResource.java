@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.store.Storable;
 
@@ -55,11 +56,25 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
     @Override
     void close();
 
-    @Override
-    void save(Map<?, ?> options) throws IOException;
+    /**
+     * Saves the resource using the specified configuration.
+     *
+     * @param config the save configuration
+     *
+     * @throws IOException if an I/O error occurs during saving
+     * @see #save(Map)
+     */
+    void save(ImmutableConfig config) throws IOException;
 
-    @Override
-    void load(Map<?, ?> options) throws IOException;
+    /**
+     * Loads the resource using the specified configuration.
+     *
+     * @param config the load configuration
+     *
+     * @throws IOException if an I/O error occurs during loading
+     * @see #load(Map)
+     */
+    void load(ImmutableConfig config) throws IOException;
 
     /**
      * Computes the set of instances of the given {@link EClass} (including its sub-types).
