@@ -33,13 +33,13 @@ public class BlueprintsNeo4jConfig extends BaseBlueprintsConfig<BlueprintsNeo4jC
     /**
      * The option value to define Neo4j as the graph implementation to use.
      */
-    static final String GRAPH_NEO4J = "com.tinkerpop.blueprints.impls.neo4j2.Neo4j2Graph";
+    static final String BLUEPRINTS_GRAPH_NEO4J = "com.tinkerpop.blueprints.impls.neo4j2.Neo4j2Graph";
 
     /**
      * Constructs a new {@code BlueprintsNeo4jConfig}.
      */
     protected BlueprintsNeo4jConfig() {
-        setGraph(GRAPH_NEO4J);
+        setGraph(BLUEPRINTS_GRAPH_NEO4J);
     }
 
     /**
@@ -53,8 +53,9 @@ public class BlueprintsNeo4jConfig extends BaseBlueprintsConfig<BlueprintsNeo4jC
     }
 
     /**
-     * Adds a native Neo4j key/value in this configuration. See {@code org.neo4j.graphdb.factory.GraphDatabaseSettings}
-     * for more details.
+     * Adds a native Neo4j key/value in this configuration.
+     * <p>
+     * See {@code org.neo4j.graphdb.factory.GraphDatabaseSettings} for more details.
      *
      * @param key   the native key to add
      * @param value the value of the {@code key}

@@ -73,6 +73,7 @@
 **/java-gen/
 
 .gitignore
+.keystore
 **.md
 **.yml
 **.html

@@ -27,15 +27,21 @@ public class BlueprintsTinkerConfig extends BaseBlueprintsConfig<BlueprintsTinke
     static final String TINKER_PREFIX = createKey(BLUEPRINTS_PREFIX, "tg");
 
     /**
+     * The TinkerGraph option key to define the graph type to use.
+     */
+    static final String TINKER_GRAPH_TYPE = createKey(TINKER_PREFIX, "file-type");
+
+    /**
      * The default option value to define TinkerGraph as the graph implementation to use.
      */
-    static final String GRAPH_TINKER = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
+    static final String BLUEPRINTS_GRAPH_TINKER = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
 
     /**
      * Constructs a new {@code BlueprintsTinkerConfig}.
      */
     protected BlueprintsTinkerConfig() {
-        setGraph(GRAPH_TINKER).addOption(createKey(TINKER_PREFIX, "file-type"), "GRAPHML");
+        setGraph(BLUEPRINTS_GRAPH_TINKER);
+        setGraphType("GRAPHML");
     }
 
     /**
@@ -48,10 +54,24 @@ public class BlueprintsTinkerConfig extends BaseBlueprintsConfig<BlueprintsTinke
         return new BlueprintsTinkerConfig();
     }
 
+    /**
+     * Defines the given TinkerGraph type in this configuration.
+     * <p>
+     * See {@code com.tinkerpop.blueprints.impls.tg.TinkerGraph.FileType} for more details.
+     *
+     * @param graphType the graph type
+     *
+     * @return this configuration (for chaining)
+     */
+    @Nonnull
+    protected BlueprintsTinkerConfig setGraphType(String graphType) {
+        return addOption(TINKER_GRAPH_TYPE, graphType);
+    }
+
     @Nonnull
     @Override
-    protected Predicate<String> readOnlyKeys() {
-        return super.readOnlyKeys()
-                .or(s -> s.equals(createKey(TINKER_PREFIX, "file-type")));
+    protected Predicate<String> isReadOnlyKey() {
+        return super.isReadOnlyKey()
+                .or(s -> s.equals(TINKER_GRAPH_TYPE));
     }
 }

@@ -151,10 +151,10 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     public void save(Path directory) throws IOException {
         ConfigFile configFile = ConfigFile.load(directory);
 
-        Predicate<String> filterSavedKeys = savedKeys();
+        final Predicate<String> isPersistentKey = isPersistentKey();
 
         toMap().entrySet().stream()
-                .filter(e -> filterSavedKeys.test(e.getKey()))
+                .filter(e -> isPersistentKey.test(e.getKey()))
                 .forEach(e -> configFile.put(e.getKey(), String.valueOf(e.getValue())));
 
         configFile.save();
@@ -197,7 +197,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Nonnull
     @Override
     public <T> C addOption(String key, T value) {
-        if (readOnlyKeys().test(key)) {
+        if (isReadOnlyKey().test(key)) {
             checkConflict(key, value);
         }
 
@@ -324,8 +324,8 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     // region Filters
 
     /**
-     * Returns a {@link Predicate} used to filter the options to save. These keys will be saved in a file, the others
-     * will be ignored.
+     * Returns a {@link Predicate} used to filter the options to be saved in a configuration file, in order to retrieve
+     * them in a future execution.
      * <p>
      * By default, only the options related to a back-end are saved.
      *
@@ -334,7 +334,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      * @see #save(Path)
      */
     @Nonnull
-    protected Predicate<String> savedKeys() {
+    protected Predicate<String> isPersistentKey() {
         return s -> s.startsWith(BACKEND);
     }
 
@@ -347,7 +347,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      * @see #addOption(String, Object)
      */
     @Nonnull
-    protected Predicate<String> readOnlyKeys() {
+    protected Predicate<String> isReadOnlyKey() {
         return s -> s.startsWith(BACKEND);
     }
 
@@ -406,7 +406,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      *
      * @throws InvalidConfigException if the previous value and the new are not equal
      */
-    protected <T> void checkConflict(String key, T newValue) {
+    private <T> void checkConflict(String key, T newValue) {
         Optional<T> actualValue = getOption(key);
         if (actualValue.isPresent() && !Objects.equals(newValue, actualValue.get())) {
             throw new InvalidConfigException(String.format("Values are different for %s: actual = \"%s\", new = \"%s\"", key, actualValue.get(), newValue));

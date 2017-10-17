@@ -64,14 +64,14 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the definition of the {@link BlueprintsTinkerConfig#GRAPH} option, with the default type.
+     * Checks the definition of the {@link BlueprintsTinkerConfig#BLUEPRINTS_GRAPH} option, with the default type.
      */
     @Test
     public void testDefaultGraphTypeOption() throws IOException {
         resource.save(BlueprintsTinkerConfig.newConfig().toMap());
 
         ImmutableConfig config = loadConfig();
-        assertConfigurationHasEntry(config, BlueprintsTinkerConfig.GRAPH, BlueprintsTinkerConfig.GRAPH_TINKER);
+        assertConfigurationHasEntry(config, BlueprintsTinkerConfig.BLUEPRINTS_GRAPH, BlueprintsTinkerConfig.BLUEPRINTS_GRAPH_TINKER);
         assertConfigurationHasSize(config, 5);
     }
 

@@ -42,7 +42,7 @@ public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends Bas
      * The Blueprints option key to define the graph implementation to use.
      */
     @VisibleForTesting
-    public static final String GRAPH = createKey(BLUEPRINTS_PREFIX, "graph");
+    public static final String BLUEPRINTS_GRAPH = createKey(BLUEPRINTS_PREFIX, "graph");
 
     /**
      * Constructs a new {@code BaseBlueprintsConfig}.
@@ -79,9 +79,7 @@ public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends Bas
      */
     @Nonnull
     protected C setGraph(String type) {
-        checkConflict(GRAPH, type);
-
-        return addOption(GRAPH, type);
+        return addOption(BLUEPRINTS_GRAPH, type);
     }
 
     /**
@@ -95,7 +93,7 @@ public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends Bas
      */
     @Nonnull
     public C setDirectory(Path directory) {
-        String graph = this.<String>getOption(GRAPH)
+        String graph = this.<String>getOption(BLUEPRINTS_GRAPH)
                 .<InvalidConfigException>orElseThrow(() -> new InvalidConfigException("The graph implementation is not defined"));
 
         String[] segments = graph.split("\\.");
@@ -124,15 +122,15 @@ public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends Bas
 
     @Nonnull
     @Override
-    protected Predicate<String> savedKeys() {
-        return super.savedKeys()
+    protected Predicate<String> isPersistentKey() {
+        return super.isPersistentKey()
                 .or(s -> s.startsWith(BLUEPRINTS_PREFIX));
     }
 
     @Nonnull
     @Override
-    protected Predicate<String> readOnlyKeys() {
-        return super.readOnlyKeys()
-                .or(s -> s.equals(GRAPH));
+    protected Predicate<String> isReadOnlyKey() {
+        return super.isReadOnlyKey()
+                .or(s -> s.equals(BLUEPRINTS_GRAPH));
     }
 }

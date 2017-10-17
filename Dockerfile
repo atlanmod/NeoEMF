@@ -5,6 +5,10 @@
 # available under the terms of the Eclipse Public License v2.0 which accompanies
 # this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
 #
+# This Source Code may also be made available under the following Secondary
+# Licenses when the conditions for such availability set forth in the Eclipse
+# Public License, v. 2.0 are satisfied: GNU General Public License, version 3.
+#
 
 #
 # USAGE:
@@ -16,17 +20,15 @@
 
 FROM maven:alpine
 
-ENV NEOEMF_HOME /root/ws/
-
-WORKDIR /tmp/neoemf
-
-ADD . src
-
-RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -pl !neoemf-data/hbase,!neoemf-tests -f src/pom.xml \
- && mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f src/benchmarks/pom.xml -Duberjar.directory=/root/ \
- && rm -rf /root/.m2/* /tmp/* /var/tmp/*
-
+ENV NEOEMF_HOME /root/ws
 VOLUME $NEOEMF_HOME
 
+WORKDIR /tmp/neoemf
+COPY . .
+RUN mvn -B install -DskipTests -pl !neoemf-data/hbase,!neoemf-tests  \
+ && mvn -B package -DskipTests -f benchmarks/pom.xml -Duberjar.directory=/root/ \
+ && rm -rf /root/.m2/* /tmp/*
+
+WORKDIR /root
 CMD ["-help"]
 ENTRYPOINT ["java", "-jar", "benchmarks.jar"]

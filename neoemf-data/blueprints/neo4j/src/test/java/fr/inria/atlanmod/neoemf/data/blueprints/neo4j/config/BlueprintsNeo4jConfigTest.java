@@ -28,14 +28,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 class BlueprintsNeo4jConfigTest extends BlueprintsTinkerConfigTest {
 
     /**
-     * Checks the definition of the {@link BlueprintsNeo4jConfig#GRAPH} option, with the Neo4j type.
+     * Checks the definition of the {@link BlueprintsNeo4jConfig#BLUEPRINTS_GRAPH} option, with the Neo4j type.
      */
     @Test
     void testNeo4jGraphTypeOption() throws IOException {
         resource.save(BlueprintsNeo4jConfig.newConfig().toMap());
 
         ImmutableConfig config = loadConfig();
-        assertConfigurationHasEntry(config, BlueprintsNeo4jConfig.GRAPH, BlueprintsNeo4jConfig.GRAPH_NEO4J);
+        assertConfigurationHasEntry(config, BlueprintsNeo4jConfig.BLUEPRINTS_GRAPH, BlueprintsNeo4jConfig.BLUEPRINTS_GRAPH_NEO4J);
         assertConfigurationHasSize(config, 4);
     }
 }
