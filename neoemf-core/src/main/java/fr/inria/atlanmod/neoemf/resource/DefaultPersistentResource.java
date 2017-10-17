@@ -298,6 +298,6 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      * @param state the new state of this resource
      */
     private void logState(String state) {
-        Log.info("PersistentResource {0}: {1}", String.format("%1$-7s", state), uri);
+        Log.info("PersistentResource {0} : {1}", String.format("%1$-7s", state), uri);
     }
 }

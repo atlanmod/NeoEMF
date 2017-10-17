@@ -58,6 +58,7 @@ public interface ClassMapper {
      *
      * @return an {@link Iterable} containing the instances of the {@code metaClass}
      *
+     * @throws NullPointerException          if any parameter is {@code null}
      * @throws UnsupportedOperationException if the mapper doesn't support the lookup of all instances
      */
     @Nonnull
@@ -70,6 +71,7 @@ public interface ClassMapper {
      *
      * @return a {@link Iterable} containing the instances of the {@code metaClasses}
      *
+     * @throws NullPointerException          if any parameter is {@code null}
      * @throws UnsupportedOperationException if the mapper doesn't support the lookup of all instances
      */
     @Nonnull
