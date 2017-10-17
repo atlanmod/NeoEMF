@@ -51,21 +51,41 @@ The most recent release is NeoEMF 1.0.2, released May 21, 2017.
 
 To add a dependency on NeoEMF using Maven, use the following:
 ```xml
+<dependencies>
+  <dependency>
+    <groupId>fr.inria.atlanmod.neoemf</groupId>
+    <artifactId>neoemf-core</artifactId>
+    <version>1.0.2</version>
+  </dependency>
+
+  <dependency>
+    <groupId>fr.inria.atlanmod.neoemf</groupId>
+    <artifactId>neoemf-io</artifactId>
+    <version>1.0.2</version>
+  </dependency>
+</dependencies>
+```
+
+#### Supported implementations
+
+All native implementations are located under the `neoemf-data` artifact.
+To add the dependency of the specific implementation you want to use, simply use:
+
+```xml
 <dependency>
   <groupId>fr.inria.atlanmod.neoemf</groupId>
-  <artifactId>neoemf-core</artifactId>
+  <artifactId>neoemf-data-{name}</artifactId>
   <version>1.0.2</version>
 </dependency>
 ```
 
-Then add the dependency of the specific implementation you want to use:
-```xml
-<dependency>
-  <groupId>fr.inria.atlanmod.neoemf</groupId>
-  <artifactId>neoemf-{name}</artifactId>
-  <version>1.0.2</version>
-</dependency>
-```
+Where `{name}` is any of:
+* Blueprints:
+  - TinkerGraph : `blueprints-core`
+  - Neo4j : `blueprints-neo4j` *(requires `blueprints-core`)*
+* MapDB : `mapdb`
+* BerkeleyDB: `berkeleydb`
+* HBase: `hbase`
 
 ### Snapshots
 

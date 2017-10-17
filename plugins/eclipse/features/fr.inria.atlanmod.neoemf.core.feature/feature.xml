@@ -16,6 +16,13 @@
             unpack="false" />
 
     <plugin
+            id="fr.inria.atlanmod.neoemf.io"
+            download-size="0"
+            install-size="0"
+            version="1.0.3.qualifier"
+            unpack="false" />
+
+    <plugin
             id="fr.inria.atlanmod.neoemf.eclipse.ui"
             download-size="0"
             install-size="0"

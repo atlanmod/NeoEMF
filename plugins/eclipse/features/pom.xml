@@ -31,9 +31,6 @@
 
         <!-- Column-based implementation -->
         <module>fr.inria.atlanmod.neoemf.data.hbase.feature</module>
-
-        <!-- Utils -->
-        <module>fr.inria.atlanmod.neoemf.io.feature</module>
     </modules>
 
 </project>

@@ -21,6 +21,12 @@
             <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-io</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

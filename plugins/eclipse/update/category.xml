@@ -39,12 +39,6 @@
         <category name="backend" />
     </feature>
 
-    <feature url="features/fr.inria.atlanmod.neoemf.io.feature_1.0.3.qualifier.jar"
-             id="fr.inria.atlanmod.neoemf.io.feature"
-             version="1.0.3.qualifier">
-        <category name="utils" />
-    </feature>
-
     <!-- Catogories -->
 
     <category-def name="base" label="NeoEMF">
@@ -53,15 +47,9 @@
         </description>
     </category-def>
 
-    <category-def name="backend" label="NeoEMF Adapters">
+    <category-def name="backend" label="NeoEMF Adapters" >
         <description>
             Backend-specific implementations of NeoEMF. Provided components can be plugged separately to store models in a specific manner. See plugins descriptions for usages.
-        </description>
-    </category-def>
-
-    <category-def name="utils" label="NeoEMF Utilities">
-        <description>
-            Optional modules providing additional features (scalable importer, efficient exporter,...)
         </description>
     </category-def>
 </site>
