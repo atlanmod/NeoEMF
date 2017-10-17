@@ -40,7 +40,6 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * An abstract test-case about {@link DataMapper} and its implementations.
  */
-// TODO Add tests with `key.position() > size()` and an existing many value/reference
 @SuppressWarnings("ConstantConditions") // Test with `@Nonnull`
 @ParametersAreNonnullByDefault
 public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
@@ -53,7 +52,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     /**
      * The default single-valued feature bean.
      */
-    private static SingleFeatureBean sfBase = SingleFeatureBean.of(idBase, 10);
+    private static SingleFeatureBean sfBase = SingleFeatureBean.of(idBase, 5);
 
     /**
      * The default multi-valued feature bean.
@@ -71,7 +70,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
     private static Id id1 = Id.getProvider().fromLong(1);
 
     private static String valueDummy = "DUMMY";
-    private static Id refDummy = Id.getProvider().generate(valueDummy);
+    private static Id refDummy = Id.getProvider().fromLong(0xf);
 
     /**
      * The {@link DataMapper} used for this test case.
@@ -1372,8 +1371,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
-                    Arguments.of("Value0", "Value1", "Value2", "Value3"), // Some strings
-                    Arguments.of(7.07d, 25.95d, 0.58d, 44.17d) // Some numbers (all numbers are treated in the same way)
+                    Arguments.of("Value0", "Value1", "Value2", "Value3")
             );
         }
     }
@@ -1387,7 +1385,7 @@ public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
-                    Arguments.of(Stream.of("NeoEMF", "Is", "Very", "Awesome").map(Id.getProvider()::generate).toArray())
+                    Arguments.of(Stream.of(0xa, 0xb, 0xc, 0xd).map(Id.getProvider()::fromLong).toArray())
             );
         }
     }
