@@ -63,7 +63,7 @@ public class LazyStoreMap<K, V> extends EcoreEMap<K, V> {
          * The owner of this list.
          */
         @Nonnull
-        private final PersistentEObject persistentOwner;
+        private final transient PersistentEObject persistentOwner;
 
         /**
          * Constructs a new {@code EntryList}.

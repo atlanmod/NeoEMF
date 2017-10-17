@@ -13,7 +13,6 @@ import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.Backend;
@@ -25,25 +24,18 @@ import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.data.store.adapter.PersistentStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
+import fr.inria.atlanmod.neoemf.resource.internal.RootContentsList;
 
-import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.ETypedElement;
-import org.eclipse.emf.ecore.impl.EClassifierImpl;
-import org.eclipse.emf.ecore.impl.EReferenceImpl;
-import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayDeque;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +47,6 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
-import static java.util.Objects.nonNull;
-
 /**
  * The default implementation of a {@link PersistentResource} that contains {@link PersistentEObject}.
  * <p>
@@ -68,24 +57,6 @@ import static java.util.Objects.nonNull;
  */
 @ParametersAreNonnullByDefault
 public class DefaultPersistentResource extends ResourceImpl implements PersistentResource {
-
-    /**
-     * An unknown URI fragment.
-     */
-    @Nonnull
-    private static final String URI_UNKNOWN = "/-1";
-
-    /**
-     * The reference representing the link between the {@link #rootObject} and its content.
-     */
-    @Nonnull
-    private static final EReference ROOT_CONTENTS_REFERENCE = new RootContentsReference();
-
-    /**
-     * The object representing the root and the entry-point of this resource.
-     */
-    @Nonnull
-    private final PersistentEObject rootObject;
 
     /**
      * The {@link BackendFactory} associated to the {@link #uri}.
@@ -112,15 +83,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         // Creates an transient backend until a call to `save()`/`load()`
         eStore = createTransientStore();
 
-        rootObject = new RootObject(this);
-
         logState("created");
     }
 
     @Nonnull
     @Override
     public EList<EObject> getContents() {
-        return new RootContentsList<>();
+        return new RootContentsList<>(this);
     }
 
     @Nonnull
@@ -129,7 +98,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         return Optional.of(PersistentEObject.from(eObject))
                 .filter(o -> this == o.eResource())
                 .map(o -> o.id().toHexString())
-                .orElse(URI_UNKNOWN);
+                .orElse("/-1");
     }
 
     @Override
@@ -147,6 +116,12 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @SuppressWarnings("unchecked")
     public void load(Map<?, ?> options) throws IOException {
         load(Config.forScheme(uri.scheme()).merge((Map<String, Object>) options));
+    }
+
+    @Override
+    public Notification setLoaded(boolean isLoaded) {
+        // Here to change the visibility (`protected` to `public`): see RootContentsList
+        return super.setLoaded(isLoaded);
     }
 
     @Override
@@ -174,7 +149,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     public void save(ImmutableConfig config) throws IOException {
         if (!isLoaded || !eStore.store().backend().isPersistent()) {
             mergeStore(config);
-            isLoaded = true;
+            Optional.ofNullable(setLoaded(true)).ifPresent(this::eNotify);
         }
 
         eStore.save();
@@ -197,12 +172,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
             else {
                 throw new FileNotFoundException(uri.toFileString());
             }
-
-            isLoaded = true;
         }
         finally {
             isLoading = false;
             logState("loaded");
+
+            Optional.ofNullable(setLoaded(true)).ifPresent(this::eNotify);
+            setModified(false);
         }
     }
 
@@ -323,204 +299,5 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
      */
     private void logState(String state) {
         Log.info("PersistentResource {0}: {1}", String.format("%1$-7s", state), uri);
-    }
-
-    /**
-     * The {@link PersistentEObject} that represents the root entry point for this {@link PersistentResource}.
-     */
-    @ParametersAreNonnullByDefault
-    private static final class RootObject extends DefaultPersistentEObject {
-
-        /**
-         * Constructs a new {@code RootObject} with the given {@code resource}.
-         *
-         * @param resource the resource containing this object.
-         */
-        public RootObject(Resource.Internal resource) {
-            super(ROOT_ID);
-            eSetDirectResource(resource);
-        }
-    }
-
-    /**
-     * The {@link org.eclipse.emf.ecore.EReference} that represents the {@link Resource#getContents()} feature.
-     */
-    @ParametersAreNonnullByDefault
-    private static final class RootContentsReference extends EReferenceImpl {
-
-        /**
-         * Constructs a new {@code RootContentsReference}.
-         */
-        public RootContentsReference() {
-            setFeatureID(ROOT_REFERENCE_ID);
-            setName(ROOT_REFERENCE_NAME);
-            setLowerBound(0);
-            setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
-            setEType(new EClassifierImpl() {});
-        }
-    }
-
-    /**
-     * A {@link java.util.List} that delegates its operations to a {@link Store} for supporting {@link
-     * Resource#getContents}.
-     *
-     * @see RootContentsReference
-     */
-    @ParametersAreNonnullByDefault
-    // TODO Reimplements `iterator()` and `listIterator()` to use batch methods
-    private class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
-
-        @SuppressWarnings("JavaDoc")
-        private static final long serialVersionUID = 4130828923851153715L;
-
-        /**
-         * Constructs a new {@code RootContentsList}.
-         */
-        public RootContentsList() {
-            super(rootObject, ROOT_CONTENTS_REFERENCE);
-        }
-
-        @Override
-        protected E validate(int index, E object) {
-            checkArgument(canContainNull() || nonNull(object), "The 'no null' constraint is violated");
-            return object;
-        }
-
-        @Override
-        public Object getNotifier() {
-            return DefaultPersistentResource.this;
-        }
-
-        @Override
-        public int getFeatureID() {
-            return ROOT_REFERENCE_ID;
-        }
-
-        @Override
-        protected boolean isNotificationRequired() {
-            return eNotificationRequired();
-        }
-
-        @Override
-        public NotificationChain inverseAdd(E object, NotificationChain notifications) {
-            PersistentEObject eObject = PersistentEObject.from(object);
-            notifications = eObject.eSetResource(DefaultPersistentResource.this, notifications);
-            attached(eObject);
-            return notifications;
-        }
-
-        @Override
-        public NotificationChain inverseRemove(E object, NotificationChain notifications) {
-            PersistentEObject eObject = PersistentEObject.from(object);
-            if (isLoaded || nonNull(unloadingContents)) {
-                detached(eObject);
-            }
-            return eObject.eSetResource(null, notifications);
-        }
-
-        @Override
-        protected boolean useEquals() {
-            return false;
-        }
-
-        @Override
-        protected boolean isUnique() {
-            return true;
-        }
-
-        @Override
-        protected boolean hasInverse() {
-            return true;
-        }
-
-        @Override
-        protected void didSet(int index, E newObject, E oldObject) {
-            super.didSet(index, newObject, oldObject);
-            modified();
-        }
-
-        @Override
-        protected void didAdd(int index, E object) {
-            super.didAdd(index, object);
-            if (index == size() - 1) {
-                loaded();
-            }
-            modified();
-        }
-
-        @Override
-        protected void didRemove(int index, E object) {
-            super.didRemove(index, object);
-            modified();
-        }
-
-        @Override
-        protected void didClear(int oldSize, Object[] oldData) {
-            if (oldSize == 0) {
-                loaded();
-            }
-            else {
-                super.didClear(oldSize, oldData);
-            }
-        }
-
-        /**
-         * Notifies that this resource has been loaded.
-         */
-        private void loaded() {
-            if (!isLoaded()) {
-                Optional.ofNullable(setLoaded(true)).ifPresent(DefaultPersistentResource.this::eNotify);
-            }
-        }
-
-        /**
-         * Notifies that this resource has been modified.
-         */
-        private void modified() {
-            if (isTrackingModification()) {
-                setModified(true);
-            }
-        }
-
-        @Override
-        protected StoreAdapter eStore() {
-            return DefaultPersistentResource.this.eStore();
-        }
-
-        @Override
-        protected void delegateAdd(int index, Object value) {
-            hardAllContents(PersistentEObject.from(value)).forEach(e -> e.resource(DefaultPersistentResource.this));
-            super.delegateAdd(index, value);
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        protected E delegateRemove(int index) {
-            E previousValue = super.delegateRemove(index);
-            hardAllContents(PersistentEObject.from(previousValue)).forEach(e -> e.resource(null));
-            return previousValue;
-        }
-
-        /**
-         * Retrieves all the content of the specified {@code rootObject} and stores it in a {@link List}.
-         * <p>
-         * By iterating using the hard links list instead the {@link #getAllContents()}, we ensure that the content is
-         * not taken out by JIT compiler.
-         *
-         * @param rootObject the object from which to retrieve the content
-         *
-         * @return the content of {@code rootObject}
-         */
-        @Nonnull
-        private Iterable<PersistentEObject> hardAllContents(PersistentEObject rootObject) {
-            Collection<PersistentEObject> allContents = new ArrayDeque<>();
-            allContents.add(rootObject);
-
-            MoreIterables.stream(rootObject::eAllContents)
-                    .map(PersistentEObject::from)
-                    .collect(Collectors.toCollection(() -> allContents));
-
-            return allContents;
-        }
     }
 }

@@ -33,7 +33,7 @@ public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap
      * The owner of this list.
      */
     @Nonnull
-    private final PersistentEObject persistentOwner;
+    private final transient PersistentEObject persistentOwner;
 
     /**
      * Constructs a new {@code LazyStoreFeatureMap}.

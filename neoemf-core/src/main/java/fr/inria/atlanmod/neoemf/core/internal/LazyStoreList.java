@@ -43,7 +43,7 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
      * The owner of this list.
      */
     @Nonnull
-    private final PersistentEObject persistentOwner;
+    private final transient PersistentEObject persistentOwner;
 
     /**
      * Constructs a new {@code LazyStoreList}.
