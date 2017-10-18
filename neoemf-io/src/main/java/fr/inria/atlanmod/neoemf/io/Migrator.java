@@ -12,8 +12,8 @@ import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.processor.CounterProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.DirectWriteProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.LoggingProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.NoopProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.processor.TimerProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.DefaultMapperReader;
@@ -334,7 +334,7 @@ public final class Migrator<T> {
     public void migrate() throws IOException {
         checkNotNull(writers);
 
-        Processor processor = new DirectWriteProcessor(writers.toArray(new Writer[writers.size()]));
+        Processor processor = new NoopProcessor(writers.toArray(new Writer[writers.size()]));
 
         Reader<T> reader;
 

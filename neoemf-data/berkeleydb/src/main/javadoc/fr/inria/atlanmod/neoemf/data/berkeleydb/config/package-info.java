@@ -9,12 +9,29 @@
 /**
  * Provides utility classes to define specific behaviors of BerkeleyDB data persistence.
  * <p>
- * This package provides implementations of the {@link fr.inria.atlanmod.neoemf.data.store.Store} interface that use a
- * BerkeleyDB database to store the result of modeling operations and retrieve model elements.
+ * This package defines the configuration by extending {@link fr.inria.atlanmod.neoemf.config.Config}: {@link
+ * fr.inria.atlanmod.neoemf.data.mapdb.config.BerkeleyDbConfig} is a fluent API allowing to easily set BerkeleyDB
+ * specific mapping configuration in client applications. Since the configuration implements {@link
+ * fr.inria.atlanmod.neoemf.config.Config} it can be used to combiner BerkeleyDB specific and generic configuration.
  * <p>
- * NeoEMF BerkeleyDB implementation does not provide additional <i>store decorators</i>. Generic decorators defined at
- * the core level (see {@link fr.inria.atlanmod.neoemf.data.store.AbstractStoreDecorator} subclasses) can be combined on
- * top of BerkeleyDB stores to provide additional behavior, such as autocommit or feature caching.
+ * These classes are used to create <i>option maps</i> used in EMF save and load methods. For example, the following
+ * code creates a map that tells the framework to use a BerkeleyDB backend with an explicit representation of collection
+ * indices, and a cache the accessed features to retrieve them efficiently. The explicit indice representation is a
+ * BerkeleyDB specific option, while the caching behavior is defined at the core level.
+ * <pre>{@code
+ * // Create the option map
+ * Map<String, Object> options = BerkeleyDbConfig.newConfig()
+ *     .withIndices()
+ *     .cacheFeatures()
+ *     .toMap();
+ *
+ * // Load the resource with the specified options
+ * myResource.load(options);
+ *
+ * // Manipulate the resource with a BerkeleyDB backend representing explicitly collection indices and feature cache
+ * enabled
+ * myResource.getContents() [...]
+ * }</pre>
  */
 
 package fr.inria.atlanmod.neoemf.data.berkeleydb.config;

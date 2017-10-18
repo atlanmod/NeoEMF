@@ -13,17 +13,17 @@ import fr.inria.atlanmod.neoemf.io.writer.Writer;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Processor} that notifies registered {@link Writer} of events, without any treatment.
+ * A {@link Processor} that simply notifies registered {@link Writer} of events, without any additional operation.
  */
 @ParametersAreNonnullByDefault
-public final class DirectWriteProcessor extends AbstractProcessor<Writer> implements Processor {
+public final class NoopProcessor extends AbstractProcessor<Writer> implements Processor {
 
     /**
-     * Constructs a new {@code DirectWriteProcessor} with the given {@code writers}.
+     * Constructs a new {@code NoopProcessor} with the given {@code writers}.
      *
      * @param writers the writers to notify
      */
-    public DirectWriteProcessor(Writer... writers) {
+    public NoopProcessor(Writer... writers) {
         super(writers);
     }
 }

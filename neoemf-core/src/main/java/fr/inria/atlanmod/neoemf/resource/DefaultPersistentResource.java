@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.resource;
 
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
@@ -20,6 +21,7 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.InvalidBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.data.store.adapter.PersistentStoreAdapter;
@@ -80,7 +82,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
         factory = BackendFactoryRegistry.getInstance().getFactoryFor(uri.scheme());
 
-        // Creates an transient backend until a call to `save()`/`load()`
+        // Creates a transient backend until a call to `save()`/`load()`
         eStore = createTransientStore();
 
         logState("created");
@@ -242,7 +244,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     /**
      * Creates a new {@link StoreAdapter} on top of a newly created transient {@link Backend}, using the default {@link
-     * fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory} implementation.
+     * InMemoryBackendFactory} implementation.
      *
      * @return a new store
      */
@@ -252,7 +254,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         ImmutableConfig config;
 
         if (factory.supportsTransient()) {
-            final String imScheme = "neo-im";
+            final String imScheme = Bindings.schemeOf(InMemoryBackendFactory.class);
 
             config = Config.forScheme(imScheme);
             backend = BackendFactoryRegistry.getInstance().getFactoryFor(imScheme).createBackend(uri, config);

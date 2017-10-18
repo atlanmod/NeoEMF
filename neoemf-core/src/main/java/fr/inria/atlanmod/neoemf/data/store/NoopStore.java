@@ -17,21 +17,21 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Store} that translates model-level operations into datastore calls.
+ * A {@link Store} that simply notifies its associated {@link Backend}, without any additional operation.
  * <p>
- * This store corresponds to the tail of a {@link Store} chain and sets the default result for each method. These
+ * It corresponds to the tail of a {@link Store} chain and sets the default result for each method. These
  * methods are handled if the {@link Store} that is supposed to handle them has not been configured during the store
  * chain configuration.
  */
 @ParametersAreNonnullByDefault
-public class DirectWriteStore extends AbstractMapperDecorator<Backend> implements Store {
+public class NoopStore extends AbstractMapperDecorator<Backend> implements Store {
 
     /**
-     * Constructs a new {@code DirectWriteStore} between the given {@code resource} and the {@code backend}.
+     * Constructs a new {@code NoopStore} between the given {@code resource} and the {@code backend}.
      *
      * @param backend the back-end used to store the model
      */
-    public DirectWriteStore(Backend backend) {
+    public NoopStore(Backend backend) {
         super(backend);
     }
 

@@ -100,7 +100,7 @@ public final class StoreFactory extends AbstractMapperFactory {
      */
     @Nonnull
     protected Store createDefaultStore(Backend backend) {
-        return new DirectWriteStore(backend);
+        return new NoopStore(backend);
     }
 
     /**

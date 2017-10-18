@@ -184,8 +184,8 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     /**
      * Retrieves all the content of the specified {@code rootObject} and stores it in a {@link List}.
      * <p>
-     * By iterating using the hard links list instead the {@link PersistentResource#getAllContents()}, we ensure that the content is
-     * not taken out by JIT compiler.
+     * By iterating using the hard links list instead the {@link PersistentResource#getAllContents()}, we ensure that
+     * the content is not taken out by JIT compiler.
      *
      * @param rootObject the object from which to retrieve the content
      *

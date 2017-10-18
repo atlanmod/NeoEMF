@@ -13,7 +13,7 @@ import fr.inria.atlanmod.neoemf.data.im.InMemoryBackend;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
 import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
 import fr.inria.atlanmod.neoemf.data.im.util.InMemoryUri;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
+import fr.inria.atlanmod.neoemf.data.store.NoopStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 
@@ -38,7 +38,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
     public void testCreateTransientStore() throws IOException {
         try (Backend backend = InMemoryBackendFactory.getInstance().createBackend(InMemoryUri.builder().fromFile(currentTempFile()), InMemoryConfig.newConfig())) {
             try (Store store = StoreFactory.getInstance().createStore(backend, context().config())) {
-                assertThat(store).isInstanceOf(DirectWriteStore.class);
+                assertThat(store).isInstanceOf(NoopStore.class);
 
                 assertThat(store.backend()).isSameAs(backend);
             }
@@ -52,7 +52,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
     public void testCreatePersistentStore() throws IOException {
         try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), context().config())) {
             try (Store store = StoreFactory.getInstance().createStore(backend, context().config())) {
-                assertThat(store).isInstanceOf(DirectWriteStore.class);
+                assertThat(store).isInstanceOf(NoopStore.class);
 
                 assertThat(store.backend()).isSameAs(backend);
             }

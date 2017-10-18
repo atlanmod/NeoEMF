@@ -68,14 +68,14 @@ class StoreFactoryTest extends AbstractTest {
     }
 
     /**
-     * Checks the setup of the default store, without any decorator ({@link DirectWriteStore}).
+     * Checks the setup of the default store, without any decorator ({@link NoopStore}).
      */
     @Test
     void testNoStore() {
         ImmutableConfig config = BaseConfig.newConfig();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+        assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
@@ -90,7 +90,7 @@ class StoreFactoryTest extends AbstractTest {
         assertThat(store).isInstanceOf(LogStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+        assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
@@ -105,7 +105,7 @@ class StoreFactoryTest extends AbstractTest {
         assertThat(store).isInstanceOf(SizeCacheStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+        assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
@@ -120,7 +120,7 @@ class StoreFactoryTest extends AbstractTest {
         assertThat(store).isInstanceOf(FeatureCacheStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+        assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
@@ -135,7 +135,7 @@ class StoreFactoryTest extends AbstractTest {
         assertThat(store).isInstanceOf(ContainerCacheStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+        assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
@@ -150,7 +150,7 @@ class StoreFactoryTest extends AbstractTest {
         assertThat(store).isInstanceOf(ClassCacheStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+        assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
@@ -165,7 +165,7 @@ class StoreFactoryTest extends AbstractTest {
         assertThat(store).isInstanceOf(StatsRecordStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+        assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
@@ -180,7 +180,7 @@ class StoreFactoryTest extends AbstractTest {
         assertThat(store).isInstanceOf(AutoSaveStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+        assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
@@ -200,7 +200,7 @@ class StoreFactoryTest extends AbstractTest {
         assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+        assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
@@ -256,7 +256,7 @@ class StoreFactoryTest extends AbstractTest {
         assertThat(store).isExactlyInstanceOf(SizeCacheStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(DirectWriteStore.class);
+        assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
