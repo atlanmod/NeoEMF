@@ -11,8 +11,6 @@ package fr.inria.atlanmod.neoemf.bind;
 import fr.inria.atlanmod.commons.annotation.Builder;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.cache.Cache;
-import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
 import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -20,6 +18,7 @@ import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
 import org.osgi.framework.BundleContext;
+import org.reflections.Configuration;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
@@ -56,14 +55,6 @@ public final class Bindings {
      */
     @Nonnull
     private static final ExecutorService BINDING_POOL = MoreExecutors.newFixedThreadPool();
-
-    /**
-     * A cache that holds the result of recent queries on types.
-     */
-    @Nonnull
-    private static final Cache<Class<? extends Annotation>, Set<Class<?>>> ANNOTATED_TYPES = CacheBuilder.builder()
-            .softValues()
-            .build(Bindings::typesAnnotatedWith);
 
     static {
         // Add the default URLs for scanning
@@ -105,9 +96,6 @@ public final class Bindings {
 
         ClasspathAnalyzer.getInstance().register(() ->
                 new BundleContextAnalyzer(context).getDependentBundles(context.getBundle()));
-
-        // Refresh the cache: annotations stay the same, but the result may have been changed
-        ANNOTATED_TYPES.invalidateAll();
     }
 
     // region Reflection
@@ -123,11 +111,8 @@ public final class Bindings {
      */
     @Nonnull
     public static Set<Class<?>> typesAnnotatedWith(Class<? extends Annotation> annotation) {
-        return new Reflections(new ConfigurationBuilder()
-                .setExecutorService(getBindingPool())
-                .setUrls(ClasspathAnalyzer.getInstance().registeredUrls())
-                .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner()))
-                .getTypesAnnotatedWith(annotation);
+        Configuration conf = createConfiguration().setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
+        return new Reflections(conf).getTypesAnnotatedWith(annotation);
     }
 
     /**
@@ -143,10 +128,22 @@ public final class Bindings {
     @Nonnull
     @SuppressWarnings("unchecked")
     public static <T> Set<Class<? extends T>> typesAnnotatedWith(Class<? extends Annotation> annotation, Class<? extends T> type) {
-        return ANNOTATED_TYPES.get(annotation).stream()
+        return typesAnnotatedWith(annotation).stream()
                 .filter(type::isAssignableFrom)
                 .map(c -> (Class<? extends T>) c)
                 .collect(Collectors.toSet());
+    }
+
+    /**
+     * Creates a new default configuration for classpath analysis.
+     *
+     * @return a new configuration
+     */
+    @Nonnull
+    private static ConfigurationBuilder createConfiguration() {
+        return new ConfigurationBuilder()
+                .setExecutorService(getBindingPool())
+                .setUrls(ClasspathAnalyzer.getInstance().registeredUrls());
     }
 
     /**
@@ -172,6 +169,10 @@ public final class Bindings {
         }
         else if (type.isAnnotationPresent(Builder.class)) {
             methodName = Optional.of(type.getAnnotation(Builder.class).value());
+        }
+        else if (type.isAnnotationPresent(Static.class)) {
+            throw new IllegalArgumentException(
+                    String.format("%s is annotated with @%s: cannot be instantiated", type.getName(), Static.class.getSimpleName()));
         }
         else {
             // Use the default contructor
