@@ -97,10 +97,7 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testClose() {
-        store.close();
-
-        StoreStats stats = store.stats();
-        assertThat(stats.methodCalls()).isEmpty();
+        assertRecorded(() -> store.close(), "close", 1);
     }
 
     @Test

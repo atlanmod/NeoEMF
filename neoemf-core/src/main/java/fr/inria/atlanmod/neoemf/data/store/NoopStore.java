@@ -19,9 +19,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A {@link Store} that simply notifies its associated {@link Backend}, without any additional operation.
  * <p>
- * It corresponds to the tail of a {@link Store} chain and sets the default result for each method. These
- * methods are handled if the {@link Store} that is supposed to handle them has not been configured during the store
- * chain configuration.
+ * It corresponds to the tail of a {@link Store} chain and sets the default result for each method. These methods are
+ * handled if the {@link Store} that is supposed to handle them has not been configured during the store chain
+ * configuration.
  */
 @ParametersAreNonnullByDefault
 public class NoopStore extends AbstractMapperDecorator<Backend> implements Store {
