@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithIndices;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -56,19 +55,17 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     }
 
     @Override
+    protected void innerClose() {
+        manyFeatures.close();
+        super.innerClose();
+    }
+
+    @Override
     protected void innerCopyTo(DataMapper target) {
         super.innerCopyTo(target);
 
         BerkeleyDbBackendIndices to = BerkeleyDbBackendIndices.class.cast(target);
         this.copy(manyFeatures, to.manyFeatures);
-    }
-
-    @Nonnull
-    @Override
-    protected List<Database> activeDatabases() {
-        List<Database> databases = super.activeDatabases();
-        databases.add(manyFeatures);
-        return databases;
     }
 
     @Nonnull

@@ -28,10 +28,8 @@ import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -104,7 +102,10 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     @Override
     protected void innerClose() {
-        activeDatabases().forEach(Database::close);
+        containers.close();
+        instances.close();
+        features.close();
+
         environment.close();
     }
 
@@ -112,9 +113,9 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     protected void innerCopyTo(DataMapper target) {
         AbstractBerkeleyDbBackend to = AbstractBerkeleyDbBackend.class.cast(target);
 
+        copy(containers, to.containers);
         copy(instances, to.instances);
         copy(features, to.features);
-        copy(containers, to.containers);
     }
 
     @Nonnull
@@ -209,23 +210,6 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     @Override
     public Converter<Id, Long> referenceConverter() {
         return IdConverters.withLong();
-    }
-
-    /**
-     * Returns all actives databases.
-     *
-     * @return a list of {@link Database}
-     *
-     * @see #close()
-     * @see #save()
-     */
-    @Nonnull
-    protected List<Database> activeDatabases() {
-        List<Database> databases = new ArrayList<>();
-        databases.add(containers);
-        databases.add(instances);
-        databases.add(features);
-        return databases;
     }
 
     /**
