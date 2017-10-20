@@ -30,12 +30,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case for the contains method, related to performance issue descibed in #30 <a
- * href="https://github.com/atlanmod/NeoEMF/issues/30">https://github.com/atlanmod/NeoEMF/issues/30</a>
+ * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.ContentsList}.
  */
-@SuppressWarnings("ResultOfMethodCallIgnored")
 @ParametersAreNonnullByDefault
-class EContentTest extends AbstractResourceBasedTest {
+class ContentsListTest extends AbstractResourceBasedTest {
 
     /**
      * The expected number of {@link Tree} contained in {@link #tree}.

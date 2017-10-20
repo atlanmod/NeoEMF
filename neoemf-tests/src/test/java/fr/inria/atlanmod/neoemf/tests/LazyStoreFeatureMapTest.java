@@ -28,11 +28,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case that checks the support of {@link FeatureMap}.
+ * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.LazyStoreFeatureMap}.
  */
 // TODO Add tests on FeatureMap.size(), ...indexOf(), ...contains(), ...
 @ParametersAreNonnullByDefault
-class FeatureMapTest extends AbstractResourceBasedTest {
+class LazyStoreFeatureMapTest extends AbstractResourceBasedTest {
 
     /**
      * Checks that the {@link FeatureMap}s are correctly detected and created.
@@ -74,6 +74,10 @@ class FeatureMapTest extends AbstractResourceBasedTest {
             attributes2.add(value2);
             attributes1.add(value3);
 
+            assertThat(attributes1).hasSize(3);
+            assertThat(attributes2).hasSize(1);
+            assertThat(featureMapAttributes).hasSize(4);
+
             assertThat(featureMapAttributes.getValue(0)).isEqualTo(value0);
             assertThat(featureMapAttributes.getValue(1)).isEqualTo(value1);
             assertThat(featureMapAttributes.getValue(2)).isEqualTo(value2);
@@ -103,11 +107,17 @@ class FeatureMapTest extends AbstractResourceBasedTest {
 
             attributes1.remove(1);
 
+            assertThat(attributes1).hasSize(2);
+            assertThat(featureMapAttributes).hasSize(3);
+
             assertThat(featureMapAttributes.getValue(0)).isEqualTo(value0);
             assertThat(featureMapAttributes.getValue(1)).isEqualTo(value2);
             assertThat(featureMapAttributes.getValue(2)).isEqualTo(value3);
 
             attributes1.remove(value0);
+
+            assertThat(attributes1).hasSize(1);
+            assertThat(featureMapAttributes).hasSize(2);
 
             assertThat(featureMapAttributes.getValue(0)).isEqualTo(value2);
             assertThat(featureMapAttributes.getValue(1)).isEqualTo(value3);
@@ -133,11 +143,19 @@ class FeatureMapTest extends AbstractResourceBasedTest {
             attributes2.add(value1);
             attributes1.add(value2);
 
+            assertThat(attributes1).hasSize(2);
+            assertThat(attributes2).hasSize(1);
+            assertThat(featureMapAttributes).hasSize(3);
+
             assertThat(featureMapAttributes.getValue(0)).isEqualTo(value0);
             assertThat(featureMapAttributes.getValue(1)).isEqualTo(value1);
             assertThat(featureMapAttributes.getValue(2)).isEqualTo(value2);
 
             attributes2.set(0, value3); // Replace 1 by 3
+
+            assertThat(attributes1).hasSize(2);
+            assertThat(attributes2).hasSize(1);
+            assertThat(featureMapAttributes).hasSize(3);
 
             assertThat(featureMapAttributes.getValue(0)).isEqualTo(value0);
             assertThat(featureMapAttributes.getValue(1)).isEqualTo(value3);
@@ -176,6 +194,10 @@ class FeatureMapTest extends AbstractResourceBasedTest {
             references2.add(target2);
             references1.add(target3);
 
+            assertThat(references1).hasSize(3);
+            assertThat(references2).hasSize(1);
+            assertThat(featureMapReferences).hasSize(4);
+
             assertThat(featureMapReferences.getValue(0)).isEqualTo(target0);
             assertThat(featureMapReferences.getValue(1)).isEqualTo(target1);
             assertThat(featureMapReferences.getValue(2)).isEqualTo(target2);
@@ -212,11 +234,17 @@ class FeatureMapTest extends AbstractResourceBasedTest {
 
             references1.remove(1);
 
+            assertThat(references1).hasSize(2);
+            assertThat(featureMapReferences).hasSize(3);
+
             assertThat(featureMapReferences.getValue(0)).isEqualTo(target0);
             assertThat(featureMapReferences.getValue(1)).isEqualTo(target2);
             assertThat(featureMapReferences.getValue(2)).isEqualTo(target3);
 
             references1.remove(target0);
+
+            assertThat(references1).hasSize(1);
+            assertThat(featureMapReferences).hasSize(2);
 
             assertThat(featureMapReferences.getValue(0)).isEqualTo(target2);
             assertThat(featureMapReferences.getValue(1)).isEqualTo(target3);
@@ -249,11 +277,19 @@ class FeatureMapTest extends AbstractResourceBasedTest {
             references2.add(target1);
             references1.add(target2);
 
+            assertThat(references1).hasSize(2);
+            assertThat(references2).hasSize(1);
+            assertThat(featureMapReferences).hasSize(3);
+
             assertThat(featureMapReferences.getValue(0)).isEqualTo(target0);
             assertThat(featureMapReferences.getValue(1)).isEqualTo(target1);
             assertThat(featureMapReferences.getValue(2)).isEqualTo(target2);
 
             references2.set(0, target3); // Replace 1 by 3
+
+            assertThat(references1).hasSize(2);
+            assertThat(references2).hasSize(1);
+            assertThat(featureMapReferences).hasSize(3);
 
             assertThat(featureMapReferences.getValue(0)).isEqualTo(target0);
             assertThat(featureMapReferences.getValue(1)).isEqualTo(target3);

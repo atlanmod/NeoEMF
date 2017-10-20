@@ -29,11 +29,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case for the contains method, related to performance issue described in the issue <a
- * href="https://github.com/atlanmod/NeoEMF/issues/30">#30</a>.
+ * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.LazyStoreList}.
  */
 @ParametersAreNonnullByDefault
-class ContainsTest extends AbstractResourceBasedTest {
+class LazyStoreListTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; count = {2}")
     @ArgumentsSource(ContextProvider.AllWithBooleansAndIntegers.class)

@@ -26,10 +26,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case that checks the support of {@link EMap}.
+ * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.LazyStoreMap}.
  */
 @ParametersAreNonnullByDefault
-class EMapTest extends AbstractResourceBasedTest {
+class LazyStoreMapTest extends AbstractResourceBasedTest {
 
     private static final String KEY1 = "key1";
     private static final String KEY2 = "key2";
