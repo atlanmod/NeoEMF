@@ -13,6 +13,7 @@ import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.config.Config;
 
 import org.eclipse.emf.cdo.eresource.CDOResource;
+import org.eclipse.emf.cdo.net4j.CDONet4jSession;
 import org.eclipse.emf.cdo.net4j.CDONet4jSessionConfiguration;
 import org.eclipse.emf.cdo.net4j.CDONet4jUtil;
 import org.eclipse.emf.cdo.server.CDOServerUtil;
@@ -161,7 +162,7 @@ public class CdoAdapter extends AbstractAdapter {
                         ISessionProtocol protocol = session.getProtocol();
                         if (ISignalProtocol.class.isInstance(protocol)) {
                             ISignalProtocol<?> signalProtocol = ISignalProtocol.class.cast(protocol);
-                            signalProtocol.setTimeout(30L * 1000L);
+                            signalProtocol.setTimeout(60000);
                         }
                     }
                 });
@@ -266,7 +267,9 @@ public class CdoAdapter extends AbstractAdapter {
             config.setConnector(connector);
             config.setRepositoryName(DEFAULT_REPOSITORY_NAME);
 
-            return config.openNet4jSession();
+            CDONet4jSession session = config.openNet4jSession();
+            session.options().getNet4jProtocol().setTimeout(1000000);
+            return session;
         }
     }
 }
