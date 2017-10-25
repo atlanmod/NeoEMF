@@ -200,9 +200,9 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * @return the formatted label
      */
     @Nonnull
-    // TODO Can cause a massive overhead (metaClassNameOf)
     protected String formatLabel(FeatureBean feature) {
         return requireUniqueLabels
+                // TODO Can cause a massive overhead (metaClassNameOf)
                 ? metaClassNameOf(feature.owner()) + ':' + Integer.toString(feature.id())
                 : Integer.toString(feature.id());
     }
