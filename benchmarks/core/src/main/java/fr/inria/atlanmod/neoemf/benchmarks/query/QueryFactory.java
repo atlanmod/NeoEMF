@@ -271,16 +271,16 @@ public class QueryFactory {
     @Nonnull
     @SuppressWarnings("unchecked")
     protected static <T extends EObject> Iterable<T> allInstancesOf(Resource resource, EClass type) {
-        if (PersistentResource.class.isInstance(resource)) {
-            return PersistentResource.class.cast(resource).allInstancesOf(type);
-        }
-        else {
+//        if (PersistentResource.class.isInstance(resource)) {
+//            return PersistentResource.class.cast(resource).allInstancesOf(type);
+//        }
+//        else {
             Iterable<EObject> allContents = resource::getAllContents;
             return MoreIterables.stream(allContents)
                     .filter(type::isInstance)
                     .map(o -> (T) o)
                     .collect(Collectors.toList());
-        }
+//        }
     }
 
     /**
