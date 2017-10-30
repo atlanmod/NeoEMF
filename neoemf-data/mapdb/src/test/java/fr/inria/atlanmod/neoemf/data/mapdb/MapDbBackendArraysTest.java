@@ -16,14 +16,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link MapDbBackendIndices}.
+ * A test-case about {@link MapDbBackendArrays}.
  */
 @ParametersAreNonnullByDefault
-class MapDbIndicesTest extends AbstractPersistenceMapperTest {
+class MapDbBackendArraysTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override
     protected Context context() {
-        return MapDbContext.getWithIndices();
+        return MapDbContext.getWithArrays();
     }
 }

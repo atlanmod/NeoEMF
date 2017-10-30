@@ -6,24 +6,24 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb;
+package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link BerkeleyDbBackendIndices}.
+ * A test-case about {@link MapDbBackendIndices}.
  */
 @ParametersAreNonnullByDefault
-class BerkeleyDbIndicesTest extends AbstractPersistenceMapperTest {
+class MapDbBackendIndicesTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override
     protected Context context() {
-        return BerkeleyDbContext.getWithIndices();
+        return MapDbContext.getWithIndices();
     }
 }

@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -334,6 +335,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      * @see #save(Path)
      */
     @Nonnull
+    @OverridingMethodsMustInvokeSuper
     protected Predicate<String> isPersistentKey() {
         return s -> s.startsWith(BACKEND);
     }
@@ -347,6 +349,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      * @see #addOption(String, Object)
      */
     @Nonnull
+    @OverridingMethodsMustInvokeSuper
     protected Predicate<String> isReadOnlyKey() {
         return s -> s.startsWith(BACKEND);
     }

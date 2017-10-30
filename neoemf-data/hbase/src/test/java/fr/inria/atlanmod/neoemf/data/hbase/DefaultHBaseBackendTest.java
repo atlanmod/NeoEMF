@@ -6,24 +6,24 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints;
+package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link DefaultBlueprintsBackend} with a TinkerGraph implementation.
+ * A test-case about {@link DefaultHBaseBackend}.
  */
 @ParametersAreNonnullByDefault
-class BlueprintsIndicesTest extends AbstractPersistenceMapperTest {
+class DefaultHBaseBackendTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override
     protected Context context() {
-        return BlueprintsContext.getDefault();
+        return HBaseContext.getDefault();
     }
 }

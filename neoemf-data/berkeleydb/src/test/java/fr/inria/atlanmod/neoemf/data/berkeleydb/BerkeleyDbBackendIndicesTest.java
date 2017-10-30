@@ -6,24 +6,24 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.hbase;
+package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link DefaultHBaseBackend}.
+ * A test-case about {@link BerkeleyDbBackendIndices}.
  */
 @ParametersAreNonnullByDefault
-class HBaseArraysStringsTest extends AbstractPersistenceMapperTest {
+class BerkeleyDbBackendIndicesTest extends AbstractPersistenceMapperTest {
 
     @Nonnull
     @Override
     protected Context context() {
-        return HBaseContext.getDefault();
+        return BerkeleyDbContext.getWithIndices();
     }
 }

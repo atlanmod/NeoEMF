@@ -92,6 +92,7 @@ public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends Bas
      * @return this configuration (for chaining)
      */
     @Nonnull
+    @VisibleForReflection
     public C setDirectory(Path directory) {
         String graph = this.<String>getOption(BLUEPRINTS_GRAPH)
                 .<InvalidConfigException>orElseThrow(() -> new InvalidConfigException("The graph implementation is not defined"));
