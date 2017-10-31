@@ -12,7 +12,7 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.CoreContext;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
  * A test-case about {@link BoundInMemoryBackend}.
  */
 @ParametersAreNonnullByDefault
-class BoundInMemoryBackendTest extends AbstractPersistenceMapperTest {
+class BoundInMemoryBackendTest extends AbstractDataMapperTest {
 
     @Nonnull
     @Override

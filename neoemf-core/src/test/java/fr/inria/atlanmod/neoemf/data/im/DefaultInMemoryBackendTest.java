@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.data.im;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.context.CoreContext;
-import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about {@link DefaultInMemoryBackend}.
  */
 @ParametersAreNonnullByDefault
-class DefaultInMemoryBackendTest extends AbstractPersistenceMapperTest {
+class DefaultInMemoryBackendTest extends AbstractDataMapperTest {
 
     @Nonnull
     @Override

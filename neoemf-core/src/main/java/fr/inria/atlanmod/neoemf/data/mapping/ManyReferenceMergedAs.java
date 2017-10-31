@@ -36,7 +36,7 @@ import static java.util.Objects.isNull;
  * @param <M> the type of the multi-valued reference after mapping
  */
 @ParametersAreNonnullByDefault
-public interface ManyReferenceMergedAs<M> extends ManyValueMapper, ManyReferenceMapper {
+public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapper {
 
     @Nonnull
     @Override

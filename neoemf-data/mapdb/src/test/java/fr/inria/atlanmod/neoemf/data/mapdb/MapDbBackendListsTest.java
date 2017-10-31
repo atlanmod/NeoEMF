@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
-import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about {@link MapDbBackendLists}.
  */
 @ParametersAreNonnullByDefault
-class MapDbBackendListsTest extends AbstractPersistenceMapperTest {
+class MapDbBackendListsTest extends AbstractDataMapperTest {
 
     @Nonnull
     @Override

@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
-import fr.inria.atlanmod.neoemf.data.mapping.AbstractPersistenceMapperTest;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about {@link DefaultBlueprintsBackend} with a TinkerGraph implementation.
  */
 @ParametersAreNonnullByDefault
-class DefaultBlueprintsBackendTest extends AbstractPersistenceMapperTest {
+class DefaultBlueprintsBackendTest extends AbstractDataMapperTest {
 
     @Nonnull
     @Override

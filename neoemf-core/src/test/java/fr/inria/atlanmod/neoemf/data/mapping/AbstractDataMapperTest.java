@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  */
 @SuppressWarnings("ConstantConditions") // Test with `@Nonnull`
 @ParametersAreNonnullByDefault
-public abstract class AbstractPersistenceMapperTest extends AbstractUnitTest {
+public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
     /**
      * The default {@link Id} used to store features.
