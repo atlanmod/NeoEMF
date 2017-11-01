@@ -13,13 +13,11 @@ import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
-import org.eclipse.emf.common.util.URI;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link UriBuilder} that creates HBase specific resource {@link URI}s.
+ * A {@link UriBuilder} that creates HBase specific resource {@link org.eclipse.emf.common.util.URI}s.
  *
  * @see HBaseBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry

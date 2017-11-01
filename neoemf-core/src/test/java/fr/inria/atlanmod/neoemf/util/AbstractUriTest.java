@@ -13,12 +13,14 @@ import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /**
  * An abstract test-case about {@link AbstractUriBuilder} and its implementations.
@@ -64,5 +66,44 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
 
         assertThat(catchThrowable(() -> context().createUri(invalidURI)))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /**
+     * Checks the creation of a file-based {@link URI} from another {@link URI}.
+     */
+    @Test
+    public void testCreateUriFromUriIfNotSupported() {
+        AbstractUriBuilder uriBuilder = AbstractUriBuilder.class.cast(UriBuilder.forScheme(context().uriScheme()));
+
+        assumeFalse(uriBuilder.supportsFile());
+
+        assertThat(catchThrowable(() -> uriBuilder.fromUri(URI.createURI("uri0"))))
+                .isExactlyInstanceOf(UnsupportedOperationException.class);
+    }
+
+    /**
+     * Checks the creation of a file-based {@link URI} from a {@link File}.
+     */
+    @Test
+    public void testCreateUriFromFileIfNotSupported() {
+        AbstractUriBuilder uriBuilder = AbstractUriBuilder.class.cast(UriBuilder.forScheme(context().uriScheme()));
+
+        assumeFalse(uriBuilder.supportsFile());
+
+        assertThat(catchThrowable(() -> uriBuilder.fromFile("file0")))
+                .isExactlyInstanceOf(UnsupportedOperationException.class);
+    }
+
+    /**
+     * Checks the creation of a server-based {@link URI}.
+     */
+    @Test
+    public void testCreateUriFromServerIfNotSupported() {
+        AbstractUriBuilder uriBuilder = AbstractUriBuilder.class.cast(UriBuilder.forScheme(context().uriScheme()));
+
+        assumeFalse(uriBuilder.supportsServer());
+
+        assertThat(catchThrowable(() -> uriBuilder.fromServer("host", 0, "segments")))
+                .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 }

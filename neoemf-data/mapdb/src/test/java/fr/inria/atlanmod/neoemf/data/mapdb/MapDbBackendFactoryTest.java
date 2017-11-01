@@ -8,21 +8,17 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
-import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.provider.Arguments;
 
-import java.io.IOException;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A test-case about {@link MapDbBackendFactory}.
@@ -36,45 +32,13 @@ class MapDbBackendFactoryTest extends AbstractBackendFactoryTest {
         return MapDbContext.getWithIndices();
     }
 
-    /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.Backend}, specific for MapDB.
-     * <p>
-     * The mapping {@code indices} is declared explicitly.
-     */
-    @Test
-    void testCreateIndicesBackend() throws IOException {
-        ImmutableConfig config = MapDbConfig.newConfig().withIndices();
-
-        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
-            assertThat(backend).isInstanceOf(MapDbBackendIndices.class);
-        }
-    }
-
-    /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.Backend}, specific for MapDB.
-     * <p>
-     * The mapping {@code arrays} is declared explicitly.
-     */
-    @Test
-    void testCreateArraysBackend() throws IOException {
-        ImmutableConfig config = MapDbConfig.newConfig().withArrays();
-
-        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
-            assertThat(backend).isInstanceOf(MapDbBackendArrays.class);
-        }
-    }
-
-    /**
-     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.Backend}, specific for MapDB.
-     * <p>
-     * The mapping {@code lists} is declared explicitly.
-     */
-    @Test
-    void testCreateListsBackend() throws IOException {
-        ImmutableConfig config = MapDbConfig.newConfig().withLists();
-
-        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
-            assertThat(backend).isInstanceOf(MapDbBackendLists.class);
-        }
+    @Nonnull
+    @Override
+    protected Stream<Arguments> allMappings() {
+        return Stream.of(
+                Arguments.of(MapDbConfig.newConfig().withIndices(), MapDbBackendIndices.class),
+                Arguments.of(MapDbConfig.newConfig().withArrays(), MapDbBackendArrays.class),
+                Arguments.of(MapDbConfig.newConfig().withLists(), MapDbBackendLists.class)
+        );
     }
 }

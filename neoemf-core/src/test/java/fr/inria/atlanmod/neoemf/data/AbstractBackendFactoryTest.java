@@ -19,10 +19,16 @@ import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * An abstract test-cases about {@link BackendFactory} and its implementations.
  */
 @ParametersAreNonnullByDefault
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
 
     /**
@@ -75,4 +82,21 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
             }
         }
     }
+
+    /**
+     * Checks the creation of a {@link fr.inria.atlanmod.neoemf.data.Backend}.
+     */
+    @ParameterizedTest
+    @MethodSource("allMappings")
+    public void testCreateBackend(ImmutableConfig config, Class<? extends Backend> expectedType) throws IOException {
+        try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
+            assertThat(backend).isInstanceOf(expectedType);
+        }
+    }
+
+    /**
+     * Returns a stream of arguments of an {@link ImmutableConfig} and the corresponding {@link Backend} class.
+     */
+    @Nonnull
+    protected abstract Stream<Arguments> allMappings();
 }
