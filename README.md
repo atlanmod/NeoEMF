@@ -27,10 +27,10 @@ Some Blueprints connectors are also available to ease the integration of graph d
 
 NeoEMF comes with some features:
 
-- __Lazy-Loading__: A model is loaded part by part while needed.
-- __Caching__: NeoEMF relies on database caches to retrieve _EObjects_. But, in some situation, where time performance is important, this is not enough and it is possible to use application-level caches to speed up information loading.
-- __Auto-Commit__: For backends having restrictions on transaction sizes, it is possible to use the auto-commit feature to split large transaction into several small ones.
-- __Dirty Saving__: Handle large models that haven't been persisted to avoid memory overhead.
+-   **Lazy-Loading**: A model is loaded part by part while needed.
+-   **Caching**: NeoEMF relies on database caches to retrieve _EObjects_. But, in some situation, where time performance is important, this is not enough and it is possible to use application-level caches to speed up information loading.
+-   **Auto-Save**: For backends having restrictions on transaction sizes, it is possible to use the auto-commit feature to split large transaction into several small ones.
+-   **Dirty Saving**: Handle large models that haven't been persisted to avoid memory overhead.
 
 ## Why should I use NeoEMF?
 
@@ -46,8 +46,8 @@ In addition, NeoEMF provides a query API to perform optimized OCL queries over m
 ### Latest release
 
 The most recent release is NeoEMF 1.0.2, released May 21, 2017.
-- Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/doc/)
-- Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/)
+-   Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/doc/)
+-   Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/)
 
 To add a dependency on NeoEMF using Maven, use the following:
 ```xml
@@ -80,18 +80,18 @@ To add the dependency of the specific implementation you want to use, simply use
 ```
 
 Where `{name}` is any of:
-* Blueprints:
-  - TinkerGraph : `blueprints-core`
-  - Neo4j : `blueprints-neo4j` *(requires `blueprints-core`)*
-* MapDB : `mapdb`
-* BerkeleyDB: `berkeleydb`
-* HBase: `hbase`
+*   Blueprints:
+    -   TinkerGraph : `blueprints-core`
+    -   Neo4j : `blueprints-neo4j` *(requires `blueprints-core`)*
+*   MapDB : `mapdb`
+*   BerkeleyDB: `berkeleydb`
+*   HBase: `hbase`
 
 ### Snapshots
 
 Snapshots are automatically build from the `master` and are available throught Maven using `1.0.3-SNAPSHOT`.
-- Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/doc/)
-- Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/plugin/)
+-   Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/doc/)
+-   Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/plugin/)
 
 ## Installation
 
@@ -130,19 +130,19 @@ NeoEMF plugins and update-site are built and stored in your local m2 repository 
 
 In order to import NeoEMF Git repository in Eclipse, you will need the following plugins in your installation (installable from the software repository of your Eclipse release):
 
- - __EGit__ : v3.4.2 or later
- - __m2e__ : v1.5.1 or later
+-   **EGit** : v3.4.2 or later
+-   **m2e** : v1.5.1 or later
 
 And the following m2e connectors (installable through `Preferences > Maven > Discovery / m2e Marketplace`):
 
- - __Maven SCM Handler for EGit (m2e-egit)__ : v0.14 or later
- - __Tycho Project Configurators (Tycho configurator)__ : v0.8.0 or later
+-   **Maven SCM Handler for EGit (m2e-egit)** : v0.14 or later
+-   **Tycho Project Configurators (Tycho configurator)** : v0.8.0 or later
 
 Steps:
 
- - Import the project using `File > Import > Maven > Check out Maven Projects from SCM`
- - Select "git" in the SCM URL field and paste the repository address (https://github.com/atlanmod/NeoEMF.git)
- - Choose your workspace and working sets setting and finish
+1.  Import the project using `File > Import > Maven > Check out Maven Projects from SCM`
+2.  Select "git" in the SCM URL field and paste the repository address [https://github.com/atlanmod/NeoEMF.git](https://github.com/atlanmod/NeoEMF.git)
+3.  Choose your workspace and working sets setting and finish
 
 The projects **project**, **parent**, **core**, **graph**, **graph.blueprints** and **map** will be imported and built.
 
@@ -158,13 +158,13 @@ A full benchmarks description is available at [here](https://github.com/atlanmod
 If you experience issues installing or using NeoEMF, you can [submit an issue on github](https://github.com/atlanmod/NeoEMF/issues) or contact us at neoemf@googlegroups.com
 
 ### Known issues:
- - Only Luna plugins are fetched (the compatibility is not ensured for previous Eclipse versions)
- - The Eclipse plugins can not be built if Maven can not access internet (it is needed to fetch Luna p2 repositories) 
- - Sometimes the plugin build crashes and/or freezes during p2 index fetching from Luna repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.
+-   Only Luna plugins are fetched (the compatibility is not ensured for previous Eclipse versions)
+-   The Eclipse plugins can not be built if Maven can not access internet (it is needed to fetch Luna p2 repositories)
+-   Sometimes the plugin build crashes and/or freezes during p2 index fetching from Luna repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.
 
 
 ## Develop your backend implementation
-If you have developped a specific backend implementation that is not covered by the actual release of NeoEMF, you can submit it as a pull request. _(More information to come about custom backend implementations)_
+If you have [developped a specific backend implementation](Create-New-Module) that is not covered by the actual release of NeoEMF, you can submit it as a pull request.
 
 
 ## Credits

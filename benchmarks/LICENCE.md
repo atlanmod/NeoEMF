@@ -1,8 +1,8 @@
 *Copyright &copy; 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.*
 
-All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v2.0 which accompanies this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
+All rights reserved. This program and the accompanying materials are made available under the terms of the Eclipse Public License v2.0 which accompanies this distribution, and is available at [https://www.eclipse.org/legal/epl-2.0/](https://www.eclipse.org/legal/epl-2.0/)
 
-This Source Code may also be made available under the following Secondary Licenses when the conditions for such availability set forth in the Eclipse Public License, v. 2.0 are satisfied: GNU General Public License, version 3
+This Source Code may also be made available under the following Secondary Licenses when the conditions for such availability set forth in the Eclipse Public License, v. 2.0 are satisfied: GNU General Public License, version 3.
 
 You may distribute this program and materials under the Eclipse Public License v2.0.
 
@@ -14,10 +14,10 @@ THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF THIS ECLIPSE PUBLIC LICE
 ### 1. Definitions
 
 “Contribution” means:
-* **a)** in the case of the initial Contributor, the initial content Distributed under this Agreement, and
-* **b)** in the case of each subsequent Contributor:
-	* **i)** changes to the Program, and
-	* **ii)** additions to the Program;
+*   **a)** in the case of the initial Contributor, the initial content Distributed under this Agreement, and
+*   **b)** in the case of each subsequent Contributor:
+	-   **i)** changes to the Program, and
+	-   **ii)** additions to the Program;
 where such changes and/or additions to the Program originate from and are Distributed by that particular Contributor. A Contribution “originates” from a Contributor if it was added to the Program by such Contributor itself or anyone acting on such Contributor's behalf. Contributions do not include changes or additions to the Program that are not Modified Works.
 
 “Contributor” means any person or entity that Distributes the Program.
@@ -54,18 +54,18 @@ where such changes and/or additions to the Program originate from and are Distri
 
 **3.1** If a Contributor Distributes the Program in any form, then:
 
-* **a)** the Program must also be made available as Source Code, in accordance with section 3.2, and the Contributor must accompany the Program with a statement that the Source Code for the Program is available under this Agreement, and informs Recipients how to obtain it in a reasonable manner on or through a medium customarily used for software exchange; and
+*   **a)** the Program must also be made available as Source Code, in accordance with section 3.2, and the Contributor must accompany the Program with a statement that the Source Code for the Program is available under this Agreement, and informs Recipients how to obtain it in a reasonable manner on or through a medium customarily used for software exchange; and
 
-* **b)** the Contributor may Distribute the Program under a license different than this Agreement, provided that such license:
-	* **i)** effectively disclaims on behalf of all other Contributors all warranties and conditions, express and implied, including warranties or conditions of title and non-infringement, and implied warranties or conditions of merchantability and fitness for a particular purpose;
-	* **ii)** effectively excludes on behalf of all other Contributors all liability for damages, including direct, indirect, special, incidental and consequential damages, such as lost profits;
-	* **iii)** does not attempt to limit or alter the recipients' rights in the Source Code under section 3.2; and
-	* **iv)** requires any subsequent distribution of the Program by any party to be under a license that satisfies the requirements of this section 3.
+*   **b)** the Contributor may Distribute the Program under a license different than this Agreement, provided that such license:
+	-   **i)** effectively disclaims on behalf of all other Contributors all warranties and conditions, express and implied, including warranties or conditions of title and non-infringement, and implied warranties or conditions of merchantability and fitness for a particular purpose;
+	-   **ii)** effectively excludes on behalf of all other Contributors all liability for damages, including direct, indirect, special, incidental and consequential damages, such as lost profits;
+	-   **iii)** does not attempt to limit or alter the recipients' rights in the Source Code under section 3.2; and
+	-   **iv)** requires any subsequent distribution of the Program by any party to be under a license that satisfies the requirements of this section 3.
 
 **3.2** When the Program is Distributed as Source Code:
 
-* **a)** it must be made available under this Agreement, or if the Program **(i)** is combined with other material in a separate file or files made available under a Secondary License, and **(ii)** the initial Contributor attached to the Source Code the notice described in Exhibit A of this Agreement, then the Program may be made available under the terms of such Secondary Licenses, and
-* **b)** a copy of this Agreement must be included with each copy of the Program.
+*   **a)** it must be made available under this Agreement, or if the Program **(i)** is combined with other material in a separate file or files made available under a Secondary License, and **(ii)** the initial Contributor attached to the Source Code the notice described in Exhibit A of this Agreement, then the Program may be made available under the terms of such Secondary Licenses, and
+*   **b)** a copy of this Agreement must be included with each copy of the Program.
 
 **3.3** Contributors may not remove or alter any copyright, patent, trademark, attribution notices, disclaimers of warranty, or limitations of liability (“notices”) contained within the Program from any copy of the Program which they Distribute, provided that Contributors may add their own appropriate notices.
 
