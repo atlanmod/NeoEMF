@@ -35,7 +35,7 @@ public class ConfigType<T> implements Comparable<ConfigType<T>> {
      * The optional parameters of the type.
      */
     @Nonnull
-    private final List<ConfigParameter<?>> parameters;
+    private final List<String> parameters;
 
     /**
      * The priority of the type. A bigger priority will place the type in front of the others in a chain.
@@ -45,26 +45,26 @@ public class ConfigType<T> implements Comparable<ConfigType<T>> {
     /**
      * Constructs a new {@code ConfigType} for the specified {@code typeName}.
      *
-     * @param typeName   the fully-qualified name of the type
-     * @param parameters the optional parameters of the constructor
+     * @param typeName      the fully-qualified name of the type
+     * @param parameterKeys the keys used to retrieve the constructor parameters of the type in a configuration
      */
-    public ConfigType(String typeName, ConfigParameter<?>... parameters) {
-        this(typeName, 0, parameters);
+    public ConfigType(String typeName, String... parameterKeys) {
+        this(typeName, 0, parameterKeys);
     }
 
     /**
      * Constructs a new {@code ConfigType} for the specified {@code typeName}.
      *
-     * @param typeName   the fully-qualified name of the type
-     * @param priority   the priority of the type; a bigger priority will place the type in front of the others in a
-     *                   chain
-     * @param parameters the optional parameters of the constructor
+     * @param typeName      the fully-qualified name of the type
+     * @param priority      the priority of the type; a bigger priority will place the type in front of the others in a
+     *                      chain
+     * @param parameterKeys the keys used to retrieve the constructor parameters of the type in a configuration
      */
-    public ConfigType(String typeName, int priority, ConfigParameter<?>... parameters) {
+    public ConfigType(String typeName, int priority, String... parameterKeys) {
         checkNotNull(typeName);
 
         this.typeName = typeName;
-        this.parameters = Arrays.asList(parameters);
+        this.parameters = Arrays.asList(parameterKeys);
         this.priority = priority;
     }
 
@@ -79,12 +79,12 @@ public class ConfigType<T> implements Comparable<ConfigType<T>> {
     }
 
     /**
-     * Returns the optional parameters of the type.
+     * Returns the keys used to retrieve the constructor parameters of the type in a configuration.
      *
      * @return an immutable list
      */
     @Nonnull
-    public List<ConfigParameter<?>> parameters() {
+    public List<String> parameterKeys() {
         return parameters;
     }
 

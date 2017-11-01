@@ -11,8 +11,8 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.config.ConfigType;
-import fr.inria.atlanmod.neoemf.config.ConfigValue;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.config.InvalidConfigException;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperFactory;
 
@@ -76,12 +76,12 @@ public final class StoreFactory extends AbstractMapperFactory {
                     .collect(Collectors.toList());
 
             for (ConfigType<? extends Store> st : storeTypes) {
-                Deque<ConfigValue<?>> parameters = findValuesFor(st, baseConfig);
+                Deque<Object> parameters = findValuesFor(st, baseConfig);
 
                 // Each store has a store as first argument
-                parameters.addFirst(new ConfigValue<>(currentStore, Store.class));
+                parameters.addFirst(currentStore);
 
-                currentStore = createMapper(st.typeName(), parameters.toArray(new ConfigValue[parameters.size()]));
+                currentStore = createMapper(st.typeName(), parameters.toArray(new Object[parameters.size()]));
             }
         }
         catch (Exception e) {
@@ -112,10 +112,10 @@ public final class StoreFactory extends AbstractMapperFactory {
      * @return a set of values
      */
     @Nonnull
-    private Deque<ConfigValue<?>> findValuesFor(ConfigType<?> type, ImmutableConfig baseConfig) {
-        return type.parameters().stream()
-                .filter(p -> baseConfig.hasOption(p.name()))
-                .map(p -> p.findValue(baseConfig))
+    private Deque<Object> findValuesFor(ConfigType<?> type, ImmutableConfig baseConfig) {
+        return type.parameterKeys().stream()
+                .filter(baseConfig::hasOption)
+                .map(p -> baseConfig.getOption(p).<InvalidConfigException>orElseThrow(InvalidConfigException::new))
                 .collect(Collectors.toCollection(ArrayDeque::new));
     }
 

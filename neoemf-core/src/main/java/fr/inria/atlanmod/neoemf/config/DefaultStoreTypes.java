@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.config;
 
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -45,7 +44,7 @@ final class DefaultStoreTypes {
      * Logs every call to a methods.
      */
     static final ConfigType<Store> LOG = new ConfigType<>("fr.inria.atlanmod.neoemf.data.store.LogStore", 90,
-            new ConfigParameter<>(BaseConfig.STORE_LOG_LEVEL, Level.class));
+            BaseConfig.STORE_LOG_LEVEL);
 
     /**
      * Records several stats.
@@ -56,7 +55,7 @@ final class DefaultStoreTypes {
      * Automatically saves modifications as calls are made.
      */
     static final ConfigType<Store> AUTOSAVE = new ConfigType<>("fr.inria.atlanmod.neoemf.data.store.AutoSaveStore", 100,
-            new ConfigParameter<>(BaseConfig.STORE_AUTOSAVE_CHUNK, Long.class));
+            BaseConfig.STORE_AUTOSAVE_CHUNK);
 
     /**
      * Only allows read operations.

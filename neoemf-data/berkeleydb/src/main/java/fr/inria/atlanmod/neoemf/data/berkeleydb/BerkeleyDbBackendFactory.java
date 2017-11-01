@@ -14,7 +14,6 @@ import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.config.Config;
-import fr.inria.atlanmod.neoemf.config.ConfigValue;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
@@ -108,9 +107,7 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
                     .setSortedDuplicates(false)
                     .setDeferredWrite(true);
 
-            backend = createMapper(mapping,
-                    new ConfigValue<>(environment, Environment.class),
-                    new ConfigValue<>(databaseConfig, DatabaseConfig.class));
+            backend = createMapper(mapping, environment, databaseConfig);
 
             mergedConfig.save(baseDirectory);
         }

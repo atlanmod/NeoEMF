@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.config.Config;
-import fr.inria.atlanmod.neoemf.config.ConfigValue;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
@@ -104,8 +103,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
 
             DB db = dbBuilder.make();
 
-            backend = createMapper(mapping,
-                    new ConfigValue<>(db, DB.class));
+            backend = createMapper(mapping, db);
 
             mergedConfig.save(baseDirectory);
         }

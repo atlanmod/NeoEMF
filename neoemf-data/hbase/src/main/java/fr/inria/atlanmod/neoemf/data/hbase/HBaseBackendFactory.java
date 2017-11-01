@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.neoemf.config.ConfigValue;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
@@ -123,8 +122,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
 
             Table table = connection.getTable(tableName);
 
-            backend = createMapper(mapping,
-                    new ConfigValue<>(table, Table.class));
+            backend = createMapper(mapping, table);
         }
         catch (Exception e) {
             throw new InvalidBackendException("Unable to open the HBase database", e);

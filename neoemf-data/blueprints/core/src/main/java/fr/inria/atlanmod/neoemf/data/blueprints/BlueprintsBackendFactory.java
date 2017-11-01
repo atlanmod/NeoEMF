@@ -15,7 +15,6 @@ import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph
 
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.config.Config;
-import fr.inria.atlanmod.neoemf.config.ConfigValue;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
@@ -105,8 +104,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
                 graph = new ReadOnlyKeyIndexableGraph<>(KeyIndexableGraph.class.cast(graph));
             }
 
-            backend = createMapper(mapping,
-                    new ConfigValue<>(graph, KeyIndexableGraph.class));
+            backend = createMapper(mapping, graph);
 
             mergedConfig.save(baseDirectory);
         }
