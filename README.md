@@ -9,13 +9,13 @@ NeoEMF
 
 ## What is NeoEMF?
 
-NeoEMF is an [AtlanMod](http://www.emn.fr/z-info/atlanmod/index.php/Main_Page) research team project that aims at handling large EMF models in an efficient and scalable way.
+NeoEMF is an [AtlanMod][atlanmod-home] research team project that aims at handling large EMF models in an efficient and scalable way.
 
 It is based on our work on Neo4EMF, a scalable and graph-based backend for persisting EMF models.
 
 NeoEMF is a multi-backend framework developped to allow an easy integration of custom backends depending on user needs.
 
-Check out our [wiki](https://github.com/atlanmod/NeoEMF/wiki) for further information on the supported backends, code examples, and developer resources.
+Check out our [wiki][wiki] for further information on the supported backends, code examples, and developer resources.
 
 ## What are the supported backends?
 
@@ -46,8 +46,8 @@ In addition, NeoEMF provides a query API to perform optimized OCL queries over m
 ### Latest release
 
 The most recent release is NeoEMF 1.0.2, released May 21, 2017.
--   Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/doc/)
--   Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/)
+-   Javadoc: [neoemf][release-doc]
+-   Eclipse Plugin: [neoemf][release-plugin]
 
 To add a dependency on NeoEMF using Maven, use the following:
 ```xml
@@ -90,13 +90,13 @@ Where `{name}` is any of:
 ### Snapshots
 
 Snapshots are automatically build from the `master` and are available throught Maven using `1.0.3-SNAPSHOT`.
--   Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/doc/)
--   Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/plugin/)
+-   Javadoc: [neoemf][snapshot-doc]
+-   Eclipse Plugin: [neoemf][snapshot-plugin]
 
 ## Installation
 
 ### Update site
-The simplest way to install NeoEMF is to use the update-site that is available [here](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/).
+The simplest way to install NeoEMF is to use the update-site that is available [here][release-plugin].
 Install the **NeoEMF Persistence Framework** component, which provides NeoEMF core classes and utils.
 Select the backend specific implementation(s) you want to plug in NeoEMF.
 
@@ -112,7 +112,7 @@ It is then possible to install NeoEMF from the local built update-site, or by im
 ## Build
 
 ### NeoEMF
-Download the latest release [here](https://github.com/atlanmod/NeoEMF/releases/latest) and unzip it.
+Download the latest release [here][release] and unzip it.
 Go to the root of the extracted directory and run the following command:
 ```bash
 mvn clean install
@@ -151,11 +151,11 @@ hand using `File > Import > Maven > Existing Maven Projects`, and select the pro
 
 ## Benchmarks
 
-A full benchmarks description is available at [here](https://github.com/atlanmod/NeoEMF/tree/backend-abstraction/benchmarks).
+A full benchmarks description is available at [here][benchmarks].
 
 ## Issues
 
-If you experience issues installing or using NeoEMF, you can [submit an issue on github](https://github.com/atlanmod/NeoEMF/issues) or contact us at neoemf@googlegroups.com
+If you experience issues installing or using NeoEMF, you can [submit an issue on github][issues] or contact us at neoemf@googlegroups.com
 
 ### Known issues:
 -   Only Luna plugins are fetched (the compatibility is not ensured for previous Eclipse versions)
@@ -164,8 +164,22 @@ If you experience issues installing or using NeoEMF, you can [submit an issue on
 
 
 ## Develop your backend implementation
-If you have [developped a specific backend implementation](Create-New-Module) that is not covered by the actual release of NeoEMF, you can submit it as a pull request.
+If you have [developped a specific backend implementation](Create-A-New-Module) that is not covered by the actual release of NeoEMF, you can submit it as a pull request.
 
 
 ## Credits
 Performance problems and memory leaks are diagnosed with [Java Profiler](https://www.ej-technologies.com/products/jprofiler/overview.html)
+
+
+[atlanmod-home]: http://www.emn.fr/z-info/atlanmod/index.php/Main_Page
+
+[wiki]: https://github.com/atlanmod/NeoEMF/wiki
+[issues]: https://github.com/atlanmod/NeoEMF/issues
+[benchmarks]: https://github.com/atlanmod/NeoEMF/tree/backend-abstraction/benchmarks
+
+[release]: https://github.com/atlanmod/NeoEMF/releases/latest
+[release-doc]: https://atlanmod.github.io/NeoEMF/releases/latest/doc/
+[release-plugin]: https://atlanmod.github.io/NeoEMF/releases/latest/plugin/
+
+[snapshot-doc]: https://atlanmod.github.io/NeoEMF/releases/snapshot/doc/
+[snapshot-plugin]: https://atlanmod.github.io/NeoEMF/releases/snapshot/plugin/
