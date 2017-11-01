@@ -11,12 +11,11 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.primitive.Strings;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -61,14 +60,52 @@ public class LogStore extends AbstractListenerStore {
     }
 
     @Override
-    protected <K, V, R> void onSuccess(String methodName, @Nullable K key, @Nullable V value, @Nullable R result) {
-        Log.log(level, "[{0}] Called {1}()" + (nonNull(key) ? " for {2}" : Strings.EMPTY) + (nonNull(value) ? " with {3}" : Strings.EMPTY) + (nonNull(result) ? " = {4}" : Strings.EMPTY),
-                backend(), methodName, key, value, result);
+    protected <K, V, R> void onSuccess(CallInfo<K, V, R> info) {
+        log(info, true);
     }
 
     @Override
-    protected <K, V> void onFailure(String methodName, @Nullable K key, @Nullable V value, Throwable e) {
-        Log.log(level, "[{0}] Called {1}()" + (nonNull(key) ? " for {2}" : Strings.EMPTY) + (nonNull(value) ? " with {3}" : Strings.EMPTY) + " but failed with {4}",
-                backend(), methodName, key, value, e.getClass().getSimpleName());
+    protected <K, V> void onFailure(CallInfo<K, V, ?> info) {
+        log(info, false);
+    }
+
+    /**
+     * Logs a call.
+     *
+     * @param info    information about the call
+     * @param success {@code true} if the call succeeded, {@code false} otherwise
+     */
+    protected void log(CallInfo<?, ?, ?> info, boolean success) {
+        StringBuilder sb = new StringBuilder();
+
+        // Append the name of the concerned backend
+        sb.append("[").append(backend()).append("]");
+
+        // Append the name of the called method
+        sb.append(" Called ").append(info.method()).append("()");
+
+        // Append the key used during the call
+        if (nonNull(info.key())) {
+            sb.append(" for ").append(info.method());
+        }
+
+        // Append the value used during the call
+        if (nonNull(info.value())) {
+            sb.append(" with ").append(info.key());
+        }
+
+        // Append the result of the call, or the exception thrown
+        if (success && nonNull(info.result())) {
+            sb.append(" = ").append(info.value());
+        }
+        else if (!success) {
+            sb.append(" but failed");
+
+            if (nonNull(info.thrownException())) {
+                sb.append(" with ").append(checkNotNull(info.thrownException()).getClass().getSimpleName());
+            }
+        }
+
+        Log.log(level, sb.toString());
     }
 }

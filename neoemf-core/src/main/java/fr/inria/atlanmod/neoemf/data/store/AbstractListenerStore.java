@@ -307,18 +307,33 @@ public abstract class AbstractListenerStore extends AbstractStore {
                 resultToLog = list;
             }
 
-            onSuccess(getCallingMethod(), key, value, resultToLog);
+            onSuccess(new CallInfo<>(getCallingMethod(), key, value, resultToLog));
             return result;
         }
         catch (RuntimeException e) {
-            onFailure(getCallingMethod(), key, value, e);
+            onFailure(new CallInfo<>(getCallingMethod(), key, value, e));
             throw e;
         }
     }
 
-    protected abstract <K, V, R> void onSuccess(String methodName, @Nullable K key, @Nullable V value, @Nullable R result);
+    /**
+     * Handle a succeeded call.
+     *
+     * @param info information about the call
+     * @param <K>  the type of the key used during the call; nullable
+     * @param <V>  the type of the value used during the call; nullable
+     * @param <R>  the type of the result of the call; nullable
+     */
+    protected abstract <K, V, R> void onSuccess(CallInfo<K, V, R> info);
 
-    protected abstract <K, V> void onFailure(String methodName, @Nullable K key, @Nullable V value, Throwable e);
+    /**
+     * Handle a failed call.
+     *
+     * @param info information about the call
+     * @param <K>  the type of the key used during the call; nullable
+     * @param <V>  the type of the value used during the call; nullable
+     */
+    protected abstract <K, V> void onFailure(CallInfo<K, V, ?> info);
 
     /**
      * Returns the name of the calling method.
@@ -336,5 +351,128 @@ public abstract class AbstractListenerStore extends AbstractStore {
         }
 
         throw new IllegalStateException(); // Should never happen
+    }
+
+    /**
+     * An object representing a call.
+     *
+     * @param <K> the type of the key used during the call
+     * @param <V> the type of the value used during the call
+     * @param <R> the type of the result of the call
+     */
+    @ParametersAreNonnullByDefault
+    protected static class CallInfo<K, V, R> {
+
+        /**
+         * The name of the called method.
+         */
+        @Nonnull
+        private final String method;
+
+        /**
+         * The key used during the call.
+         */
+        @Nullable
+        private final K key;
+
+        /**
+         * The value used during the call.
+         */
+        @Nullable
+        private final V value;
+
+        /**
+         * The result of the call.
+         */
+        @Nullable
+        private final R result;
+
+        /**
+         * The exception thrown during the call.
+         */
+        @Nullable
+        private final Throwable thrownException;
+
+        /**
+         * Constructs a new succeeded call information.
+         *
+         * @param method the name of the called method
+         * @param key    the key used during the call
+         * @param value  the value used during the call
+         * @param result the result of the call
+         */
+        public CallInfo(String method, @Nullable K key, @Nullable V value, R result) {
+            this.method = method;
+            this.key = key;
+            this.value = value;
+            this.result = result;
+            this.thrownException = null;
+        }
+
+        /**
+         * Constructs a new failed call information.
+         *
+         * @param method the name of the called method
+         * @param key    the key used during the call
+         * @param value  the value used during the call
+         * @param e      the exception thrown during the call
+         */
+        public CallInfo(String method, @Nullable K key, @Nullable V value, Throwable e) {
+            this.method = method;
+            this.key = key;
+            this.value = value;
+            this.result = null;
+            this.thrownException = e;
+        }
+
+        /**
+         * Returns the name of the called method.
+         *
+         * @return the name of the called method
+         */
+        @Nonnull
+        public String method() {
+            return method;
+        }
+
+        /**
+         * Returns the key used during the call.
+         *
+         * @return the key used during the call
+         */
+        @Nullable
+        public K key() {
+            return key;
+        }
+
+        /**
+         * Returns the value used during the call.
+         *
+         * @return the value used during the call
+         */
+        @Nullable
+        public V value() {
+            return value;
+        }
+
+        /**
+         * Returns the result of the call.
+         *
+         * @return the result of the call
+         */
+        @Nullable
+        public R result() {
+            return result;
+        }
+
+        /**
+         * Returns the exception thrown during the call.
+         *
+         * @return the exception thrown during the call
+         */
+        @Nullable
+        public Throwable thrownException() {
+            return thrownException;
+        }
     }
 }

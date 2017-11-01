@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -50,19 +49,19 @@ public class StatsRecordStore extends AbstractListenerStore {
     }
 
     @Override
-    protected <K, V, R> void onSuccess(String methodName, @Nullable K key, @Nullable V value, @Nullable R result) {
-        record(methodName);
+    protected <K, V, R> void onSuccess(CallInfo<K, V, R> info) {
+        record(info);
     }
 
     @Override
-    protected <K, V> void onFailure(String methodName, @Nullable K key, @Nullable V value, Throwable e) {
-        record(methodName);
+    protected <K, V> void onFailure(CallInfo<K, V, ?> info) {
+        record(info);
     }
 
     /**
      * Records the call of a method with a value.
      */
-    private void record(String methodName) {
-        methodCallsAccumulator.computeIfAbsent(methodName, s -> new AtomicLong()).incrementAndGet();
+    protected void record(CallInfo<?, ?, ?> info) {
+        methodCallsAccumulator.computeIfAbsent(info.method(), s -> new AtomicLong()).incrementAndGet();
     }
 }
