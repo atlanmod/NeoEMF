@@ -26,6 +26,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * A simple file-based configuration.
  */
 @ParametersAreNonnullByDefault
+// TODO Manage the type of values: if a long is writen in the file, it should be returned as a long
 final class ConfigFile {
 
     /**
