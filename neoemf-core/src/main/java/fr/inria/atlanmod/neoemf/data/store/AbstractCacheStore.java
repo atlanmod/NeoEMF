@@ -14,7 +14,7 @@ import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An abstract {@link AbstractStore} that provides a pre-loaded {@link Cache}.
+ * An abstract {@link Store} that provides a pre-loaded {@link Cache}.
  *
  * @param <K> the type of keys maintained by the cache
  * @param <V> the type of cached values

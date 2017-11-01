@@ -28,6 +28,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * An abstract {@link Store} that listen and intercept calls made on this store chain.
+ */
 @ParametersAreNonnullByDefault
 public abstract class AbstractListenerStore extends AbstractStore {
 
