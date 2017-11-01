@@ -14,13 +14,9 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
-import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
-import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
-import fr.inria.atlanmod.neoemf.data.im.util.InMemoryUri;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
@@ -38,20 +34,6 @@ class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
     @Override
     protected Context context() {
         return BerkeleyDbContext.getWithIndices();
-    }
-
-    @Override
-    public void testCopyBackend() throws IOException {
-        ImmutableConfig config = BerkeleyDbConfig.newConfig().withIndices();
-
-        File file = currentTempFile();
-        try (Backend transientBackend = InMemoryBackendFactory.getInstance().createBackend(InMemoryUri.builder().fromFile(file), InMemoryConfig.newConfig())) {
-            try (Backend persistentBackend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
-                assertThat(persistentBackend).isInstanceOf(BerkeleyDbBackend.class);
-
-                transientBackend.copyTo(persistentBackend);
-            }
-        }
     }
 
     /**

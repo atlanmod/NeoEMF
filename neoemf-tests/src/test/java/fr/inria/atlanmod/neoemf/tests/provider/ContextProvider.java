@@ -44,16 +44,16 @@ public final class ContextProvider {
     @Nonnull
     public static Stream<Context> allContexts() {
         return Stream.of(
-                BlueprintsContext.getDefault().init(),
-                BlueprintsNeo4jContext.getDefault().init(),
-                MapDbContext.getWithIndices().init(),
-                MapDbContext.getWithArrays().init(),
-                MapDbContext.getWithLists().init(),
-                BerkeleyDbContext.getWithIndices().init(),
-                BerkeleyDbContext.getWithArrays().init(),
-                BerkeleyDbContext.getWithLists().init(),
-                HBaseContext.getDefault().init()
-        ).filter(Context::isInitialized);
+                BlueprintsContext.getDefault(),
+                BlueprintsNeo4jContext.getDefault(),
+                MapDbContext.getWithIndices(),
+                MapDbContext.getWithArrays(),
+                MapDbContext.getWithLists(),
+                BerkeleyDbContext.getWithIndices(),
+                BerkeleyDbContext.getWithArrays(),
+                BerkeleyDbContext.getWithLists(),
+                HBaseContext.getDefault()
+        ).map(Context::init).filter(Context::isInitialized);
     }
 
     /**

@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackend;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
 import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
@@ -19,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -63,5 +65,14 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      * Checks the copy of a {@link Backend} to another.
      */
     @Test
-    public abstract void testCopyBackend() throws IOException;
+    public void testCopyBackend() throws IOException {
+        ImmutableConfig config = context().config();
+
+        File file = currentTempFile();
+        try (Backend transientBackend = InMemoryBackendFactory.getInstance().createBackend(InMemoryUri.builder().fromFile(file), InMemoryConfig.newConfig())) {
+            try (Backend persistentBackend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
+                transientBackend.copyTo(persistentBackend);
+            }
+        }
+    }
 }

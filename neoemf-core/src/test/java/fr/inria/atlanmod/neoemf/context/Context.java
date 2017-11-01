@@ -32,7 +32,8 @@ public interface Context {
     /**
      * Checks whether this context is ready for testing.
      *
-     * @return {@code true} if the context is initialized, {@code false} otherwise.
+     * @return {@code true} if the context is initialized, {@code false} if the {@link
+     * fr.inria.atlanmod.neoemf.data.Backend} failed to initialize.
      */
     default boolean isInitialized() {
         // By default: a context is always ready
@@ -41,6 +42,8 @@ public interface Context {
 
     /**
      * Initializes this context if necessary.
+     *
+     * @implNote Should never throws an exception
      */
     default Context init() {
         return this;

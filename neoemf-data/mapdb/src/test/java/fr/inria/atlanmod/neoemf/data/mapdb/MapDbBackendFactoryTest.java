@@ -12,15 +12,11 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
-import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
-import fr.inria.atlanmod.neoemf.data.im.util.InMemoryUri;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
@@ -38,20 +34,6 @@ class MapDbBackendFactoryTest extends AbstractBackendFactoryTest {
     @Override
     protected Context context() {
         return MapDbContext.getWithIndices();
-    }
-
-    @Override
-    public void testCopyBackend() throws IOException {
-        ImmutableConfig config = MapDbConfig.newConfig().withIndices();
-
-        File file = currentTempFile();
-        try (Backend transientBackend = InMemoryBackendFactory.getInstance().createBackend(InMemoryUri.builder().fromFile(file), InMemoryConfig.newConfig())) {
-            try (Backend persistentBackend = context().factory().createBackend(context().createUri(file), config)) {
-                assertThat(persistentBackend).isInstanceOf(MapDbBackend.class);
-
-                transientBackend.copyTo(persistentBackend);
-            }
-        }
     }
 
     /**

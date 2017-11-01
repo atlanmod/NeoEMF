@@ -14,13 +14,9 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
-import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
-import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
-import fr.inria.atlanmod.neoemf.data.im.util.InMemoryUri;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.annotation.Nonnull;
@@ -46,20 +42,6 @@ class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
 
         try (Backend backend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
             assertThat(backend).isInstanceOf(DefaultBlueprintsBackend.class);
-        }
-    }
-
-    @Override
-    public void testCopyBackend() throws IOException {
-        ImmutableConfig config = BlueprintsTinkerConfig.newConfig();
-
-        File file = currentTempFile();
-        try (Backend transientBackend = InMemoryBackendFactory.getInstance().createBackend(InMemoryUri.builder().fromFile(file), InMemoryConfig.newConfig())) {
-            try (Backend persistentBackend = context().factory().createBackend(context().createUri(file), config)) {
-                assertThat(persistentBackend).isInstanceOf(DefaultBlueprintsBackend.class);
-
-                transientBackend.copyTo(persistentBackend);
-            }
         }
     }
 }
