@@ -26,7 +26,6 @@ import org.eclipse.emf.common.util.URI;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,18 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 
 /**
- * A factory that creates {@link BlueprintsBackend} instances.
- * <p>
- * As other implementations of {@link BackendFactory}, this class can create transient and persistent databases.
- * Persistent back-end creation can be configured using {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#save(Map)}
- * and {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#load(Map)} option maps.
- * <p>
- * The factory handles transient back-ends by creating an in-memory {@code TinkerGraph} instance. Persistent back-ends
- * are created according to the provided {@link fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig}.
- *
- * @see BlueprintsBackend
- * @see fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig
- * @see fr.inria.atlanmod.neoemf.resource.PersistentResource
+ * A {@link BackendFactory} that creates {@link BlueprintsBackend} instances.
  */
 @ParametersAreNonnullByDefault
 public class BlueprintsBackendFactory extends AbstractBackendFactory {
@@ -53,7 +41,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = "blueprints";
+    private static final String NAME = "blueprints";
 
     /**
      * Constructs a new {@code BlueprintsBackendFactory}.

@@ -24,7 +24,6 @@ import org.mapdb.DBMaker;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,15 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 
 /**
- * A factory that creates {@link MapDbBackend} instances.
- * <p>
- * As other implementations of {@link BackendFactory}, this class can create transient and persistent databases.
- * Persistent back-end creation can be configured using {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#save(Map)}
- * and {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#load(Map)} option maps.
- *
- * @see MapDbBackend
- * @see fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig
- * @see fr.inria.atlanmod.neoemf.resource.PersistentResource
+ * A {@link BackendFactory} that creates {@link MapDbBackend} instances.
  */
 @ParametersAreNonnullByDefault
 public class MapDbBackendFactory extends AbstractBackendFactory {
@@ -48,7 +39,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = "mapdb";
+    private static final String NAME = "mapdb";
 
     /**
      * Constructs a new {@code MapDbBackendFactory}.

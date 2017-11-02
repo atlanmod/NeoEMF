@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A factory that create {@link DefaultInMemoryBackend} instances.
+ * A {@link BackendFactory} that create {@link DefaultInMemoryBackend} instances.
  */
 @ParametersAreNonnullByDefault
 public class InMemoryBackendFactory extends AbstractBackendFactory {
@@ -28,7 +28,7 @@ public class InMemoryBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = "im"; // In-Memory
+    private static final String NAME = "im"; // In-Memory
 
     /**
      * Constructs a new {@code InMemoryBackendFactory}.

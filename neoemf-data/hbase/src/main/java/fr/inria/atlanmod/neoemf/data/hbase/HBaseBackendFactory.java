@@ -26,7 +26,6 @@ import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Table;
 import org.eclipse.emf.common.util.URI;
 
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -37,19 +36,11 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
- * A factory that creates {@link HBaseBackend} instances.
+ * A {@link BackendFactory} that creates {@link HBaseBackend} instances.
  * <p>
- * This class only creates persistent databases that can be configured using {@link
- * fr.inria.atlanmod.neoemf.resource.PersistentResource#save(Map)} and {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#load(Map)}
- * options maps.
- * <p>
- * <b>Important Note:</b> Transient back-ends can be instantiated using this factory, but they will be handed as
+ * <b>IMPORTANT:</b> Transient back-ends can be instantiated using this factory, but they will be handed as
  * persistent ones. This is a limitation that will be solved in next releases. To avoid any consistency issue we
  * recommend every HBase resource right after their creation, ensuring the resource is using a persistent back-end.
- *
- * @see HBaseBackend
- * @see fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig
- * @see fr.inria.atlanmod.neoemf.resource.PersistentResource
  */
 @ParametersAreNonnullByDefault
 public class HBaseBackendFactory extends AbstractBackendFactory {
@@ -57,7 +48,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
     /**
      * The literal description of the factory.
      */
-    public static final String NAME = "hbase";
+    private static final String NAME = "hbase";
 
     /**
      * Constructs a new {@code HBaseBackendFactory}.
@@ -104,10 +95,11 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
             Connection connection = ConnectionFactory.createConnection(configuration);
             Admin admin = connection.getAdmin();
 
-            TableName tableName = TableName.valueOf(
-                    checkNotNull(uri).segmentsList().stream()
-                            .map(s -> s.replaceAll("-", "_"))
-                            .collect(Collectors.joining("_")));
+            String path = checkNotNull(uri).segmentsList().stream()
+                    .map(s -> s.replaceAll("-", "_"))
+                    .collect(Collectors.joining("_"));
+
+            TableName tableName = TableName.valueOf(path);
 
             if (!admin.tableExists(tableName) && !isReadOnly) {
                 HTableDescriptor desc = new HTableDescriptor(tableName);
