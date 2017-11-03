@@ -216,10 +216,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
         ClassBean metaClass = ClassBean.of("Metaclass1", "Uri1");
 
-        mapper.metaClassFor(id0, metaClass);
+        assertThat(mapper.metaClassFor(id0, metaClass)).isTrue();
         assertThat(mapper.metaClassOf(id0)).contains(metaClass);
 
-        mapper.metaClassFor(id1, metaClass);
+        assertThat(mapper.metaClassFor(id1, metaClass)).isTrue();
         assertThat(mapper.metaClassOf(id1)).contains(metaClass);
     }
 
