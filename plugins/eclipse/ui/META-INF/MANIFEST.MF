@@ -21,7 +21,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.converter,
  org.eclipse.emf.importer,
  org.eclipse.emf.ecore.editor,
- fr.inria.atlanmod.neoemf.core;bundle-version="1.0.3"
+ fr.inria.atlanmod.neoemf.core;bundle-version="1.0.3",
+ fr.inria.atlanmod.commons;bundle-version="1.0.0"
 Bundle-ClassPath: .
 Import-Package: org.eclipse.emf.common,
  org.eclipse.emf.ecore,

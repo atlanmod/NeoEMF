@@ -253,14 +253,14 @@
                             *
                         </DynamicImport-Package>
                         <Export-Package>
-                            !fr.inria.atlanmod.*.internal.*,
-                            fr.inria.atlanmod.neoemf.*,
-                            fr.inria.atlanmod.commons.*
+                            !fr.inria.atlanmod.neoemf.*.internal.*,
+                            fr.inria.atlanmod.neoemf.*
                         </Export-Package>
                         <Import-Package>
                             com.google.common.cache;resolution:=optional
                         </Import-Package>
                         <Require-Bundle>
+                            fr.inria.atlanmod.commons;visibility:=reexport,
                             org.eclipse.emf.ecore;visibility:=reexport,
                             org.eclipse.emf.compare;resolution:=optional
                         </Require-Bundle>
