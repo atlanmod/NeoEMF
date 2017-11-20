@@ -109,7 +109,7 @@ public final class BackendFactoryRegistry {
         }
 
         return checkNotNull(factories.get(scheme),
-                "No factory is registered to process the URI scheme %s. Use the %s#register() method first",
+                "No factory is registered to process the URI scheme \"%s\". Use the %s#register() method first",
                 scheme,
                 BackendFactoryRegistry.class.getName());
     }

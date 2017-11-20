@@ -50,7 +50,9 @@ public class NeoEditor extends EcoreEditor {
     public void createModel() {
         try {
             URI uri = EditUIUtil.getURI(getEditorInput());
-            uri = UriBuilder.forScheme(uri.scheme()).fromUri(uri);
+            String uriScheme = uri.scheme();
+
+            uri = UriBuilder.forScheme(uriScheme).fromUri(uri);
 
             ResourceSet resourceSet = getEditingDomain().getResourceSet();
             resourceSet.eAdapters().add(problemIndicationAdapter);
@@ -58,7 +60,7 @@ public class NeoEditor extends EcoreEditor {
             Resource resource = resourceSet.createResource(uri);
 
             // Create the configuration depending of the backend
-            ImmutableConfig config = Config.forScheme(resource.getURI().scheme())
+            ImmutableConfig config = Config.forScheme(uriScheme)
                     .cacheContainers()
                     .cacheMetaClasses()
 //                    .log()

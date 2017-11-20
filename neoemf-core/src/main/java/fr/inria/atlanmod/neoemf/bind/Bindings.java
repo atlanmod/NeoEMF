@@ -287,6 +287,6 @@ public final class Bindings {
         }
 
         throw new BindingException(
-                String.format("Unable to find a %s instance for value \"%s\"", type.getSimpleName(), value));
+                String.format("Unable to find a %s instance for value \"%s\"", type.getName(), value));
     }
 }
