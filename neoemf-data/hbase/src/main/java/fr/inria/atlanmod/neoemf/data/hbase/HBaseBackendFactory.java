@@ -38,9 +38,9 @@ import static java.util.Objects.isNull;
 /**
  * A {@link BackendFactory} that creates {@link HBaseBackend} instances.
  * <p>
- * <b>IMPORTANT:</b> Transient back-ends can be instantiated using this factory, but they will be handed as
- * persistent ones. This is a limitation that will be solved in next releases. To avoid any consistency issue we
- * recommend every HBase resource right after their creation, ensuring the resource is using a persistent back-end.
+ * <b>IMPORTANT:</b> Transient back-ends can be instantiated using this factory, but they will be handed as persistent
+ * ones. This is a limitation that will be solved in next releases. To avoid any consistency issue we recommend every
+ * HBase resource right after their creation, ensuring the resource is using a persistent back-end.
  */
 @ParametersAreNonnullByDefault
 public class HBaseBackendFactory extends AbstractBackendFactory {
