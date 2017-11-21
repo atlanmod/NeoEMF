@@ -163,7 +163,7 @@ public final class BackendFactoryRegistry {
      * This method scan the full Java classpath to retrieve the annotated element.
      */
     public void registerAll() {
-        Log.debug("Registering all factories");
+        Log.debug("Registering all factories...");
 
         Bindings.typesAnnotatedWith(FactoryBinding.class, UriBuilder.class)
                 .stream()

@@ -113,8 +113,11 @@ public class ClasspathCollector implements URLCollector {
     @Nonnull
     @Override
     public Set<URL> get() {
+        Log.debug("Waiting for the classpath analysis... [phase = {0}]", phaser.getRegisteredParties());
+
         // Waiting for classpath analysis
         phaser.awaitAdvance(READY);
+        Log.debug("Classpath analysis is complete [phase = {0}]", phaser.getRegisteredParties());
 
         return registeredUris.stream()
                 .map(URL_TO_URI::revert)
@@ -132,6 +135,7 @@ public class ClasspathCollector implements URLCollector {
         checkNotNull(urlCollector, "urlCollector");
 
         phaser.register();
+        Log.debug("Starting a classpath analysis... [phase = {0}]", phaser.getRegisteredParties());
 
         analysisPool.submit(() -> {
             try {
@@ -141,8 +145,7 @@ public class ClasspathCollector implements URLCollector {
                         .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
 
                 // Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)
-                this.get()
-                        .stream()
+                checkNotNull(urlCollector.get(), "urlCollector.get").stream()
                         .filter(url -> isRelated(url, baseConfig))
                         .map(URL_TO_URI::convert)
                         .collect(Collectors.toCollection(() -> registeredUris));
@@ -152,6 +155,7 @@ public class ClasspathCollector implements URLCollector {
             }
             finally {
                 phaser.arriveAndDeregister();
+                Log.debug("Stopping a classpath analysis [phase = {0}]", phaser.getRegisteredParties());
             }
         });
     }
