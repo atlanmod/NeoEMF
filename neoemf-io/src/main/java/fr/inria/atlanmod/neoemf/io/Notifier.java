@@ -54,7 +54,7 @@ public interface Notifier<H extends Handler> {
      * @see Handler#onStartElement(BasicElement)
      */
     default void notifyStartElement(BasicElement element) {
-        checkNotNull(element);
+        checkNotNull(element, "element");
 
         next().forEach(h -> h.onStartElement(element));
     }
@@ -67,7 +67,7 @@ public interface Notifier<H extends Handler> {
      * @see Handler#onAttribute(BasicAttribute)
      */
     default void notifyAttribute(BasicAttribute attribute) {
-        checkNotNull(attribute);
+        checkNotNull(attribute, "attribute");
 
         next().forEach(h -> h.onAttribute(attribute));
     }
@@ -80,7 +80,7 @@ public interface Notifier<H extends Handler> {
      * @see Handler#onReference(BasicReference)
      */
     default void notifyReference(BasicReference reference) {
-        checkNotNull(reference);
+        checkNotNull(reference, "reference");
 
         next().forEach(h -> h.onReference(reference));
     }
@@ -93,7 +93,7 @@ public interface Notifier<H extends Handler> {
      * @see Handler#onCharacters(String)
      */
     default void notifyCharacters(String characters) {
-        checkNotNull(characters);
+        checkNotNull(characters, "characters");
 
         next().forEach(h -> h.onCharacters(characters));
     }

@@ -56,7 +56,7 @@ final class LongIdProvider implements IdProvider {
     @Nonnull
     @Override
     public Id fromHexString(String hexValue) {
-        checkNotNull(hexValue);
+        checkNotNull(hexValue, "hexValue");
 
         try {
             return fromLong(Long.parseUnsignedLong(hexValue, 16));
@@ -75,7 +75,7 @@ final class LongIdProvider implements IdProvider {
     @Nonnull
     @Override
     public Id generate(String baseValue) {
-        checkNotNull(baseValue);
+        checkNotNull(baseValue, "baseValue");
 
         return fromLong(DEFAULT_HASHER.hash(baseValue).toLong());
     }

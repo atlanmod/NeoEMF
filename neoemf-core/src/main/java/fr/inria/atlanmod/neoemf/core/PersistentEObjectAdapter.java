@@ -71,8 +71,8 @@ final class PersistentEObjectAdapter {
      */
     @Nonnull
     private static <T extends PersistentEObject> T adapt(Object object, Class<T> type) {
-        checkNotNull(object);
-        checkNotNull(type);
+        checkNotNull(object, "object");
+        checkNotNull(type, "type");
 
         Object adapter = null;
 

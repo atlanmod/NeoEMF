@@ -130,7 +130,7 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
      */
     @Nonnull
     public F eFeature() {
-        return checkNotNull(eFeature);
+        return checkNotNull(eFeature, "eFeature");
     }
 
     /**
@@ -139,7 +139,7 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
      * @param eFeature the {@link EStructuralFeature}
      */
     public void eFeature(F eFeature) {
-        this.eFeature = checkNotNull(eFeature);
+        this.eFeature = checkNotNull(eFeature, "eFeature");
         name(eFeature.getName());
         isMany(eFeature.isMany());
     }

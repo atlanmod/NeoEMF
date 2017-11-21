@@ -115,7 +115,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     @Nonnull
     @Override
     public URI fromUri(URI uri) {
-        checkNotNull(uri);
+        checkNotNull(uri, "uri");
 
         if (!supportsFile()) {
             throw new UnsupportedOperationException(String.format("%s does not support file-based URI", getClass().getSimpleName()));
@@ -138,7 +138,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     @Nonnull
     @Override
     public URI fromFile(String filePath) {
-        checkNotNull(filePath);
+        checkNotNull(filePath, "filePath");
 
         return fromFile(new File(filePath));
     }
@@ -146,7 +146,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     @Nonnull
     @Override
     public URI fromFile(File file) {
-        checkNotNull(file);
+        checkNotNull(file, "file");
 
         return fromFile(URI.createFileURI(file.getAbsolutePath()));
     }
@@ -160,9 +160,9 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     @Nonnull
     @Override
     public URI fromServer(String host, int port, String... segments) {
-        checkNotNull(host);
-        checkNotNull(segments);
-        checkArgument(port >= 0);
+        checkNotNull(host, "host");
+        checkNotNull(segments, "segments");
+        checkArgument(port >= 0, "port (%d) must not be negative");
 
         if (!supportsServer()) {
             throw new UnsupportedOperationException(String.format("%s does not support server-based URIs", getClass().getSimpleName()));

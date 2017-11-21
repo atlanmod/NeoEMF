@@ -112,7 +112,7 @@ public final class XmiConstants {
      */
     @Nonnull
     public static String format(@Nullable String prefix, String value) {
-        checkNotNull(value);
+        checkNotNull(value, "value");
 
         return (isNull(prefix) ? Strings.EMPTY : prefix + ':') + value;
     }

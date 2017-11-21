@@ -52,7 +52,7 @@ public class PersistentResourceFactory implements Resource.Factory {
     @Nonnull
     @Override
     public PersistentResource createResource(URI uri) {
-        checkNotNull(uri);
+        checkNotNull(uri, "uri");
         checkArgument(BackendFactoryRegistry.getInstance().isRegistered(uri.scheme()),
                 "Unregistered scheme (%s)", uri.scheme());
 

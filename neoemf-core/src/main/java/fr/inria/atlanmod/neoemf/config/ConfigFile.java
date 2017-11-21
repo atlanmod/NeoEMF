@@ -54,7 +54,7 @@ final class ConfigFile {
      * @throws NullPointerException if {@code file} is {@code null}
      */
     private ConfigFile(Path file) throws IOException {
-        this.file = checkNotNull(file);
+        this.file = checkNotNull(file, "file");
 
         this.properties = new Properties();
         if (Files.exists(file)) {
@@ -113,7 +113,7 @@ final class ConfigFile {
      * @return the value, or {@code null} if the {@code key} does not exist
      */
     public String get(String key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         return properties.getProperty(key);
     }
@@ -125,8 +125,8 @@ final class ConfigFile {
      * @param value the value
      */
     public void put(String key, String value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         properties.setProperty(key, value);
     }

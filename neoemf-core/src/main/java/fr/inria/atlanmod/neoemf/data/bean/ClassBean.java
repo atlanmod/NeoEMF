@@ -64,8 +64,8 @@ public class ClassBean implements Serializable {
      * @param uri  the literal representation of the {@link URI} of the {@link EClass}
      */
     protected ClassBean(String name, String uri) {
-        this.name = checkNotNull(name);
-        this.uri = checkNotNull(uri);
+        this.name = checkNotNull(name, "name");
+        this.uri = checkNotNull(uri, "uri");
 
         lazyClass = LazyReference.soft(() ->
                 Optional.ofNullable(EPackage.Registry.INSTANCE.getEPackage(uri))

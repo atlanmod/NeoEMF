@@ -48,7 +48,7 @@ public class PersistentStoreAdapter extends AbstractStoreAdapter {
      * @param resource the resource to store and access
      */
     public PersistentStoreAdapter(Store store, PersistentResource resource) {
-        super(store, checkNotNull(resource));
+        super(store, checkNotNull(resource, "resource"));
     }
 
     @Override

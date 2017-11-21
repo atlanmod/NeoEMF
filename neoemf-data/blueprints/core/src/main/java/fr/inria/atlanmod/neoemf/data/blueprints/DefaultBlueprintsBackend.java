@@ -59,7 +59,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         return get(key.owner()).map(v -> v.<V>getProperty(formatLabel(key)));
     }
@@ -67,8 +67,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         Vertex vertex = getOrCreate(key.owner());
 
@@ -80,7 +80,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Override
     public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         get(key.owner()).ifPresent(v -> v.removeProperty(formatLabel(key)));
     }
@@ -92,7 +92,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public Optional<Id> referenceOf(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
 
@@ -113,8 +113,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        checkNotNull(key);
-        checkNotNull(reference);
+        checkNotNull(key, "key");
+        checkNotNull(reference, "reference");
 
         Vertex vertex = getOrCreate(key.owner());
 
@@ -141,7 +141,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Override
     public void removeReference(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
 
@@ -165,7 +165,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         return get(key.owner()).map(v -> v.<V>getProperty(formatProperty(key, key.position())));
     }
@@ -173,7 +173,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
 
@@ -215,8 +215,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         Optional<Vertex> vertex = get(key.owner());
 
@@ -237,8 +237,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Override
     public <V> void addValue(ManyFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
         checkPositionIndex(key.position(), size);
@@ -257,8 +257,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Override
     public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key);
-        checkNotNull(collection);
+        checkNotNull(key, "key");
+        checkNotNull(collection, "collection");
 
         if (collection.isEmpty()) {
             return;
@@ -291,7 +291,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
         if (!vertex.isPresent()) {
@@ -319,7 +319,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Override
     public void removeAllValues(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
 
@@ -337,7 +337,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnegative
     @Override
     public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         return get(key.owner())
                 .map(v -> v.<Integer>getProperty(formatProperty(key, PROPERTY_SIZE)))
@@ -351,8 +351,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
      * @param size the number of value
      */
     protected void sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
-        checkNotNull(key);
-        checkArgument(size >= 0);
+        checkNotNull(key, "key");
+        checkArgument(size >= 0, "size (%d) must not be negative");
 
         Optional<Vertex> vertex = get(key.owner());
 
@@ -375,7 +375,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public Optional<Id> referenceOf(ManyFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
 
@@ -397,7 +397,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public Stream<Id> allReferencesOf(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
 
@@ -435,8 +435,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        checkNotNull(key);
-        checkNotNull(reference);
+        checkNotNull(key, "key");
+        checkNotNull(reference, "reference");
 
         Optional<Vertex> vertex = get(key.owner());
 
@@ -471,8 +471,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Override
     public void addReference(ManyFeatureBean key, Id reference) {
-        checkNotNull(key);
-        checkNotNull(reference);
+        checkNotNull(key, "key");
+        checkNotNull(reference, "reference");
 
         int size = sizeOfReference(key.withoutPosition()).orElse(0);
         checkPositionIndex(key.position(), size);
@@ -505,8 +505,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Override
     public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        checkNotNull(key);
-        checkNotNull(collection);
+        checkNotNull(key, "key");
+        checkNotNull(collection, "collection");
 
         if (collection.isEmpty()) {
             return;
@@ -553,7 +553,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
         if (!vertex.isPresent()) {
@@ -595,7 +595,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Override
     public void removeAllReferences(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
 

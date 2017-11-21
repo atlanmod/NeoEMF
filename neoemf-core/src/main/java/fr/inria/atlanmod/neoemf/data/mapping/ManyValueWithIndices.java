@@ -76,8 +76,8 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         Optional<V> previousValue = valueOf(key);
         if (!previousValue.isPresent()) {
@@ -91,8 +91,8 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
     @Override
     default <V> void addValue(ManyFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
         checkPositionIndex(key.position(), size);
@@ -108,8 +108,8 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
     @Override
     default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key);
-        checkNotNull(collection);
+        checkNotNull(key, "key");
+        checkNotNull(collection, "collection");
 
         if (collection.contains(null)) {
             throw new NullPointerException();
@@ -124,7 +124,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> removeValue(ManyFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         int size = sizeOfValue(key.withoutPosition()).orElse(0);
         if (size == 0) {
@@ -156,7 +156,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnegative
     @Override
     default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         return this.<Integer>valueOf(key)
                 .filter(s -> s > 0);
@@ -172,8 +172,8 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      * @throws IllegalArgumentException if {@code size < 0}
      */
     default void sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
-        checkNotNull(key);
-        checkArgument(size >= 0);
+        checkNotNull(key, "key");
+        checkArgument(size >= 0, "size (%d) must not be negative");
 
         if (size > 0) {
             valueFor(key, size);

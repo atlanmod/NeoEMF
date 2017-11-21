@@ -15,7 +15,6 @@ import fr.inria.atlanmod.commons.log.Log;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -102,7 +101,7 @@ public class LogStore extends AbstractListenerStore {
             sb.append(" but failed");
 
             if (nonNull(info.thrownException())) {
-                sb.append(" with ").append(checkNotNull(info.thrownException()).getClass().getSimpleName());
+                sb.append(" with ").append(info.thrownException().getClass().getSimpleName());
             }
         }
 

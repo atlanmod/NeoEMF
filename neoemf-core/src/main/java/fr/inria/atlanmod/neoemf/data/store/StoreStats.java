@@ -40,7 +40,7 @@ public final class StoreStats {
      * @param methodCalls the map of method calls with their number of invocation; the values ​​will remain unchanged
      */
     public StoreStats(Map<String, AtomicLong> methodCalls) {
-        checkNotNull(methodCalls);
+        checkNotNull(methodCalls, "methodCalls");
 
         this.methodCalls = Collections.unmodifiableMap(sortMethodCalls(methodCalls));
     }

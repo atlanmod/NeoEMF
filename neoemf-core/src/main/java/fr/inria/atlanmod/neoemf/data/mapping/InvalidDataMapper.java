@@ -42,7 +42,7 @@ public class InvalidDataMapper implements DataMapper {
      * @param e the exception thrown when calling unsupported methods
      */
     public InvalidDataMapper(Supplier<RuntimeException> e) {
-        this.e = checkNotNull(e);
+        this.e = checkNotNull(e, "e");
     }
 
     @Override

@@ -32,7 +32,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
@@ -95,7 +94,7 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
             Connection connection = ConnectionFactory.createConnection(configuration);
             Admin admin = connection.getAdmin();
 
-            String path = checkNotNull(uri).segmentsList().stream()
+            String path = uri.segmentsList().stream()
                     .map(s -> s.replaceAll("-", "_"))
                     .collect(Collectors.joining("_"));
 

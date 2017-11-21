@@ -88,7 +88,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
      */
     @SuppressWarnings("unchecked")
     protected AbstractMapDbBackend(DB database) {
-        checkNotNull(database);
+        checkNotNull(database, "database");
 
         this.database = database;
 
@@ -142,22 +142,22 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     @Nonnull
     @Override
     public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         return get(containers, id);
     }
 
     @Override
     public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id);
-        checkNotNull(container);
+        checkNotNull(id, "id");
+        checkNotNull(container, "container");
 
         put(containers, id, container);
     }
 
     @Override
     public void removeContainer(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         delete(containers, id);
     }
@@ -165,15 +165,15 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     @Nonnull
     @Override
     public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         return get(instances, id);
     }
 
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id);
-        checkNotNull(metaClass);
+        checkNotNull(id, "id");
+        checkNotNull(metaClass, "metaClass");
 
         return putIfAbsent(instances, id, metaClass);
     }
@@ -190,7 +190,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         return get(singleFeatures, key);
     }
@@ -198,15 +198,15 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         return put(singleFeatures, key, value);
     }
 
     @Override
     public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         delete(singleFeatures, key);
     }
@@ -300,7 +300,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
          * @param delegate the serializer where to delegate the serialization process
          */
         public SerializerDecorator(fr.inria.atlanmod.commons.io.serializer.Serializer<T> delegate) {
-            checkNotNull(delegate);
+            checkNotNull(delegate, "delegate");
 
             this.delegate = delegate;
         }

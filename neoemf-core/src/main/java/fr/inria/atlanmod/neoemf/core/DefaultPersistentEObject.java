@@ -63,29 +63,25 @@ import static java.util.Objects.nonNull;
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
     /**
-     * The {@link StoreAdapter} where this object is stored.
-     */
-    @Nonnull
-    private final LazyObject<StoreAdapter> lazyStore = LazyObject.with(() -> getOrCreateStore(resource()));
-
-    /**
      * The cached container of this object.
      */
     @Nonnull
     private final LazyReference<PersistentEObject> lazyContainer = LazyReference.soft(() -> eStore().getContainer(this));
-
     /**
      * The identifier of this object.
      */
     @Nonnull
     private Id id;
-
     /**
      * The resource containing this object.
      */
     @Nullable
     private Resource.Internal resource;
-
+    /**
+     * The {@link StoreAdapter} where this object is stored.
+     */
+    @Nonnull
+    private final LazyObject<StoreAdapter> lazyStore = LazyObject.with(() -> getOrCreateStore(resource()));
     /**
      * {@code true} if this object is being attached to a resource. This avoids an infinite loop when copying a fully
      * transient backend to a persistent one.
@@ -116,7 +112,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      */
     @VisibleForTesting
     public DefaultPersistentEObject(Id id) {
-        this.id = checkNotNull(id);
+        this.id = checkNotNull(id, "id");
     }
 
     @Nonnull
@@ -130,7 +126,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public void id(Id newId) {
-        this.id = checkNotNull(newId);
+        this.id = checkNotNull(newId, "newId");
     }
 
     @Override
@@ -168,7 +164,8 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Override
     public void eSetStore(EStore store) {
-        checkArgument(StoreAdapter.class.isInstance(store));
+        checkNotNull(store, "store");
+        checkArgument(StoreAdapter.class.isInstance(store), "store must be instance of %d, but was not", StoreAdapter.class.getName());
         refreshStore(StoreAdapter.class.cast(store));
     }
 
@@ -315,7 +312,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * @see #resource()
      */
     private void refreshStore(StoreAdapter newStore) {
-        checkNotNull(newStore);
+        checkNotNull(newStore, "newStore");
 
         if (lazyStore.isLoaded()) {
             StoreAdapter currentStore = lazyStore.get();

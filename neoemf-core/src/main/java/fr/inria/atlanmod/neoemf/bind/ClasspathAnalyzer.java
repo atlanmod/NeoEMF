@@ -135,7 +135,7 @@ final class ClasspathAnalyzer {
      * @throws NullPointerException if {@code callable} is {@code null}
      */
     public void register(Callable<Collection<URL>> callable) {
-        checkNotNull(callable);
+        checkNotNull(callable, "callable");
 
         phaser.register();
 
@@ -147,7 +147,7 @@ final class ClasspathAnalyzer {
                         .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
 
                 // Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)
-                checkNotNull(callable.call())
+                checkNotNull(callable.call(), "callable.call")
                         .stream()
                         .filter(url -> isRelated(url, baseConfig))
                         .map(URL_CONVERTER::convert)

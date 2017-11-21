@@ -37,7 +37,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         return this.<List<V>>valueOf(key.withoutPosition())
                 .filter(values -> key.position() < values.size())
@@ -55,8 +55,8 @@ public interface ManyValueWithLists extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
@@ -70,8 +70,8 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Override
     default <V> void addValue(ManyFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElseGet(() -> getOrCreateList(key.withoutPosition()));
@@ -85,8 +85,8 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Override
     default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key);
-        checkNotNull(collection);
+        checkNotNull(key, "key");
+        checkNotNull(collection, "collection");
 
         if (collection.isEmpty()) {
             return;
@@ -110,7 +110,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> removeValue(ManyFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .orElse(null);

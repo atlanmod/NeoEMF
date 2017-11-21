@@ -65,7 +65,7 @@ public final class StoreFactory extends AbstractMapperFactory {
      */
     @Nonnull
     public Store createStore(Backend backend, ImmutableConfig baseConfig) {
-        checkNotNull(baseConfig);
+        checkNotNull(baseConfig, "baseConfig");
 
         // The tail of the store chain
         Store currentStore = createDefaultStore(backend);

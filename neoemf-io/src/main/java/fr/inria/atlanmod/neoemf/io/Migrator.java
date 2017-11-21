@@ -121,9 +121,9 @@ public final class Migrator<T> {
      */
     @Nonnull
     public static Migrator<InputStream> fromXmi(File file) throws IOException {
-        checkArgument(file.exists());
-        checkArgument(!file.isDirectory());
-        checkArgument(file.canRead());
+        checkArgument(file.exists(), "file does not exists : %s", file.getAbsolutePath());
+        checkArgument(!file.isDirectory(), "file must not be a directory");
+        checkArgument(file.canRead(), "file cannot be read");
 
         return fromXmi(new FileInputStream(file));
     }
@@ -332,7 +332,7 @@ public final class Migrator<T> {
     // TODO Handle constructor parameters
     @SuppressWarnings("JavaReflectionMemberAccess")
     public void migrate() throws IOException {
-        checkNotNull(writers);
+        checkNotNull(writers, "writers");
 
         Processor processor = new NoopProcessor(writers.toArray(new Writer[writers.size()]));
 

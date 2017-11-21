@@ -140,7 +140,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * @see BlueprintsBackendFactory
      */
     protected AbstractBlueprintsBackend(KeyIndexableGraph baseGraph) {
-        checkNotNull(baseGraph);
+        checkNotNull(baseGraph, "baseGraph");
 
         graph = new SmartIdGraph(baseGraph);
 
@@ -251,7 +251,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     @Nonnull
     @Override
     public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         Optional<Vertex> containmentVertex = get(id);
 
@@ -273,8 +273,8 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
     @Override
     public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id);
-        checkNotNull(container);
+        checkNotNull(id, "id");
+        checkNotNull(container, "container");
 
         Vertex containmentVertex = getOrCreate(id);
         Vertex containerVertex = getOrCreate(container.owner());
@@ -293,7 +293,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
     @Override
     public void removeContainer(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         Optional<Vertex> containmentVertex = get(id);
 
@@ -313,7 +313,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     @Nonnull
     @Override
     public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         Optional<Vertex> vertex = get(id);
 
@@ -335,8 +335,8 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id);
-        checkNotNull(metaClass);
+        checkNotNull(id, "id");
+        checkNotNull(metaClass, "metaClass");
 
         Vertex vertex = getOrCreate(id);
 

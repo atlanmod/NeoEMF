@@ -267,7 +267,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
          */
         @Nonnull
         public String path(String name) {
-            checkNotNull(name);
+            checkNotNull(name, "name");
 
             StringBuilder str = new StringBuilder(START_ELT);
             boolean first = true;
@@ -349,7 +349,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
              * @param name the name of this node
              */
             public XPathNode(String name) {
-                this.name = checkNotNull(name);
+                this.name = checkNotNull(name, "name");
             }
 
             /**

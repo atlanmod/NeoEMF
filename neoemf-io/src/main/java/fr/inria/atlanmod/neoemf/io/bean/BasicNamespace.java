@@ -116,7 +116,7 @@ public class BasicNamespace {
      * @param ePackage the {@link EPackage}
      */
     public void ePackage(EPackage ePackage) {
-        this.ePackage = checkNotNull(ePackage);
+        this.ePackage = checkNotNull(ePackage, "ePackage");
     }
 
     @Override

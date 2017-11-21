@@ -63,8 +63,8 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
     @Nonnull
     @Override
     default Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        checkNotNull(key);
-        checkNotNull(reference);
+        checkNotNull(key, "key");
+        checkNotNull(reference, "reference");
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
@@ -83,8 +83,8 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
     @Override
     default void addReference(ManyFeatureBean key, Id reference) {
-        checkNotNull(key);
-        checkNotNull(reference);
+        checkNotNull(key, "key");
+        checkNotNull(reference, "reference");
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
@@ -101,8 +101,8 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
     @Override
     default void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        checkNotNull(key);
-        checkNotNull(collection);
+        checkNotNull(key, "key");
+        checkNotNull(collection, "collection");
 
         if (collection.isEmpty()) {
             return;
@@ -129,7 +129,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
     @Nonnull
     @Override
     default Optional<Id> removeReference(ManyFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 

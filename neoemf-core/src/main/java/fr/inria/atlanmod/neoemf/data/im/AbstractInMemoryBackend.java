@@ -118,28 +118,28 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
      * @param key the key to check
      */
     protected void checkKey(FeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
     }
 
     @Nonnull
     @Override
     public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         return Optional.ofNullable(containers().get(id));
     }
 
     @Override
     public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id);
-        checkNotNull(container);
+        checkNotNull(id, "id");
+        checkNotNull(container, "container");
 
         containers().put(id, container);
     }
 
     @Override
     public void removeContainer(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         containers().remove(id);
     }
@@ -147,15 +147,15 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     @Nonnull
     @Override
     public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         return Optional.ofNullable(instances().get(id));
     }
 
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id);
-        checkNotNull(metaClass);
+        checkNotNull(id, "id");
+        checkNotNull(metaClass, "metaClass");
 
         return isNull(instances().putIfAbsent(id, metaClass));
     }
@@ -181,7 +181,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     @Override
     public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
         checkKey(key);
-        checkNotNull(value);
+        checkNotNull(value, "value");
 
         return Optional.ofNullable(cast(features().put(key, value)));
     }

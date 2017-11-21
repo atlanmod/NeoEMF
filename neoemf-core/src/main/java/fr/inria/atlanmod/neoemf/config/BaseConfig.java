@@ -144,7 +144,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      */
     @Nonnull
     protected static String createKey(String... segments) {
-        checkNotNull(segments);
+        checkNotNull(segments, "segments");
         return Arrays.stream(segments).collect(Collectors.joining("."));
     }
 
@@ -198,18 +198,21 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Nonnull
     @Override
     public <T> C addOption(String key, T value) {
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
+
         if (isReadOnlyKey().test(key)) {
             checkConflict(key, value);
         }
 
-        options.put(checkNotNull(key), checkNotNull(value));
+        options.put(key, value);
         return me();
     }
 
     @Nonnull
     @Override
     public C addStoreType(ConfigType<? extends Store> storeType) {
-        checkNotNull(storeType);
+        checkNotNull(storeType, "storeType");
 
         if (!stores.add(storeType)) {
             Log.debug("The store has already been defined ({0})", storeType);
@@ -273,7 +276,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Nonnull
     @Override
     public C log(Level level) {
-        return log().addOption(STORE_LOG_LEVEL, checkNotNull(level));
+        return log().addOption(STORE_LOG_LEVEL, level);
     }
 
     @Nonnull
@@ -298,7 +301,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Override
     @SuppressWarnings("unchecked")
     public C merge(Map<String, ?> map) {
-        checkNotNull(map);
+        checkNotNull(map, "map");
 
         // Copy the map to a mutable map
         final Map<String, Object> mutableMap = new TreeMap<>(map);
@@ -317,7 +320,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Nonnull
     @Override
     public final C merge(ImmutableConfig config) {
-        checkNotNull(config);
+        checkNotNull(config, "config");
 
         return merge(config.toMap());
     }
@@ -396,7 +399,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
         }
 
         // Don't use addOption to avoid double checking
-        options.put(BACKEND_MAPPING, checkNotNull(mappingClass.getName()));
+        options.put(BACKEND_MAPPING, checkNotNull(mappingClass.getName(), "mapping.name"));
         return me();
     }
 

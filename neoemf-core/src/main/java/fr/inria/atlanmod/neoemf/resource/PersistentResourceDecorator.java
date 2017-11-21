@@ -52,7 +52,7 @@ public class PersistentResourceDecorator implements PersistentResource {
      * @param resource the underlying resource
      */
     public PersistentResourceDecorator(PersistentResource resource) {
-        this.resource = checkNotNull(resource);
+        this.resource = checkNotNull(resource, "resource");
     }
 
     @Override

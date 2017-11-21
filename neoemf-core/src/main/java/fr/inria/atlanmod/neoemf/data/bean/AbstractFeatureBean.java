@@ -76,7 +76,7 @@ public abstract class AbstractFeatureBean implements FeatureBean {
      * @throws IllegalArgumentException if the {@code position} is negative when {@code isMany() == true}
      */
     protected AbstractFeatureBean(Id owner, int id, int position) {
-        this.owner = checkNotNull(owner);
+        this.owner = checkNotNull(owner, "owner");
         this.id = id;
 
         if (isMany()) {

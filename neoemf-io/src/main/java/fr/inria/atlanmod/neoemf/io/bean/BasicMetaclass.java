@@ -59,7 +59,7 @@ public class BasicMetaclass extends AbstractNamedElement {
      * @param name the name of this meta-class
      */
     public BasicMetaclass(BasicNamespace ns, @Nullable String name) {
-        this.ns = checkNotNull(ns);
+        this.ns = checkNotNull(ns, "ns");
 
         if (nonNull(name)) {
             name(name);
@@ -94,7 +94,7 @@ public class BasicMetaclass extends AbstractNamedElement {
     @Nonnull
     public EClass eClass() {
         if (isNull(eClass)) {
-            eClass = checkNotNull(EClass.class.cast(ns().ePackage().getEClassifier(name())));
+            eClass = checkNotNull(EClass.class.cast(ns().ePackage().getEClassifier(name())), "eClass");
         }
         return eClass;
     }
@@ -105,7 +105,7 @@ public class BasicMetaclass extends AbstractNamedElement {
      * @param eClass the {@link EClass}
      */
     public void eClass(EClass eClass) {
-        this.eClass = checkNotNull(eClass);
+        this.eClass = checkNotNull(eClass, "eClass");
         name(eClass.getName());
     }
 

@@ -45,7 +45,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
      * @param mapper the inner mapper
      */
     protected AbstractMapperDecorator(M mapper) {
-        this.next = checkNotNull(mapper);
+        this.next = checkNotNull(mapper, "mapper");
 
         Log.debug("{0} created", getClass().getSimpleName());
     }

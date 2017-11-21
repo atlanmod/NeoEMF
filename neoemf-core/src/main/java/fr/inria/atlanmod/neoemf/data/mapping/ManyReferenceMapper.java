@@ -108,7 +108,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      */
     @Nonnegative
     default int appendReference(SingleFeatureBean key, Id reference) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         int position = sizeOfReference(key).orElse(0);
 
@@ -131,8 +131,8 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      */
     @Nonnegative
     default int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        checkNotNull(key);
-        checkNotNull(collection);
+        checkNotNull(key, "key");
+        checkNotNull(collection, "collection");
 
         int firstPosition = sizeOfReference(key).orElse(0);
 

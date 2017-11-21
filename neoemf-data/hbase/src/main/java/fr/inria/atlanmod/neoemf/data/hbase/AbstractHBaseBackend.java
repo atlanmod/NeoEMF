@@ -103,7 +103,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
      * @param table the HBase table
      */
     protected AbstractHBaseBackend(Table table) {
-        checkNotNull(table);
+        checkNotNull(table, "table");
 
         this.table = table;
     }
@@ -121,7 +121,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     @Nonnull
     @Override
     public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         try {
             Get get = new Get(AS_BYTES.convert(id));
@@ -148,8 +148,8 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
     @Override
     public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id);
-        checkNotNull(container);
+        checkNotNull(id, "id");
+        checkNotNull(container, "container");
 
         try {
             Put put = new Put(AS_BYTES.convert(id))
@@ -165,7 +165,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
     @Override
     public void removeContainer(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         try {
             Delete delete = new Delete(AS_BYTES.convert(id))
@@ -182,7 +182,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     @Nonnull
     @Override
     public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         try {
             Get get = new Get(AS_BYTES.convert(id));
@@ -209,8 +209,8 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id);
-        checkNotNull(metaClass);
+        checkNotNull(id, "id");
+        checkNotNull(metaClass, "metaClass");
 
         try {
             byte[] row = AS_BYTES.convert(id);
@@ -242,7 +242,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         try {
             Get get = new Get(AS_BYTES.convert(key.owner()));
@@ -269,8 +269,8 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         Optional<V> previousValue = valueOf(key);
 
@@ -289,7 +289,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
     @Override
     public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         try {
             Delete delete = new Delete(AS_BYTES.convert(key.owner()))

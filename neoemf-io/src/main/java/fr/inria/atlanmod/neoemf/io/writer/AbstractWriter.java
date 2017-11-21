@@ -80,7 +80,7 @@ public abstract class AbstractWriter<T> implements Writer {
      * @param target the target where to write data
      */
     protected AbstractWriter(T target) {
-        this.target = checkNotNull(target);
+        this.target = checkNotNull(target, "target");
 
         Log.debug("{0} created", getClass().getSimpleName());
     }

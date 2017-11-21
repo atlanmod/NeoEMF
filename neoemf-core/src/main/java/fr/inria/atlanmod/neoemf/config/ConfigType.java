@@ -61,7 +61,7 @@ public class ConfigType<T> implements Comparable<ConfigType<T>> {
      * @param parameterKeys the keys used to retrieve the constructor parameters of the type in a configuration
      */
     public ConfigType(String typeName, int priority, String... parameterKeys) {
-        checkNotNull(typeName);
+        checkNotNull(typeName, "typeName");
 
         this.typeName = typeName;
         this.parameters = Arrays.asList(parameterKeys);

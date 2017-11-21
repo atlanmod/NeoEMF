@@ -36,7 +36,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         return this.<V[]>valueOf(key.withoutPosition())
                 .filter(values -> key.position() < values.length)
@@ -46,7 +46,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         return this.<V[]>valueOf(key)
                 .map(Arrays::stream)
@@ -56,8 +56,8 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
@@ -73,8 +73,8 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
     @Override
     default <V> void addValue(ManyFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
@@ -88,8 +88,8 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
     @Override
     default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key);
-        checkNotNull(collection);
+        checkNotNull(key, "key");
+        checkNotNull(collection, "collection");
 
         if (collection.isEmpty()) {
             return;
@@ -113,7 +113,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Optional<V> removeValue(ManyFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .orElse(null);

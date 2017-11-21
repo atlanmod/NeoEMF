@@ -82,7 +82,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
 
     @Override
     public final void read(InputStream source) throws IOException {
-        checkNotNull(source);
+        checkNotNull(source, "source");
 
         try (InputStream in = new BufferedInputStream(source)) {
             run(in);

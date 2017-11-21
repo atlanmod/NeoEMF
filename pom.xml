@@ -5,7 +5,7 @@
     <parent>
         <groupId>fr.inria.atlanmod.commons</groupId>
         <artifactId>commons</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1-SNAPSHOT</version>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf</groupId>
@@ -127,7 +127,7 @@
             <dependency>
                 <groupId>fr.inria.atlanmod.commons</groupId>
                 <artifactId>commons-core</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1-SNAPSHOT</version>
             </dependency>
 
             <!-- EMF -->
@@ -155,7 +155,7 @@
             <dependency>
                 <groupId>fr.inria.atlanmod.commons</groupId>
                 <artifactId>commons-core</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1-SNAPSHOT</version>
                 <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
@@ -325,7 +325,7 @@
         <profile>
             <id>allow-snapshots</id>
             <activation>
-                <!--<activeByDefault>true</activeByDefault>-->
+                <activeByDefault>true</activeByDefault>
             </activation>
             <repositories>
                 <repository>

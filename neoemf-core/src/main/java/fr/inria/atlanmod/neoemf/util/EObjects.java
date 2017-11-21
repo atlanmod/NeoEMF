@@ -122,6 +122,6 @@ public final class EObjects {
      * @throws ClassCastException   if the {@code object} is not an instance of {@code cls}
      */
     private static <T extends EObject> T as(Class<T> cls, Object object) {
-        return cls.cast(checkNotNull(object));
+        return cls.cast(checkNotNull(object, "object"));
     }
 }

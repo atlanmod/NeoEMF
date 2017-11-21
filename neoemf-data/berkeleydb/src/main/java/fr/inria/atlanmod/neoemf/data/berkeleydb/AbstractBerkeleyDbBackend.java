@@ -85,8 +85,8 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      * @param databaseConfig the configuration of the created {@link Database}s
      */
     protected AbstractBerkeleyDbBackend(Environment environment, DatabaseConfig databaseConfig) {
-        checkNotNull(environment);
-        checkNotNull(databaseConfig);
+        checkNotNull(environment, "environment");
+        checkNotNull(databaseConfig, "databaseConfig");
 
         this.environment = environment;
 
@@ -121,22 +121,22 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     @Nonnull
     @Override
     public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         return get(containers, id, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forSingleFeature());
     }
 
     @Override
     public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id);
-        checkNotNull(container);
+        checkNotNull(id, "id");
+        checkNotNull(container, "container");
 
         put(containers, id, container, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forSingleFeature());
     }
 
     @Override
     public void removeContainer(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         delete(containers, id, SERIALIZER_FACTORY.forId());
     }
@@ -144,15 +144,15 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     @Nonnull
     @Override
     public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         return get(instances, id, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forClass());
     }
 
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id);
-        checkNotNull(metaClass);
+        checkNotNull(id, "id");
+        checkNotNull(metaClass, "metaClass");
 
         return putIfAbsent(instances, id, metaClass, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forClass());
     }
@@ -183,7 +183,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     @Nonnull
     @Override
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         return get(features, key, SERIALIZER_FACTORY.forSingleFeature(), SERIALIZER_FACTORY.forAny());
     }
@@ -191,8 +191,8 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         Optional<V> previousValue = valueOf(key);
         put(features, key, value, SERIALIZER_FACTORY.forSingleFeature(), SERIALIZER_FACTORY.forAny());
@@ -201,7 +201,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     @Override
     public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key);
+        checkNotNull(key, "key");
 
         delete(features, key, SERIALIZER_FACTORY.forSingleFeature());
     }

@@ -117,7 +117,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Nonnull
     @Override
     public final PersistentEObject resolve(Id id) {
-        checkNotNull(id);
+        checkNotNull(id, "id");
 
         PersistentEObject object = cache().get(id, k ->
                 resolveInstanceOf(k)
@@ -135,8 +135,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Nullable
     @Override
     public final Object get(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         if (feature.isMany()) {
             checkElementIndex(index, size(internalObject, feature));
@@ -178,8 +178,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Nullable
     @Override
     public final Object set(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index, @Nullable Object value) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         if (isNull(value)) {
             Object previousValue = get(internalObject, feature, index);
@@ -229,8 +229,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
@@ -257,8 +257,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final void unset(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
@@ -285,8 +285,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final boolean isEmpty(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         checkArgument(feature.isMany(), "Cannot compute isEmpty() of a single-valued feature");
 
@@ -296,8 +296,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Nonnegative
     @Override
     public final int size(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
 
@@ -318,8 +318,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final boolean contains(InternalEObject internalObject, EStructuralFeature feature, @Nullable Object value) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         checkArgument(feature.isMany(), "Cannot compute contains() of a single-valued feature");
 
@@ -342,8 +342,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final int indexOf(InternalEObject internalObject, EStructuralFeature feature, @Nullable Object value) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         checkArgument(feature.isMany(), "Cannot compute indexOf() of a single-valued feature");
 
@@ -368,8 +368,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final int lastIndexOf(InternalEObject internalObject, EStructuralFeature feature, @Nullable Object value) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         checkArgument(feature.isMany(), "Cannot compute lastIndexOf() of a single-valued feature");
 
@@ -394,9 +394,9 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final void add(InternalEObject internalObject, EStructuralFeature feature, int index, Object value) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-        checkNotNull(value);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
+        checkNotNull(value, "value");
 
         checkArgument(feature.isMany(), "Cannot compute add() of a single-valued feature");
 
@@ -433,8 +433,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Nullable
     @Override
     public final Object remove(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         checkArgument(feature.isMany(), "Cannot compute remove() of a single-valued feature");
 
@@ -471,8 +471,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final void clear(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         checkArgument(feature.isMany(), "Cannot compute clear() of a single-valued feature");
 
@@ -492,8 +492,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Nonnull
     @Override
     public final Object[] toArray(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         return toArray(internalObject, feature, null);
     }
@@ -502,8 +502,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Override
     @SuppressWarnings("unchecked")
     public final <T> T[] toArray(InternalEObject internalObject, EStructuralFeature feature, @Nullable T[] array) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         List<T> values = (List<T>) getAll(internalObject, feature);
 
@@ -517,7 +517,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final PersistentEObject getContainer(InternalEObject internalObject) {
-        checkNotNull(internalObject);
+        checkNotNull(internalObject, "internalObject");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
 
@@ -528,7 +528,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final EReference getContainingFeature(InternalEObject internalObject) {
-        checkNotNull(internalObject);
+        checkNotNull(internalObject, "internalObject");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
 
@@ -541,8 +541,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Nonnull
     @Override
     public List<Object> getAll(InternalEObject internalObject, EStructuralFeature feature) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
@@ -585,9 +585,9 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public void setAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-        checkNotNull(values);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
+        checkNotNull(values, "values");
 
         checkArgument(feature.isMany(), "Cannot compute setAll() of a single-valued feature");
 
@@ -598,9 +598,9 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public int addAll(InternalEObject internalObject, EStructuralFeature feature, int index, Collection<?> values) {
-        checkNotNull(internalObject);
-        checkNotNull(feature);
-        checkNotNull(values);
+        checkNotNull(internalObject, "internalObject");
+        checkNotNull(feature, "feature");
+        checkNotNull(values, "values");
 
         checkArgument(feature.isMany(), "Cannot compute addAll() of a single-valued feature");
 

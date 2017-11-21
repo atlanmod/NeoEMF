@@ -111,8 +111,8 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnegative
     default <V> int appendValue(SingleFeatureBean key, V value) {
-        checkNotNull(key);
-        checkNotNull(value);
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         int position = sizeOfValue(key).orElse(0);
 
@@ -136,8 +136,8 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnegative
     default <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key);
-        checkNotNull(collection);
+        checkNotNull(key, "key");
+        checkNotNull(collection, "collection");
 
         int firstPosition = sizeOfValue(key).orElse(0);
 

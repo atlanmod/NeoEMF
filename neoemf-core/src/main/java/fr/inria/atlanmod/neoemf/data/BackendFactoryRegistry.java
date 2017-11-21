@@ -102,7 +102,7 @@ public final class BackendFactoryRegistry {
      */
     @Nonnull
     public BackendFactory getFactoryFor(String scheme) {
-        checkNotNull(scheme);
+        checkNotNull(scheme, "scheme");
 
         if (!factories.containsKey(scheme) && !initialized) {
             registerAll();
@@ -144,8 +144,8 @@ public final class BackendFactoryRegistry {
      * @throws NullPointerException if any argument is {@code null}
      */
     public void register(String scheme, BackendFactory factory) {
-        checkNotNull(scheme);
-        checkNotNull(factory);
+        checkNotNull(scheme, "scheme");
+        checkNotNull(factory, "factory");
 
         if (isNull(factories.put(scheme, factory))) {
             Log.info("Registered scheme: \"{0}\" = {1}", scheme, factory.getClass().getName());
@@ -181,7 +181,7 @@ public final class BackendFactoryRegistry {
      * @throws NullPointerException if any argument is {@code null}
      */
     public void unregister(String scheme) {
-        checkNotNull(scheme);
+        checkNotNull(scheme, "scheme");
 
         if (nonNull(factories.remove(scheme))) {
             Resource.Factory.Registry.INSTANCE

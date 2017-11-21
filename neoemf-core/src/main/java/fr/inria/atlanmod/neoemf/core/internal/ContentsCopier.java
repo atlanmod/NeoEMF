@@ -94,7 +94,7 @@ public final class ContentsCopier implements Copier<StoreAdapter> {
      * @param target  the target where to store the value
      */
     private void copySingleFeature(EStructuralFeature feature, StoreAdapter source, StoreAdapter target) {
-        checkArgument(!feature.isMany());
+        checkArgument(!feature.isMany(), "feature must be single-valued");
 
         Object value = source.get(object, feature, InternalEObject.EStore.NO_INDEX);
         if (nonNull(value)) {
@@ -114,7 +114,7 @@ public final class ContentsCopier implements Copier<StoreAdapter> {
      * @param target  the target where to store the value
      */
     private void copyManyFeature(EStructuralFeature feature, StoreAdapter source, StoreAdapter target) {
-        checkArgument(feature.isMany());
+        checkArgument(feature.isMany(), "feature must be multi-valued");
 
         List<Object> values = source.getAll(object, feature);
         if (!values.isEmpty()) {

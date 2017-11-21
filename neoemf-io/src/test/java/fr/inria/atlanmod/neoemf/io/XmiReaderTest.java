@@ -99,7 +99,7 @@ class XmiReaderTest extends AbstractTest {
             child = child.children().get(index);
         }
 
-        return checkNotNull(child);
+        return checkNotNull(child, "child");
     }
 
     @BeforeAll
@@ -359,7 +359,7 @@ class XmiReaderTest extends AbstractTest {
                     .migrate();
         }
 
-        return checkNotNull(writer.getRoot());
+        return checkNotNull(writer.getRoot(), "writer.root");
     }
 
     /**

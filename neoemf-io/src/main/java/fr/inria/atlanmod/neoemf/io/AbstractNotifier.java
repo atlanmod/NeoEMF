@@ -36,7 +36,7 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
      */
     @SafeVarargs
     public AbstractNotifier(H... handlers) {
-        checkNotNull(handlers);
+        checkNotNull(handlers, "handlers");
 
         this.handlers = Arrays.asList(handlers);
 

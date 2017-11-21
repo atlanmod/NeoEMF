@@ -57,7 +57,7 @@ final class ContextualResourceBuilder {
      * @see EPackage.Registry
      */
     public ContextualResourceBuilder(Context context) {
-        this.context = checkNotNull(context);
+        this.context = checkNotNull(context, "context");
         reset();
     }
 
@@ -95,7 +95,7 @@ final class ContextualResourceBuilder {
      */
     @Nonnull
     public ContextualResourceBuilder uri(URI uri) {
-        checkNotNull(uri);
+        checkNotNull(uri, "uri");
         this.uri = context.createUri(uri);
         return this;
     }
@@ -109,7 +109,7 @@ final class ContextualResourceBuilder {
      */
     @Nonnull
     public ContextualResourceBuilder file(File file) {
-        checkNotNull(file);
+        checkNotNull(file, "file");
         this.uri = context.createUri(file);
         return this;
     }

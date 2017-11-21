@@ -54,7 +54,7 @@ final class BundleContextAnalyzer {
      * @param baseContext the OSGi context to explore
      */
     public BundleContextAnalyzer(BundleContext baseContext) {
-        this.context = checkNotNull(baseContext);
+        this.context = checkNotNull(baseContext, "baseContext");
     }
 
     /**

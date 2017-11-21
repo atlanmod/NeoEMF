@@ -133,7 +133,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     @Override
     @SuppressWarnings("unchecked")
     public void copyTo(DataMapper target) {
-        checkNotNull(target);
+        checkNotNull(target, "target");
 
         if (isDistributed()) {
             Log.warn("Copy of a distributed back-end may lead to unexpected errors");

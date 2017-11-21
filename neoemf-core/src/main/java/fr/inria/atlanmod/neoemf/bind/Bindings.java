@@ -92,7 +92,7 @@ public final class Bindings {
      * @see fr.inria.atlanmod.neoemf.util.Activator#start(BundleContext)
      */
     public static void withContext(BundleContext context) {
-        checkNotNull(context);
+        checkNotNull(context, "context");
 
         ClasspathAnalyzer.getInstance().register(() ->
                 new BundleContextAnalyzer(context).getDependentBundles(context.getBundle()));
@@ -240,7 +240,7 @@ public final class Bindings {
     @Nonnull
     @SuppressWarnings("unchecked")
     public static BackendFactory factoryFor(Class<?> type) {
-        checkNotNull(type);
+        checkNotNull(type, "type");
 
         Class<? extends BackendFactory> factoryType = null;
 
