@@ -5,9 +5,11 @@ JDK="oraclejdk8"
 BRANCH="master"
 OS="linux"
 
-API_DIR="plugin"
-ROOT_API_DIR="releases/snapshot"
-TEMP_DIR="$HOME/$API_DIR"
+API_BRANCH="gh-pages"
+
+API_DIR=releases/snapshot/plugin
+GEN_DIR=plugins/eclipse/update/target/repository
+TEMP_DIR=${HOME}/repository
 
 if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
   echo "Skipping update-site publication: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
@@ -24,37 +26,33 @@ else
 
     mvn -B -q -f plugins/eclipse install &> /dev/null
 
-    if ! [ -d plugins/eclipse/update/target/repository ]; then
+    if ! [ -d "$GEN_DIR" ]; then
         echo -e "Skipping update-site publication: Update-site has not been built."
         exit
     fi
 
-    echo -e "Copying update-site..."
+    cp -Rfp "$GEN_DIR/"* "$TEMP_DIR/"
+    cd "$HOME"
 
-    cp -rf plugins/eclipse/update/target/repository ${TEMP_DIR}
-    cd $HOME
-
-    if ! [ -d "gh-pages" ]; then
-        echo -e "Cloning 'gh-pages' branch..."
+    if ! [ -d "$API_BRANCH" ]; then
+        echo -e "Cloning '$API_BRANCH' branch..."
 
         git config --global user.email "travis@travis-ci.org"
         git config --global user.name "travis-ci"
-        git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} gh-pages
+        git clone --quiet --branch=${API_BRANCH} https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} ${API_BRANCH}
     fi
 
     echo -e "Merging update-site..."
 
-    cd gh-pages
-
-    mkdir -p ${ROOT_API_DIR}
-    cd ${ROOT_API_DIR}
+    cd "$API_BRANCH"
 
     if [ -d "$API_DIR" ]; then
-        git rm --quiet -rf ${API_DIR}
+        git rm --quiet -rf "$API_DIR/"
     fi
 
-    cp -rf ${TEMP_DIR} ${API_DIR}
-    cp ${HOME}/gh-pages/updatesite/index.html ${API_DIR}/index.html
+    mkdir -p "$API_DIR"
+    cp -Rfp "$TEMP_DIR/"* "$API_DIR/"
+    cp "updatesite/index.html" "$API_DIR/index.html"
 
     git add -Af
 
@@ -67,8 +65,8 @@ else
 
     echo -e "Publishing update-site..."
 
-    git commit --quiet -m "[auto] update the update-site from Travis build $TRAVIS_BUILD_NUMBER"
-    git push --quiet -f origin gh-pages
+    git commit --quiet -m "[auto] update the update-site from Travis #$TRAVIS_BUILD_NUMBER"
+    git push --quiet -f origin ${API_BRANCH}
 
     echo -e "Update-site published."
 fi
