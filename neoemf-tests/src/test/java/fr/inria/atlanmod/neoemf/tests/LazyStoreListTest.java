@@ -26,8 +26,6 @@ import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.LazyStoreList}.
  */

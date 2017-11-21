@@ -12,7 +12,6 @@ import fr.inria.atlanmod.commons.annotation.Builder;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
-import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
@@ -42,6 +41,8 @@ import static java.util.Objects.nonNull;
 
 /**
  * A static utility class for binding and reflection.
+ *
+ * @see ClasspathCollector
  */
 @Static
 @ParametersAreNonnullByDefault
@@ -84,7 +85,7 @@ public final class Bindings {
     /**
      * Adds a {@link BundleContext} to be scanned for binding.
      * <p>
-     * <b>NOTE/</b> This method is intended for internal use and should not be call in standard use.
+     * <b>NOTE:</b> This method is intended for internal use and should not be call in standard use.
      *
      * @param context the OSGi context to add for scanning
      *
@@ -140,7 +141,7 @@ public final class Bindings {
     private static ConfigurationBuilder createConfiguration() {
         return new ConfigurationBuilder()
                 .setExecutorService(getBindingPool())
-                .setUrls(ClasspathCollector.getInstance().getUrls());
+                .setUrls(ClasspathCollector.getInstance().get());
     }
 
     /**

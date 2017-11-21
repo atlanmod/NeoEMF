@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.config;
 
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
-import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
+import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.InvalidConfigException;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;

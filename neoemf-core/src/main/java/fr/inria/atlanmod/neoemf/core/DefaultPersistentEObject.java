@@ -63,25 +63,29 @@ import static java.util.Objects.nonNull;
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
     /**
+     * The {@link StoreAdapter} where this object is stored.
+     */
+    @Nonnull
+    private final LazyObject<StoreAdapter> lazyStore = LazyObject.with(() -> getOrCreateStore(resource()));
+
+    /**
      * The cached container of this object.
      */
     @Nonnull
     private final LazyReference<PersistentEObject> lazyContainer = LazyReference.soft(() -> eStore().getContainer(this));
+
     /**
      * The identifier of this object.
      */
     @Nonnull
     private Id id;
+
     /**
      * The resource containing this object.
      */
     @Nullable
     private Resource.Internal resource;
-    /**
-     * The {@link StoreAdapter} where this object is stored.
-     */
-    @Nonnull
-    private final LazyObject<StoreAdapter> lazyStore = LazyObject.with(() -> getOrCreateStore(resource()));
+
     /**
      * {@code true} if this object is being attached to a resource. This avoids an infinite loop when copying a fully
      * transient backend to a persistent one.

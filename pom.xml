@@ -116,6 +116,7 @@
 
         <argLine.global>-XX:+UseConcMarkSweepGC</argLine.global>
 
+        <commons.version>1.0.1-SNAPSHOT</commons.version>
         <emf.version>2.12.0</emf.version>
     </properties>
 
@@ -127,7 +128,7 @@
             <dependency>
                 <groupId>fr.inria.atlanmod.commons</groupId>
                 <artifactId>commons-core</artifactId>
-                <version>1.0.1-SNAPSHOT</version>
+                <version>${commons.version}</version>
             </dependency>
 
             <!-- EMF -->
@@ -155,7 +156,7 @@
             <dependency>
                 <groupId>fr.inria.atlanmod.commons</groupId>
                 <artifactId>commons-core</artifactId>
-                <version>1.0.1-SNAPSHOT</version>
+                <version>${commons.version}</version>
                 <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
@@ -221,6 +222,7 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>3.0.0-M1</version>
                     <configuration>
+                        <overview>overview.html</overview>
                         <groups>
                             <group>
                                 <title>Core</title>
@@ -229,6 +231,10 @@
                             <group>
                                 <title>I/O</title>
                                 <packages>fr.inria.atlanmod.neoemf.io*</packages>
+                            </group>
+                            <group>
+                                <title>In-memory (default)</title>
+                                <packages>fr.inria.atlanmod.neoemf.data.im*</packages>
                             </group>
                             <group>
                                 <title>Blueprints</title>
@@ -279,6 +285,12 @@
             <dependencies>
 
                 <dependency>
+                    <groupId>fr.inria.atlanmod.commons</groupId>
+                    <artifactId>commons-core</artifactId>
+                    <version>${commons.version}</version>
+                </dependency>
+
+                <dependency>
                     <groupId>org.eclipse.emf</groupId>
                     <artifactId>org.eclipse.emf.common</artifactId>
                     <version>${emf.version}</version>
@@ -302,15 +314,18 @@
                             <configuration>
                                 <includeDependencySources>true</includeDependencySources>
                                 <dependencySourceIncludes>
+                                    <dependencySourceInclude>fr.inria.atlanmod.commons:*</dependencySourceInclude>
                                     <dependencySourceInclude>org.eclipse.emf:*</dependencySourceInclude>
                                 </dependencySourceIncludes>
                                 <excludePackageNames>
+                                    fr.inria.atlanmod.commons*;
                                     fr.inria.atlanmod.neoemf.tests*;
                                     org.eclipse.emf*;
                                     javax.annotation*;
                                 </excludePackageNames>
                                 <detectLinks>true</detectLinks>
                                 <links>
+                                    <link>https://atlanmod.github.io/Commons/releases/latest/doc/</link>
                                     <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
                                 </links>
                             </configuration>

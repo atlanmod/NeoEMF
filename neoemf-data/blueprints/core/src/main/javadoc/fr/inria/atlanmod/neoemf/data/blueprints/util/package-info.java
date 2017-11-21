@@ -7,7 +7,7 @@
  */
 
 /**
- * Provides utility classes to create Blueprints specific URIs.
+ * Provides utility classes related to Blueprints.
  * <p>
  * This package defines the {@link fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri} class, that extends
  * {@link fr.inria.atlanmod.neoemf.util.UriBuilder} to create Blueprints specific URIs. {@link

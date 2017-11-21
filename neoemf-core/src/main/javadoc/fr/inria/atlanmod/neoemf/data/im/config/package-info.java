@@ -7,7 +7,7 @@
  */
 
 /**
- * Provides utility classes related to BerkeleyDB.
+ * Provides configuration classes to define specific behaviors of the default in-memory database.
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
+package fr.inria.atlanmod.neoemf.data.im.config;

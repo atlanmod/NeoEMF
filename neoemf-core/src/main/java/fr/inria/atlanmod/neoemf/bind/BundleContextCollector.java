@@ -36,7 +36,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * The {@link Bundle}s are located with their {@link URL} by using {@code org.eclipse.core.runtime.FileLocator#getBundleFile()}.
  */
 @ParametersAreNonnullByDefault
-final class BundleContextCollector implements URLCollector {
+public class BundleContextCollector implements URLCollector {
 
     /**
      * The {@code FileLocator#getBundleFile(Bundle)} method.
@@ -93,7 +93,7 @@ final class BundleContextCollector implements URLCollector {
 
     @Nonnull
     @Override
-    public Set<URL> getUrls() {
+    public Set<URL> get() {
         Bundle coreBundle = context.getBundle();
         return collectDependentBundles(coreBundle);
     }

@@ -7,7 +7,7 @@
  */
 
 /**
- * Provides utility classes to create MapDB specific URIs.
+ * Provides utility classes related to MapDB.
  * <p>
  * This package defines the {@link fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI} class, that extends {@link
  * fr.inria.atlanmod.neoemf.util.URIBuilder} to create MapDB specific URIs. {@link

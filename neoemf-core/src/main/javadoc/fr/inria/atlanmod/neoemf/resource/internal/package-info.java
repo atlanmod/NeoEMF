@@ -7,7 +7,7 @@
  */
 
 /**
- * Provides utility classes related to BerkeleyDB.
+ * Provides helper classes for base classes related to {@link org.eclipse.emf.ecore.resource.Resource}s.
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
+package fr.inria.atlanmod.neoemf.resource.internal;

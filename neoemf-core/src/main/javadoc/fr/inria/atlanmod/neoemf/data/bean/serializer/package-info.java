@@ -10,4 +10,4 @@
  * Provides classes related to bean serialization.
  */
 
-package fr.inria.atlanmod.neoemf.data.serializer;
+package fr.inria.atlanmod.neoemf.data.bean.serializer;

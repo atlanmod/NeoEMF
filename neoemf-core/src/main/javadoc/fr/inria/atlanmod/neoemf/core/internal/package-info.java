@@ -7,7 +7,7 @@
  */
 
 /**
- * Provides utility classes related to BerkeleyDB.
+ * Provides helper classes for the base classes, such as lazy collections.
  */
 
-package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
+package fr.inria.atlanmod.neoemf.core.internal;

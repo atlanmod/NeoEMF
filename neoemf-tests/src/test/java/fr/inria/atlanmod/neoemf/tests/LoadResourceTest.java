@@ -25,8 +25,6 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * A test-case that checks the behavior of a loaded {@link PersistentResource}.
  */

@@ -7,7 +7,7 @@
  */
 
 /**
- * Provides utility classes to provide modeling and persistence level configuration to NeoEMF.
+ * Provides utility classes to provide modeling and persistence-level configuration.
  * <p>
  * NeoEMF can be customized by using specific options that are provided to the {@link
  * fr.inria.atlanmod.neoemf.resource.PersistentResource#save(java.util.Map)} and {@link

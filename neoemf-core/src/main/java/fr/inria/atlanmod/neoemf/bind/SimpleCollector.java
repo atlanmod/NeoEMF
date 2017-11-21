@@ -23,7 +23,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * An {@link URLCollector} that delegate its analysis.
  */
 @ParametersAreNonnullByDefault
-class SimpleCollector implements URLCollector {
+public class SimpleCollector implements URLCollector {
 
     /**
      * The supplier of {@link URL}s.
@@ -42,7 +42,7 @@ class SimpleCollector implements URLCollector {
 
     @Nonnull
     @Override
-    public Set<URL> getUrls() {
+    public Set<URL> get() {
         return new HashSet<>(urlSupplier.get());
     }
 }

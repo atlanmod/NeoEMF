@@ -11,7 +11,7 @@
  */
 
 /**
- * Provides utility classes to define specific behaviors of Neo4j data persistence.
+ * Provides configuration classes to define specific behaviors of Neo4j data persistence.
  * <p>
  * Configuration defined using the classes inside this package are only usable with Neo4j as the concrete implementation
  * of the Blueprints API. Neo4j specific configuration can be combined with Blueprints generic configuration.

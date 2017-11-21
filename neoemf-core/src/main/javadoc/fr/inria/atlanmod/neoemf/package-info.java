@@ -7,7 +7,7 @@
  */
 
 /**
- * Provides all NeoEMF features.
+ * The base package of all NeoEMF features.
  */
 
 package fr.inria.atlanmod.neoemf;

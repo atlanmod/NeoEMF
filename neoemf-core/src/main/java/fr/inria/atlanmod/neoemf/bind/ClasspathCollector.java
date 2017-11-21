@@ -13,7 +13,6 @@ import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -44,7 +43,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  */
 @Singleton
 @ParametersAreNonnullByDefault
-final class ClasspathCollector implements URLCollector {
+public class ClasspathCollector implements URLCollector {
 
     /**
      * The {@link Converter} used to manipulate {@link URI}s instead of {@link URL}s.
@@ -90,7 +89,7 @@ final class ClasspathCollector implements URLCollector {
 
     /**
      * A phaser representing the number of classpath analysis in progress. When {@code phaser.getPhase() > 0}, at least
-     * one analysis is in progress, and all calls to {@link #getUrls()} will wait for all tasks to complete.
+     * one analysis is in progress, and all calls to {@link #get()} will wait for all tasks to complete.
      */
     @Nonnull
     private final Phaser phaser = new Phaser(READY);
@@ -113,7 +112,7 @@ final class ClasspathCollector implements URLCollector {
 
     @Nonnull
     @Override
-    public Set<URL> getUrls() {
+    public Set<URL> get() {
         // Waiting for classpath analysis
         phaser.awaitAdvance(READY);
 
@@ -142,7 +141,7 @@ final class ClasspathCollector implements URLCollector {
                         .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
 
                 // Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)
-                urlCollector.getUrls()
+                this.get()
                         .stream()
                         .filter(url -> isRelated(url, baseConfig))
                         .map(URL_TO_URI::convert)

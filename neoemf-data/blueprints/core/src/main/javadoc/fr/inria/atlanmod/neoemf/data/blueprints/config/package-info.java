@@ -7,7 +7,7 @@
  */
 
 /**
- * Provides utility classes to define specific behaviors of Blueprints data persistence.
+ * Provides configuration classes to define specific behaviors of Blueprints data persistence.
  * <p>
  * Configuration defined using the classes inside this package are usable for each Blueprints implementation. For
  * backend-specific configuration refers to the corresponding package in the backend plugin.

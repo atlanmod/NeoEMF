@@ -24,8 +24,6 @@ import java.util.Iterator;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * A test-case that checks the behavior of a saved {@link PersistentResource}.
  */

@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
-import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
+import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;

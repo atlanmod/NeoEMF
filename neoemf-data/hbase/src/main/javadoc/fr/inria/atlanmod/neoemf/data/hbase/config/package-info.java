@@ -7,7 +7,7 @@
  */
 
 /**
- * Provides utility classes to define specific behaviors of HBase data persistence.
+ * Provides configuration classes to define specific behaviors of HBase data persistence.
  * <p>
  * This package defines the configuration by extending {@link fr.inria.atlanmod.neoemf.config.Config}: {@link
  * fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig} is a fluent API allowing to easily set HBase specific

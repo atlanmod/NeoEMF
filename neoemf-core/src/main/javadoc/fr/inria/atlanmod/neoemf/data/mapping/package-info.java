@@ -10,4 +10,4 @@
  * Provides interfaces for data mapping.
  */
 
-package fr.inria.atlanmod.neoemf.data.mapping.;
+package fr.inria.atlanmod.neoemf.data.mapping;

@@ -1,5 +1,5 @@
 <body>
-<h1>NeoEMF : A Multi-database Model Persistence Framework.</h1>
+<h1>NeoEMF : A Multi-Database Model Persistence Framework.</h1>
 <div>
     <p>
         The figure below describes the integration of NeoEMF in the <a href="https://eclipse.org/modeling/emf/">Eclipse
@@ -10,7 +10,7 @@
     </div>
 </div>
 <div>
-    <h3>EMF behavior</h3>
+    <h3>EMF Behavior</h3>
     <p>
         Modelers typically access a model using <i>Model-based Tools</i>, which provide high-level modeling features
         such as a graphical interface, interactive console, or query editor.
@@ -23,7 +23,7 @@
         charge of the (de)serialization of the model.
     </p>
 
-    <h3>NeoEMF behavior</h3>
+    <h3>NeoEMF Behavior</h3>
     <p>
         The NeoEMF <i>core</i> component is defined at this level, and can be registered as a persistence manager for
         EMF, replacing, for instance, the default XMI persistence manager.
@@ -46,19 +46,20 @@
         complete overview of backend-specific classes and how they interact with the <i>core</i> component.
     </p>
 
-    <h4>Provided adapters</h4>
+    <h4>Provided Adapters</h4>
     <p>
-        NeoEMF provides 4 database adapters for now:
+        NeoEMF provides 5 database adapters for now:
     </p>
     <ul>
         <li>
             Blueprints
             <ul>
-                <li><b>TinkerGraph</b>: The default graph database embedded in Blueprints</li>
+                <li><b>TinkerGraph</b>: The default graph database</li>
                 <li><b>Neo4j</b>: A graph-based database</li>
             </ul>
         </li>
-        <li><b>MapDB</b>: An in-memory/on-disk map-based database</li>
+        <li><b>BerkeleyDB</b>: A map-based database</li>
+        <li><b>MapDB</b>: Another map-based database</li>
         <li><b>HBase</b>: A distributed column-based database</li>
     </ul>
 </div>

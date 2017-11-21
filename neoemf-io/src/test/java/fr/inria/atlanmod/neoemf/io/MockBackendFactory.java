@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.bind.annotation.FactoryBinding;
+import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;

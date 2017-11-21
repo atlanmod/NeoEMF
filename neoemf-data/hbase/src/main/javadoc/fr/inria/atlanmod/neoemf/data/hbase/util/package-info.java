@@ -7,7 +7,7 @@
  */
 
 /**
- * Provides utility classes to create HBase specific URIs.
+ * Provides utility classes related to HBase.
  * <p>
  * This package defines the {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri} class, that extends {@link
  * fr.inria.atlanmod.neoemf.util.UriBuilder} to create HBase specific URIs. {@link

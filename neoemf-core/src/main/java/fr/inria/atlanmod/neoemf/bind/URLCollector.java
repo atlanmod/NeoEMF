@@ -10,22 +10,14 @@ package fr.inria.atlanmod.neoemf.bind;
 
 import java.net.URL;
 import java.util.Set;
+import java.util.function.Supplier;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An object that analyzes and collects {@link URL}s.
+ * An object that analyzes, collects and supplies {@link URL}s.
  */
 @ParametersAreNonnullByDefault
 @FunctionalInterface
-interface URLCollector {
-
-    /**
-     * Returns a set of collected {@link URL}s.
-     *
-     * @return a set of {@link URL}
-     */
-    @Nonnull
-    Set<URL> getUrls();
+public interface URLCollector extends Supplier<Set<URL>> {
 }
