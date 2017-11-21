@@ -58,8 +58,8 @@ public final class Bindings {
 
     static {
         // Add the default URLs for scanning
-        ClasspathAnalyzer.getInstance().register(ClasspathHelper::forJavaClassPath);
-        ClasspathAnalyzer.getInstance().register(ClasspathHelper::forManifest);
+        ClasspathCollector.getInstance().register(new SimpleCollector(ClasspathHelper::forJavaClassPath));
+        ClasspathCollector.getInstance().register(new SimpleCollector(ClasspathHelper::forManifest));
     }
 
     /**
@@ -92,10 +92,7 @@ public final class Bindings {
      * @see fr.inria.atlanmod.neoemf.util.Activator#start(BundleContext)
      */
     public static void withContext(BundleContext context) {
-        checkNotNull(context, "context");
-
-        ClasspathAnalyzer.getInstance().register(() ->
-                new BundleContextAnalyzer(context).getDependentBundles(context.getBundle()));
+        ClasspathCollector.getInstance().register(new BundleContextCollector(context));
     }
 
     // region Reflection
@@ -143,7 +140,7 @@ public final class Bindings {
     private static ConfigurationBuilder createConfiguration() {
         return new ConfigurationBuilder()
                 .setExecutorService(getBindingPool())
-                .setUrls(ClasspathAnalyzer.getInstance().registeredUrls());
+                .setUrls(ClasspathCollector.getInstance().getUrls());
     }
 
     /**
@@ -256,7 +253,7 @@ public final class Bindings {
         }
 
         throw new BindingException(
-                String.format("%s is not annotated with %s: Unable to retrieve the associated factory", type.getName(), FactoryBinding.class));
+                String.format("%s is not annotated with %s: Unable to retrieve the associated factory", type.getName(), FactoryBinding.class.getName()));
     }
 
     /**
