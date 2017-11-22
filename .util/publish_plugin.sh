@@ -1,72 +1,118 @@
 #!/bin/bash
 
-SLUG="atlanmod/NeoEMF"
 JDK="oraclejdk8"
-BRANCH="master"
-OS="linux"
 
-API_BRANCH="gh-pages"
+TYPE="Eclipse Plugin"
 
-API_DIR=releases/snapshot/plugin
-GEN_DIR=plugins/eclipse/update/target/repository
-TEMP_DIR=${HOME}/repository
+# Print a message
+e() {
+    echo -e "$1"
+}
 
-if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
-  echo "Skipping update-site publication: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
-elif [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
-  echo "Skipping update-site publication: wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'."
-elif [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo "Skipping update-site publication: was pull request."
-elif [ "$TRAVIS_BRANCH" != "$BRANCH" ]; then
-  echo "Skipping update-site publication: wrong branch. Expected '$BRANCH' but was '$TRAVIS_BRANCH'."
-elif [ "$TRAVIS_OS_NAME" != "$OS" ]; then
-  echo "Skipping update-site publication: wrong OS. Expected '$OS' but was '$TRAVIS_OS_NAME'."
-else
-    echo -e "Generating update-site..."
+# Skip the publication with the reason
+skip() {
+    local skipMessage="Skipping $TYPE publication"
+
+    if [ $# -ne 0 ]; then
+        skipMessage="$skipMessage: $1"
+    fi
+
+    e "$skipMessage"
+    exit 1
+}
+
+# Check that the context is valid for publication
+checkBuildInfo() {
+    if [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
+        skip "Wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'"
+    elif [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+        skip "Was pull request"
+    elif [ "$TRAVIS_BRANCH" != "master" ]; then
+        skip "Wrong branch. Expected 'master' but was '$TRAVIS_BRANCH'"
+    elif [ "$TRAVIS_OS_NAME" != "linux" ]; then
+        skip "Wrong OS. Expected 'linux' but was '$TRAVIS_OS_NAME'"
+    fi
+}
+
+# Generate artifacts
+generate() {
+    e "Generating $TYPE..."
+
+    local outputDir=plugins/eclipse/update/target/repository
 
     mvn -B -q -f plugins/eclipse install &> /dev/null
 
-    if ! [ -d "$GEN_DIR" ]; then
-        echo -e "Skipping update-site publication: Update-site has not been built."
-        exit
+    # Check the generation
+    if ! [ -d "$outputDir" ]; then
+        skip "No $TYPE has been generated"
     fi
 
-    cp -Rfp "$GEN_DIR/"* "$TEMP_DIR/"
-    cd "$HOME"
+    cp -Rfp "$outputDir/"* "$1/"
+}
 
-    if ! [ -d "$API_BRANCH" ]; then
-        echo -e "Cloning '$API_BRANCH' branch..."
+# Clone the publication branch
+cloneBranch() {
+    if ! [ -d "$1" ]; then
+        e "Cloning '$1' branch..."
 
         git config --global user.email "travis@travis-ci.org"
         git config --global user.name "travis-ci"
-        git clone --quiet --branch=${API_BRANCH} https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} ${API_BRANCH}
+        git clone --quiet --branch=$1 https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} $1
+    fi
+}
+
+# Merge the resulting artifacts, and replace the existing ones
+mergeIntoBranch() {
+    e "Merging $TYPE..."
+
+    # Remove existing artifacts
+    if [ -d "$2" ]; then
+        git rm --quiet -rf "$2/"
     fi
 
-    echo -e "Merging update-site..."
-
-    cd "$API_BRANCH"
-
-    if [ -d "$API_DIR" ]; then
-        git rm --quiet -rf "$API_DIR/"
-    fi
-
-    mkdir -p "$API_DIR"
-    cp -Rfp "$TEMP_DIR/"* "$API_DIR/"
-    cp "updatesite/index.html" "$API_DIR/index.html"
+    # Copy new artifacts
+    mkdir -p "$2"
+    cp -Rfp "$1/"* "$2/"
+    cp "updatesite/index.html" "$2/index.html"
 
     git add -Af
 
-    echo -e "Checking for differences..."
-
+    # Check differences
     if [ -z "$(git status --porcelain)" ]; then
-        echo -e "Skipping update-site publication: no change."
-        exit
+        skip "No change"
     fi
+}
 
-    echo -e "Publishing update-site..."
+# Publish artifacts
+publish() {
+    local commitMessage="[auto] update the $TYPE from Travis #$TRAVIS_BUILD_NUMBER"
 
-    git commit --quiet -m "[auto] update the update-site from Travis #$TRAVIS_BUILD_NUMBER"
-    git push --quiet -f origin ${API_BRANCH}
+    e "Publishing $TYPE..."
 
-    echo -e "Update-site published."
-fi
+    git commit --quiet -m "$commitMessage"
+    git push --quiet -f origin $1
+
+    e "$TYPE published"
+}
+
+main() {
+    local tmpDir=${HOME}/repository
+
+    local branch="gh-pages"
+    local branchOutputDir=releases/snapshot/plugin
+
+    # Working in the build directory
+    checkBuildInfo
+    generate ${tmpDir}
+
+    # Working in the home directory
+    cd "$HOME"
+    cloneBranch ${branch}
+
+    # Working in branch directory
+    cd "$branch"
+    mergeIntoBranch ${tmpDir} ${branchOutputDir}
+    publish ${branch}
+}
+
+main
