@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -101,7 +102,9 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @AfterEach
     void closeMapper() {
-        mapper.close();
+        if (nonNull(mapper)) {
+            mapper.close();
+        }
     }
 
     /**
