@@ -59,7 +59,7 @@ class ImportTest extends AbstractFileBasedTest {
         BackendFactoryRegistry.getInstance().register(Bindings.schemeOf(MockBackendFactory.MockUri.class), new MockBackendFactory(backend));
 
         PersistentResource resource = PersistentResourceFactory.getInstance().createResource(MockBackendFactory.MockUri.builder().fromUri(uri));
-        resource.save(MockBackendFactory.MockConfig.newConfig().toMap());
+        resource.save(MockBackendFactory.MockConfig.newConfig());
         return resource;
     }
 

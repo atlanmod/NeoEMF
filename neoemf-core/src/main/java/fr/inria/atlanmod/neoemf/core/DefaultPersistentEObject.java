@@ -12,6 +12,7 @@ import fr.inria.atlanmod.commons.LazyObject;
 import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsCopier;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsList;
 import fr.inria.atlanmod.neoemf.core.internal.LazyStoreFeatureMap;
@@ -302,8 +303,10 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
         // Create a new transient store
         else {
+            ImmutableConfig config = BaseConfig.newConfig();
+
             Backend backend = new BoundInMemoryBackend(id());
-            Store baseStore = StoreFactory.getInstance().createStore(backend, BaseConfig.newConfig());
+            Store baseStore = StoreFactory.getInstance().createStore(backend, config);
             return new TransientStoreAdapter(baseStore, resource);
         }
     }

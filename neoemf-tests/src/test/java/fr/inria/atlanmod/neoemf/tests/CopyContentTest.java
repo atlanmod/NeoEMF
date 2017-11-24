@@ -68,7 +68,7 @@ class CopyContentTest extends AbstractResourceBasedTest {
         try (PersistentResource resource = createTransientResource(sourceContext)) {
             fillResource(resource);
 
-            resource.save(sourceContext.config().toMap());
+            resource.save(sourceContext.config());
             assertThat(resource.getContents()).isNotEmpty();
             assertThat(resource.getContents().get(0)).isInstanceOf(PrimaryObject.class);
 
@@ -104,7 +104,7 @@ class CopyContentTest extends AbstractResourceBasedTest {
             assertThat(expected.eResource()).isEqualTo(resource);
 
             // Save the persistent resource
-            resource.save(context.config().toMap());
+            resource.save(context.config());
 
             // Load objects and compare them
             EObject actual = resource.getContents().get(0);

@@ -137,7 +137,7 @@ final class ContextualResourceBuilder {
     public PersistentResource createResource() throws IOException {
         PersistentResource resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
         if (isPersistent) {
-            resource.save(defaultConfig().toMap());
+            resource.save(defaultConfig());
         }
 
         reset();

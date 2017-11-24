@@ -58,7 +58,7 @@ class MapperCopyTest extends AbstractFileBasedTest {
         BackendFactoryRegistry.getInstance().register(Bindings.schemeOf(MockBackendFactory.MockUri.class), new MockBackendFactory(backend));
 
         PersistentResource resource = PersistentResourceFactory.getInstance().createResource(MockBackendFactory.MockUri.builder().fromFile(file));
-        resource.save(MockBackendFactory.MockConfig.newConfig().toMap());
+        resource.save(MockBackendFactory.MockConfig.newConfig());
         return resource;
     }
 

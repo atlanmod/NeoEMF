@@ -32,7 +32,7 @@ class BlueprintsNeo4jConfigTest extends BlueprintsTinkerConfigTest {
      */
     @Test
     void testNeo4jGraphTypeOption() throws IOException {
-        resource.save(BlueprintsNeo4jConfig.newConfig().toMap());
+        resource.save(BlueprintsNeo4jConfig.newConfig());
 
         ImmutableConfig config = loadConfig();
         assertConfigurationHasEntry(config, BlueprintsNeo4jConfig.BLUEPRINTS_GRAPH, BlueprintsNeo4jConfig.BLUEPRINTS_GRAPH_NEO4J);

@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -35,7 +36,8 @@ public class ReadOnlyStore extends AbstractStore {
     /**
      * The exceptions thrown when calling methods.
      */
-    private static final RuntimeException EXCEPTION = new UnsupportedOperationException("Operation forbidden in read-only mode");
+    @Nonnull
+    private final Supplier<RuntimeException> e = () -> new UnsupportedOperationException("Operation forbidden in read-only mode");
 
     /**
      * Constructs a new {@code ReadOnlyStore} on the given {@code store}.
@@ -49,121 +51,121 @@ public class ReadOnlyStore extends AbstractStore {
 
     @Override
     public void save() {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void containerFor(Id id, SingleFeatureBean container) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void removeContainer(Id id) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public boolean metaClassFor(Id id, ClassBean metaClass) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void removeValue(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void removeReference(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public <V> void addValue(ManyFeatureBean key, V value) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnegative
     @Override
     public <V> int appendValue(SingleFeatureBean key, V value) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnegative
     @Override
     public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void removeAllValues(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void addReference(ManyFeatureBean key, Id reference) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnegative
     @Override
     public int appendReference(SingleFeatureBean key, Id reference) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnegative
     @Override
     public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 
     @Override
     public void removeAllReferences(SingleFeatureBean key) {
-        throw EXCEPTION;
+        throw e.get();
     }
 }

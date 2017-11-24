@@ -85,17 +85,17 @@ public class LogStore extends AbstractListenerStore {
 
         // Append the key used during the call
         if (nonNull(info.key())) {
-            sb.append(" for ").append(info.method());
+            sb.append(" for ").append(info.key());
         }
 
         // Append the value used during the call
         if (nonNull(info.value())) {
-            sb.append(" with ").append(info.key());
+            sb.append(" with ").append(info.value());
         }
 
         // Append the result of the call, or the exception thrown
         if (success && nonNull(info.result())) {
-            sb.append(" = ").append(info.value());
+            sb.append(" = ").append(info.result());
         }
         else if (!success) {
             sb.append(" but failed");

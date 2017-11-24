@@ -14,7 +14,9 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
+import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.junit.jupiter.api.AfterEach;
@@ -39,7 +41,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
     /**
      * The {@link Resource} used for this test-case.
      */
-    protected Resource resource;
+    protected PersistentResource resource;
 
     @Nonnull
     @Override
@@ -52,7 +54,8 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
      */
     @BeforeEach
     public void initResource() throws IOException {
-        resource = new ResourceSetImpl().createResource(BlueprintsUri.builder().fromFile(currentTempFile()));
+        URI uri = BlueprintsUri.builder().fromFile(currentTempFile());
+        resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
     }
 
     /**
@@ -68,7 +71,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
      */
     @Test
     public void testDefaultGraphTypeOption() throws IOException {
-        resource.save(BlueprintsTinkerConfig.newConfig().toMap());
+        resource.save(BlueprintsTinkerConfig.newConfig());
 
         ImmutableConfig config = loadConfig();
         assertConfigurationHasEntry(config, BlueprintsTinkerConfig.BLUEPRINTS_GRAPH, BlueprintsTinkerConfig.BLUEPRINTS_GRAPH_TINKER);

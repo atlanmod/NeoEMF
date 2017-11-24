@@ -136,7 +136,7 @@ class LoadResourceTest extends AbstractResourceBasedTest {
 
             resource.getContents().add(primary);
 
-            resource.save(context.config().toMap());
+            resource.save(context.config());
         }
 
         return context.loadResource(currentTempFile());
