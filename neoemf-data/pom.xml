@@ -37,6 +37,13 @@
             <artifactId>commons-core</artifactId>
         </dependency>
 
+        <!-- Concurrency -->
+
+        <dependency>
+            <groupId>io.reactivex.rxjava2</groupId>
+            <artifactId>rxjava</artifactId>
+        </dependency>
+
         <!-- EMF -->
 
         <dependency>
