@@ -8,8 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.commons.log.Log;
-
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
@@ -39,8 +37,6 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
         checkNotNull(handlers, "handlers");
 
         this.handlers = Arrays.asList(handlers);
-
-        Log.debug("{0} created", getClass().getSimpleName());
     }
 
     @Nonnull

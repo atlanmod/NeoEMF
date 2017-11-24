@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -46,8 +45,6 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
      */
     protected AbstractMapperDecorator(M mapper) {
         this.next = checkNotNull(mapper, "mapper");
-
-        Log.debug("{0} created", getClass().getSimpleName());
     }
 
     /**
