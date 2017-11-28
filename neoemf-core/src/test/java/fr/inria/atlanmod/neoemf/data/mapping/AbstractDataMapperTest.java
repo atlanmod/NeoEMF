@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
+import fr.inria.atlanmod.commons.Timeout;
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
@@ -34,6 +35,8 @@ import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.internal.functions.Functions;
+
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -41,8 +44,9 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * An abstract test-case about {@link DataMapper} and its implementations.
  */
-@SuppressWarnings("ConstantConditions") // Test with `@Nonnull`
+@Timeout(timeout = 2)
 @ParametersAreNonnullByDefault
+@SuppressWarnings("ConstantConditions") // Test with `@Nonnull`
 public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
     /**
@@ -85,7 +89,9 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     void createMapper() throws IOException {
         mapper = context().createMapper(currentTempFile());
 
-        mapper.metaClassFor(idBase, cBase);
+        mapper.metaClassFor(idBase, cBase)
+                .onErrorComplete(Functions.isInstanceOf(ClassAlreadyExistsException.class))
+                .subscribe();
     }
 
     /**
@@ -94,7 +100,9 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * @param references the references to update
      */
     private void updateInstanceOf(Id... references) {
-        Arrays.stream(references).forEach(i -> mapper.metaClassFor(i, cBase));
+        Arrays.stream(references).forEach(i -> mapper.metaClassFor(i, cBase)
+                .onErrorComplete(Functions.isInstanceOf(ClassAlreadyExistsException.class))
+                .subscribe());
     }
 
     /**
@@ -134,17 +142,17 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * SingleFeatureBean)}.
      */
     @Test
-    public void testGetSet_Container_Same() {
+    public void testGetSet_Container_Same() throws InterruptedException {
         SingleFeatureBean container = SingleFeatureBean.of(id0, 20);
 
-        mapper.containerFor(idBase, container);
-        assertThat(mapper.containerOf(idBase)).contains(container);
+        mapper.containerFor(idBase, container).test().await().assertComplete();
+        mapper.containerOf(idBase).test().await().assertValue(container);
 
-        mapper.containerFor(id1, container);
-        assertThat(mapper.containerOf(id1)).contains(container);
+        mapper.containerFor(id1, container).test().await().assertComplete();
+        mapper.containerOf(id1).test().await().assertValue(container);
 
-        mapper.removeContainer(idBase);
-        mapper.removeContainer(id1);
+        mapper.removeContainer(idBase).test().await().assertComplete();
+        mapper.removeContainer(id1).test().await().assertComplete();
     }
 
     /**
@@ -152,57 +160,53 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * SingleFeatureBean)}.
      */
     @Test
-    public void testGetSet_Container_Different() {
+    public void testGetSet_Container_Different() throws InterruptedException {
         SingleFeatureBean container0 = SingleFeatureBean.of(id0, 20);
         SingleFeatureBean container1 = SingleFeatureBean.of(id0, 21);
 
-        mapper.containerFor(idBase, container0);
-        assertThat(mapper.containerOf(idBase)).contains(container0);
+        mapper.containerFor(idBase, container0).test().await().assertComplete();
+        mapper.containerOf(idBase).test().await().assertValue(container0);
 
-        mapper.containerFor(id1, container1);
-        assertThat(mapper.containerOf(id1)).contains(container1);
+        mapper.containerFor(id1, container1).test().await().assertComplete();
+        mapper.containerOf(id1).test().await().assertValue(container1);
 
-        mapper.containerFor(idBase, container1);
-        assertThat(mapper.containerOf(idBase)).contains(container1);
+        mapper.containerFor(idBase, container1).test().await().assertComplete();
+        mapper.containerOf(idBase).test().await().assertValue(container1);
 
-        mapper.removeContainer(idBase);
-        mapper.removeContainer(id1);
+        mapper.removeContainer(idBase).test().await().assertComplete();
+        mapper.removeContainer(id1).test().await().assertComplete();
     }
 
     /**
      * Checks the behavior of {@link ContainerMapper#containerOf(Id)} when the element doesn't exist.
      */
     @Test
-    public void testGet_Container_NotDefined() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.containerOf(idBase)).isNotPresent()
-        )).isNull();
+    public void testGet_Container_NotDefined() throws InterruptedException {
+        mapper.containerOf(idBase).test().await().assertNoErrors().assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureBean)} with a {@code null} value.
      */
     @Test
-    public void testSet_Container_Null() {
-        assertThat(catchThrowable(() ->
-                mapper.containerFor(idBase, null)
-        )).isInstanceOf(NullPointerException.class);
+    public void testSet_Container_Null() throws InterruptedException {
+        mapper.containerFor(idBase, null).test().await().assertError(NullPointerException.class);
     }
 
     /**
      * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureBean)} with a {@code null} value.
      */
     @Test
-    public void testRemove_Container() {
+    public void testRemove_Container() throws InterruptedException {
         SingleFeatureBean container0 = SingleFeatureBean.of(id0, 20);
 
-        mapper.containerFor(idBase, container0);
-        assertThat(mapper.containerOf(idBase)).contains(container0);
+        mapper.containerFor(idBase, container0).test().await().assertComplete();
+        mapper.containerOf(idBase).test().await().assertValue(container0);
 
-        mapper.removeContainer(idBase);
-        assertThat(mapper.containerOf(idBase)).isNotPresent();
+        mapper.removeContainer(idBase).test().await().assertComplete();
+        mapper.containerOf(idBase).test().await().assertComplete().assertNoValues();
 
-        mapper.removeContainer(idBase);
+        mapper.removeContainer(idBase).test().await().assertComplete();
     }
 
     //endregion
@@ -213,58 +217,54 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} and {@link ClassMapper#metaClassFor(Id, ClassBean)}.
      */
     @Test
-    public void testGetSet_Metaclass_Same() {
+    public void testGetSet_Metaclass_Same() throws InterruptedException {
         Id id0 = Id.getProvider().fromLong(40);
         Id id1 = Id.getProvider().fromLong(41);
 
         ClassBean metaClass = ClassBean.of("Metaclass1", "Uri1");
 
-        assertThat(mapper.metaClassFor(id0, metaClass)).isTrue();
-        assertThat(mapper.metaClassOf(id0)).contains(metaClass);
+        mapper.metaClassFor(id0, metaClass).test().await().assertComplete();
+        mapper.metaClassOf(id0).test().await().assertValue(metaClass);
 
-        assertThat(mapper.metaClassFor(id1, metaClass)).isTrue();
-        assertThat(mapper.metaClassOf(id1)).contains(metaClass);
+        mapper.metaClassFor(id1, metaClass).test().await().assertComplete();
+        mapper.metaClassOf(id1).test().await().assertValue(metaClass);
     }
 
     /**
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} and {@link ClassMapper#metaClassFor(Id, ClassBean)}.
      */
     @Test
-    public void testGetSet_Metaclass_Different() {
+    public void testGetSet_Metaclass_Different() throws InterruptedException {
         Id id0 = Id.getProvider().fromLong(40);
 
         ClassBean metaClass0 = ClassBean.of("Metaclass1", "Uri1");
         ClassBean metaClass1 = ClassBean.of("Metaclass2", "Uri2");
 
-        assertThat(mapper.metaClassFor(id0, metaClass0)).isTrue();
-        assertThat(mapper.metaClassOf(id0)).contains(metaClass0);
+        mapper.metaClassFor(id0, metaClass0).test().await().assertComplete();
+        mapper.metaClassOf(id0).test().await().assertValue(metaClass0);
 
-        assertThat(mapper.metaClassFor(id0, metaClass1)).isFalse();
-        assertThat(mapper.metaClassOf(id0)).contains(metaClass0);
+        mapper.metaClassFor(id0, metaClass1).test().await().assertError(ClassAlreadyExistsException.class);
+        mapper.metaClassOf(id0).test().await().assertValue(metaClass0);
     }
 
     /**
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} when the element doesn't exist..
      */
     @Test
-    public void testGet_Metaclass_NotDefined() {
+    public void testGet_Metaclass_NotDefined() throws InterruptedException {
         Id id0 = Id.getProvider().fromLong(40);
 
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.metaClassOf(id0)).isNotPresent()
-        )).isNull();
+        mapper.metaClassOf(id0).test().await().assertNoErrors().assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ClassMapper#metaClassFor(Id, ClassBean)} with a {@code null} value.
      */
     @Test
-    public void testSet_Metaclass_Null() {
+    public void testSet_Metaclass_Null() throws InterruptedException {
         Id id0 = Id.getProvider().fromLong(40);
 
-        assertThat(catchThrowable(() ->
-                mapper.metaClassFor(id0, null)
-        )).isInstanceOf(NullPointerException.class);
+        mapper.metaClassFor(id0, null).test().await().assertError(NullPointerException.class);
     }
 
     //endregion

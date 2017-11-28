@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
@@ -81,8 +80,6 @@ public abstract class AbstractWriter<T> implements Writer {
      */
     protected AbstractWriter(T target) {
         this.target = checkNotNull(target, "target");
-
-        Log.debug("{0} created", getClass().getSimpleName());
     }
 
     @Override

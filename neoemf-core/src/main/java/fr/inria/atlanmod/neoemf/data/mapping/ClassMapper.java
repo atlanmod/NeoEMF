@@ -10,12 +10,16 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
-import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 
 /**
  * An object capable of mapping meta-classes.
@@ -30,25 +34,25 @@ public interface ClassMapper {
      *
      * @param id the {@link Id} of the element
      *
-     * @return an {@link Optional} containing the meta-class, or {@link Optional#empty()} if the {@code id} has no
-     * defined meta-class.
-     *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @return the deferred computation to execute, that may contains the meta-class.
      */
     @Nonnull
-    Optional<ClassBean> metaClassOf(Id id);
+    Maybe<ClassBean> metaClassOf(Id id);
 
     /**
-     * Stores the {@code metaClass} for the specified {@code id}.
+     * Stores the {@code metaClass} for the specified {@code id}, only if a meta-class is not already defined for the
+     * {@code id}.
      *
      * @param id        the {@link Id} of the element
      * @param metaClass the containing element's meta-class information to store
      *
-     * @return {@code true} if the meta-class has been defined, {@code false} if the {@code id} already has a meta-class
+     * @return the deferred computation to execute, that contains a {@link ClassAlreadyExistsException} if a meta-class
+     * is already defined for {@code id}
      *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @see CommonQueries#classAlreadyExists()
      */
-    boolean metaClassFor(Id id, ClassBean metaClass);
+    @Nonnull
+    Completable metaClassFor(Id id, ClassBean metaClass);
 
     /**
      * Retrieves all instances of the given {@code metaClass}.
@@ -56,24 +60,18 @@ public interface ClassMapper {
      * @param metaClass the meta-class to compute the instances of
      * @param strict    {@code true} if the lookup searches for strict instances
      *
-     * @return an {@link Iterable} containing the instances of the {@code metaClass}
-     *
-     * @throws NullPointerException          if any parameter is {@code null}
-     * @throws UnsupportedOperationException if the mapper doesn't support the lookup of all instances
+     * @return the deferred computation to execute, that may contains the instances of the {@code metaClass}
      */
     @Nonnull
-    Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict);
+    Flowable<Id> allInstancesOf(ClassBean metaClass, boolean strict);
 
     /**
      * Retrieves all instances of the given {@code metaClasses}.
      *
      * @param metaClasses the meta-classes to compute the instances of
      *
-     * @return a {@link Iterable} containing the instances of the {@code metaClasses}
-     *
-     * @throws NullPointerException          if any parameter is {@code null}
-     * @throws UnsupportedOperationException if the mapper doesn't support the lookup of all instances
+     * @return the deferred computation to execute, that may contains the instances of the {@code metaClass}
      */
     @Nonnull
-    Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses);
+    Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses);
 }

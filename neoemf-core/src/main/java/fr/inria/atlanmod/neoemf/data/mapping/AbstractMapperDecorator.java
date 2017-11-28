@@ -23,6 +23,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -78,44 +82,47 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<SingleFeatureBean> containerOf(Id id) {
+    public Maybe<SingleFeatureBean> containerOf(Id id) {
         return next.containerOf(id);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void containerFor(Id id, SingleFeatureBean container) {
-        next.containerFor(id, container);
-    }
-
-    @Override
-    public void removeContainer(Id id) {
-        next.removeContainer(id);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<ClassBean> metaClassOf(Id id) {
+    public Completable containerFor(Id id, SingleFeatureBean container) {
+        return next.containerFor(id, container);
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeContainer(Id id) {
+        return next.removeContainer(id);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Maybe<ClassBean> metaClassOf(Id id) {
         return next.metaClassOf(id);
     }
 
+    @Nonnull
     @Override
-    public boolean metaClassFor(Id id, ClassBean metaClass) {
+    public Completable metaClassFor(Id id, ClassBean metaClass) {
         return next.metaClassFor(id, metaClass);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+    public Flowable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         return next.allInstancesOf(metaClass, strict);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         return next.allInstancesOf(metaClasses);
     }
 

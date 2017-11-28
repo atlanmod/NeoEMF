@@ -9,8 +9,10 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.InconsistencyException;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.ClassAlreadyExistsException;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
@@ -78,7 +80,9 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
 
         // Update the containment reference if needed
         if (reference.isContainment()) {
-            values.forEach(i -> target.containerFor(i, key));
+            values.forEach(i -> target.containerFor(i, key)
+                    .blockingAwait());
+//                    .subscribe()); // TODO Use `subscribe()` for async work
         }
 
         if (!reference.isMany()) {
@@ -95,14 +99,19 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
      * @param element       the information about the new element
      * @param ignoreFailure {@code true} if the element can be ignored if it is already defined
      *
-     * @throws NullPointerException if the {@code element} is {@code null}
+     * @throws NullPointerException   if the {@code element} is {@code null}
+     * @throws InconsistencyException if an element with the same {@link Id} is already defined
      */
     protected void createElement(BasicElement element, boolean ignoreFailure) {
         BasicMetaclass metaClass = element.metaClass();
-        boolean success = target.metaClassFor(element.id(), ClassBean.of(metaClass.name(), metaClass.ns().uri()));
 
-        if (!success && !ignoreFailure) {
-            throw new IllegalArgumentException(String.format("An element with the same Id (%s) is already defined", element.id().toHexString()));
+        try {
+            target.metaClassFor(element.id(), ClassBean.of(metaClass.name(), metaClass.ns().uri())).blockingAwait();
+        }
+        catch (ClassAlreadyExistsException e) {
+            if (!ignoreFailure) {
+                throw new InconsistencyException(String.format("An element with the same Id (%s) is already defined", element.id().toHexString()));
+            }
         }
 
         // Add the current element as content of the 'ROOT' node

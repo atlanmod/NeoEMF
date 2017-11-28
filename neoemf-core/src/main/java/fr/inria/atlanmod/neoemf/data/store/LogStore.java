@@ -59,12 +59,12 @@ public class LogStore extends AbstractListenerStore {
     }
 
     @Override
-    protected <K, V, R> void onSuccess(CallInfo<K, V, R> info) {
+    protected void onSuccess(CallInfo info) {
         log(info, true);
     }
 
     @Override
-    protected <K, V> void onFailure(CallInfo<K, V, ?> info) {
+    protected void onFailure(CallInfo info) {
         log(info, false);
     }
 
@@ -74,7 +74,7 @@ public class LogStore extends AbstractListenerStore {
      * @param info    information about the call
      * @param success {@code true} if the call succeeded, {@code false} otherwise
      */
-    protected void log(CallInfo<?, ?, ?> info, boolean success) {
+    protected void log(CallInfo info, boolean success) {
         StringBuilder sb = new StringBuilder();
 
         // Append the name of the concerned backend
@@ -101,7 +101,7 @@ public class LogStore extends AbstractListenerStore {
             sb.append(" but failed");
 
             if (nonNull(info.thrownException())) {
-                sb.append(" with ").append(info.thrownException().getClass().getSimpleName());
+                sb.append(" with ").append(info.thrownException().getClass().getName());
             }
         }
 

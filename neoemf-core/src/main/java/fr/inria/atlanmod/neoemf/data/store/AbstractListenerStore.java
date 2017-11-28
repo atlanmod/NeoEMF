@@ -28,6 +28,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+
 /**
  * An abstract {@link Store} that listen and intercept calls made on this store chain.
  */
@@ -45,44 +50,101 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Override
     public void close() {
-        onCall(super::close);
+        CallInfoBuilder callInfo = CallInfo.forMethod("close");
+
+        try {
+            super.close();
+            onSuccess(callInfo);
+        }
+        catch (RuntimeException e) {
+            onFailure(callInfo.withThrownException(e));
+            throw e;
+        }
     }
 
     @Override
     public void save() {
-        onCall(super::save);
+        CallInfoBuilder callInfo = CallInfo.forMethod("save");
+
+        try {
+            super.save();
+            onSuccess(callInfo);
+        }
+        catch (RuntimeException e) {
+            onFailure(callInfo.withThrownException(e));
+            throw e;
+        }
     }
 
     @Override
     public void copyTo(DataMapper target) {
-        onCall(super::copyTo, target);
+        CallInfoBuilder callInfo = CallInfo.forMethod("copyTo");
+
+        try {
+            super.copyTo(target);
+            onSuccess(callInfo);
+        }
+        catch (RuntimeException e) {
+            onFailure(callInfo.withThrownException(e));
+            throw e;
+        }
     }
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureBean> containerOf(Id id) {
-        return onCallResult(super::containerOf, id);
-    }
+    public Maybe<SingleFeatureBean> containerOf(Id id) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("containerOf").withKey(id);
 
-    @Override
-    public void containerFor(Id id, SingleFeatureBean container) {
-        onCall(super::containerFor, id, container);
-    }
-
-    @Override
-    public void removeContainer(Id id) {
-        onCall(super::removeContainer, id);
+        return super.containerOf(id)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaClassOf(Id id) {
-        return onCallResult(super::metaClassOf, id);
+    public Completable containerFor(Id id, SingleFeatureBean container) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("containerFor").withKey(id).withValue(container);
+
+        return super.containerFor(id, container)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
+    @Nonnull
     @Override
-    public boolean metaClassFor(Id id, ClassBean metaClass) {
-        return onCallResult(super::metaClassFor, id, metaClass);
+    public Completable removeContainer(Id id) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("removeContainer").withKey(id);
+
+        return super.removeContainer(id)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Maybe<ClassBean> metaClassOf(Id id) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("metaClassOf").withKey(id);
+
+        return super.metaClassOf(id)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Completable metaClassFor(Id id, ClassBean metaClass) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("metaClassFor").withKey(id).withValue(metaClass);
+
+        return super.metaClassFor(id, metaClass)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
@@ -297,6 +359,8 @@ public abstract class AbstractListenerStore extends AbstractStore {
      */
     @SuppressWarnings("unchecked")
     private <K, V, R> R onCallResult(BiFunction<K, V, R> function, @Nullable K key, @Nullable V value) {
+        CallInfoBuilder callInfo = CallInfo.forMethod(getCallingMethod()).withKey(key).withValue(value);
+
         try {
             R result = function.apply(key, value);
             Object resultToLog = result;
@@ -310,11 +374,11 @@ public abstract class AbstractListenerStore extends AbstractStore {
                 resultToLog = list;
             }
 
-            onSuccess(new CallInfo<>(getCallingMethod(), key, value, resultToLog));
+            onSuccess(callInfo.withResult(resultToLog));
             return result;
         }
         catch (RuntimeException e) {
-            onFailure(new CallInfo<>(getCallingMethod(), key, value, e));
+            onFailure(callInfo.withThrownException(e));
             throw e;
         }
     }
@@ -323,20 +387,15 @@ public abstract class AbstractListenerStore extends AbstractStore {
      * Handle a succeeded call.
      *
      * @param info information about the call
-     * @param <K>  the type of the key used during the call; nullable
-     * @param <V>  the type of the value used during the call; nullable
-     * @param <R>  the type of the result of the call; nullable
      */
-    protected abstract <K, V, R> void onSuccess(CallInfo<K, V, R> info);
+    protected abstract void onSuccess(CallInfo info);
 
     /**
      * Handle a failed call.
      *
      * @param info information about the call
-     * @param <K>  the type of the key used during the call; nullable
-     * @param <V>  the type of the value used during the call; nullable
      */
-    protected abstract <K, V> void onFailure(CallInfo<K, V, ?> info);
+    protected abstract void onFailure(CallInfo info);
 
     /**
      * Returns the name of the calling method.
@@ -358,74 +417,59 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     /**
      * An object representing a call.
-     *
-     * @param <K> the type of the key used during the call
-     * @param <V> the type of the value used during the call
-     * @param <R> the type of the result of the call
      */
     @ParametersAreNonnullByDefault
-    protected static class CallInfo<K, V, R> {
+    protected static class CallInfo {
 
         /**
          * The name of the called method.
          */
         @Nonnull
-        private final String method;
+        protected final String method;
 
         /**
          * The key used during the call.
          */
         @Nullable
-        private final K key;
+        protected Object key;
 
         /**
          * The value used during the call.
          */
         @Nullable
-        private final V value;
+        protected Object value;
 
         /**
          * The result of the call.
          */
         @Nullable
-        private final R result;
+        protected Object result;
 
         /**
          * The exception thrown during the call.
          */
         @Nullable
-        private final Throwable thrownException;
+        protected Throwable thrownException;
 
         /**
-         * Constructs a new succeeded call information.
+         * Constructs a new {@code CallInfo}.
          *
-         * @param method the name of the called method
-         * @param key    the key used during the call
-         * @param value  the value used during the call
-         * @param result the result of the call
+         * @param method the name of the related method
          */
-        public CallInfo(String method, @Nullable K key, @Nullable V value, R result) {
-            this.method = method;
-            this.key = key;
-            this.value = value;
-            this.result = result;
-            this.thrownException = null;
+        public CallInfo(String method) {
+            this.method = checkNotNull(method);
         }
 
         /**
-         * Constructs a new failed call information.
+         * Creates a new builder of {@code CallInfo} for the given {@code method}.
          *
-         * @param method the name of the called method
-         * @param key    the key used during the call
-         * @param value  the value used during the call
-         * @param e      the exception thrown during the call
+         * @param method the name of the related method
+         *
+         * @return a new builder
          */
-        public CallInfo(String method, @Nullable K key, @Nullable V value, Throwable e) {
-            this.method = method;
-            this.key = key;
-            this.value = value;
-            this.result = null;
-            this.thrownException = e;
+        @Nonnull
+        public static CallInfoBuilder forMethod(String method) {
+            return new CallInfoBuilder(method);
         }
 
         /**
@@ -444,7 +488,7 @@ public abstract class AbstractListenerStore extends AbstractStore {
          * @return the key used during the call
          */
         @Nullable
-        public K key() {
+        public Object key() {
             return key;
         }
 
@@ -454,7 +498,7 @@ public abstract class AbstractListenerStore extends AbstractStore {
          * @return the value used during the call
          */
         @Nullable
-        public V value() {
+        public Object value() {
             return value;
         }
 
@@ -464,7 +508,7 @@ public abstract class AbstractListenerStore extends AbstractStore {
          * @return the result of the call
          */
         @Nullable
-        public R result() {
+        public Object result() {
             return result;
         }
 
@@ -476,6 +520,74 @@ public abstract class AbstractListenerStore extends AbstractStore {
         @Nullable
         public Throwable thrownException() {
             return thrownException;
+        }
+    }
+
+    /**
+     * A builder of {@code CallInfo} instances.
+     */
+    @ParametersAreNonnullByDefault
+    protected static class CallInfoBuilder extends CallInfo {
+
+        /**
+         * Constructs a new {@code CallInfo.CallInfoBuilder}.
+         *
+         * @param method the name of the related method
+         */
+        private CallInfoBuilder(String method) {
+            super(method);
+        }
+
+        /**
+         * Defines the key used during the call.
+         *
+         * @param key the key used during the call
+         *
+         * @return this builder (for chaining)
+         */
+        @Nonnull
+        public CallInfoBuilder withKey(@Nullable Object key) {
+            this.key = key;
+            return this;
+        }
+
+        /**
+         * Defines the value used during the call.
+         *
+         * @param value the value used during the call
+         *
+         * @return this builder (for chaining)
+         */
+        @Nonnull
+        public CallInfoBuilder withValue(@Nullable Object value) {
+            this.value = value;
+            return this;
+        }
+
+        /**
+         * Defines the result of the call.
+         *
+         * @param result the result of the call
+         *
+         * @return this builder (for chaining)
+         */
+        @Nonnull
+        public CallInfoBuilder withResult(@Nullable Object result) {
+            this.result = result;
+            return this;
+        }
+
+        /**
+         * Defines the exception thrown during the call.
+         *
+         * @param e the exception thrown during the call
+         *
+         * @return this builder (for chaining)
+         */
+        @Nonnull
+        public CallInfoBuilder withThrownException(@Nullable Throwable e) {
+            this.thrownException = e;
+            return this;
         }
     }
 }

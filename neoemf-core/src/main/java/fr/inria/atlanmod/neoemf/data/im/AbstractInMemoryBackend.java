@@ -20,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithLists;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.hash.serialization.BytesReader;
@@ -29,15 +30,21 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.functions.Action;
+import io.reactivex.internal.functions.Functions;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link InMemoryBackend} that provides the default behavior of containers and meta-classes management.
@@ -49,7 +56,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
      * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
      */
     @Nonnull
-    protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
+    protected final BeanSerializerFactory serializers = BeanSerializerFactory.getInstance();
 
     /**
      * Constructs a new {@code AbstractInMemoryBackend}.
@@ -83,9 +90,11 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
         return (V) value;
     }
 
+    @Nonnull
     @Override
-    public void save() {
+    protected Completable asyncSave() {
         // No need to save anything
+        return Completable.complete();
     }
 
     /**
@@ -123,50 +132,92 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id, "id");
+    public Maybe<SingleFeatureBean> containerOf(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
 
-        return Optional.ofNullable(containers().get(id));
-    }
+        // Define the container
+        Callable<SingleFeatureBean> getFunc = () -> containers().get(id);
 
-    @Override
-    public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id, "id");
-        checkNotNull(container, "container");
+        // The composed query to execute on the database
+        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(getFunc);
 
-        containers().put(id, container);
-    }
-
-    @Override
-    public void removeContainer(Id id) {
-        checkNotNull(id, "id");
-
-        containers().remove(id);
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id, "id");
+    public Completable containerFor(Id id, SingleFeatureBean container) {
+        Action checkFunc = () -> {
+            checkNotNull(id, "id");
+            checkNotNull(container, "container");
+        };
 
-        return Optional.ofNullable(instances().get(id));
-    }
+        // Define the container
+        Action setFunc = () -> containers().put(id, container);
 
-    @Override
-    public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id, "id");
-        checkNotNull(metaClass, "metaClass");
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(setFunc);
 
-        return isNull(instances().putIfAbsent(id, metaClass));
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        return instances().entrySet().stream()
+    public Completable removeContainer(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
+
+        // Remove the container
+        Action removeFunc = () -> containers().remove(id);
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(removeFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
+
+    @Nonnull
+    @Override
+    public Maybe<ClassBean> metaClassOf(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
+
+        // Retrieve the meta-class
+        Callable<ClassBean> getFunc = () -> instances().get(id);
+
+        // The composed query to execute on the database
+        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(getFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
+
+    @Nonnull
+    @Override
+    public Completable metaClassFor(Id id, ClassBean metaClass) {
+        Action checkFunc = () -> {
+            checkNotNull(id, "id");
+            checkNotNull(metaClass, "metaClass");
+        };
+
+        // Define the meta-class, if it does not already exist
+        Callable<ClassBean> setFunc = () -> instances().putIfAbsent(id, metaClass);
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Maybe.fromCallable(setFunc)
+                .doOnSuccess(CommonQueries.classAlreadyExists())
+                .ignoreElement();
+
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
+
+    @Nonnull
+    @Override
+    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        // The composed query to execute on the database
+        Flowable<Id> databaseQuery = Single.fromCallable(() -> instances().entrySet())
+                .flattenAsFlowable(Functions.identity())
                 .filter(e -> metaClasses.contains(e.getValue()))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
+                .map(Map.Entry::getKey);
+
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull

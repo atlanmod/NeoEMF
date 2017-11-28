@@ -22,6 +22,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.functions.Action;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
@@ -54,10 +57,17 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
         this.manyFeatures = environment.openDatabase(null, "features/many", databaseConfig);
     }
 
+    @Nonnull
     @Override
-    protected void innerClose() {
-        manyFeatures.close();
-        super.innerClose();
+    protected Completable asyncClose() {
+        // Close the map
+        Action closeFunc = manyFeatures::close;
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(closeFunc);
+
+        return dispatcher().submit(databaseQuery)
+                .andThen(super.asyncClose());
     }
 
     @Override
@@ -73,7 +83,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     public <V> Optional<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        return get(manyFeatures, key, SERIALIZER_FACTORY.forManyFeature(), SERIALIZER_FACTORY.forAny());
+        return Optional.ofNullable(get(manyFeatures, key, serializers.forManyFeature(), serializers.forAny()));
     }
 
     @Override
@@ -81,10 +91,10 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
         checkNotNull(key, "key");
 
         if (nonNull(value)) {
-            put(manyFeatures, key, value, SERIALIZER_FACTORY.forManyFeature(), SERIALIZER_FACTORY.forAny());
+            put(manyFeatures, key, value, serializers.forManyFeature(), serializers.forAny());
         }
         else {
-            delete(manyFeatures, key, SERIALIZER_FACTORY.forManyFeature());
+            delete(manyFeatures, key, serializers.forManyFeature());
         }
     }
 }

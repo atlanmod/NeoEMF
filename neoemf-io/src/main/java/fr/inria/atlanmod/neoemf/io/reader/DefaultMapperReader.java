@@ -39,6 +39,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.util.Objects.nonNull;
+
 /**
  * The default implementation of a {@link Reader} that reads data from a {@link DataMapper}.
  */
@@ -87,7 +89,8 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
         // Retrieve the meta-class and namespace
         EClass eClass = mapper.metaClassOf(id)
                 .map(ClassBean::get)
-                .<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
+                .toSingle()
+                .blockingGet();
 
         EPackage ePackage = eClass.getEPackage();
         BasicNamespace ns = BasicNamespace.Registry.getInstance().register(ePackage.getNsPrefix(), ePackage.getNsURI());
@@ -99,7 +102,8 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                 .map(SingleFeatureBean::id)
                 .map(previousClasses.getLast()::getEStructuralFeature)
                 .map(EStructuralFeature::getName)
-                .<IllegalStateException>orElseThrow(IllegalStateException::new);
+                .toSingle()
+                .blockingGet();
 
         // Create the element
         BasicElement element = new BasicElement();
@@ -174,9 +178,15 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                 .collect(Collectors.toList());
 
         // Read the next element only if containerOf(next) == parent
-        containmentId.forEach(r -> mapper.containerOf(r)
-                .filter(c -> Objects.equals(c.owner(), id))
-                .ifPresent(c -> readElement(r, false)));
+        containmentId.forEach(r -> {
+            SingleFeatureBean container = mapper.containerOf(r)
+                    .filter(c -> Objects.equals(c.owner(), id))
+                    .blockingGet();
+
+            if (nonNull(container)) {
+                readElement(r, false);
+            }
+        });
     }
 
     /**

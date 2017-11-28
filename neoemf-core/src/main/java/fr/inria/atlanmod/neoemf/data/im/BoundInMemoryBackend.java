@@ -8,14 +8,19 @@
 
 package fr.inria.atlanmod.neoemf.data.im;
 
+import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.query.AsyncQueryDispatcher;
+import fr.inria.atlanmod.neoemf.data.query.QueryDispatcher;
 
 import net.openhft.chronicle.map.ChronicleMap;
 import net.openhft.chronicle.map.ChronicleMapBuilder;
@@ -33,6 +38,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.functions.Action;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -46,7 +54,7 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
     /**
      * The number of instances of this class.
      *
-     * @see #innerClose()
+     * @see #asyncClose()
      * @see DataHolder#close(Id)
      */
     @Nonnull
@@ -84,11 +92,25 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
         this.owner = owner;
     }
 
+    @Nonnull
     @Override
-    protected void innerClose() {
-        COUNTER.decrementAndGet();
+    protected QueryDispatcher dispatcher() {
+        return dataHolder.scheduler;
+    }
 
-        dataHolder.close(owner);
+    @Nonnull
+    @Override
+    protected Completable asyncClose() {
+        // Clean data related to the associated Id, or close all maps if COUNTER == 0
+        Action closeFunc = () -> {
+            COUNTER.decrementAndGet();
+            dataHolder.close(owner);
+        };
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(closeFunc);
+
+        return dispatcher().submit(databaseQuery);
     }
 
     @Override
@@ -167,6 +189,20 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
     private static final class DataHolder {
 
         /**
+         * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
+         */
+        @Nonnull
+        protected final BeanSerializerFactory serializers = BeanSerializerFactory.getInstance();
+
+        /**
+         * The asynchrous dispatcher of this backend.
+         * <p>
+         * Only one dispatcher for all instances of {@code BoundInMemoryBackend}.
+         */
+        @Nonnull
+        private final QueryDispatcher scheduler = new AsyncQueryDispatcher(BoundInMemoryBackend.class.getSimpleName());
+
+        /**
          * A shared in-memory map that stores the container of {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s,
          * identified by the object {@link Id}.
          */
@@ -214,8 +250,8 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
                     .entries(Sizes.ENTRIES)
                     .averageKeySize(Sizes.ID)
                     .averageValueSize(Sizes.FEATURE)
-                    .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forId()))
-                    .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
+                    .keyMarshaller(new BeanMarshaller<>(serializers.forId()))
+                    .valueMarshaller(new BeanMarshaller<>(serializers.forSingleFeature()))
                     .create();
 
             instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
@@ -223,8 +259,8 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
                     .entries(Sizes.ENTRIES)
                     .averageKeySize(Sizes.ID)
                     .averageValueSize(Sizes.CLASS)
-                    .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forId()))
-                    .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forClass()))
+                    .keyMarshaller(new BeanMarshaller<>(serializers.forId()))
+                    .valueMarshaller(new BeanMarshaller<>(serializers.forClass()))
                     .create();
 
             features = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
@@ -232,7 +268,7 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
                     .entries(Sizes.ENTRIES)
                     .averageKeySize(Sizes.FEATURE)
                     .averageValueSize(Sizes.FEATURE_VALUE)
-                    .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
+                    .keyMarshaller(new BeanMarshaller<>(serializers.forSingleFeature()))
                     .create();
 
             featuresById = new HashMap<>();
@@ -244,19 +280,30 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
          * @param id the identifier of the data to clean
          */
         public void close(Id id) {
-            // Remove the container from the id if present (accessible only by the id)
-            containers.remove(id);
-
-            // Unregister the current back-end and clear all features associated with the id
-            Set<Integer> relatedFeatures = featuresById.remove(id);
-            if (nonNull(relatedFeatures)) {
-                relatedFeatures.forEach(n -> features.remove(SingleFeatureBean.of(id, n)));
-            }
-
-            // Cleans all shared in-memory maps: they will no longer be used
             if (COUNTER.get() == 0L) {
-                Log.debug("Cleaning BoundTransientBackend");
+                // Cleans all shared in-memory maps: they will no longer be used
+                closeAll();
+            }
+            else {
+                // Remove the container from the id if present (accessible only by the id)
+                containers.remove(id);
 
+                // Unregister the current back-end and clear all features associated with the id
+                Set<Integer> relatedFeatures = featuresById.remove(id);
+                if (nonNull(relatedFeatures)) {
+                    relatedFeatures.forEach(n -> features.remove(SingleFeatureBean.of(id, n)));
+                }
+            }
+        }
+
+        /**
+         * Closes every maps.
+         */
+        private void closeAll() {
+            Log.debug("BoundInMemoryBackend is closing...");
+            final Stopwatch stopwatch = Stopwatch.createStarted();
+
+            try {
                 containers.clear();
                 containers.close();
 
@@ -267,6 +314,9 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
                 features.close();
 
                 featuresById.clear();
+            }
+            finally {
+                Log.debug("BoundInMemoryBackend is now closed. Took {1}", stopwatch.stop().elapsed());
             }
         }
 

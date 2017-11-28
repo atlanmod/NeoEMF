@@ -26,6 +26,8 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.observers.TestObserver;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
@@ -45,6 +47,10 @@ class ClosedStoreTest extends AbstractTest {
         store = new ClosedStore();
     }
 
+    private void assertHasError(TestObserver<?> observer) throws InterruptedException {
+        observer.await().assertError(CLOSED_EXCEPTION_TYPE);
+    }
+
     @Test
     void testClose() {
         assertThat(
@@ -60,38 +66,28 @@ class ClosedStoreTest extends AbstractTest {
     }
 
     @Test
-    void testContainerOf() {
-        assertThat(
-                catchThrowable(() -> store.containerOf(mock(Id.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testContainerOf() throws InterruptedException {
+        assertHasError(store.containerOf(mock(Id.class)).test());
     }
 
     @Test
-    void testContainerFor() {
-        assertThat(
-                catchThrowable(() -> store.containerFor(mock(Id.class), mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testContainerFor() throws InterruptedException {
+        assertHasError(store.containerFor(mock(Id.class), mock(SingleFeatureBean.class)).test());
     }
 
     @Test
-    void testRemoveContainer() {
-        assertThat(
-                catchThrowable(() -> store.removeContainer(mock(Id.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testRemoveContainer() throws InterruptedException {
+        assertHasError(store.removeContainer(mock(Id.class)).test());
     }
 
     @Test
-    void testMetaClassOf() {
-        assertThat(
-                catchThrowable(() -> store.metaClassOf(mock(Id.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testMetaClassOf() throws InterruptedException {
+        assertHasError(store.metaClassOf(mock(Id.class)).test());
     }
 
     @Test
-    void testmMetaClassFor() {
-        assertThat(
-                catchThrowable(() -> store.metaClassFor(mock(Id.class), mock(ClassBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testMetaClassFor() throws InterruptedException {
+        assertHasError(store.metaClassFor(mock(Id.class), mock(ClassBean.class)).test());
     }
 
     @Test

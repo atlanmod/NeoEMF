@@ -16,7 +16,7 @@ import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.NoopBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.observers.TestObserver;
 
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,7 +52,7 @@ class ReadOnlyStoreTest extends AbstractTest {
         ImmutableConfig config = BaseConfig.newConfig().readOnly();
         assertThat(config.isReadOnly()).isTrue();
 
-        store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
+        store = StoreFactory.getInstance().createStore(new NoopBackend(), config);
     }
 
     @AfterEach
@@ -58,6 +60,10 @@ class ReadOnlyStoreTest extends AbstractTest {
         if (nonNull(store)) {
             store.close();
         }
+    }
+
+    private void assertHasError(TestObserver<?> observer) throws InterruptedException {
+        observer.await().assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
@@ -75,38 +81,28 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testContainerOf() {
-        assertThat(
-                catchThrowable(() -> store.containerOf(mock(Id.class)))
-        ).isNull();
+    void testContainerOf() throws InterruptedException {
+        store.containerOf(mock(Id.class)).test().await().assertNoErrors();
     }
 
     @Test
-    void testContainerFor() {
-        assertThat(
-                catchThrowable(() -> store.containerFor(mock(Id.class), mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testContainerFor() throws InterruptedException {
+        assertHasError(store.containerFor(mock(Id.class), mock(SingleFeatureBean.class)).test());
     }
 
     @Test
-    void testRemoveContainer() {
-        assertThat(
-                catchThrowable(() -> store.removeContainer(mock(Id.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testRemoveContainer() throws InterruptedException {
+        assertHasError(store.removeContainer(mock(Id.class)).test());
     }
 
     @Test
-    void testMetaClassOf() {
-        assertThat(
-                catchThrowable(() -> store.metaClassOf(mock(Id.class)))
-        ).isNull();
+    void testMetaClassOf() throws InterruptedException {
+        store.metaClassOf(mock(Id.class)).test().await().assertNoErrors();
     }
 
     @Test
-    void testmMetaClassFor() {
-        assertThat(
-                catchThrowable(() -> store.metaClassFor(mock(Id.class), mock(ClassBean.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testMetaClassFor() throws InterruptedException {
+        assertHasError(store.metaClassFor(mock(Id.class), mock(ClassBean.class)).test());
     }
 
     @Test

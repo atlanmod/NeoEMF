@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
+import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.concurrent.MoreThreads;
 import fr.inria.atlanmod.commons.function.Copier;
 import fr.inria.atlanmod.commons.log.Log;
@@ -15,16 +16,20 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapper;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.query.AsyncQueryDispatcher;
+import fr.inria.atlanmod.neoemf.data.query.QueryDispatcher;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -49,7 +54,13 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
      * The unique name of this backend.
      */
     @Nullable
-    private final String name;
+    protected final String name;
+
+    /**
+     * The query dispatcher associated with this backend.
+     */
+    @Nonnull
+    private final QueryDispatcher dispatcher;
 
     /**
      * Whether this backend is closed.
@@ -70,15 +81,33 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
      */
     protected AbstractBackend(@Nullable String name) {
         this.name = name;
+        this.dispatcher = new AsyncQueryDispatcher(name);
 
         if (isPersistent()) {
             ACTIVE_BACKENDS.add(this);
         }
     }
 
+    /**
+     * Returns the query dispatcher of this backend.
+     *
+     * @return the query dispatcher
+     */
+    @Nonnull
+    protected QueryDispatcher dispatcher() {
+        return dispatcher;
+    }
+
     @Override
     public final void close() {
         close(true);
+    }
+
+    @Override
+    public final synchronized void save() {
+        if (!isClosed) {
+            asyncSave().cache().subscribe();
+        }
     }
 
     /**
@@ -89,16 +118,18 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
      *
      * @param clean {@code true} if the registry must be cleaned after closure
      */
-    private void close(boolean clean) {
+    private synchronized void close(boolean clean) {
         if (isClosed) {
             return;
         }
 
+        Log.debug("{0} is closing...", this);
+        final Stopwatch stopwatch = Stopwatch.createStarted();
+
         try {
-            save();
-            innerClose();
+            asyncSave().andThen(asyncClose()).blockingAwait();
         }
-        catch (Exception e) {
+        catch (RuntimeException e) {
             Log.warn(e.getMessage());
         }
         finally {
@@ -107,14 +138,39 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
             if (clean && isPersistent()) {
                 ACTIVE_BACKENDS.remove(this);
             }
+
+            try {
+                dispatcher.close();
+            }
+            catch (IOException e) {
+                Log.warn("An error occured when closing the query dispatcher", e);
+            }
+
+            Log.debug("{0} is now closed. Took {1}", this, stopwatch.stop().elapsed());
         }
     }
 
+    /**
+     * Asynchronously closes the database, and releases any system resources associated with it.
+     *
+     * @return the deferred computation
+     */
+    @Nonnull
+    protected abstract Completable asyncClose();
+
+    /**
+     * Asynchronously saves the last modifications.
+     *
+     * @return the deferred computation
+     */
+    @Nonnull
+    protected abstract Completable asyncSave();
+
     @Nonnull
     @Override
-    public final Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+    public final Flowable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         if ((metaClass.isAbstract() || metaClass.isInterface()) && strict) {
-            return Collections.emptySet();
+            return Flowable.empty();
         }
 
         Set<ClassBean> allInstances = strict ? new HashSet<>() : metaClass.inheritedBy();
@@ -122,13 +178,6 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
 
         return allInstancesOf(allInstances);
     }
-
-    /**
-     * Cleanly closes the database, and releases any system resources associated with it.
-     *
-     * @throws IOException if an I/O error occurs during the closure
-     */
-    protected abstract void innerClose() throws IOException;
 
     @Override
     @SuppressWarnings("unchecked")

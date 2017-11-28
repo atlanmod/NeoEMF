@@ -16,6 +16,9 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+
 /**
  * An object capable of mapping containers.
  *
@@ -29,13 +32,10 @@ public interface ContainerMapper {
      *
      * @param id the {@link Id} of the contained element
      *
-     * @return an {@link Optional} containing the container, or {@link Optional#empty()} if the {@code id} has no
-     * defined container.
-     *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @return the deferred computation to execute, that may contains the container
      */
     @Nonnull
-    Optional<SingleFeatureBean> containerOf(Id id);
+    Maybe<SingleFeatureBean> containerOf(Id id);
 
     /**
      * Stores the {@code container} for the specified {@code id}.
@@ -43,9 +43,10 @@ public interface ContainerMapper {
      * @param id        the {@link Id} of the contained element
      * @param container the containing element's container information to store
      *
-     * @throws NullPointerException if the {@code id} is {@code null}
+     * @return the deferred computation to execute
      */
-    void containerFor(Id id, SingleFeatureBean container);
+    @Nonnull
+    Completable containerFor(Id id, SingleFeatureBean container);
 
     /**
      * Removes the container of the specified {@code id}.
@@ -55,7 +56,8 @@ public interface ContainerMapper {
      *
      * @param id the {@link Id} of the contained element
      *
-     * @throws NullPointerException if the {@code id} is {@code null}
+     * @return the deferred computation to execute
      */
-    void removeContainer(Id id);
+    @Nonnull
+    Completable removeContainer(Id id);
 }

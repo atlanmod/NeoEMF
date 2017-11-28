@@ -22,6 +22,9 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.functions.Action;
+
 /**
  * A {@link InMemoryBackend} that stores all elements in {@link Map}s.
  */
@@ -65,8 +68,8 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
                 .entries(Sizes.ENTRIES)
                 .averageKeySize(Sizes.ID)
                 .averageValueSize(Sizes.FEATURE)
-                .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forId()))
-                .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
+                .keyMarshaller(new BeanMarshaller<>(serializers.forId()))
+                .valueMarshaller(new BeanMarshaller<>(serializers.forSingleFeature()))
                 .create();
 
         instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
@@ -74,8 +77,8 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
                 .entries(Sizes.ENTRIES)
                 .averageKeySize(Sizes.ID)
                 .averageValueSize(Sizes.CLASS)
-                .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forId()))
-                .valueMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forClass()))
+                .keyMarshaller(new BeanMarshaller<>(serializers.forId()))
+                .valueMarshaller(new BeanMarshaller<>(serializers.forClass()))
                 .create();
 
         features = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
@@ -83,20 +86,29 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
                 .entries(Sizes.ENTRIES)
                 .averageKeySize(Sizes.FEATURE)
                 .averageValueSize(Sizes.FEATURE_VALUE)
-                .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
+                .keyMarshaller(new BeanMarshaller<>(serializers.forSingleFeature()))
                 .create();
     }
 
+    @Nonnull
     @Override
-    protected void innerClose() {
-        containers.clear();
-        containers.close();
+    protected Completable asyncClose() {
+        // Clean and close all maps
+        Action closeFunc = () -> {
+            containers.clear();
+            containers.close();
 
-        instances.clear();
-        instances.close();
+            instances.clear();
+            instances.close();
 
-        features.clear();
-        features.close();
+            features.clear();
+            features.close();
+        };
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(closeFunc);
+
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull

@@ -16,6 +16,8 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
+import fr.inria.atlanmod.commons.LazyObject;
+import fr.inria.atlanmod.commons.collect.CloseableIterator;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -26,15 +28,24 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.functions.Action;
+import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -48,7 +59,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
      */
     @Nonnull
-    protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
+    protected final BeanSerializerFactory serializers = BeanSerializerFactory.getInstance();
 
     /**
      * The BerkeleyDB environment.
@@ -95,18 +106,29 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         this.features = environment.openDatabase(null, "features/single", databaseConfig);
     }
 
+    @Nonnull
     @Override
-    public void save() {
-        // Do nothing: data are automatically saved
+    protected Completable asyncClose() {
+        // Close all maps and their environment
+        Action closeFunc = () -> {
+            containers.close();
+            instances.close();
+            features.close();
+
+            environment.close();
+        };
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(closeFunc);
+
+        return dispatcher().submit(databaseQuery);
     }
 
+    @Nonnull
     @Override
-    protected void innerClose() {
-        containers.close();
-        instances.close();
-        features.close();
-
-        environment.close();
+    protected Completable asyncSave() {
+        // Do nothing: data are automatically saved
+        return Completable.complete();
     }
 
     @Override
@@ -120,64 +142,93 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id, "id");
+    public Maybe<SingleFeatureBean> containerOf(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
 
-        return get(containers, id, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forSingleFeature());
-    }
+        // Retrieve the container
+        Callable<SingleFeatureBean> getFunc = () -> get(containers, id, serializers.forId(), serializers.forSingleFeature());
 
-    @Override
-    public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id, "id");
-        checkNotNull(container, "container");
+        // The composed query to execute on the database
+        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(getFunc);
 
-        put(containers, id, container, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forSingleFeature());
-    }
-
-    @Override
-    public void removeContainer(Id id) {
-        checkNotNull(id, "id");
-
-        delete(containers, id, SERIALIZER_FACTORY.forId());
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id, "id");
+    public Completable containerFor(Id id, SingleFeatureBean container) {
+        Action checkFunc = () -> {
+            checkNotNull(id, "id");
+            checkNotNull(container, "container");
+        };
 
-        return get(instances, id, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forClass());
-    }
+        // Define the container
+        Action setFunc = () -> put(containers, id, container, serializers.forId(), serializers.forSingleFeature());
 
-    @Override
-    public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id, "id");
-        checkNotNull(metaClass, "metaClass");
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(setFunc);
 
-        return putIfAbsent(instances, id, metaClass, SERIALIZER_FACTORY.forId(), SERIALIZER_FACTORY.forClass());
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        try (Cursor cursor = instances.openCursor(null, null)) {
-            DatabaseEntry dbKey = new DatabaseEntry();
-            DatabaseEntry dbValue = new DatabaseEntry();
+    public Completable removeContainer(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
 
-            Set<Id> instancesOf = new HashSet<>();
+        // Remove the container
+        Action removeFunc = () -> delete(containers, id, serializers.forId());
 
-            while (cursor.getNext(dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                if (metaClasses.contains(SERIALIZER_FACTORY.forClass().deserialize(dbValue.getData()))) {
-                    instancesOf.add(SERIALIZER_FACTORY.forId().deserialize(dbKey.getData()));
-                }
-            }
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(removeFunc);
 
-            return instancesOf;
-        }
-        catch (IOException e) {
-            handleException(e);
-            return Collections.emptySet();
-        }
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
+
+    @Nonnull
+    @Override
+    public Maybe<ClassBean> metaClassOf(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
+
+        // Retrieve the meta-class
+        Callable<ClassBean> getFunc = () -> get(instances, id, serializers.forId(), serializers.forClass());
+
+        // The composed query to execute on the database
+        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(getFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
+
+    @Nonnull
+    @Override
+    public Completable metaClassFor(Id id, ClassBean metaClass) {
+        Action checkFunc = () -> {
+            checkNotNull(id, "id");
+            checkNotNull(metaClass, "metaClass");
+        };
+
+        // Define the meta-class, if it does not already exist
+        Callable<Boolean> setFunc = () -> putIfAbsent(instances, id, metaClass, serializers.forId(), serializers.forClass());
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Single.fromCallable(setFunc)
+                .filter(Functions.equalsWith(false))
+                .doOnSuccess(CommonQueries.classAlreadyExists())
+                .ignoreElement();
+
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
+
+    @Nonnull
+    @Override
+    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        CloseableIterator<Id> iter = new AllInstancesIterator(metaClasses);
+
+        // The composed query to execute on the database
+        Flowable<Id> databaseQuery = Flowable.fromIterable(() -> iter)
+                .doAfterTerminate(iter::close);
+
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
@@ -185,7 +236,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        return get(features, key, SERIALIZER_FACTORY.forSingleFeature(), SERIALIZER_FACTORY.forAny());
+        return Optional.ofNullable(get(features, key, serializers.forSingleFeature(), serializers.forAny()));
     }
 
     @Nonnull
@@ -195,7 +246,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         checkNotNull(value, "value");
 
         Optional<V> previousValue = valueOf(key);
-        put(features, key, value, SERIALIZER_FACTORY.forSingleFeature(), SERIALIZER_FACTORY.forAny());
+        put(features, key, value, serializers.forSingleFeature(), serializers.forAny());
         return previousValue;
     }
 
@@ -203,7 +254,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public void removeValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        delete(features, key, SERIALIZER_FACTORY.forSingleFeature());
+        delete(features, key, serializers.forSingleFeature());
     }
 
     @Nonnull
@@ -225,23 +276,23 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
-    @Nonnull
-    protected <K, V> Optional<V> get(Database database, K key, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
+    @Nullable
+    protected <K, V> V get(Database database, K key, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
         try {
             DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
             DatabaseEntry dbValue = new DatabaseEntry();
 
-            Optional<V> value = Optional.empty();
+            V value = null;
 
             if (database.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                value = Optional.of(valueSerializer.deserialize(dbValue.getData()));
+                value = valueSerializer.deserialize(dbValue.getData());
             }
 
             return value;
         }
         catch (IOException e) {
             handleException(e);
-            return Optional.empty();
+            return null;
         }
     }
 
@@ -323,6 +374,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         try (Cursor cursor = from.openCursor(null, null)) {
             DatabaseEntry dbKey = new DatabaseEntry();
             DatabaseEntry dbValue = new DatabaseEntry();
+
             while (cursor.getNext(dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
                 to.put(null, dbKey, dbValue);
             }
@@ -332,5 +384,132 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     private void handleException(IOException e) {
         throw new RuntimeException(e);
+    }
+
+    /**
+     * A {@link CloseableIterator} that iterates over meta-classes and returns {@link Id}s related to a set of defined
+     * meta-classes. An {@link Id} is related to a meta-class if its associated element is instance of it.
+     */
+    @ParametersAreNonnullByDefault
+    private class AllInstancesIterator implements CloseableIterator<Id> {
+
+        /**
+         * The database cursor, embedded on an on-demand loader.
+         */
+        @Nonnull
+        private final LazyObject<Cursor> cursor = LazyObject.with(() -> instances.openCursor(null, null));
+
+        /**
+         * The set of meta-classes whose instances must be retrieved.
+         */
+        @Nonnull
+        private final Set<ClassBean> metaClasses;
+
+        /**
+         * The database key, used to deserialize an entry.
+         */
+        @Nonnull
+        private final DatabaseEntry dbKey = new DatabaseEntry();
+
+        /**
+         * The database value, used to deserialize an entry.
+         */
+        @Nonnull
+        private final DatabaseEntry dbValue = new DatabaseEntry();
+
+        /**
+         * The prepared next element.
+         */
+        private Id nextElement;
+
+        /**
+         * {@code true} if the next element exists and has been prepared.
+         */
+        private boolean hasNext = false;
+
+        /**
+         * {@code true} if the next element is not prepared yet.
+         */
+        private boolean requirePreparation = true;
+
+        /**
+         * {@code true} if this iterator has been closed.
+         *
+         * @see #close()
+         */
+        private boolean isClosed = false;
+
+        /**
+         * Constructs a new {@code AllInstancesIterator} that matches the given {@code metaClasses}.
+         *
+         * @param metaClasses the set of meta-classes whose instances must be retrieved
+         */
+        public AllInstancesIterator(Set<ClassBean> metaClasses) {
+            this.metaClasses = checkNotNull(metaClasses);
+        }
+
+        /**
+         * Prepares the next element. Iterates over the cursor to the next matching element, or to the end of the cursor
+         * if no element matches.
+         */
+        private void prepareNext() {
+            if (isClosed) {
+                throw new IllegalStateException("This iterator is closed");
+            }
+
+            if (!requirePreparation) {
+                // No need to prepare anything
+                return;
+            }
+
+            requirePreparation = false;
+
+            try {
+                while (cursor.get().getNext(dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
+                    if (metaClasses.contains(serializers.forClass().deserialize(dbValue.getData()))) {
+                        nextElement = serializers.forId().deserialize(dbKey.getData());
+                        hasNext = true;
+                        return;
+                    }
+                }
+            }
+            catch (IOException e) {
+                handleException(e);
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            prepareNext();
+            return hasNext;
+        }
+
+        @Override
+        public Id next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            requirePreparation = true;
+            hasNext = false;
+
+            return nextElement;
+        }
+
+        @Override
+        public void close() throws IOException {
+            if (isClosed) {
+                return;
+            }
+
+            try {
+                if (cursor.isLoaded()) {
+                    cursor.get().close();
+                }
+            }
+            finally {
+                isClosed = true;
+            }
+        }
     }
 }

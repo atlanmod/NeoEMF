@@ -19,6 +19,7 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Get;
@@ -29,12 +30,22 @@ import org.apache.hadoop.hbase.client.Table;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Function;
+import io.reactivex.internal.functions.Functions;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link HBaseBackend} that provides overall behavior for the management of a HBase database.
@@ -81,13 +92,13 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
      * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
      */
     @Nonnull
-    private static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
+    protected final BeanSerializerFactory serializers = BeanSerializerFactory.getInstance();
 
     /**
      * A converter to use {@code byte[]} instead of {@link Id}.
      */
     @Nonnull
-    private static final Converter<Id, byte[]> AS_BYTES = Converter.from(
+    protected final Converter<Id, byte[]> idConverter = Converter.from(
             id -> Strings.toBytes(IdConverters.withHexString().convert(id)),
             bs -> IdConverters.withHexString().revert(Bytes.toString(bs)));
 
@@ -108,135 +119,165 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
         this.table = table;
     }
 
+    @Nonnull
     @Override
-    public void save() {
-        // TODO Implement this method
-    }
+    protected Completable asyncClose() {
+        // Close the table
+        Action closeFunc = table::close;
 
-    @Override
-    protected void innerClose() throws IOException {
-        table.close();
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(closeFunc);
+
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id, "id");
-
-        try {
-            Get get = new Get(AS_BYTES.convert(id));
-            Result result = table.get(get);
-
-            if (result.isEmpty()) {
-                return Optional.empty();
-            }
-
-            byte[] byteId = result.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER);
-            byte[] byteName = result.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
-
-            if (isNull(byteId) || isNull(byteName)) {
-                return Optional.empty();
-            }
-
-            return Optional.of(SingleFeatureBean.of(AS_BYTES.revert(byteId), Bytes.toInt(byteName)));
-        }
-        catch (IOException e) {
-            handleException(e);
-            return Optional.empty();
-        }
+    protected Completable asyncSave() {
+        // TODO Implement this method
+        return Completable.complete();
     }
 
+    @Nonnull
     @Override
-    public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id, "id");
-        checkNotNull(container, "container");
+    public Maybe<SingleFeatureBean> containerOf(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
 
-        try {
-            Put put = new Put(AS_BYTES.convert(id))
-                    .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER, AS_BYTES.convert(container.owner()))
+        // Retrieve the binary representation of the container
+        Callable<Result> getFunc = () -> {
+            Get get = new Get(idConverter.convert(id));
+            return table.get(get);
+        };
+
+        // Deserialize the container
+        Function<Result, SingleFeatureBean> mapFunc = r -> {
+            byte[] byteId = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER);
+            byte[] byteName = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
+
+            return nonNull(byteId) && nonNull(byteName)
+                    ? SingleFeatureBean.of(idConverter.revert(byteId), Bytes.toInt(byteName))
+                    : null;
+        };
+
+        // The composed query to execute on the database
+        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(getFunc)
+                .map(mapFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
+
+    @Nonnull
+    @Override
+    public Completable containerFor(Id id, SingleFeatureBean container) {
+        Action checkFunc = () -> {
+            checkNotNull(id, "id");
+            checkNotNull(container, "container");
+        };
+
+        // Serialize and define the container
+        Action setFunc = () -> {
+            Put put = new Put(idConverter.convert(id))
+                    .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER, idConverter.convert(container.owner()))
                     .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE, Ints.toBytes(container.id()));
 
             table.put(put);
-        }
-        catch (IOException e) {
-            handleException(e);
-        }
+        };
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(setFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
+    @Nonnull
     @Override
-    public void removeContainer(Id id) {
-        checkNotNull(id, "id");
+    public Completable removeContainer(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
 
-        try {
-            Delete delete = new Delete(AS_BYTES.convert(id))
+        // Remove the container
+        Action removeFunc = () -> {
+            Delete delete = new Delete(idConverter.convert(id))
                     .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER)
                     .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
 
             table.delete(delete);
-        }
-        catch (IOException e) {
-            handleException(e);
-        }
+        };
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(removeFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id, "id");
+    public Maybe<ClassBean> metaClassOf(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
 
-        try {
-            Get get = new Get(AS_BYTES.convert(id));
-            Result result = table.get(get);
+        // Retrieve the binary representation of the meta-class
+        Callable<Result> getFunc = () -> {
+            Get get = new Get(idConverter.convert(id));
+            return table.get(get);
+        };
 
-            if (result.isEmpty()) {
-                return Optional.empty();
+        // Deserialize the meta-class
+        Function<Result, ClassBean> mapFunc = r -> {
+            byte[] byteName = r.getValue(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
+            byte[] byteUri = r.getValue(FAMILY_TYPE, QUALIFIER_CLASS_URI);
+
+            if (nonNull(byteName) && nonNull(byteUri)) {
+                return ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri));
             }
+            return null;
+        };
 
-            byte[] byteName = result.getValue(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
-            byte[] byteUri = result.getValue(FAMILY_TYPE, QUALIFIER_CLASS_URI);
+        // The composed query to execute on the database
+        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(getFunc)
+                .map(mapFunc);
 
-            if (isNull(byteName) || isNull(byteUri)) {
-                return Optional.empty();
-            }
-
-            return Optional.of(ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri)));
-        }
-        catch (IOException e) {
-            handleException(e);
-            return Optional.empty();
-        }
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
+    @Nonnull
     @Override
-    public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id, "id");
-        checkNotNull(metaClass, "metaClass");
+    public Completable metaClassFor(Id id, ClassBean metaClass) {
+        Action checkFunc = () -> {
+            checkNotNull(id, "id");
+            checkNotNull(metaClass, "metaClass");
+        };
 
-        try {
-            byte[] row = AS_BYTES.convert(id);
+        // Check that the meta-class does not already exist
+        Callable<Boolean> existsFunc = () -> {
+            Get get = new Get(idConverter.convert(id))
+                    .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
 
-            Get get = new Get(row).addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
-            if (table.exists(get)) {
-                return false;
-            }
+            return table.exists(get);
+        };
 
-            Put put = new Put(row)
+        // Serialize and define the meta-class
+        Callable<Boolean> setFunc = () -> {
+            Put put = new Put(idConverter.convert(id))
                     .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME, Strings.toBytes(metaClass.name()))
                     .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_URI, Strings.toBytes(metaClass.uri()));
 
             table.put(put);
             return true;
-        }
-        catch (IOException e) {
-            handleException(e);
-            return false;
-        }
+        };
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Single.fromCallable(existsFunc)
+                .filter(Functions.equalsWith(true))
+                .doOnSuccess(CommonQueries.classAlreadyExists())
+                .switchIfEmpty(Single.fromCallable(setFunc))
+                .toCompletable();
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        throw new UnsupportedOperationException();
+    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        return Flowable.error(new UnsupportedOperationException());
     }
 
     @Nonnull
@@ -245,7 +286,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
         checkNotNull(key, "key");
 
         try {
-            Get get = new Get(AS_BYTES.convert(key.owner()));
+            Get get = new Get(idConverter.convert(key.owner()));
             Result result = table.get(get);
 
             if (result.isEmpty()) {
@@ -258,7 +299,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 return Optional.empty();
             }
 
-            return Optional.of(SERIALIZER_FACTORY.<V>forAny().deserialize(byteValue));
+            return Optional.of(serializers.<V>forAny().deserialize(byteValue));
         }
         catch (IOException e) {
             handleException(e);
@@ -275,8 +316,8 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
         Optional<V> previousValue = valueOf(key);
 
         try {
-            Put put = new Put(AS_BYTES.convert(key.owner()))
-                    .addColumn(FAMILY_PROPERTY, Ints.toBytes(key.id()), SERIALIZER_FACTORY.<V>forAny().serialize(value));
+            Put put = new Put(idConverter.convert(key.owner()))
+                    .addColumn(FAMILY_PROPERTY, Ints.toBytes(key.id()), serializers.<V>forAny().serialize(value));
 
             table.put(put);
         }
@@ -292,7 +333,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
         checkNotNull(key, "key");
 
         try {
-            Delete delete = new Delete(AS_BYTES.convert(key.owner()))
+            Delete delete = new Delete(idConverter.convert(key.owner()))
                     .addColumns(FAMILY_PROPERTY, Ints.toBytes(key.id()));
 
             table.delete(delete);

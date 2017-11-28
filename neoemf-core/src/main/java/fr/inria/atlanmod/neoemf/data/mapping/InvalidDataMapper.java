@@ -22,6 +22,10 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -62,41 +66,44 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaClassOf(Id id) {
-        throw e.get();
-    }
-
-    @Override
-    public boolean metaClassFor(Id id, ClassBean metaClass) {
-        throw e.get();
+    public Maybe<SingleFeatureBean> containerOf(Id id) {
+        return Maybe.error(e::get);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
-        throw e.get();
+    public Completable containerFor(Id id, SingleFeatureBean container) {
+        return Completable.error(e::get);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        throw e.get();
+    public Completable removeContainer(Id id) {
+        return Completable.error(e::get);
     }
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureBean> containerOf(Id id) {
-        throw e.get();
+    public Maybe<ClassBean> metaClassOf(Id id) {
+        return Maybe.error(e::get);
     }
 
+    @Nonnull
     @Override
-    public void containerFor(Id id, SingleFeatureBean container) {
-        throw e.get();
+    public Completable metaClassFor(Id id, ClassBean metaClass) {
+        return Completable.error(e::get);
     }
 
+    @Nonnull
     @Override
-    public void removeContainer(Id id) {
-        throw e.get();
+    public Flowable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+        return Flowable.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        return Flowable.error(e::get);
     }
 
     @Nonnull

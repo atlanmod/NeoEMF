@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import org.mapdb.DB;
 import org.mapdb.DataInput2;
@@ -29,11 +30,19 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
+
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.functions.Action;
+import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -49,7 +58,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
      * instances.
      */
     @Nonnull
-    protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
+    protected final BeanSerializerFactory serializers = BeanSerializerFactory.getInstance();
 
     /**
      * The MapDB database.
@@ -93,31 +102,47 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
         this.database = database;
 
         this.containers = database.hashMap("containers")
-                .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forId()))
-                .valueSerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forSingleFeature()))
+                .keySerializer(new SerializerDecorator<>(serializers.forId()))
+                .valueSerializer(new SerializerDecorator<>(serializers.forSingleFeature()))
                 .createOrOpen();
 
         this.instances = database.hashMap("instances")
-                .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forId()))
-                .valueSerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forClass()))
+                .keySerializer(new SerializerDecorator<>(serializers.forId()))
+                .valueSerializer(new SerializerDecorator<>(serializers.forClass()))
                 .createOrOpen();
 
         this.singleFeatures = database.hashMap("features/single")
-                .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forSingleFeature()))
+                .keySerializer(new SerializerDecorator<>(serializers.forSingleFeature()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
     }
 
+    @Nonnull
     @Override
-    public void save() {
-        if (!database.isClosed()) {
-            database.commit();
-        }
+    protected Completable asyncClose() {
+        // Close the database
+        Action closeFunc = database::close;
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(closeFunc);
+
+        return dispatcher().submit(databaseQuery);
     }
 
+    @Nonnull
     @Override
-    protected void innerClose() {
-        database.close();
+    protected Completable asyncSave() {
+        if (database.isClosed()) {
+            return Completable.complete();
+        }
+
+        // Save the database
+        Action closeFunc = database::commit;
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(closeFunc);
+
+        return dispatcher().submit(databaseQuery);
     }
 
     @Override
@@ -141,50 +166,94 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id, "id");
+    public Maybe<SingleFeatureBean> containerOf(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
 
-        return get(containers, id);
-    }
+        // Retrieve the container
+        Callable<SingleFeatureBean> getFunc = () -> get(containers, id);
 
-    @Override
-    public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id, "id");
-        checkNotNull(container, "container");
+        // The composed query to execute on the database
+        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(getFunc);
 
-        put(containers, id, container);
-    }
-
-    @Override
-    public void removeContainer(Id id) {
-        checkNotNull(id, "id");
-
-        delete(containers, id);
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id, "id");
+    public Completable containerFor(Id id, SingleFeatureBean container) {
+        Action checkFunc = () -> {
+            checkNotNull(id, "id");
+            checkNotNull(container, "container");
+        };
 
-        return get(instances, id);
-    }
+        // Define the container
+        Action setFunc = () -> put(containers, id, container);
 
-    @Override
-    public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id, "id");
-        checkNotNull(metaClass, "metaClass");
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(setFunc);
 
-        return putIfAbsent(instances, id, metaClass);
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        return instances.getEntries().stream()
+    public Completable removeContainer(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
+
+        // Remove the container
+        Action removeFunc = () -> delete(containers, id);
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(removeFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
+
+    @Nonnull
+    @Override
+    public Maybe<ClassBean> metaClassOf(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
+
+        // Retrieve the meta-class
+        Callable<ClassBean> getFunc = () -> get(instances, id);
+
+        // The composed query to execute on the database
+        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(getFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
+
+    @Nonnull
+    @Override
+    public Completable metaClassFor(Id id, ClassBean metaClass) {
+        Action checkFunc = () -> {
+            checkNotNull(id, "id");
+            checkNotNull(metaClass, "metaClass");
+        };
+
+        // Define the meta-class, if it does not already exist
+        Callable<ClassBean> setFunc = () -> putIfAbsent(instances, id, metaClass);
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Maybe.fromCallable(setFunc)
+                .isEmpty()
+                .filter(Functions.equalsWith(false))
+                .doOnSuccess(CommonQueries.classAlreadyExists())
+                .ignoreElement();
+
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
+
+    @Nonnull
+    @Override
+    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        // The composed query to execute on the database
+        Flowable<Id> databaseQuery = Single.fromCallable(instances::getEntries)
+                .flattenAsFlowable(Functions.identity())
                 .filter(e -> metaClasses.contains(e.getValue()))
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
+                .map(Map.Entry::getKey);
+
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
@@ -192,7 +261,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        return get(singleFeatures, key);
+        return Optional.ofNullable(get(singleFeatures, key));
     }
 
     @Nonnull
@@ -201,7 +270,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        return put(singleFeatures, key, value);
+        return Optional.ofNullable(put(singleFeatures, key, value));
     }
 
     @Override
@@ -228,10 +297,10 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
      * @return an {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
-    @Nonnull
+    @Nullable
     @SuppressWarnings("unchecked")
-    protected <K, V> Optional<V> get(HTreeMap<K, ? super V> database, K key) {
-        return Optional.ofNullable((V) database.get(key));
+    protected <K, V> V get(HTreeMap<K, ? super V> database, K key) {
+        return (V) database.get(key);
     }
 
     /**
@@ -246,10 +315,10 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
      * @return an {@link Optional} containing the previous element, or an empty {@link Optional} if there is not any
      * previous element
      */
-    @Nonnull
+    @Nullable
     @SuppressWarnings("unchecked")
-    protected <K, V> Optional<V> put(HTreeMap<K, ? super V> database, K key, V value) {
-        return Optional.ofNullable((V) database.put(key, value));
+    protected <K, V> V put(HTreeMap<K, ? super V> database, K key, V value) {
+        return (V) database.put(key, value);
     }
 
     /**
@@ -264,8 +333,10 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
      *
      * @return {@code true} if the {@code key} has been saved
      */
-    protected <K, V> boolean putIfAbsent(HTreeMap<K, ? super V> database, K key, V value) {
-        return isNull(database.putIfAbsent(key, value));
+    @Nullable
+    @SuppressWarnings("unchecked")
+    protected <K, V> V putIfAbsent(HTreeMap<K, ? super V> database, K key, V value) {
+        return (V) database.putIfAbsent(key, value);
     }
 
     /**

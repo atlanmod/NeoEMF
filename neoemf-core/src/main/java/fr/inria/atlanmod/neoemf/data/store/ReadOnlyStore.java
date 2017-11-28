@@ -22,6 +22,8 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+
 /**
  * A {@link Store} wrapper that only allows read operations on the underlying database.
  * <p>
@@ -54,19 +56,22 @@ public class ReadOnlyStore extends AbstractStore {
         throw e.get();
     }
 
+    @Nonnull
     @Override
-    public void containerFor(Id id, SingleFeatureBean container) {
-        throw e.get();
+    public Completable containerFor(Id id, SingleFeatureBean container) {
+        return Completable.error(e::get);
     }
 
+    @Nonnull
     @Override
-    public void removeContainer(Id id) {
-        throw e.get();
+    public Completable removeContainer(Id id) {
+        return Completable.error(e::get);
     }
 
+    @Nonnull
     @Override
-    public boolean metaClassFor(Id id, ClassBean metaClass) {
-        throw e.get();
+    public Completable metaClassFor(Id id, ClassBean metaClass) {
+        return Completable.error(e::get);
     }
 
     @Nonnull

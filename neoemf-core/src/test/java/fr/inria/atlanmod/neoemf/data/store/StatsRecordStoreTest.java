@@ -16,7 +16,7 @@ import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.NoopBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -51,7 +51,7 @@ class StatsRecordStoreTest extends AbstractTest {
     void setUp() {
         ImmutableConfig config = BaseConfig.newConfig().recordStats();
 
-        store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
+        store = StoreFactory.getInstance().createStore(new NoopBackend(), config);
     }
 
     @AfterEach
@@ -85,7 +85,7 @@ class StatsRecordStoreTest extends AbstractTest {
     void testNoStats() {
         ImmutableConfig config = BaseConfig.newConfig();
 
-        Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
+        Store store = StoreFactory.getInstance().createStore(new NoopBackend(), config);
 
         // Do a call
         store.save();
@@ -107,27 +107,27 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testContainerOf() {
-        assertRecorded(() -> store.containerOf(mock(Id.class)), "containerOf", CALLS_COUNT);
+        assertRecorded(() -> store.containerOf(mock(Id.class)).blockingGet(), "containerOf", CALLS_COUNT);
     }
 
     @Test
     void testContainerFor() {
-        assertRecorded(() -> store.containerFor(mock(Id.class), mock(SingleFeatureBean.class)), "containerFor", CALLS_COUNT);
+        assertRecorded(() -> store.containerFor(mock(Id.class), mock(SingleFeatureBean.class)).blockingAwait(), "containerFor", CALLS_COUNT);
     }
 
     @Test
     void testRemoveContainer() {
-        assertRecorded(() -> store.removeContainer(mock(Id.class)), "removeContainer", CALLS_COUNT);
+        assertRecorded(() -> store.removeContainer(mock(Id.class)).blockingAwait(), "removeContainer", CALLS_COUNT);
     }
 
     @Test
     void testMetaClassOf() {
-        assertRecorded(() -> store.metaClassOf(mock(Id.class)), "metaClassOf", CALLS_COUNT);
+        assertRecorded(() -> store.metaClassOf(mock(Id.class)).blockingGet(), "metaClassOf", CALLS_COUNT);
     }
 
     @Test
-    void testmMetaClassFor() {
-        assertRecorded(() -> store.metaClassFor(mock(Id.class), mock(ClassBean.class)), "metaClassFor", CALLS_COUNT);
+    void testMetaClassFor() {
+        assertRecorded(() -> store.metaClassFor(mock(Id.class), mock(ClassBean.class)).blockingGet(), "metaClassFor", CALLS_COUNT);
     }
 
     @Test

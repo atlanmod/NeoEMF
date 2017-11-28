@@ -31,33 +31,34 @@ import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.internal.functions.Functions;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link BlueprintsBackend} that provides overall behavior for the management of a Blueprints database.
  */
 @ParametersAreNonnullByDefault
 abstract class AbstractBlueprintsBackend extends AbstractBackend implements BlueprintsBackend {
-
-    /**
-     * The {@link Converter} to use a long representation instead of {@link Id}.
-     * <p>
-     * This converter is specific to Blueprints which returns each identifier as an {@link Object}.
-     */
-    @Nonnull
-    protected static final Converter<Id, Object> AS_LONG_OBJECT = Converter.from(
-            IdConverters.withLong()::convert,
-            o -> IdConverters.withLong().revert(Long.class.cast(o)));
 
     /**
      * The property key used to define the index of an edge.
@@ -93,6 +94,16 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * The property key used to define the URI of meta-class {@link Vertex}s.
      */
     private static final String PROPERTY_CLASS_URI = "_iu";
+
+    /**
+     * The {@link Converter} to use a long representation instead of {@link Id}.
+     * <p>
+     * This converter is specific to Blueprints which returns each identifier as an {@link Object}.
+     */
+    @Nonnull
+    protected final Converter<Id, Object> idConverter = Converter.from(
+            IdConverters.withLong()::convert,
+            o -> IdConverters.withLong().revert(Long.class.cast(o)));
 
     /**
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
@@ -201,10 +212,20 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      */
     @Nonnull
     protected String formatLabel(FeatureBean feature) {
-        return requireUniqueLabels
-                // TODO Can cause a massive overhead (metaClassNameOf)
-                ? metaClassNameOf(feature.owner()) + ':' + Integer.toString(feature.id())
-                : Integer.toString(feature.id());
+        final String delimiter = ":";
+
+        String prefix = null;
+        String suffix = Integer.toString(feature.id());
+
+        if (requireUniqueLabels) {
+            // Use the metaclass name of the owner of the feature as prefix
+            prefix = metaClassOf(feature.owner())
+                    .map(ClassBean::name)
+                    .switchIfEmpty(Maybe.just(delimiter))
+                    .blockingGet();
+        }
+
+        return nonNull(prefix) ? prefix + delimiter + suffix : suffix;
     }
 
     /**
@@ -220,19 +241,30 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .orElseGet(() -> graph.createIndex(name, Vertex.class));
     }
 
+    @Nonnull
     @Override
-    public void save() {
-        if (graph.getFeatures().supportsTransactions) {
-            graph.commit();
-        }
-        else {
-            graph.shutdown();
-        }
+    protected Completable asyncClose() {
+        // Close the graph
+        Action closeFunc = graph::shutdown;
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(closeFunc);
+
+        return dispatcher().submit(databaseQuery);
     }
 
+    @Nonnull
     @Override
-    protected void innerClose() {
-        graph.shutdown();
+    protected Completable asyncSave() {
+        // Save (or commit) the graph
+        Action saveFunc = graph.getFeatures().supportsTransactions
+                ? graph::commit
+                : graph::shutdown;
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Completable.fromAction(saveFunc);
+
+        return dispatcher().submit(databaseQuery);
     }
 
     @Override
@@ -241,159 +273,159 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
         GraphHelper.copyGraph(graph, to.graph);
 
-        metaClassSet.forEach(m -> {
-            Id id = generateClassId(m);
-            Vertex vertex = get(id).<IllegalStateException>orElseThrow(IllegalStateException::new);
-            to.metaClassIndex.put(PROPERTY_CLASS_NAME, m.name(), vertex);
-        });
+        metaClassSet.forEach(m -> to.metaClassIndex.put(
+                PROPERTY_CLASS_NAME, m.name(),
+                get(generateClassId(m)).<IllegalStateException>orElseThrow(IllegalStateException::new)));
     }
 
     @Nonnull
     @Override
-    public Optional<SingleFeatureBean> containerOf(Id id) {
-        checkNotNull(id, "id");
+    public Maybe<SingleFeatureBean> containerOf(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
 
-        Optional<Vertex> containmentVertex = get(id);
+        // Retrieve the container edge from a vertex (the only element of the returned iterable)
+        Function<Vertex, Iterable<Edge>> getFunc = v -> v
+                .getEdges(Direction.OUT, EDGE_CONTAINER);
 
-        if (!containmentVertex.isPresent()) {
-            return Optional.empty();
-        }
+        // Convert an edge to a container
+        Function<Edge, SingleFeatureBean> mapFunc = e -> SingleFeatureBean.of(
+                idConverter.revert(e.getVertex(Direction.IN).getId()),
+                e.getProperty(PROPERTY_FEATURE_NAME));
 
-        Iterable<Edge> edges = containmentVertex.get().query()
-                .labels(EDGE_CONTAINER)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
+        // The composed query to execute on the database
+        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(() -> get(id).orElse(null))
+                .flattenAsFlowable(getFunc)
+                .singleElement()
+                .map(mapFunc);
 
-        return MoreIterables.onlyElement(edges)
-                .map(e -> SingleFeatureBean.of(
-                        AS_LONG_OBJECT.revert(e.getVertex(Direction.IN).getId()),
-                        e.getProperty(PROPERTY_FEATURE_NAME)));
-    }
-
-    @Override
-    public void containerFor(Id id, SingleFeatureBean container) {
-        checkNotNull(id, "id");
-        checkNotNull(container, "container");
-
-        Vertex containmentVertex = getOrCreate(id);
-        Vertex containerVertex = getOrCreate(container.owner());
-
-        Iterable<Edge> containmentEdges = containmentVertex.query()
-                .labels(EDGE_CONTAINER)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
-
-        containmentEdges.forEach(Edge::remove);
-
-        Edge edge = containmentVertex.addEdge(EDGE_CONTAINER, containerVertex);
-        edge.setProperty(PROPERTY_FEATURE_NAME, container.id());
-    }
-
-    @Override
-    public void removeContainer(Id id) {
-        checkNotNull(id, "id");
-
-        Optional<Vertex> containmentVertex = get(id);
-
-        if (!containmentVertex.isPresent()) {
-            return;
-        }
-
-        Iterable<Edge> containmentEdges = containmentVertex.get().query()
-                .labels(EDGE_CONTAINER)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
-
-        containmentEdges.forEach(Edge::remove);
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Optional<ClassBean> metaClassOf(Id id) {
-        checkNotNull(id, "id");
+    public Completable containerFor(Id id, SingleFeatureBean container) {
+        Action checkFunc = () -> {
+            checkNotNull(id, "id");
+            checkNotNull(container, "container");
+        };
 
-        Optional<Vertex> vertex = get(id);
+        // Remove the container edge of a vertex
+        Consumer<Vertex> removeFunc = v -> v
+                .getEdges(Direction.OUT, EDGE_CONTAINER)
+                .forEach(Edge::remove);
 
-        if (!vertex.isPresent()) {
-            return Optional.empty();
-        }
+        // Define the container edge of a vertex
+        Consumer<Vertex> setFunc = v -> v
+                .addEdge(EDGE_CONTAINER, getOrCreate(container.owner()))
+                .setProperty(PROPERTY_FEATURE_NAME, container.id());
 
-        Iterable<Vertex> metaClassVertices = vertex.get().query()
-                .labels(EDGE_INSTANCE_OF)
-                .direction(Direction.OUT)
-                .limit(1)
-                .vertices();
+        // The composed query to execute on the database
+        Completable databaseQuery = Single.fromCallable(() -> getOrCreate(id))
+                .doOnSuccess(removeFunc)
+                .doOnSuccess(setFunc)
+                .toCompletable();
 
-        return MoreIterables.onlyElement(metaClassVertices)
-                .map(v -> ClassBean.of(
-                        v.getProperty(PROPERTY_CLASS_NAME),
-                        v.getProperty(PROPERTY_CLASS_URI)));
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
+    @Nonnull
     @Override
-    public boolean metaClassFor(Id id, ClassBean metaClass) {
-        checkNotNull(id, "id");
-        checkNotNull(metaClass, "metaClass");
+    public Completable removeContainer(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
 
-        Vertex vertex = getOrCreate(id);
+        // Remove the container edge of a vertex
+        Consumer<Vertex> removeFunc = v -> v
+                .getEdges(Direction.OUT, EDGE_CONTAINER)
+                .forEach(Edge::remove);
 
-        // Check the presence of a meta-class
-        Iterable<Edge> instanceEdges = vertex.query()
-                .labels(EDGE_INSTANCE_OF)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
+        // The composed query to execute on the database
+        Completable databaseQuery = Maybe.fromCallable(() -> get(id).orElse(null))
+                .doOnSuccess(removeFunc)
+                .ignoreElement();
 
-        if (MoreIterables.onlyElement(instanceEdges).isPresent()) {
-            return false;
-        }
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
 
-        // Retrieve or create the meta-class and store it in the index
-        Iterable<Vertex> instanceVertices = metaClassIndex.get(PROPERTY_CLASS_NAME, metaClass.name());
+    @Nonnull
+    @Override
+    public Maybe<ClassBean> metaClassOf(Id id) {
+        Action checkFunc = () -> checkNotNull(id, "id");
 
-        Vertex metaClassVertex = MoreIterables.onlyElement(instanceVertices).orElseGet(() -> {
-            Vertex mcv = graph.addVertex(AS_LONG_OBJECT.convert(generateClassId(metaClass)));
+        // Retrieve the meta-class vertex from a vertex (the only element of the returned iterable)
+        Function<Vertex, Iterable<Vertex>> getFunc = v -> v
+                .getVertices(Direction.OUT, EDGE_INSTANCE_OF);
+
+        // Convert a vertex to a meta-class
+        Function<Vertex, ClassBean> mapFunc = v -> ClassBean.of(
+                v.getProperty(PROPERTY_CLASS_NAME),
+                v.getProperty(PROPERTY_CLASS_URI));
+
+        // The composed query to execute on the database
+        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(() -> get(id).orElse(null))
+                .flattenAsFlowable(getFunc)
+                .singleElement()
+                .map(mapFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
+    }
+
+    @Nonnull
+    @Override
+    public Completable metaClassFor(Id id, ClassBean metaClass) {
+        Action checkFunc = () -> {
+            checkNotNull(id, "id");
+            checkNotNull(metaClass, "metaClass");
+        };
+
+        // Retrieve the meta-class from a vertex
+        Function<Vertex, Iterable<Vertex>> getFromVertexFunc = v -> v
+                .getVertices(Direction.OUT, EDGE_INSTANCE_OF);
+
+        // Create a new meta-class vertex
+        Callable<Vertex> createFunc = () -> {
+            Vertex mcv = graph.addVertex(idConverter.convert(generateClassId(metaClass)));
             mcv.setProperty(PROPERTY_CLASS_NAME, metaClass.name());
             mcv.setProperty(PROPERTY_CLASS_URI, metaClass.uri());
-
-            metaClassIndex.put(PROPERTY_CLASS_NAME, metaClass.name(), mcv);
-            metaClassSet.add(metaClass);
-
             return mcv;
-        });
+        };
 
-        // Defines the meta-class
-        vertex.addEdge(EDGE_INSTANCE_OF, metaClassVertex);
+        // Create and set the meta-class into the index, if it does not exist
+        Single<Vertex> setInIndexFunc = Single.fromCallable(createFunc)
+                .doOnSuccess(v -> metaClassIndex.put(PROPERTY_CLASS_NAME, metaClass.name(), v))
+                .doOnSuccess(v -> metaClassSet.add(metaClass));
 
-        return true;
+        // Retrieve the meta-class from the index
+        Single<Vertex> getFromIndexFunc = Single.fromCallable(() -> metaClassIndex.get(PROPERTY_CLASS_NAME, metaClass.name()))
+                .flattenAsFlowable(Functions.identity())
+                .singleElement()
+                .switchIfEmpty(setInIndexFunc);
+
+        // Set the meta-class, if it does not exist
+        Single<Vertex> setFunc = getFromIndexFunc
+                .doOnSuccess(v -> getOrCreate(id).addEdge(EDGE_INSTANCE_OF, v));
+
+        // The composed query to execute on the database
+        Completable databaseQuery = Single.fromCallable(() -> getOrCreate(id))
+                .flattenAsFlowable(getFromVertexFunc)
+                .singleElement()
+                .doOnSuccess(CommonQueries.classAlreadyExists())
+                .switchIfEmpty(setFunc)
+                .toCompletable();
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        return metaClasses.stream()
-                .map(mc -> metaClassIndex.get(PROPERTY_CLASS_NAME, mc.name()))
-                .flatMap(MoreIterables::stream)
-                .map(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
-                .flatMap(MoreIterables::stream)
-                .map(v -> AS_LONG_OBJECT.revert(v.getId()))
-                .collect(Collectors.toSet());
-    }
+    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        // The composed query to execute on the database
+        Flowable<Id> databaseQuery = Single.fromCallable(() -> metaClasses)
+                .flattenAsFlowable(Functions.identity())
+                .flatMapIterable(mc -> metaClassIndex.get(PROPERTY_CLASS_NAME, mc.name()))
+                .flatMapIterable(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
+                .map(v -> idConverter.revert(v.getId()));
 
-    /**
-     * Returns the name of the meta-class of the specified {@code id}.
-     *
-     * @param id the identifier
-     *
-     * @return the name of the meta-class
-     */
-    @Nonnull
-    private String metaClassNameOf(Id id) {
-        // If the meta-class is not defined, the identifier represents the 'ROOT' element
-        return metaClassOf(id).map(ClassBean::name).orElse(":");
+        return dispatcher().submit(databaseQuery);
     }
 
     /**
@@ -405,7 +437,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      */
     @Nonnull
     protected Optional<Vertex> get(Id id) {
-        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(AS_LONG_OBJECT.convert(i))));
+        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(idConverter.convert(i))));
     }
 
     /**
@@ -419,8 +451,8 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     @Nonnull
     protected Vertex getOrCreate(Id id) {
         return verticesCache.get(id, i ->
-                Optional.ofNullable(graph.getVertex(AS_LONG_OBJECT.convert(i)))
-                        .orElseGet(() -> graph.addVertex(AS_LONG_OBJECT.convert(i))));
+                Optional.ofNullable(graph.getVertex(idConverter.convert(i)))
+                        .orElseGet(() -> graph.addVertex(idConverter.convert(i))));
     }
 
     /**
@@ -441,7 +473,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * An {@link IdGraph} that automatically removes unused {@link Vertex}.
      */
     @ParametersAreNonnullByDefault
-    private static class SmartIdGraph extends IdGraph<KeyIndexableGraph> {
+    private class SmartIdGraph extends IdGraph<KeyIndexableGraph> {
 
         /**
          * Constructs a new {@code SmartIdGraph} on the specified {@code baseGraph}.
@@ -499,18 +531,24 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
              */
             @Override
             public void remove() {
-                Vertex referencedVertex = getVertex(Direction.IN);
-                super.remove();
+                Action removeFunc = () -> {
+                    super.remove();
 
-                Iterable<Edge> edges = referencedVertex.query()
-                        .direction(Direction.IN)
-                        .limit(1)
-                        .edges();
+                    Vertex referencedVertex = getVertex(Direction.IN);
 
-                if (MoreIterables.isEmpty(edges)) {
-                    // If the Vertex has no more incoming edges remove it from the DB
-                    referencedVertex.remove();
-                }
+                    Iterable<Edge> edges = referencedVertex
+                            .query()
+                            .direction(Direction.IN)
+                            .limit(1)
+                            .edges();
+
+                    if (MoreIterables.isEmpty(edges)) {
+                        // If the Vertex has no more incoming edges remove it from the DB
+                        referencedVertex.remove();
+                    }
+                };
+
+                dispatcher().submit(Completable.fromAction(removeFunc)).subscribe();
             }
         }
     }

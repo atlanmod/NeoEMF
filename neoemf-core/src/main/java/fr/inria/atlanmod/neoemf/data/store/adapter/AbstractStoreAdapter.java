@@ -13,9 +13,11 @@ import fr.inria.atlanmod.commons.collect.MoreStreams;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.bean.AbstractFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mapping.ClassAlreadyExistsException;
 import fr.inria.atlanmod.neoemf.data.store.ClosedStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.util.EObjects;
@@ -31,7 +33,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,6 +42,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
+
+import io.reactivex.Maybe;
+import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkElementIndex;
@@ -119,10 +123,9 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     public final PersistentEObject resolve(Id id) {
         checkNotNull(id, "id");
 
-        PersistentEObject object = cache().get(id, k ->
-                resolveInstanceOf(k)
-                        .map(c -> PersistenceFactory.getInstance().create(c, k))
-                        .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
+        PersistentEObject object = cache().get(id, k -> resolveInstanceOf(k)
+                .map(c -> PersistenceFactory.getInstance().create(c, k))
+                .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
 
         Resource.Internal currentResource = resource();
         if (nonNull(currentResource)) {
@@ -522,6 +525,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
 
         return store.containerOf(object.id())
+                .to(m -> Optional.ofNullable(m.blockingGet()))
                 .map(c -> resolve(c.owner()))
                 .orElse(null);
     }
@@ -533,6 +537,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
 
         return store.containerOf(object.id())
+                .to(m -> Optional.ofNullable(m.blockingGet()))
                 .map(c -> resolve(c.owner()).eClass().getEStructuralFeature(c.id()))
                 .map(EObjects::asReference)
                 .orElse(null);
@@ -652,30 +657,34 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         updateInstanceOf(object);
         updateInstanceOf(container);
 
-        Optional<SingleFeatureBean> containerDesc = store.containerOf(object.id());
-
-        if (!containerDesc.isPresent() || !Objects.equals(containerDesc.get().owner(), container.id())) {
-            store.containerFor(object.id(), SingleFeatureBean.from(container, containerReference));
-        }
+        store.containerOf(object.id())
+                .map(AbstractFeatureBean::owner)
+                .filter(Functions.equalsWith(container.id()))
+                .doOnComplete(() -> store.containerFor(object.id(), SingleFeatureBean.from(container, containerReference)).subscribe())
+                .cache()
+                .ignoreElement()
+                .blockingAwait();
+//                .subscribe(); // TODO Use `subscribe()` for async work
     }
 
     @Override
     public void removeContainment(PersistentEObject object) {
         updateInstanceOf(object);
 
-        store.removeContainer(object.id());
+        store.removeContainer(object.id())
+                .blockingAwait();
+//                .subscribe(); // TODO Use `subscribe()` for async work
     }
 
     @Nonnull
     @Override
     public Optional<EClass> resolveInstanceOf(Id id) {
-        Optional<EClass> instanceOf = store.metaClassOf(id).map(ClassBean::get);
+        Maybe<EClass> ifEmptyFunc = Maybe.error(new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id.toHexString())));
 
-        if (!instanceOf.isPresent()) {
-            throw new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id.toHexString()));
-        }
-
-        return instanceOf;
+        return store.metaClassOf(id)
+                .map(ClassBean::get)
+                .switchIfEmpty(ifEmptyFunc)
+                .to(m -> Optional.of(m.blockingGet()));
     }
 
     @Override
@@ -685,8 +694,11 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             return;
         }
 
-        store.metaClassFor(object.id(), ClassBean.from(object));
-        refresh(object);
+        store.metaClassFor(object.id(), ClassBean.from(object))
+                .doOnComplete(() -> refresh(object))
+                .onErrorComplete(Functions.isInstanceOf(ClassAlreadyExistsException.class))
+                .blockingAwait();
+//                .subscribe(); // TODO Use `subscribe()` for async work
     }
 
     @Override

@@ -10,8 +10,8 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Nonnull;
@@ -30,7 +30,7 @@ public class StatsRecordStore extends AbstractListenerStore {
      * A map that accumulates the different calls made on the {@link Store} chain.
      */
     @Nonnull
-    private final Map<String, AtomicLong> methodCallsAccumulator = new HashMap<>();
+    private final Map<String, AtomicLong> methodCallsAccumulator = new ConcurrentHashMap<>();
 
     /**
      * Constructs a new {@code LogStore}.
@@ -49,19 +49,19 @@ public class StatsRecordStore extends AbstractListenerStore {
     }
 
     @Override
-    protected <K, V, R> void onSuccess(CallInfo<K, V, R> info) {
+    protected void onSuccess(CallInfo info) {
         record(info);
     }
 
     @Override
-    protected <K, V> void onFailure(CallInfo<K, V, ?> info) {
+    protected void onFailure(CallInfo info) {
         record(info);
     }
 
     /**
      * Records the call of a method with a value.
      */
-    protected void record(CallInfo<?, ?, ?> info) {
+    protected void record(CallInfo info) {
         methodCallsAccumulator.computeIfAbsent(info.method(), s -> new AtomicLong()).incrementAndGet();
     }
 }

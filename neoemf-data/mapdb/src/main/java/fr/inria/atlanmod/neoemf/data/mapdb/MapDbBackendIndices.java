@@ -51,7 +51,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
         super(database);
 
         manyFeatures = database.hashMap("features/many")
-                .keySerializer(new SerializerDecorator<>(SERIALIZER_FACTORY.forManyFeature()))
+                .keySerializer(new SerializerDecorator<>(serializers.forManyFeature()))
                 .valueSerializer(Serializer.ELSA)
                 .createOrOpen();
     }
@@ -61,7 +61,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
     public <V> Optional<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        return get(manyFeatures, key);
+        return Optional.ofNullable(get(manyFeatures, key));
     }
 
     @Override

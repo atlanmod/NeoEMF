@@ -26,6 +26,8 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.observers.TestObserver;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
@@ -45,6 +47,10 @@ class InvalidBackendTest extends AbstractTest {
         invalidBackend = new InvalidBackend("");
     }
 
+    private void assertHasError(TestObserver<?> observer) throws InterruptedException {
+        observer.await().assertError(INVALID_EXCEPTION_TYPE);
+    }
+
     @Test
     void testClose() {
         assertThat(
@@ -60,38 +66,28 @@ class InvalidBackendTest extends AbstractTest {
     }
 
     @Test
-    void testContainerOf() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.containerOf(mock(Id.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testContainerOf() throws InterruptedException {
+        assertHasError(invalidBackend.containerOf(mock(Id.class)).test());
     }
 
     @Test
-    void testContainerFor() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.containerFor(mock(Id.class), mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testContainerFor() throws InterruptedException {
+        assertHasError(invalidBackend.containerFor(mock(Id.class), mock(SingleFeatureBean.class)).test().await().assertError(INVALID_EXCEPTION_TYPE));
     }
 
     @Test
-    void testRemoveContainer() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.removeContainer(mock(Id.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testRemoveContainer() throws InterruptedException {
+        assertHasError(invalidBackend.removeContainer(mock(Id.class)).test().await().assertError(INVALID_EXCEPTION_TYPE));
     }
 
     @Test
-    void testMetaClassOf() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.metaClassOf(mock(Id.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testMetaClassOf() throws InterruptedException {
+        assertHasError(invalidBackend.metaClassOf(mock(Id.class)).test());
     }
 
     @Test
-    void testmMetaClassFor() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.metaClassFor(mock(Id.class), mock(ClassBean.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testmMetaClassFor() throws InterruptedException {
+        assertHasError(invalidBackend.metaClassFor(mock(Id.class), mock(ClassBean.class)).test());
     }
 
     @Test

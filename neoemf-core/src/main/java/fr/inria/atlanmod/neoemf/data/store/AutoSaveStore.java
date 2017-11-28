@@ -26,6 +26,8 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+
 /**
  * A {@link Store} wrapper that automatically saves modifications as calls are made.
  */
@@ -46,7 +48,7 @@ public class AutoSaveStore extends AbstractStore {
     private final long chunk;
 
     /**
-     * Current number of changes made since the last call of {@link #incremendAndSave(int)}.
+     * Current number of changes made since the last call of {@link #incrementAndSave(int)}.
      */
     private final AtomicLong count = new AtomicLong();
 
@@ -88,19 +90,28 @@ public class AutoSaveStore extends AbstractStore {
         }
     }
 
+    @Nonnull
     @Override
-    public void containerFor(Id id, SingleFeatureBean container) {
-        thenIncrementAndSave(() -> super.containerFor(id, container), 1);
+    public Completable containerFor(Id id, SingleFeatureBean container) {
+        return super.containerFor(id, container)
+                .doOnComplete(this::incrementAndSave)
+                .cache();
     }
 
+    @Nonnull
     @Override
-    public void removeContainer(Id id) {
-        thenIncrementAndSave(() -> super.removeContainer(id), 1);
+    public Completable removeContainer(Id id) {
+        return super.removeContainer(id)
+                .doOnComplete(this::incrementAndSave)
+                .cache();
     }
 
+    @Nonnull
     @Override
-    public boolean metaClassFor(Id id, ClassBean metaClass) {
-        return thenIncrementAndSave(() -> super.metaClassFor(id, metaClass), 1);
+    public Completable metaClassFor(Id id, ClassBean metaClass) {
+        return super.metaClassFor(id, metaClass)
+                .doOnComplete(this::incrementAndSave)
+                .cache();
     }
 
     @Nonnull
@@ -212,11 +223,11 @@ public class AutoSaveStore extends AbstractStore {
      *
      * @return the result of the {@code method}
      *
-     * @see #incremendAndSave(int)
+     * @see #incrementAndSave(int)
      */
     private <V> V thenIncrementAndSave(Supplier<V> method, int count) {
         V result = method.get();
-        incremendAndSave(count);
+        incrementAndSave(count);
         return result;
     }
 
@@ -227,11 +238,18 @@ public class AutoSaveStore extends AbstractStore {
      * @param method the method to call before saving
      * @param count  the number of changes made
      *
-     * @see #incremendAndSave(int)
+     * @see #incrementAndSave(int)
      */
     private void thenIncrementAndSave(Runnable method, int count) {
         method.run();
-        incremendAndSave(count);
+        incrementAndSave(count);
+    }
+
+    /**
+     * Increments the number of operation by one, and saves if necessary, i.e when {@code count % chunk == 0}.
+     */
+    private void incrementAndSave() {
+        incrementAndSave(1);
     }
 
     /**
@@ -241,7 +259,7 @@ public class AutoSaveStore extends AbstractStore {
      *
      * @see #save()
      */
-    private void incremendAndSave(int count) {
+    private void incrementAndSave(int count) {
         if (this.count.addAndGet(count) >= chunk) {
             this.count.set(0L);
             save();

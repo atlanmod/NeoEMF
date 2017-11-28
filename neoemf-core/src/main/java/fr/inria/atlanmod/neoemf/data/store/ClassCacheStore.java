@@ -11,18 +11,22 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
-
-import java.util.Optional;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.internal.functions.Functions;
 
 /**
  * A {@link Store} wrapper that caches {@link ClassBean}s.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically
-public class ClassCacheStore extends AbstractCacheStore<Id, Optional<ClassBean>> {
+public class ClassCacheStore extends AbstractCacheStore<Id, ClassBean> {
 
     /**
      * Constructs a new {@code ClassCacheStore} on the given {@code store}.
@@ -36,18 +40,26 @@ public class ClassCacheStore extends AbstractCacheStore<Id, Optional<ClassBean>>
 
     @Nonnull
     @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public Optional<ClassBean> metaClassOf(Id id) {
-        return cache.get(id, super::metaClassOf);
+    public Maybe<ClassBean> metaClassOf(Id id) {
+        Maybe<ClassBean> ifEmptyFunc = super.metaClassOf(id)
+                .doOnSuccess(m -> cache.putIfAbsent(id, m));
+
+        return Maybe.fromCallable(() -> cache.get(id))
+                .switchIfEmpty(ifEmptyFunc)
+                .cache();
     }
 
+    @Nonnull
     @Override
-    public boolean metaClassFor(Id id, ClassBean metaClass) {
-        if (cache.contains(id)) {
-            return false;
-        }
+    public Completable metaClassFor(Id id, ClassBean metaClass) {
+        Completable ifEmptyFunc = super.metaClassFor(id, metaClass)
+                .doOnComplete(() -> cache.put(id, metaClass));
 
-        cache.put(id, Optional.of(metaClass));
-        return super.metaClassFor(id, metaClass);
+        return Single.fromCallable(() -> cache.contains(id))
+                .filter(Functions.equalsWith(true))
+                .doOnSuccess(CommonQueries.classAlreadyExists())
+                .switchIfEmpty(ifEmptyFunc.toMaybe())
+                .ignoreElement()
+                .cache();
     }
 }

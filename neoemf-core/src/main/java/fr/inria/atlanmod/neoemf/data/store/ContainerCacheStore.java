@@ -12,19 +12,19 @@ import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static java.util.Objects.nonNull;
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import io.reactivex.internal.functions.Functions;
 
 /**
  * A {@link Store} wrapper that caches containers.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically
-public class ContainerCacheStore extends AbstractCacheStore<Id, Optional<SingleFeatureBean>> {
+public class ContainerCacheStore extends AbstractCacheStore<Id, SingleFeatureBean> {
 
     /**
      * Constructs a new {@code ContainerCacheStore} on the given {@code store}.
@@ -38,25 +38,34 @@ public class ContainerCacheStore extends AbstractCacheStore<Id, Optional<SingleF
 
     @Nonnull
     @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public Optional<SingleFeatureBean> containerOf(Id id) {
-        return cache.get(id, super::containerOf);
+    public Maybe<SingleFeatureBean> containerOf(Id id) {
+        Maybe<SingleFeatureBean> ifEmptyFunc = super.containerOf(id)
+                .doOnSuccess(c -> cache.putIfAbsent(id, c));
+
+        return Maybe.fromCallable(() -> cache.get(id))
+                .switchIfEmpty(ifEmptyFunc)
+                .cache();
     }
 
+    @Nonnull
     @Override
-    public void containerFor(Id id, SingleFeatureBean container) {
-        Optional<SingleFeatureBean> currentContainer = cache.get(id);
-        if (nonNull(currentContainer) && currentContainer.filter(container::equals).isPresent()) {
-            return;
-        }
+    public Completable containerFor(Id id, SingleFeatureBean container) {
+        Maybe<SingleFeatureBean> ifEmptyFunc = super.containerFor(id, container)
+                .doOnComplete(() -> cache.put(id, container))
+                .toMaybe();
 
-        cache.put(id, Optional.of(container));
-        super.containerFor(id, container);
+        return Maybe.fromCallable(() -> cache.get(id))
+                .filter(Functions.equalsWith(container)) // Ensure the container is the same
+                .switchIfEmpty(ifEmptyFunc)
+                .ignoreElement()
+                .cache();
     }
 
+    @Nonnull
     @Override
-    public void removeContainer(Id id) {
-        cache.put(id, Optional.empty());
-        super.removeContainer(id);
+    public Completable removeContainer(Id id) {
+        return super.removeContainer(id)
+                .doOnComplete(() -> cache.invalidate(id))
+                .cache();
     }
 }
