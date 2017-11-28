@@ -85,7 +85,7 @@ public class ClasspathCollector implements URLCollector {
      * The concurrent pool for managing classpath analysis tasks.
      */
     @Nonnull
-    private final ExecutorService analysisPool = MoreExecutors.newFixedThreadPool();
+    private final ExecutorService analysisPool = MoreExecutors.newFixedThreadPool("binding-analyzer");
 
     /**
      * A phaser representing the number of classpath analysis in progress. When {@code phaser.getPhase() > 0}, at least

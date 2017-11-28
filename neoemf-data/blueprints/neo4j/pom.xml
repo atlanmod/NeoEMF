@@ -103,10 +103,6 @@
                         <groupId>org.neo4j</groupId>
                         <artifactId>neo4j-management</artifactId>
                     </exclusion>
-                    <exclusion>
-                        <groupId>ch.qos.logback</groupId>
-                        <artifactId>logback-classic</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
 

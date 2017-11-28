@@ -35,6 +35,12 @@
             <AppenderRef ref="Console" />
         </Logger>
 
+        <!-- Neo4j -->
+
+        <Logger name="org.neo4j" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
         <!-- Apache & Hadoop/HBase -->
 
         <Logger name="org.apache" level="ERROR" additivity="false">
