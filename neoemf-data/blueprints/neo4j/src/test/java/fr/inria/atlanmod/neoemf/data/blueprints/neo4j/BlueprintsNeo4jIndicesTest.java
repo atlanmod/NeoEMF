@@ -21,6 +21,7 @@ import javax.annotation.Nonnull;
 /**
  * A test-case about {@code DefaultBlueprintsBackend} with a Neo4j implementation.
  */
+@org.junit.jupiter.api.Disabled
 class BlueprintsNeo4jIndicesTest extends AbstractDataMapperTest {
 
     @Nonnull
