@@ -502,6 +502,10 @@ class StoreAdapterTest extends AbstractTest {
         assertThat(store.getContainer(object)).isEqualTo(container1);
         assertThat(store.getContainingFeature(object)).isEqualTo(eContainingReference);
 
+        store.updateContainment(object, eContainingReference, container1);
+        assertThat(store.getContainer(object)).isEqualTo(container1);
+        assertThat(store.getContainingFeature(object)).isEqualTo(eContainingReference);
+
         store.removeContainment(object);
         assertThat(store.getContainer(object)).isNull();
         assertThat(store.getContainingFeature(object)).isNull();

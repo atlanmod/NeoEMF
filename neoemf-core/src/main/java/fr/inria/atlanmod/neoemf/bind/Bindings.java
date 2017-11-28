@@ -55,7 +55,7 @@ public final class Bindings {
      * @see ConfigurationBuilder#setExecutorService(ExecutorService)
      */
     @Nonnull
-    private static final ExecutorService BINDING_POOL = MoreExecutors.newFixedThreadPool();
+    private static final ExecutorService BINDING_POOL = MoreExecutors.newFixedThreadPool("binding-scanner");
 
     static {
         // Add the default URLs for scanning
