@@ -243,28 +243,16 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
     @Nonnull
     @Override
-    protected Completable asyncClose() {
-        // Close the graph
-        Action closeFunc = graph::shutdown;
-
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(closeFunc);
-
-        return dispatcher().submit(databaseQuery);
+    protected Action blockingClose() {
+        return graph::shutdown;
     }
 
     @Nonnull
     @Override
-    protected Completable asyncSave() {
-        // Save (or commit) the graph
-        Action saveFunc = graph.getFeatures().supportsTransactions
+    protected Action blockingSave() {
+        return graph.getFeatures().supportsTransactions
                 ? graph::commit
                 : graph::shutdown;
-
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(saveFunc);
-
-        return dispatcher().submit(databaseQuery);
     }
 
     @Override

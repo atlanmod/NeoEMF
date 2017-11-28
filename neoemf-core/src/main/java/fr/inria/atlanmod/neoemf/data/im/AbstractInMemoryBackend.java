@@ -92,9 +92,9 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
 
     @Nonnull
     @Override
-    protected Completable asyncSave() {
+    protected Action blockingSave() {
         // No need to save anything
-        return Completable.complete();
+        return Functions.EMPTY_ACTION;
     }
 
     /**

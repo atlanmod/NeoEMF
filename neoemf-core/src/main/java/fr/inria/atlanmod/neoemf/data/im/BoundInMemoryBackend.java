@@ -38,7 +38,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.reactivex.Completable;
 import io.reactivex.functions.Action;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
@@ -54,7 +53,7 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
     /**
      * The number of instances of this class.
      *
-     * @see #asyncClose()
+     * @see #blockingClose()
      * @see DataHolder#close(Id)
      */
     @Nonnull
@@ -100,17 +99,11 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
 
     @Nonnull
     @Override
-    protected Completable asyncClose() {
-        // Clean data related to the associated Id, or close all maps if COUNTER == 0
-        Action closeFunc = () -> {
+    protected Action blockingClose() {
+        return () -> {
             COUNTER.decrementAndGet();
             dataHolder.close(owner);
         };
-
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(closeFunc);
-
-        return dispatcher().submit(databaseQuery);
     }
 
     @Override

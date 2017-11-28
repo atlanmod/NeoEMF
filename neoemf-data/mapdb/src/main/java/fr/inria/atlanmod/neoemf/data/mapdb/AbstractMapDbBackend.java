@@ -45,7 +45,6 @@ import io.reactivex.functions.Action;
 import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link MapDbBackend} that provides overall behavior for the management of a MapDB database.
@@ -119,30 +118,16 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
     @Nonnull
     @Override
-    protected Completable asyncClose() {
-        // Close the database
-        Action closeFunc = database::close;
-
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(closeFunc);
-
-        return dispatcher().submit(databaseQuery);
+    protected Action blockingClose() {
+        return database::close;
     }
 
     @Nonnull
     @Override
-    protected Completable asyncSave() {
-        if (database.isClosed()) {
-            return Completable.complete();
-        }
-
-        // Save the database
-        Action closeFunc = database::commit;
-
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(closeFunc);
-
-        return dispatcher().submit(databaseQuery);
+    protected Action blockingSave() {
+        return database.isClosed()
+                ? Functions.EMPTY_ACTION
+                : database::commit;
     }
 
     @Override

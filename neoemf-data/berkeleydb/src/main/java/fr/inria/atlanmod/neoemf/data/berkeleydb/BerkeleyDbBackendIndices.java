@@ -22,7 +22,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.reactivex.Completable;
 import io.reactivex.functions.Action;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -59,15 +58,11 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
 
     @Nonnull
     @Override
-    protected Completable asyncClose() {
-        // Close the map
-        Action closeFunc = manyFeatures::close;
-
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(closeFunc);
-
-        return dispatcher().submit(databaseQuery)
-                .andThen(super.asyncClose());
+    protected Action blockingClose() {
+        return () -> {
+            manyFeatures.close();
+            super.blockingClose().run();
+        };
     }
 
     @Override

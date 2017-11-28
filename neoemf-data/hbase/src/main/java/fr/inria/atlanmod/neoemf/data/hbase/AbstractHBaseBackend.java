@@ -121,21 +121,15 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
     @Nonnull
     @Override
-    protected Completable asyncClose() {
-        // Close the table
-        Action closeFunc = table::close;
-
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(closeFunc);
-
-        return dispatcher().submit(databaseQuery);
+    protected Action blockingClose() {
+        return table::close;
     }
 
     @Nonnull
     @Override
-    protected Completable asyncSave() {
+    protected Action blockingSave() {
         // TODO Implement this method
-        return Completable.complete();
+        return Functions.EMPTY_ACTION;
     }
 
     @Nonnull

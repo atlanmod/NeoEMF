@@ -22,7 +22,6 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.reactivex.Completable;
 import io.reactivex.functions.Action;
 
 /**
@@ -92,9 +91,8 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
 
     @Nonnull
     @Override
-    protected Completable asyncClose() {
-        // Clean and close all maps
-        Action closeFunc = () -> {
+    protected Action blockingClose() {
+        return () -> {
             containers.clear();
             containers.close();
 
@@ -104,11 +102,6 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
             features.clear();
             features.close();
         };
-
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(closeFunc);
-
-        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull

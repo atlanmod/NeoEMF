@@ -108,27 +108,21 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     @Nonnull
     @Override
-    protected Completable asyncClose() {
-        // Close all maps and their environment
-        Action closeFunc = () -> {
+    protected Action blockingClose() {
+        return () -> {
             containers.close();
             instances.close();
             features.close();
 
             environment.close();
         };
-
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(closeFunc);
-
-        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
-    protected Completable asyncSave() {
+    protected Action blockingSave() {
         // Do nothing: data are automatically saved
-        return Completable.complete();
+        return Functions.EMPTY_ACTION;
     }
 
     @Override

@@ -20,7 +20,6 @@ import fr.inria.atlanmod.neoemf.data.query.AsyncQueryDispatcher;
 import fr.inria.atlanmod.neoemf.data.query.QueryDispatcher;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,6 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.functions.Action;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
@@ -106,7 +106,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     @Override
     public final synchronized void save() {
         if (!isClosed) {
-            asyncSave().cache().subscribe();
+            dispatcher.submit(Completable.fromAction(blockingSave())).subscribe();
         }
     }
 
@@ -127,9 +127,11 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
         try {
-            asyncSave().andThen(asyncClose()).blockingAwait();
+            // Use #asyncSave() with a lock to ensure all queries are completed before closing
+            dispatcher().submit(Completable.fromAction(blockingSave())).blockingAwait();
+            blockingClose().run();
         }
-        catch (RuntimeException e) {
+        catch (Exception e) {
             Log.warn(e.getMessage());
         }
         finally {
@@ -142,7 +144,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
             try {
                 dispatcher.close();
             }
-            catch (IOException e) {
+            catch (Exception e) {
                 Log.warn("An error occured when closing the query dispatcher", e);
             }
 
@@ -151,20 +153,20 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     }
 
     /**
-     * Asynchronously closes the database, and releases any system resources associated with it.
+     * Synchronously closes the database, and releases any system resources associated with it.
      *
-     * @return the deferred computation
+     * @return the deferred action
      */
     @Nonnull
-    protected abstract Completable asyncClose();
+    protected abstract Action blockingClose();
 
     /**
-     * Asynchronously saves the last modifications.
+     * Synchronously saves the last modifications.
      *
-     * @return the deferred computation
+     * @return the deferred action
      */
     @Nonnull
-    protected abstract Completable asyncSave();
+    protected abstract Action blockingSave();
 
     @Nonnull
     @Override

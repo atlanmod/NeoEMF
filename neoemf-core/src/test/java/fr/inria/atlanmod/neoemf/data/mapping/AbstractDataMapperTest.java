@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,7 +38,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.internal.functions.Functions;
 
-import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -89,9 +89,15 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     void createMapper() throws IOException {
         mapper = context().createMapper(currentTempFile());
 
-        mapper.metaClassFor(idBase, cBase)
-                .onErrorComplete(Functions.isInstanceOf(ClassAlreadyExistsException.class))
-                .subscribe();
+        updateInstanceOf(idBase);
+    }
+
+    /**
+     * Closes the {@link DataMapper}.
+     */
+    @AfterEach
+    void closeMapper() {
+        Optional.ofNullable(mapper).ifPresent(DataMapper::close);
     }
 
     /**
@@ -102,17 +108,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     private void updateInstanceOf(Id... references) {
         Arrays.stream(references).forEach(i -> mapper.metaClassFor(i, cBase)
                 .onErrorComplete(Functions.isInstanceOf(ClassAlreadyExistsException.class))
-                .subscribe());
-    }
-
-    /**
-     * Closes the {@link DataMapper}.
-     */
-    @AfterEach
-    void closeMapper() {
-        if (nonNull(mapper)) {
-            mapper.close();
-        }
+                .blockingAwait());
     }
 
     /**
