@@ -13,6 +13,9 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.mapping.ClassAlreadyExistsException;
 
+import java.util.Set;
+import java.util.concurrent.Callable;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -48,5 +51,17 @@ public final class CommonQueries {
         return t -> {
             throw new ClassAlreadyExistsException();
         };
+    }
+
+    /**
+     * Returns a {@link Callable} that creates the {@link RuntimeException} used when calling {@link
+     * fr.inria.atlanmod.neoemf.data.mapping.DataMapper#allInstancesOf(Set)} on an instance that does not support this
+     * operation.
+     *
+     * @return a callable
+     */
+    @Nonnull
+    public static Callable<? extends RuntimeException> unsupportedAllInstancesOf() {
+        return UnsupportedOperationException::new;
     }
 }

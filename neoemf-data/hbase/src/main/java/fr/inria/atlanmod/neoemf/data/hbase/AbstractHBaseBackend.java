@@ -36,16 +36,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
+import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link HBaseBackend} that provides overall behavior for the management of a HBase database.
@@ -137,24 +135,21 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     public Maybe<SingleFeatureBean> containerOf(Id id) {
         Action checkFunc = () -> checkNotNull(id, "id");
 
-        // Retrieve the binary representation of the container
-        Callable<Result> getFunc = () -> {
-            Get get = new Get(idConverter.convert(id));
-            return table.get(get);
-        };
+        // Create get operation
+        Callable<Get> createGet = () -> new Get(idConverter.convert(id));
 
         // Deserialize the container
         Function<Result, SingleFeatureBean> mapFunc = r -> {
             byte[] byteId = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER);
             byte[] byteName = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
 
-            return nonNull(byteId) && nonNull(byteName)
-                    ? SingleFeatureBean.of(idConverter.revert(byteId), Bytes.toInt(byteName))
-                    : null;
+            return SingleFeatureBean.of(idConverter.revert(byteId), Bytes.toInt(byteName));
         };
 
         // The composed query to execute on the database
-        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(getFunc)
+        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(createGet)
+                .map(table::get)
+                .filter(r -> r.containsNonEmptyColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER))
                 .map(mapFunc);
 
         return dispatcher().submit(checkFunc, databaseQuery);
@@ -168,17 +163,15 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             checkNotNull(container, "container");
         };
 
-        // Serialize and define the container
-        Action setFunc = () -> {
-            Put put = new Put(idConverter.convert(id))
-                    .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER, idConverter.convert(container.owner()))
-                    .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE, Ints.toBytes(container.id()));
-
-            table.put(put);
-        };
+        // Create set operation
+        Callable<Put> createPut = () -> new Put(idConverter.convert(id))
+                .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER, idConverter.convert(container.owner()))
+                .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE, Ints.toBytes(container.id()));
 
         // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(setFunc);
+        Completable databaseQuery = Maybe.fromCallable(createPut)
+                .doOnSuccess(table::put)
+                .ignoreElement();
 
         return dispatcher().submit(checkFunc, databaseQuery);
     }
@@ -188,17 +181,15 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     public Completable removeContainer(Id id) {
         Action checkFunc = () -> checkNotNull(id, "id");
 
-        // Remove the container
-        Action removeFunc = () -> {
-            Delete delete = new Delete(idConverter.convert(id))
-                    .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER)
-                    .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
-
-            table.delete(delete);
-        };
+        // Create remove operation
+        Callable<Delete> createDelete = () -> new Delete(idConverter.convert(id))
+                .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER)
+                .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
 
         // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(removeFunc);
+        Completable databaseQuery = Maybe.fromCallable(createDelete)
+                .doOnSuccess(table::delete)
+                .ignoreElement();
 
         return dispatcher().submit(checkFunc, databaseQuery);
     }
@@ -208,25 +199,21 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     public Maybe<ClassBean> metaClassOf(Id id) {
         Action checkFunc = () -> checkNotNull(id, "id");
 
-        // Retrieve the binary representation of the meta-class
-        Callable<Result> getFunc = () -> {
-            Get get = new Get(idConverter.convert(id));
-            return table.get(get);
-        };
+        // Create get operation
+        Callable<Get> createGet = () -> new Get(idConverter.convert(id));
 
         // Deserialize the meta-class
         Function<Result, ClassBean> mapFunc = r -> {
             byte[] byteName = r.getValue(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
             byte[] byteUri = r.getValue(FAMILY_TYPE, QUALIFIER_CLASS_URI);
 
-            if (nonNull(byteName) && nonNull(byteUri)) {
-                return ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri));
-            }
-            return null;
+            return ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri));
         };
 
         // The composed query to execute on the database
-        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(getFunc)
+        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(createGet)
+                .map(table::get)
+                .filter(r -> r.containsNonEmptyColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME))
                 .map(mapFunc);
 
         return dispatcher().submit(checkFunc, databaseQuery);
@@ -240,38 +227,35 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             checkNotNull(metaClass, "metaClass");
         };
 
-        // Check that the meta-class does not already exist
-        Callable<Boolean> existsFunc = () -> {
-            Get get = new Get(idConverter.convert(id))
-                    .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
+        // Create get operation
+        Callable<Get> createGet = () -> new Get(idConverter.convert(id))
+                .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
 
-            return table.exists(get);
-        };
+        // Create put operation
+        Callable<Put> createPut = () -> new Put(idConverter.convert(id))
+                .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME, Strings.toBytes(metaClass.name()))
+                .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_URI, Strings.toBytes(metaClass.uri()));
 
-        // Serialize and define the meta-class
-        Callable<Boolean> setFunc = () -> {
-            Put put = new Put(idConverter.convert(id))
-                    .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME, Strings.toBytes(metaClass.name()))
-                    .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_URI, Strings.toBytes(metaClass.uri()));
-
-            table.put(put);
-            return true;
-        };
+        // Set the meta-class, if it does not already exists
+        Completable setIfAbsent = Maybe.fromCallable(createPut)
+                .doOnSuccess(table::put)
+                .ignoreElement();
 
         // The composed query to execute on the database
-        Completable databaseQuery = Single.fromCallable(existsFunc)
+        Completable databaseQuery = Maybe.fromCallable(createGet)
+                .map(table::exists)
                 .filter(Functions.equalsWith(true))
                 .doOnSuccess(CommonQueries.classAlreadyExists())
-                .switchIfEmpty(Single.fromCallable(setFunc))
-                .toCompletable();
+                .switchIfEmpty(setIfAbsent.toMaybe())
+                .ignoreElement();
 
         return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        return Flowable.error(new UnsupportedOperationException());
+    public Observable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        return Observable.error(CommonQueries.unsupportedAllInstancesOf());
     }
 
     @Nonnull

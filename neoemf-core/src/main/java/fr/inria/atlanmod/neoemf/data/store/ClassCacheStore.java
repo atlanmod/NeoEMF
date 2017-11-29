@@ -18,7 +18,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
 import io.reactivex.internal.functions.Functions;
 
 /**
@@ -55,7 +54,7 @@ public class ClassCacheStore extends AbstractCacheStore<Id, ClassBean> {
         Completable ifEmptyFunc = super.metaClassFor(id, metaClass)
                 .doOnComplete(() -> cache.put(id, metaClass));
 
-        return Single.fromCallable(() -> cache.contains(id))
+        return Maybe.fromCallable(() -> cache.contains(id))
                 .filter(Functions.equalsWith(true))
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .switchIfEmpty(ifEmptyFunc.toMaybe())

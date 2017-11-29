@@ -43,9 +43,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
+import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -308,10 +307,10 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .setProperty(PROPERTY_FEATURE_NAME, container.id());
 
         // The composed query to execute on the database
-        Completable databaseQuery = Single.fromCallable(() -> getOrCreate(id))
+        Completable databaseQuery = Maybe.fromCallable(() -> getOrCreate(id))
                 .doOnSuccess(removeFunc)
                 .doOnSuccess(setFunc)
-                .toCompletable();
+                .ignoreElement();
 
         return dispatcher().submit(checkFunc, databaseQuery);
     }
@@ -378,37 +377,37 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         };
 
         // Create and set the meta-class into the index, if it does not exist
-        Single<Vertex> setInIndexFunc = Single.fromCallable(createFunc)
+        Maybe<Vertex> setInIndexFunc = Maybe.fromCallable(createFunc)
                 .doOnSuccess(v -> metaClassIndex.put(PROPERTY_CLASS_NAME, metaClass.name(), v))
                 .doOnSuccess(v -> metaClassSet.add(metaClass));
 
         // Retrieve the meta-class from the index
-        Single<Vertex> getFromIndexFunc = Single.fromCallable(() -> metaClassIndex.get(PROPERTY_CLASS_NAME, metaClass.name()))
+        Maybe<Vertex> getFromIndexFunc = Maybe.fromCallable(() -> metaClassIndex.get(PROPERTY_CLASS_NAME, metaClass.name()))
                 .flattenAsFlowable(Functions.identity())
                 .singleElement()
                 .switchIfEmpty(setInIndexFunc);
 
         // Set the meta-class, if it does not exist
-        Single<Vertex> setFunc = getFromIndexFunc
+        Maybe<Vertex> setFunc = getFromIndexFunc
                 .doOnSuccess(v -> getOrCreate(id).addEdge(EDGE_INSTANCE_OF, v));
 
         // The composed query to execute on the database
-        Completable databaseQuery = Single.fromCallable(() -> getOrCreate(id))
+        Completable databaseQuery = Maybe.fromCallable(() -> getOrCreate(id))
                 .flattenAsFlowable(getFromVertexFunc)
                 .singleElement()
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .switchIfEmpty(setFunc)
-                .toCompletable();
+                .ignoreElement();
 
         return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Observable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         // The composed query to execute on the database
-        Flowable<Id> databaseQuery = Single.fromCallable(() -> metaClasses)
-                .flattenAsFlowable(Functions.identity())
+        Observable<Id> databaseQuery = Maybe.fromCallable(() -> metaClasses)
+                .flattenAsObservable(Functions.identity())
                 .flatMapIterable(mc -> metaClassIndex.get(PROPERTY_CLASS_NAME, mc.name()))
                 .flatMapIterable(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .map(v -> idConverter.revert(v.getId()));

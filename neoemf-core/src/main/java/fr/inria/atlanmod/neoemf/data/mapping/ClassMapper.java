@@ -18,8 +18,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Observable;
 
 /**
  * An object capable of mapping meta-classes.
@@ -60,18 +60,20 @@ public interface ClassMapper {
      * @param metaClass the meta-class to compute the instances of
      * @param strict    {@code true} if the lookup searches for strict instances
      *
-     * @return the deferred computation to execute, that may contains the instances of the {@code metaClass}
+     * @return the deferred computation to execute, that may contains the instances of the {@code metaClass} or an
+     * {@link UnsupportedOperationException} if this mapper does not support this operation
      */
     @Nonnull
-    Flowable<Id> allInstancesOf(ClassBean metaClass, boolean strict);
+    Observable<Id> allInstancesOf(ClassBean metaClass, boolean strict);
 
     /**
      * Retrieves all instances of the given {@code metaClasses}.
      *
      * @param metaClasses the meta-classes to compute the instances of
      *
-     * @return the deferred computation to execute, that may contains the instances of the {@code metaClass}
+     * @return the deferred computation to execute, that may contains the instances of the {@code metaClass} or an
+     * {@link UnsupportedOperationException} if this mapper does not support this operation
      */
     @Nonnull
-    Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses);
+    Observable<Id> allInstancesOf(Set<ClassBean> metaClasses);
 }

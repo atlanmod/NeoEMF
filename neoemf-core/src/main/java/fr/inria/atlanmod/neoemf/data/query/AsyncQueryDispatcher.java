@@ -28,6 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.functions.Action;
@@ -159,6 +160,27 @@ public class AsyncQueryDispatcher implements QueryDispatcher {
         checkNotNull(query, "query");
 
         Single<T> scheduledQuery = query
+                .observeOn(scheduler.get())
+                .subscribeOn(scheduler.get())
+                .unsubscribeOn(scheduler.get());
+
+        return executeBefore(before)
+                .andThen(scheduledQuery)
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public <T> Observable<T> submit(Observable<T> query) {
+        return submit(Functions.EMPTY_ACTION, query);
+    }
+
+    @Nonnull
+    @Override
+    public <T> Observable<T> submit(Action before, Observable<T> query) {
+        checkNotNull(query, "query");
+
+        Observable<T> scheduledQuery = query
                 .observeOn(scheduler.get())
                 .subscribeOn(scheduler.get())
                 .unsubscribeOn(scheduler.get());

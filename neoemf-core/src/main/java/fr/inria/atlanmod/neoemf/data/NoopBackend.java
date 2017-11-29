@@ -31,8 +31,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Observable;
 
 /**
  * A {@link Backend} that does nothing.
@@ -98,14 +98,14 @@ public final class NoopBackend implements Backend, AllReferenceAs<Long> {
 
     @Nonnull
     @Override
-    public Flowable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
-        return Flowable.empty();
+    public Observable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+        return Observable.empty();
     }
 
     @Nonnull
     @Override
-    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        return Flowable.empty();
+    public Observable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        return Observable.empty();
     }
 
     @Nonnull

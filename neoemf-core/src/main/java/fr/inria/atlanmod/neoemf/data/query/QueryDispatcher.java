@@ -18,6 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Action;
 
@@ -94,6 +95,29 @@ public interface QueryDispatcher extends Closeable {
      */
     @Nonnull
     <T> Single<T> submit(Action before, Single<T> query);
+
+    /**
+     * Asynchronously executes the given {@code query}, using the {@code backend}.
+     *
+     * @param query the query to execute on the database
+     * @param <T>   the type of the expected result
+     *
+     * @return the deferred computation with results
+     */
+    @Nonnull
+    <T> Observable<T> submit(Observable<T> query);
+
+    /**
+     * Asynchronously executes the given tasks, using the {@code backend}.
+     *
+     * @param before the pre-processing method to execute before any database call; synchronous
+     * @param query  the query to execute on the database
+     * @param <T>    the type of the expected result
+     *
+     * @return the deferred computation with results
+     */
+    @Nonnull
+    <T> Observable<T> submit(Action before, Observable<T> query);
 
     /**
      * Asynchronously executes the given {@code query}, using the {@code backend}.

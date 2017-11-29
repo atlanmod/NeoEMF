@@ -196,7 +196,12 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         Stream<EObject> allInstancesOf;
 
         try {
-            allInstancesOf = MoreIterables.stream(eStore.store().allInstancesOf(ClassBean.from(eClass), strict).blockingIterable())
+            Iterable<Id> iterable = eStore.store()
+                    .allInstancesOf(ClassBean.from(eClass), strict)
+                    .toList()
+                    .blockingGet();
+
+            allInstancesOf = MoreIterables.stream(iterable)
                     .map(id -> eStore.resolve(id));
         }
         catch (UnsupportedOperationException e) {

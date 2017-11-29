@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -170,9 +170,9 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
 
     @Nonnull
     @Override
-    public final Flowable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+    public final Observable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         if ((metaClass.isAbstract() || metaClass.isInterface()) && strict) {
-            return Flowable.empty();
+            return Observable.empty();
         }
 
         Set<ClassBean> allInstances = strict ? new HashSet<>() : metaClass.inheritedBy();

@@ -41,9 +41,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
+import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 import io.reactivex.internal.functions.Functions;
 
@@ -205,7 +204,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         Callable<Boolean> setFunc = () -> putIfAbsent(instances, id, metaClass, serializers.forId(), serializers.forClass());
 
         // The composed query to execute on the database
-        Completable databaseQuery = Single.fromCallable(setFunc)
+        Completable databaseQuery = Maybe.fromCallable(setFunc)
                 .filter(Functions.equalsWith(false))
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .ignoreElement();
@@ -215,11 +214,11 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     @Nonnull
     @Override
-    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Observable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         CloseableIterator<Id> iter = new AllInstancesIterator(metaClasses);
 
         // The composed query to execute on the database
-        Flowable<Id> databaseQuery = Flowable.fromIterable(() -> iter)
+        Observable<Id> databaseQuery = Observable.fromIterable(() -> iter)
                 .doAfterTerminate(iter::close);
 
         return dispatcher().submit(databaseQuery);
