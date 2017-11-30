@@ -109,15 +109,15 @@ They are presented as several interfaces and each have their responsibility:
 -   __\[UPD\]__ `ContainerValue` has been merged with `SingleFeatureBean`
 
 ### Dependencies
--   __\[NEW\]__ `chronicle-map` : `3.14.1`
+-   __\[NEW\]__ `chronicle-map` : `3.14.4`
 -   __\[NEW\]__ `org.reflections` : `0.9.9`
 -   __\[UPD\]__ `cglib` : `3.2.4` to `3.2.5`
 -   __\[UPD\]__ `log4j` : `2.7` to `2.8.2`
 -   __\[UPD\]__ `org.neo4j` : `1.9.6` to `2.1.8` (include `blueprints-neo4j-graph` to `blueprints-neo4j2-graph`)
--   __\[DEL\]__ `junit`: No longer needed, managed by `atlanmod:commons-core` (`5.0.1+`)
+-   __\[DEL\]__ `junit`: No longer needed, managed by `atlanmod:commons-core` (`5.0.2+`)
 -   __\[DEL\]__ `assertj` : No longer needed, managed by `atlanmod:commons-core` (`3.8.0+`)
--   __\[DEL\]__ `mockito` : No longer needed, managed by `atlanmod:commons-core` (`2.10.0+`)
--   __\[DEL\]__ `caffeine` : No longer needed, managed by `atlanmod:commons-core` (`2.5.6+`)
+-   __\[DEL\]__ `mockito` : No longer needed, managed by `atlanmod:commons-core` (`2.12.0+`)
+-   __\[DEL\]__ `caffeine` : No longer needed, managed by `atlanmod:commons-core` (`2.6.0+`)
 -   __\[DEL\]__ `guava` : No longer needed
 -   __\[DEL\]__ `commons-collections4` : No longer needed
 -   __\[DEL\]__ `commons-configuration` : No longer needed

@@ -20,8 +20,10 @@
     </description>
 
     <properties>
-        <chronicle-map.version>3.14.3</chronicle-map.version>
-        <chronicle-bytes.version>1.9.20</chronicle-bytes.version>
+        <chronicle-map.version>3.14.4</chronicle-map.version>
+        <chronicle-bytes.version>1.9.22</chronicle-bytes.version>
+
+        <log4j.version>2.8.2</log4j.version><!-- 2.9.0+ : issue with maven-bundle-plugin (JDK9 compatibility)-->
 
         <cglib.version>3.2.5</cglib.version>
         <reflections.version>0.9.9</reflections.version><!-- Used for Guava compatibility (15.0) -->
