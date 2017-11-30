@@ -110,19 +110,20 @@ public final class NoopBackend implements Backend, AllReferenceAs<Long> {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        return Optional.empty();
+    public <V> Maybe<V> valueOf(SingleFeatureBean key) {
+        return Maybe.empty();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        return Optional.empty();
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+        return Maybe.empty();
     }
 
+    @Nonnull
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        // Do nothing
+    public Completable removeValue(SingleFeatureBean key) {
+        return Completable.complete();
     }
 
     @Nonnull

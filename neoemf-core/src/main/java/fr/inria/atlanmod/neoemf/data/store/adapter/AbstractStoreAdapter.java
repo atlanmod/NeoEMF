@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.ClassAlreadyExistsException;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 import fr.inria.atlanmod.neoemf.data.store.ClosedStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.util.EObjects;
@@ -153,7 +154,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         if (EObjects.isAttribute(feature)) {
             Optional<Object> value;
             if (!feature.isMany()) {
-                value = store.valueOf(key);
+                value = store.valueOf(key).to(CommonQueries::toOptional);
             }
             else {
                 value = store.valueOf(key.withPosition(index));
@@ -166,7 +167,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         else {
             Optional<Id> reference;
             if (!feature.isMany()) {
-                reference = store.referenceOf(key);
+                reference = store.referenceOf(key).to(CommonQueries::toOptional);
             }
             else {
                 reference = store.referenceOf(key.withPosition(index));
@@ -202,7 +203,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         if (EObjects.isAttribute(feature)) {
             Optional<Object> previousValue;
             if (!feature.isMany()) {
-                previousValue = store.valueFor(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
+                previousValue = store.valueFor(key, attrConverter.convert(value, EObjects.asAttribute(feature))).to(CommonQueries::toOptional);
             }
             else {
                 previousValue = store.valueFor(key.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature)));
@@ -218,7 +219,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
             Optional<Id> previousReference;
             if (!feature.isMany()) {
-                previousReference = store.referenceFor(key, referencedObject.id());
+                previousReference = store.referenceFor(key, referencedObject.id()).to(CommonQueries::toOptional);
             }
             else {
                 previousReference = store.referenceFor(key.withPosition(index), referencedObject.id());
@@ -242,7 +243,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         if (EObjects.isAttribute(feature)) {
             if (!feature.isMany()) {
-                return store.valueOf(key).isPresent();
+                return store.valueOf(key).to(CommonQueries::toOptional).isPresent();
             }
             else {
                 return store.sizeOfValue(key).isPresent();
@@ -250,7 +251,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         }
         else {
             if (!feature.isMany()) {
-                return store.referenceOf(key).isPresent();
+                return store.referenceOf(key).to(CommonQueries::toOptional).isPresent();
             }
             else {
                 return store.sizeOfReference(key).isPresent();
@@ -270,7 +271,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         if (EObjects.isAttribute(feature)) {
             if (!feature.isMany()) {
-                store.removeValue(key);
+                store.removeValue(key).blockingAwait();
             }
             else {
                 store.removeAllValues(key);
@@ -278,7 +279,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         }
         else {
             if (!feature.isMany()) {
-                store.removeReference(key);
+                store.removeReference(key).blockingAwait();
             }
             else {
                 store.removeAllReferences(key);
@@ -525,7 +526,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
 
         return store.containerOf(object.id())
-                .to(m -> Optional.ofNullable(m.blockingGet()))
+                .to(CommonQueries::toOptional)
                 .map(c -> resolve(c.owner()))
                 .orElse(null);
     }
@@ -537,7 +538,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
 
         return store.containerOf(object.id())
-                .to(m -> Optional.ofNullable(m.blockingGet()))
+                .to(CommonQueries::toOptional)
                 .map(c -> resolve(c.owner()).eClass().getEStructuralFeature(c.id()))
                 .map(EObjects::asReference)
                 .orElse(null);
@@ -558,6 +559,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             Stream<Object> stream;
             if (!feature.isMany()) {
                 stream = store.valueOf(key)
+                        .to(CommonQueries::toOptional)
                         .map(Stream::of)
                         .orElseGet(Stream::empty);
             }
@@ -575,6 +577,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             Stream<Id> stream;
             if (!feature.isMany()) {
                 stream = store.referenceOf(key)
+                        .to(CommonQueries::toOptional)
                         .map(Stream::of)
                         .orElseGet(Stream::empty);
             }
@@ -684,7 +687,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         return store.metaClassOf(id)
                 .map(ClassBean::get)
                 .switchIfEmpty(ifEmptyFunc)
-                .to(m -> Optional.of(m.blockingGet()));
+                .to(CommonQueries::toOptional);
     }
 
     @Override

@@ -11,6 +11,7 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 import fr.inria.atlanmod.commons.collect.MoreArrays;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +40,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         checkNotNull(key, "key");
 
         return this.<V[]>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .filter(values -> key.position() < values.length)
                 .map(values -> values[key.position()]);
     }
@@ -49,6 +51,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         checkNotNull(key, "key");
 
         return this.<V[]>valueOf(key)
+                .to(CommonQueries::toOptional)
                 .map(Arrays::stream)
                 .orElseGet(Stream::empty);
     }
@@ -60,13 +63,14 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         checkNotNull(value, "value");
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
         Optional<V> previousValue = Optional.of(values[key.position()]);
 
         values[key.position()] = value;
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
 
         return previousValue;
     }
@@ -77,13 +81,14 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         checkNotNull(value, "value");
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
 
         checkPositionIndex(key.position(), values.length);
 
         values = MoreArrays.add(values, key.position(), value);
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
     }
 
     @Override
@@ -100,6 +105,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         }
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
 
         int firstPosition = key.position();
@@ -107,7 +113,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
         values = MoreArrays.addAll(values, firstPosition, collection);
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
     }
 
     @Nonnull
@@ -116,6 +122,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         checkNotNull(key, "key");
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .orElse(null);
 
         if (isNull(values)) {
@@ -133,7 +140,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
                 removeAllValues(key.withoutPosition());
             }
             else {
-                valueFor(key.withoutPosition(), values);
+                valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
             }
         }
 
@@ -142,7 +149,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
     @Override
     default void removeAllValues(SingleFeatureBean key) {
-        this.removeValue(key);
+        this.removeValue(key).blockingAwait();
     }
 
     @Nonnull
@@ -150,6 +157,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     @Override
     default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         return this.<Object[]>valueOf(key)
+                .to(CommonQueries::toOptional)
                 .map(a -> a.length)
                 .filter(s -> s > 0);
     }

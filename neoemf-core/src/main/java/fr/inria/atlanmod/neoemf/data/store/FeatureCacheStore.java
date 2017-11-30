@@ -18,11 +18,18 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.internal.functions.Functions;
 
 /**
  * A {@link Store} wrapper that caches {@link EStructuralFeature}.
@@ -43,46 +50,79 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
 
     @Nonnull
     @Override
-    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        return Optional.ofNullable((V) cache.get(key, k -> super.valueOf(SingleFeatureBean.class.cast(k)).orElse(null)));
+    @SuppressWarnings("unchecked")
+    public <V> Maybe<V> valueOf(SingleFeatureBean key) {
+        Callable<V> getFunc = () -> (V) cache.get(key);
+
+        Consumer<V> replaceFunc = v -> cache.put(key, v);
+
+        Maybe<V> ifEmptyFunc = super.<V>valueOf(key)
+                .doOnSuccess(replaceFunc);
+
+        return Maybe.fromCallable(getFunc)
+                .switchIfEmpty(ifEmptyFunc)
+                .cache();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        cache.put(key, value);
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+        Action setFunc = () -> cache.put(key, value);
 
-        return super.valueFor(key, value);
-    }
+        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
 
-    @Override
-    public void removeValue(SingleFeatureBean key) {
-        cache.invalidate(key);
-
-        super.removeValue(key);
-    }
-
-    @Nonnull
-    @Override
-    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
-        return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(SingleFeatureBean.class.cast(k)).orElse(null))));
+        return super.valueFor(key, value)
+                .doOnComplete(setFunc)
+                .doOnSuccess(replaceFunc)
+                .cache();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        cache.put(key, reference);
+    public Completable removeValue(SingleFeatureBean key) {
+        Action removeFunc = () -> cache.invalidate(key);
 
-        return super.referenceFor(key, reference);
+        return super.removeValue(key)
+                .doOnComplete(removeFunc)
+                .cache();
     }
 
+    @Nonnull
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        cache.invalidate(key);
+    public Maybe<Id> referenceOf(SingleFeatureBean key) {
+        Callable<Id> getFunc = () -> (Id) cache.get(key);
 
-        super.removeReference(key);
+        Consumer<Id> replaceFunc = v -> cache.put(key, v);
+
+        Maybe<Id> ifEmptyFunc = super.<Id>referenceOf(key)
+                .doOnSuccess(replaceFunc);
+
+        return Maybe.fromCallable(getFunc)
+                .switchIfEmpty(ifEmptyFunc)
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
+        Action setFunc = () -> cache.put(key, reference);
+
+        Consumer<Id> replaceFunc = Functions.actionConsumer(setFunc);
+
+        return super.referenceFor(key, reference)
+                .doOnComplete(setFunc)
+                .doOnSuccess(replaceFunc)
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeReference(SingleFeatureBean key) {
+        Action removeFunc = () -> cache.invalidate(key);
+
+        return super.removeReference(key)
+                .doOnComplete(removeFunc)
+                .cache();
     }
 
     @Nonnull

@@ -132,32 +132,32 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testValueOf() {
-        assertRecorded(() -> store.valueOf(mock(SingleFeatureBean.class)), "valueOf", CALLS_COUNT);
+        assertRecorded(() -> store.valueOf(mock(SingleFeatureBean.class)).blockingGet(), "valueOf", CALLS_COUNT);
     }
 
     @Test
     void testValueFor() {
-        assertRecorded(() -> store.valueFor(mock(SingleFeatureBean.class), mock(Object.class)), "valueFor", CALLS_COUNT);
+        assertRecorded(() -> store.valueFor(mock(SingleFeatureBean.class), mock(Object.class)).blockingGet(), "valueFor", CALLS_COUNT);
     }
 
     @Test
     void testRemoveValue() {
-        assertRecorded(() -> store.removeValue(mock(SingleFeatureBean.class)), "removeValue", CALLS_COUNT);
+        assertRecorded(() -> store.removeValue(mock(SingleFeatureBean.class)).blockingAwait(), "removeValue", CALLS_COUNT);
     }
 
     @Test
     void testReferenceOf() {
-        assertRecorded(() -> store.referenceOf(mock(SingleFeatureBean.class)), "referenceOf", CALLS_COUNT);
+        assertRecorded(() -> store.referenceOf(mock(SingleFeatureBean.class)).blockingGet(), "referenceOf", CALLS_COUNT);
     }
 
     @Test
     void testReferenceFor() {
-        assertRecorded(() -> store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)), "referenceFor", CALLS_COUNT);
+        assertRecorded(() -> store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)).blockingGet(), "referenceFor", CALLS_COUNT);
     }
 
     @Test
     void testRemoveReference() {
-        assertRecorded(() -> store.removeReference(mock(SingleFeatureBean.class)), "removeReference", CALLS_COUNT);
+        assertRecorded(() -> store.removeReference(mock(SingleFeatureBean.class)).blockingAwait(), "removeReference", CALLS_COUNT);
     }
 
     @Test
@@ -212,7 +212,7 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testReferenceOfMany() {
-        assertRecorded(() -> store.referenceOf(mock(SingleFeatureBean.class)), "referenceOf", CALLS_COUNT);
+        assertRecorded(() -> store.referenceOf(mock(ManyFeatureBean.class)), "referenceOf", CALLS_COUNT);
     }
 
     @Test

@@ -11,6 +11,7 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.Iterator;
 import java.util.List;
@@ -149,7 +150,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         IntStream.range(0, sizeOfValue(key).orElse(0))
                 .forEach(i -> innerValueFor(key.withPosition(i), null));
 
-        removeValue(key);
+        removeValue(key).blockingAwait();
     }
 
     @Nonnull
@@ -159,6 +160,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkNotNull(key, "key");
 
         return this.<Integer>valueOf(key)
+                .to(CommonQueries::toOptional)
                 .filter(s -> s > 0);
     }
 
@@ -176,10 +178,10 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkArgument(size >= 0, "size (%d) must not be negative");
 
         if (size > 0) {
-            valueFor(key, size);
+            valueFor(key, size).ignoreElement().blockingAwait();
         }
         else {
-            removeValue(key);
+            removeValue(key).blockingAwait();
         }
     }
 

@@ -149,36 +149,72 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        return onCallResult(super::valueOf, key);
+    public <V> Maybe<V> valueOf(SingleFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("valueOf").withKey(key);
+
+        return super.<V>valueOf(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        return onCallResult(super::valueFor, key, value);
-    }
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("valueFor").withKey(key).withValue(value);
 
-    @Override
-    public void removeValue(SingleFeatureBean key) {
-        onCall(super::removeValue, key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
-        return onCallResult(super::referenceOf, key);
+        return super.valueFor(key, value)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        return onCallResult(super::referenceFor, key, reference);
+    public Completable removeValue(SingleFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("removeValue").withKey(key);
+
+        return super.removeValue(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
+    @Nonnull
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        onCall(super::removeReference, key);
+    public Maybe<Id> referenceOf(SingleFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("referenceOf").withKey(key);
+
+        return super.referenceOf(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("referenceFor").withKey(key).withValue(reference);
+
+        return super.referenceFor(key, reference)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeReference(SingleFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("removeReference").withKey(key);
+
+        return super.removeReference(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull

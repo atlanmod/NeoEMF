@@ -12,6 +12,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
@@ -143,7 +144,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                         EAttribute eAttribute = EObjects.asAttribute(f);
 
                         if (!f.isMany()) {
-                            mapper.valueOf(key).ifPresent(v -> createAttribute(key, eAttribute, v));
+                            mapper.valueOf(key).to(CommonQueries::toOptional).ifPresent(v -> createAttribute(key, eAttribute, v));
                         }
                         else {
                             mapper.allValuesOf(key).forEach(v -> createAttribute(key, eAttribute, v));
@@ -155,6 +156,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
 
                         if (!f.isMany()) {
                             Optional<Id> reference = mapper.referenceOf(key)
+                                    .to(CommonQueries::toOptional)
                                     .map(r -> createReference(key, eReference, r));
 
                             if (isContainment) {

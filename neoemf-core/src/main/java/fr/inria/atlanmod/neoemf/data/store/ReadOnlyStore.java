@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 
 /**
  * A {@link Store} wrapper that only allows read operations on the underlying database.
@@ -76,24 +77,26 @@ public class ReadOnlyStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        throw e.get();
-    }
-
-    @Override
-    public void removeValue(SingleFeatureBean key) {
-        throw e.get();
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+        return Maybe.error(e::get);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        throw e.get();
+    public Completable removeValue(SingleFeatureBean key) {
+        return Completable.error(e::get);
     }
 
+    @Nonnull
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        throw e.get();
+    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
+        return Maybe.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeReference(SingleFeatureBean key) {
+        return Completable.error(e::get);
     }
 
     @Nonnull

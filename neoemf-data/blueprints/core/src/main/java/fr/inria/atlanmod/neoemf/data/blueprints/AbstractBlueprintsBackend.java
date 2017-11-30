@@ -211,20 +211,17 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      */
     @Nonnull
     protected String formatLabel(FeatureBean feature) {
-        final String delimiter = ":";
-
         String prefix = null;
         String suffix = Integer.toString(feature.id());
 
         if (requireUniqueLabels) {
-            // Use the metaclass name of the owner of the feature as prefix
-            prefix = metaClassOf(feature.owner())
-                    .map(ClassBean::name)
-                    .switchIfEmpty(Maybe.just(delimiter))
-                    .blockingGet();
+            // TODO Improve/Choose a better determinant for uniqueness: The type of each label is saved (metaclass's name ?)
+            prefix = String.valueOf(idConverter.convert(feature.owner()));
         }
 
-        return nonNull(prefix) ? prefix + delimiter + suffix : suffix;
+        return nonNull(prefix)
+                ? prefix + ':' + suffix
+                : suffix;
     }
 
     /**
@@ -280,7 +277,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 e.getProperty(PROPERTY_FEATURE_NAME));
 
         // The composed query to execute on the database
-        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(() -> get(id).orElse(null))
+        Maybe<SingleFeatureBean> databaseQuery = asyncGet(id)
                 .flattenAsFlowable(getFunc)
                 .singleElement()
                 .map(mapFunc);
@@ -307,7 +304,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .setProperty(PROPERTY_FEATURE_NAME, container.id());
 
         // The composed query to execute on the database
-        Completable databaseQuery = Maybe.fromCallable(() -> getOrCreate(id))
+        Completable databaseQuery = asyncGetOrCreate(id)
                 .doOnSuccess(removeFunc)
                 .doOnSuccess(setFunc)
                 .ignoreElement();
@@ -326,7 +323,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .forEach(Edge::remove);
 
         // The composed query to execute on the database
-        Completable databaseQuery = Maybe.fromCallable(() -> get(id).orElse(null))
+        Completable databaseQuery = asyncGet(id)
                 .doOnSuccess(removeFunc)
                 .ignoreElement();
 
@@ -348,7 +345,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 v.getProperty(PROPERTY_CLASS_URI));
 
         // The composed query to execute on the database
-        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(() -> get(id).orElse(null))
+        Maybe<ClassBean> databaseQuery = asyncGet(id)
                 .flattenAsFlowable(getFunc)
                 .singleElement()
                 .map(mapFunc);
@@ -392,7 +389,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .doOnSuccess(v -> getOrCreate(id).addEdge(EDGE_INSTANCE_OF, v));
 
         // The composed query to execute on the database
-        Completable databaseQuery = Maybe.fromCallable(() -> getOrCreate(id))
+        Completable databaseQuery = asyncGetOrCreate(id)
                 .flattenAsFlowable(getFromVertexFunc)
                 .singleElement()
                 .doOnSuccess(CommonQueries.classAlreadyExists())
@@ -427,19 +424,37 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(idConverter.convert(i))));
     }
 
+    @Nonnull
+    protected Maybe<Vertex> asyncGet(Id id) {
+        return Maybe.fromCallable(() -> get(id).orElse(null));
+    }
+
     /**
-     * Retrieves the {@link Vertex} corresponding to the provided {@code id}. If it doesn't already exist, it will be
-     * created.
+     * Asynchronously retrieves the {@link Vertex} corresponding to the provided {@code id}. If it doesn't already
+     * exist, it will be created.
      *
      * @param id the {@link Id} of the element to find, or create
      *
-     * @return the {@link Vertex}
+     * @return the deferred computation to execute, that may contains the vertex
      */
     @Nonnull
     protected Vertex getOrCreate(Id id) {
         return verticesCache.get(id, i ->
                 Optional.ofNullable(graph.getVertex(idConverter.convert(i)))
                         .orElseGet(() -> graph.addVertex(idConverter.convert(i))));
+    }
+
+    /**
+     * Asynchronously retrieves the {@link Vertex} corresponding to the provided {@code id}. If it doesn't already
+     * exist, it will be created.
+     *
+     * @param id the {@link Id} of the element to find, or create
+     *
+     * @return the deferred computation to execute, that contains the container
+     */
+    @Nonnull
+    protected Maybe<Vertex> asyncGetOrCreate(Id id) {
+        return Maybe.fromCallable(() -> getOrCreate(id));
     }
 
     /**

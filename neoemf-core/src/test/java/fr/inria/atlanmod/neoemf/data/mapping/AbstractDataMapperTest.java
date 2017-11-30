@@ -273,32 +273,28 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testGetSet_Value(Object value0, Object value1) {
-        mapper.valueFor(sfBase, value0);
-        assertThat(mapper.valueOf(sfBase)).contains(value0);
+    public void testGetSet_Value(Object value0, Object value1) throws InterruptedException {
+        mapper.valueFor(sfBase, value0).test().await().assertNoValues();
+        mapper.valueOf(sfBase).test().await().assertValue(value0);
 
-        assertThat(mapper.valueFor(sfBase, value1)).contains(value0);
-        assertThat(mapper.valueOf(sfBase)).contains(value1);
+        mapper.valueFor(sfBase, value1).test().await().assertValue(value0);
+        mapper.valueOf(sfBase).test().await().assertValue(value1);
     }
 
     /**
      * Checks the behavior of {@link ValueMapper#valueOf(SingleFeatureBean)}.
      */
     @Test
-    public void testGet_Value_NotDefined() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.valueOf(sfBase)).isNotPresent()
-        )).isNull();
+    public void testGet_Value_NotDefined() throws InterruptedException {
+        mapper.valueOf(sfBase).test().await().assertNoErrors().assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ValueMapper#valueFor(SingleFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testSet_Value_Null() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(sfBase, null)).isNotPresent()
-        )).isInstanceOf(NullPointerException.class);
+    public void testSet_Value_Null() throws InterruptedException {
+        mapper.valueFor(sfBase, null).test().await().assertError(NullPointerException.class);
     }
 
     /**
@@ -306,24 +302,20 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testRemove_Value(Object value0) {
-        mapper.valueFor(sfBase, value0);
+    public void testRemove_Value(Object value0) throws InterruptedException {
+        mapper.valueFor(sfBase, value0).test().await().assertNoValues();
+        mapper.valueOf(sfBase).test().await().assertValue(value0);
 
-        assertThat(mapper.valueOf(sfBase)).isPresent();
-
-        mapper.removeValue(sfBase);
-
-        assertThat(mapper.valueOf(sfBase)).isNotPresent();
+        mapper.removeValue(sfBase).test().await().assertComplete();
+        mapper.valueOf(sfBase).test().await().assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ValueMapper#removeValue(SingleFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testRemove_Value_NotDefined() {
-        assertThat(catchThrowable(() ->
-                mapper.removeValue(sfBase)
-        )).isNull();
+    public void testRemove_Value_NotDefined() throws InterruptedException {
+        mapper.removeValue(sfBase).test().await().assertNoErrors().assertComplete();
     }
 
     //endregion
@@ -796,24 +788,22 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testGetSet_Reference(Id ref0, Id ref1) {
+    public void testGetSet_Reference(Id ref0, Id ref1) throws InterruptedException {
         updateInstanceOf(ref0, ref1);
 
-        mapper.referenceFor(sfBase, ref0);
-        assertThat(mapper.referenceOf(sfBase)).contains(ref0);
+        mapper.referenceFor(sfBase, ref0).test().await().assertNoValues();
+        mapper.referenceOf(sfBase).test().await().assertValue(ref0);
 
-        assertThat(mapper.referenceFor(sfBase, ref1)).contains(ref0);
-        assertThat(mapper.referenceOf(sfBase)).contains(ref1);
+        mapper.referenceFor(sfBase, ref1).test().await().assertValue(ref0);
+        mapper.referenceOf(sfBase).test().await().assertValue(ref1);
     }
 
     /**
      * Checks the behavior of {@link ReferenceMapper#referenceOf(SingleFeatureBean)}.
      */
     @Test
-    public void testGet_Reference_NotDefined() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceOf(sfBase)).isNotPresent()
-        )).isNull();
+    public void testGet_Reference_NotDefined() throws InterruptedException {
+        mapper.referenceOf(sfBase).test().await().assertNoErrors().assertNoValues();
     }
 
     /**
@@ -821,10 +811,13 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * reference.
      */
     @Test
-    public void testSet_Reference_Null() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceFor(sfBase, null)).isNotPresent()
-        )).isInstanceOf(NullPointerException.class);
+    public void testSet_Reference_Null() throws InterruptedException {
+        try {
+            mapper.referenceFor(sfBase, null).test().await().assertError(NullPointerException.class);
+        }
+        catch (NullPointerException expected) {
+            // Good even if not sent by the deferred operation
+        }
     }
 
     /**
@@ -832,16 +825,14 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_Reference(Id ref0) {
+    public void testRemove_Reference(Id ref0) throws InterruptedException {
         updateInstanceOf(ref0);
 
-        mapper.referenceFor(sfBase, ref0);
+        mapper.referenceFor(sfBase, ref0).test().await().assertNoValues();
+        mapper.referenceOf(sfBase).test().await().assertValue(ref0);
 
-        assertThat(mapper.referenceOf(sfBase)).isPresent();
-
-        mapper.removeReference(sfBase);
-
-        assertThat(mapper.referenceOf(sfBase)).isNotPresent();
+        mapper.removeReference(sfBase).test().await().assertComplete();
+        mapper.referenceOf(sfBase).test().await().assertNoValues();
     }
 
     /**
@@ -849,10 +840,8 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testRemove_Reference_NotDefined() {
-        assertThat(catchThrowable(() ->
-                mapper.removeReference(sfBase)
-        )).isNull();
+    public void testRemove_Reference_NotDefined() throws InterruptedException {
+        mapper.removeReference(sfBase).test().await().assertNoErrors().assertComplete();
     }
 
     //endregion

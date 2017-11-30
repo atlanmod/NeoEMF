@@ -108,36 +108,38 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        throw e.get();
+    public <V> Maybe<V> valueOf(SingleFeatureBean key) {
+        return Maybe.error(e::get);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        throw e.get();
-    }
-
-    @Override
-    public void removeValue(SingleFeatureBean key) {
-        throw e.get();
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+        return Maybe.error(e::get);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
-        throw e.get();
+    public Completable removeValue(SingleFeatureBean key) {
+        return Completable.error(e::get);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        throw e.get();
+    public Maybe<Id> referenceOf(SingleFeatureBean key) {
+        return Maybe.error(e::get);
     }
 
+    @Nonnull
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        throw e.get();
+    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
+        return Maybe.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeReference(SingleFeatureBean key) {
+        return Completable.error(e::get);
     }
 
     @Nonnull

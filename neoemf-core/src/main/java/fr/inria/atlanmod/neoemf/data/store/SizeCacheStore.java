@@ -20,6 +20,8 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+
 /**
  * A {@link Store} wrapper that caches the size data.
  */
@@ -37,16 +39,20 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
         super(store);
     }
 
+    @Nonnull
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        cacheSize(key, 0);
-        super.removeValue(key);
+    public Completable removeValue(SingleFeatureBean key) {
+        return super.removeValue(key)
+                .doOnComplete(() -> cacheSize(key, 0))
+                .cache();
     }
 
+    @Nonnull
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        cacheSize(key, 0);
-        super.removeReference(key);
+    public Completable removeReference(SingleFeatureBean key) {
+        return super.removeReference(key)
+                .doOnComplete(() -> cacheSize(key, 0))
+                .cache();
     }
 
     @Override

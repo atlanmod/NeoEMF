@@ -27,6 +27,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import io.reactivex.internal.functions.Functions;
 
 /**
  * A {@link Store} wrapper that automatically saves modifications as calls are made.
@@ -116,24 +118,36 @@ public class AutoSaveStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        return thenIncrementAndSave(() -> super.valueFor(key, value), 1);
-    }
-
-    @Override
-    public void removeValue(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.removeValue(key), 1);
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+        return super.valueFor(key, value)
+                .doOnComplete(this::incrementAndSave)
+                .doOnSuccess(Functions.actionConsumer(this::incrementAndSave))
+                .cache();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        return thenIncrementAndSave(() -> super.referenceFor(key, reference), 1);
+    public Completable removeValue(SingleFeatureBean key) {
+        return super.removeValue(key)
+                .doOnComplete(this::incrementAndSave)
+                .cache();
     }
 
+    @Nonnull
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.removeReference(key), 1);
+    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
+        return super.referenceFor(key, reference)
+                .doOnComplete(this::incrementAndSave)
+                .doOnSuccess(Functions.actionConsumer(this::incrementAndSave))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeReference(SingleFeatureBean key) {
+        return super.removeReference(key)
+                .doOnComplete(this::incrementAndSave)
+                .cache();
     }
 
     @Nonnull

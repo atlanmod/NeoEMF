@@ -27,8 +27,6 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Table;
 
-import java.io.IOException;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -39,11 +37,11 @@ import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link HBaseBackend} that provides overall behavior for the management of a HBase database.
@@ -149,6 +147,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
         // The composed query to execute on the database
         Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(createGet)
                 .map(table::get)
+                .filter(r -> !r.isEmpty())
                 .filter(r -> r.containsNonEmptyColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER))
                 .map(mapFunc);
 
@@ -213,6 +212,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
         // The composed query to execute on the database
         Maybe<ClassBean> databaseQuery = Maybe.fromCallable(createGet)
                 .map(table::get)
+                .filter(r -> !r.isEmpty())
                 .filter(r -> r.containsNonEmptyColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME))
                 .map(mapFunc);
 
@@ -255,73 +255,71 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     @Nonnull
     @Override
     public Observable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        return Observable.error(CommonQueries.unsupportedAllInstancesOf());
+        return CommonQueries.unsupportedAllInstancesOf();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Maybe<V> valueOf(SingleFeatureBean key) {
+        Action checkFunc = () -> checkNotNull(key, "key");
 
-        try {
-            Get get = new Get(idConverter.convert(key.owner()));
-            Result result = table.get(get);
+        Callable<Get> createGet = () -> new Get(idConverter.convert(key.owner()));
 
-            if (result.isEmpty()) {
-                return Optional.empty();
-            }
+        Function<Integer, byte[]> toQualifier = Ints::toBytes;
 
-            byte[] byteValue = result.getValue(FAMILY_PROPERTY, Ints.toBytes(key.id()));
+        Function<Result, V> mapFunc = r -> {
+            byte[] byteValue = r.getValue(FAMILY_PROPERTY, toQualifier.apply(key.id()));
 
-            if (isNull(byteValue)) {
-                return Optional.empty();
-            }
+            return serializers.<V>forAny().deserialize(byteValue);
+        };
 
-            return Optional.of(serializers.<V>forAny().deserialize(byteValue));
-        }
-        catch (IOException e) {
-            handleException(e);
-            return Optional.empty();
-        }
+        Maybe<V> databaseQuery = Maybe.fromCallable(createGet)
+                .map(table::get)
+                .filter(r -> !r.isEmpty())
+                .filter(r -> r.containsNonEmptyColumn(FAMILY_PROPERTY, toQualifier.apply(key.id())))
+                .map(mapFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key, "key");
-        checkNotNull(value, "value");
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+        Action checkFunc = () -> {
+            checkNotNull(key, "key");
+            checkNotNull(value, "value");
+        };
 
-        Optional<V> previousValue = valueOf(key);
+        Function<Integer, byte[]> toQualifier = Ints::toBytes;
 
-        try {
-            Put put = new Put(idConverter.convert(key.owner()))
-                    .addColumn(FAMILY_PROPERTY, Ints.toBytes(key.id()), serializers.<V>forAny().serialize(value));
+        Callable<Put> createPut = () -> new Put(idConverter.convert(key.owner()))
+                .addColumn(FAMILY_PROPERTY, toQualifier.apply(key.id()), serializers.<V>forAny().serialize(value));
 
-            table.put(put);
-        }
-        catch (IOException e) {
-            handleException(e);
-        }
+        Action setFunc = () -> table.put(createPut.call());
 
-        return previousValue;
+        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
+
+        Maybe<V> databaseQuery = this.<V>valueOf(key)
+                .doOnComplete(setFunc)
+                .doOnSuccess(replaceFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
+    @Nonnull
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Completable removeValue(SingleFeatureBean key) {
+        Action checkFunc = () -> checkNotNull(key, "key");
 
-        try {
-            Delete delete = new Delete(idConverter.convert(key.owner()))
-                    .addColumns(FAMILY_PROPERTY, Ints.toBytes(key.id()));
+        Function<Integer, byte[]> toQualifier = Ints::toBytes;
 
-            table.delete(delete);
-        }
-        catch (IOException e) {
-            handleException(e);
-        }
-    }
+        Callable<Delete> createDelete = () -> new Delete(idConverter.convert(key.owner()))
+                .addColumns(FAMILY_PROPERTY, toQualifier.apply(key.id()));
 
-    private void handleException(IOException e) {
-        throw new RuntimeException(e);
+        Completable databaseQuery = Maybe.fromCallable(createDelete)
+                .doOnSuccess(table::delete)
+                .ignoreElement();
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 }

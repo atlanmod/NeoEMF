@@ -28,7 +28,6 @@ import net.openhft.chronicle.hash.serialization.BytesWriter;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -221,26 +220,41 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkKey(key);
+    public <V> Maybe<V> valueOf(SingleFeatureBean key) {
+        Action checkFunc = () -> checkKey(key);
 
-        return Optional.ofNullable(cast(features().get(key)));
+        Callable<V> getFunc = () -> cast(features().get(key));
+
+        Maybe<V> databaseQuery = Maybe.fromCallable(getFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkKey(key);
-        checkNotNull(value, "value");
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+        Action checkFunc = () -> {
+            checkKey(key);
+            checkNotNull(value, "value");
+        };
 
-        return Optional.ofNullable(cast(features().put(key, value)));
+        Callable<V> setFunc = () -> cast(features().put(key, value));
+
+        Maybe<V> databaseQuery = Maybe.fromCallable(setFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
+    @Nonnull
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        checkKey(key);
+    public Completable removeValue(SingleFeatureBean key) {
+        Action checkFunc = () -> checkKey(key);
 
-        features().remove(key);
+        Action removeFunc = () -> features().remove(key);
+
+        Completable databaseQuery = Completable.fromAction(removeFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull

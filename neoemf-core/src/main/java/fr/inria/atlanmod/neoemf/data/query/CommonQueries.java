@@ -13,13 +13,17 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.mapping.ClassAlreadyExistsException;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.internal.functions.Functions;
 
 /**
  * Static utility class that provides common queries, and functions used to build queries.
@@ -48,9 +52,7 @@ public final class CommonQueries {
      */
     @Nonnull
     public static <T> Consumer<T> classAlreadyExists() {
-        return t -> {
-            throw new ClassAlreadyExistsException();
-        };
+        return Functions.actionConsumer(() -> { throw new ClassAlreadyExistsException(); });
     }
 
     /**
@@ -59,9 +61,26 @@ public final class CommonQueries {
      * operation.
      *
      * @return a callable
+     *
+     * @see fr.inria.atlanmod.neoemf.data.mapping.ClassMapper#allInstancesOf(ClassBean, boolean)
+     * @see fr.inria.atlanmod.neoemf.data.mapping.ClassMapper#allInstancesOf(Set)
      */
     @Nonnull
-    public static Callable<? extends RuntimeException> unsupportedAllInstancesOf() {
-        return UnsupportedOperationException::new;
+    public static <V> Observable<V> unsupportedAllInstancesOf() {
+        return Observable.error(UnsupportedOperationException::new);
+    }
+
+    /**
+     * Returns a {@link Maybe} instance into an {@link Optional}.
+     *
+     * @param maybe the {@code Maybe} to convert
+     * @param <R>   the result type
+     *
+     * @return an {@link Optional} containing the value of {@code maybe}, or {@link Optional#empty()} if {@code maybe}
+     * has no value
+     */
+    @Nonnull
+    public static <R> Optional<R> toOptional(Maybe<R> maybe) {
+        return maybe.to(v -> Optional.ofNullable(v.blockingGet()));
     }
 }

@@ -31,6 +31,13 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.internal.functions.Functions;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -58,31 +65,55 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Maybe<V> valueOf(SingleFeatureBean key) {
+        Action checkFunc = () -> checkNotNull(key, "key");
 
-        return get(key.owner()).map(v -> v.<V>getProperty(formatLabel(key)));
+        Function<Vertex, Optional<V>> mapFunc = v -> Optional.ofNullable(v.getProperty(formatLabel(key)));
+
+        Maybe<V> databaseQuery = asyncGet(key.owner())
+                .map(mapFunc)
+                .filter(Optional::isPresent)
+                .map(Optional::get);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key, "key");
-        checkNotNull(value, "value");
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+        Action checkFunc = () -> {
+            checkNotNull(key, "key");
+            checkNotNull(value, "value");
+        };
 
-        Vertex vertex = getOrCreate(key.owner());
+        Function<Vertex, Optional<V>> mapFunc = v -> Optional.ofNullable(v.getProperty(formatLabel(key)));
 
-        Optional<V> previousValue = Optional.ofNullable(vertex.<V>getProperty(formatLabel(key)));
-        vertex.<V>setProperty(formatLabel(key), value);
+        Action setFunc = () -> getOrCreate(key.owner()).<V>setProperty(formatLabel(key), value);
 
-        return previousValue;
+        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
+
+        Maybe<V> databaseQuery = asyncGetOrCreate(key.owner())
+                .map(mapFunc)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .doOnComplete(setFunc)
+                .doOnSuccess(replaceFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
+    @Nonnull
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Completable removeValue(SingleFeatureBean key) {
+        Action checkFunc = () -> checkNotNull(key, "key");
 
-        get(key.owner()).ifPresent(v -> v.removeProperty(formatLabel(key)));
+        Consumer<Vertex> removeFunc = v -> v.removeProperty(formatLabel(key));
+
+        Completable databaseQuery = asyncGet(key.owner())
+                .doOnSuccess(removeFunc)
+                .ignoreElement();
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     //endregion
@@ -91,71 +122,63 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Maybe<Id> referenceOf(SingleFeatureBean key) {
+        Action checkFunc = () -> checkNotNull(key, "key");
 
-        Optional<Vertex> vertex = get(key.owner());
+        Function<Vertex, Iterable<Vertex>> getFunc = v -> v
+                .getVertices(Direction.OUT, formatLabel(key));
 
-        if (!vertex.isPresent()) {
-            return Optional.empty();
-        }
-
-        Iterable<Vertex> referencedVertices = vertex.get().query()
-                .labels(formatLabel(key))
-                .direction(Direction.OUT)
-                .limit(1)
-                .vertices();
-
-        return MoreIterables.onlyElement(referencedVertices)
+        Maybe<Id> databaseQuery = asyncGet(key.owner())
+                .flattenAsFlowable(getFunc)
+                .singleElement()
                 .map(v -> idConverter.revert(v.getId()));
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
-        checkNotNull(reference, "reference");
+    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
+        Action checkFunc = () -> {
+            checkNotNull(key, "key");
+            checkNotNull(reference, "reference");
+        };
 
-        Vertex vertex = getOrCreate(key.owner());
+        Function<Vertex, Iterable<Edge>> getFunc = v -> v
+                .getEdges(Direction.OUT, formatLabel(key));
 
-        Iterable<Edge> referenceEdges = vertex.query()
-                .labels(formatLabel(key))
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
+        Action setFunc = () -> getOrCreate(key.owner()).addEdge(formatLabel(key), getOrCreate(reference));
 
-        Optional<Edge> referenceEdge = MoreIterables.onlyElement(referenceEdges);
+        Consumer<Edge> replaceFunc = e -> {
+            e.remove();
+            setFunc.run();
+        };
 
-        Optional<Id> previousId = Optional.empty();
-        if (referenceEdge.isPresent()) {
-            Vertex previousVertex = referenceEdge.get().getVertex(Direction.IN);
-            previousId = Optional.of(idConverter.revert(previousVertex.getId()));
-            referenceEdge.get().remove();
-        }
+        Maybe<Id> databaseQuery = asyncGetOrCreate(key.owner())
+                .flattenAsFlowable(getFunc)
+                .singleElement()
+                .doOnComplete(setFunc)
+                .doAfterSuccess(replaceFunc)
+                .map(e -> e.getVertex(Direction.IN))
+                .map(v -> idConverter.revert(v.getId()));
 
-        Vertex referencedVertex = getOrCreate(reference);
-        vertex.addEdge(formatLabel(key), referencedVertex);
-
-        return previousId;
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
+    @Nonnull
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Completable removeReference(SingleFeatureBean key) {
+        Action checkFunc = () -> checkNotNull(key, "key");
 
-        Optional<Vertex> vertex = get(key.owner());
+        Consumer<Vertex> removeFunc = v -> v
+                .getEdges(Direction.OUT, formatLabel(key))
+                .forEach(Edge::remove);
 
-        if (!vertex.isPresent()) {
-            return;
-        }
+        Completable databaseQuery = asyncGet(key.owner())
+                .doOnSuccess(removeFunc)
+                .ignoreElement();
 
-        Iterable<Edge> edges = vertex.get().query()
-                .labels(formatLabel(key))
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
-
-        edges.forEach(Edge::remove);
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     //endregion

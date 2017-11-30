@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
         checkNotNull(key, "key");
 
         return this.<List<V>>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .filter(values -> key.position() < values.size())
                 .map(values -> values.get(key.position()));
     }
@@ -48,6 +50,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
     @Override
     default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
         return this.<List<V>>valueOf(key)
+                .to(CommonQueries::toOptional)
                 .map(List::stream)
                 .orElseGet(Stream::empty);
     }
@@ -59,11 +62,12 @@ public interface ManyValueWithLists extends ManyValueMapper {
         checkNotNull(value, "value");
 
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
         Optional<V> previousValue = Optional.of(values.set(key.position(), value));
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
 
         return previousValue;
     }
@@ -74,13 +78,14 @@ public interface ManyValueWithLists extends ManyValueMapper {
         checkNotNull(value, "value");
 
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .orElseGet(() -> getOrCreateList(key.withoutPosition()));
 
         checkPositionIndex(key.position(), values.size());
 
         values.add(key.position(), value);
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
     }
 
     @Override
@@ -97,6 +102,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
         }
 
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .orElseGet(() -> getOrCreateList(key.withoutPosition()));
 
         int firstPosition = key.position();
@@ -104,7 +110,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
         values.addAll(firstPosition, collection);
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
     }
 
     @Nonnull
@@ -113,6 +119,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
         checkNotNull(key, "key");
 
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .orElse(null);
 
         if (isNull(values)) {
@@ -128,7 +135,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
                 removeAllValues(key.withoutPosition());
             }
             else {
-                valueFor(key.withoutPosition(), values);
+                valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
             }
         }
 
@@ -137,13 +144,14 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Override
     default void removeAllValues(SingleFeatureBean key) {
-        removeValue(key);
+        removeValue(key).blockingAwait();
     }
 
     @Nonnull
     @Override
     default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         return this.<List<Object>>valueOf(key)
+                .to(CommonQueries::toOptional)
                 .map(List::size)
                 .filter(s -> s > 0);
     }

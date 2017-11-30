@@ -67,7 +67,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
         SingleFeatureBean key = SingleFeatureBean.of(attribute.owner(), attribute.id());
 
         if (!attribute.isMany()) {
-            target.valueFor(key, values.get(0));
+            target.valueFor(key, values.get(0)).ignoreElement().blockingAwait();
         }
         else {
             target.appendAllValues(key, values);
@@ -86,7 +86,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
         }
 
         if (!reference.isMany()) {
-            target.referenceFor(key, values.get(0));
+            target.referenceFor(key, values.get(0)).ignoreElement().blockingAwait();
         }
         else {
             target.appendAllReferences(key, values);

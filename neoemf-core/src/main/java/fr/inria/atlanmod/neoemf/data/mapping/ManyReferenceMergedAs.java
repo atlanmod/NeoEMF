@@ -12,6 +12,7 @@ import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .map(converter::revert)
                 .filter(ids -> key.position() < ids.size())
                 .map(ids -> ids.get(key.position()));
@@ -55,6 +57,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key)
+                .to(CommonQueries::toOptional)
                 .map(converter::revert)
                 .map(List::stream)
                 .orElseGet(Stream::empty);
@@ -69,6 +72,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .map(converter::revert)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
@@ -76,7 +80,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
         ids.set(key.position(), reference);
 
-        valueFor(key.withoutPosition(), converter.convert(ids));
+        valueFor(key.withoutPosition(), converter.convert(ids)).ignoreElement().blockingAwait();
 
         return previousId;
     }
@@ -89,6 +93,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .map(converter::revert)
                 .orElseGet(ArrayList::new);
 
@@ -96,7 +101,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
         ids.add(key.position(), reference);
 
-        valueFor(key.withoutPosition(), converter.convert(ids));
+        valueFor(key.withoutPosition(), converter.convert(ids)).ignoreElement().blockingAwait();
     }
 
     @Override
@@ -115,6 +120,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .map(converter::revert)
                 .orElseGet(ArrayList::new);
 
@@ -123,7 +129,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
         ids.addAll(firstPosition, collection);
 
-        valueFor(key.withoutPosition(), converter.convert(ids));
+        valueFor(key.withoutPosition(), converter.convert(ids)).ignoreElement().blockingAwait();
     }
 
     @Nonnull
@@ -134,6 +140,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
         List<Id> ids = this.<M>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
                 .map(converter::revert)
                 .orElse(null);
 
@@ -150,7 +157,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
                 removeAllReferences(key.withoutPosition());
             }
             else {
-                valueFor(key.withoutPosition(), converter.convert(ids));
+                valueFor(key.withoutPosition(), converter.convert(ids)).ignoreElement().blockingAwait();
             }
         }
 
@@ -159,7 +166,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
     @Override
     default void removeAllReferences(SingleFeatureBean key) {
-        removeReference(key);
+        removeReference(key).blockingAwait();
     }
 
     @Nonnull
@@ -169,6 +176,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key)
+                .to(CommonQueries::toOptional)
                 .map(converter::revert)
                 .map(List::size)
                 .filter(s -> s != 0);

@@ -66,6 +66,10 @@ class ReadOnlyStoreTest extends AbstractTest {
         observer.await().assertError(READONLY_EXCEPTION_TYPE);
     }
 
+    private void assertNoError(TestObserver<?> observer) throws InterruptedException {
+        observer.await().assertNoErrors();
+    }
+
     @Test
     void testClose() {
         assertThat(
@@ -82,7 +86,7 @@ class ReadOnlyStoreTest extends AbstractTest {
 
     @Test
     void testContainerOf() throws InterruptedException {
-        store.containerOf(mock(Id.class)).test().await().assertNoErrors();
+        assertNoError(store.containerOf(mock(Id.class)).test());
     }
 
     @Test
@@ -97,7 +101,7 @@ class ReadOnlyStoreTest extends AbstractTest {
 
     @Test
     void testMetaClassOf() throws InterruptedException {
-        store.metaClassOf(mock(Id.class)).test().await().assertNoErrors();
+        assertNoError(store.metaClassOf(mock(Id.class)).test());
     }
 
     @Test
@@ -106,45 +110,33 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testValueOf() {
-        assertThat(
-                catchThrowable(() -> store.valueOf(mock(SingleFeatureBean.class)))
-        ).isNull();
+    void testValueOf() throws InterruptedException {
+        assertNoError(store.valueOf(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
-    void testValueFor() {
-        assertThat(
-                catchThrowable(() -> store.valueFor(mock(SingleFeatureBean.class), mock(Object.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testValueFor() throws InterruptedException {
+        assertHasError(store.valueFor(mock(SingleFeatureBean.class), mock(Object.class)).test());
     }
 
     @Test
-    void testRemoveValue() {
-        assertThat(
-                catchThrowable(() -> store.removeValue(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testRemoveValue() throws InterruptedException {
+        assertHasError(store.removeValue(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
-    void testReferenceOf() {
-        assertThat(
-                catchThrowable(() -> store.referenceOf(mock(SingleFeatureBean.class)))
-        ).isNull();
+    void testReferenceOf() throws InterruptedException {
+        assertNoError(store.referenceOf(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
-    void testReferenceFor() {
-        assertThat(
-                catchThrowable(() -> store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testReferenceFor() throws InterruptedException {
+        assertHasError(store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)).test());
     }
 
     @Test
-    void testRemoveReference() {
-        assertThat(
-                catchThrowable(() -> store.removeReference(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testRemoveReference() throws InterruptedException {
+        assertHasError(store.removeReference(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
@@ -220,7 +212,7 @@ class ReadOnlyStoreTest extends AbstractTest {
     @Test
     void testReferenceOfMany() {
         assertThat(
-                catchThrowable(() -> store.referenceOf(mock(SingleFeatureBean.class)))
+                catchThrowable(() -> store.referenceOf(mock(ManyFeatureBean.class)))
         ).isNull();
     }
 

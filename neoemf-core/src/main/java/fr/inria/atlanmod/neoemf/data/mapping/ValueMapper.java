@@ -10,10 +10,11 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
 
 /**
  * An object capable of mapping single-valued attributes represented as a set of key/value pair.
@@ -27,13 +28,10 @@ public interface ValueMapper {
      * @param key the key identifying the value
      * @param <V> the type of value
      *
-     * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the key hasn't any value or
-     * doesn't exist
-     *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @return the deferred computation to execute, that may contains the value
      */
     @Nonnull
-    <V> Optional<V> valueOf(SingleFeatureBean key);
+    <V> Maybe<V> valueOf(SingleFeatureBean key);
 
     /**
      * Defines the {@code value} of the specified {@code key}.
@@ -42,20 +40,18 @@ public interface ValueMapper {
      * @param value the value to set
      * @param <V>   the type of value
      *
-     * @return an {@link Optional} containing the previous value of the {@code key}, or {@link Optional#empty()} if the
-     * key has no value before
-     *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @return the deferred computation to execute, that may contains the previous value which has been replaced
      */
     @Nonnull
-    <V> Optional<V> valueFor(SingleFeatureBean key, V value);
+    <V> Maybe<V> valueFor(SingleFeatureBean key, V value);
 
     /**
      * Removes the value of the specified {@code key}.
      *
      * @param key the key identifying the value
      *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @return the deferred computation to execute
      */
-    void removeValue(SingleFeatureBean key);
+    @Nonnull
+    Completable removeValue(SingleFeatureBean key);
 }

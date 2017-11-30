@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -38,7 +37,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
@@ -137,23 +140,27 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        Optional<V> previousValue = super.valueFor(key, value);
-
-        dataHolder.featuresById
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+        Action setFunc = () -> dataHolder.featuresById
                 .computeIfAbsent(key.owner(), id -> new HashSet<>())
                 .add(key.id());
 
-        return previousValue;
+        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
+
+        return super.valueFor(key, value)
+                .doOnComplete(setFunc)
+                .doOnSuccess(replaceFunc);
     }
 
+    @Nonnull
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        super.removeValue(key);
-
-        dataHolder.featuresById
+    public Completable removeValue(SingleFeatureBean key) {
+        Action unregisterFunc = () -> dataHolder.featuresById
                 .computeIfAbsent(key.owner(), id -> new HashSet<>())
                 .remove(key.id());
+
+        return super.removeValue(key)
+                .doOnComplete(unregisterFunc);
     }
 
     @Override

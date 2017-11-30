@@ -11,10 +11,11 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
 
 /**
  * An object capable of mapping single-valued references represented as a set of key/value pair.
@@ -27,13 +28,10 @@ public interface ReferenceMapper {
      *
      * @param key the key identifying the reference
      *
-     * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the key hasn't any reference
-     * or doesn't exist
-     *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @return the deferred computation to execute, that may contains the reference
      */
     @Nonnull
-    Optional<Id> referenceOf(SingleFeatureBean key);
+    Maybe<Id> referenceOf(SingleFeatureBean key);
 
     /**
      * Defines the reference of the specified {@code key}.
@@ -41,20 +39,18 @@ public interface ReferenceMapper {
      * @param key       the key identifying the reference
      * @param reference the reference to set
      *
-     * @return an {@link Optional} containing the previous reference of the {@code key}, or {@link Optional#empty()} if
-     * the key has no reference before
-     *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @return the deferred computation to execute, that may contains the previous reference which has been replaced
      */
     @Nonnull
-    Optional<Id> referenceFor(SingleFeatureBean key, Id reference);
+    Maybe<Id> referenceFor(SingleFeatureBean key, Id reference);
 
     /**
      * Removes the reference of the specified {@code key}.
      *
      * @param key the key identifying the reference
      *
-     * @throws NullPointerException if any parameter is {@code null}
+     * @return the deferred computation to execute
      */
-    void removeReference(SingleFeatureBean key);
+    @Nonnull
+    Completable removeReference(SingleFeatureBean key);
 }

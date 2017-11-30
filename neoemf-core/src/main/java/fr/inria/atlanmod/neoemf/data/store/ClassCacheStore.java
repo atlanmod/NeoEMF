@@ -13,11 +13,15 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
+import java.util.concurrent.Callable;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
 
 /**
@@ -40,10 +44,14 @@ public class ClassCacheStore extends AbstractCacheStore<Id, ClassBean> {
     @Nonnull
     @Override
     public Maybe<ClassBean> metaClassOf(Id id) {
-        Maybe<ClassBean> ifEmptyFunc = super.metaClassOf(id)
-                .doOnSuccess(m -> cache.putIfAbsent(id, m));
+        Callable<ClassBean> getFunc = () -> cache.get(id);
 
-        return Maybe.fromCallable(() -> cache.get(id))
+        Consumer<ClassBean> setFunc = m -> cache.put(id, m);
+
+        Maybe<ClassBean> ifEmptyFunc = super.metaClassOf(id)
+                .doOnSuccess(setFunc);
+
+        return Maybe.fromCallable(getFunc)
                 .switchIfEmpty(ifEmptyFunc)
                 .cache();
     }
@@ -51,10 +59,14 @@ public class ClassCacheStore extends AbstractCacheStore<Id, ClassBean> {
     @Nonnull
     @Override
     public Completable metaClassFor(Id id, ClassBean metaClass) {
-        Completable ifEmptyFunc = super.metaClassFor(id, metaClass)
-                .doOnComplete(() -> cache.put(id, metaClass));
+        Callable<Boolean> existsFunc = () -> cache.contains(id);
 
-        return Maybe.fromCallable(() -> cache.contains(id))
+        Action setFunc = () -> cache.put(id, metaClass);
+
+        Completable ifEmptyFunc = super.metaClassFor(id, metaClass)
+                .doOnComplete(setFunc);
+
+        return Maybe.fromCallable(existsFunc)
                 .filter(Functions.equalsWith(true))
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .switchIfEmpty(ifEmptyFunc.toMaybe())

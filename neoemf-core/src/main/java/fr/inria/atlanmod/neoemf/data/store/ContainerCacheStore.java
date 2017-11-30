@@ -12,11 +12,15 @@ import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
+import java.util.concurrent.Callable;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
 
 /**
@@ -39,10 +43,14 @@ public class ContainerCacheStore extends AbstractCacheStore<Id, SingleFeatureBea
     @Nonnull
     @Override
     public Maybe<SingleFeatureBean> containerOf(Id id) {
-        Maybe<SingleFeatureBean> ifEmptyFunc = super.containerOf(id)
-                .doOnSuccess(c -> cache.putIfAbsent(id, c));
+        Callable<SingleFeatureBean> getFunc = () -> cache.get(id);
 
-        return Maybe.fromCallable(() -> cache.get(id))
+        Consumer<SingleFeatureBean> replaceFunc = c -> cache.put(id, c);
+
+        Maybe<SingleFeatureBean> ifEmptyFunc = super.containerOf(id)
+                .doOnSuccess(replaceFunc);
+
+        return Maybe.fromCallable(getFunc)
                 .switchIfEmpty(ifEmptyFunc)
                 .cache();
     }
@@ -50,11 +58,15 @@ public class ContainerCacheStore extends AbstractCacheStore<Id, SingleFeatureBea
     @Nonnull
     @Override
     public Completable containerFor(Id id, SingleFeatureBean container) {
+        Callable<SingleFeatureBean> getFunc = () -> cache.get(id);
+
+        Action replaceFunc = () -> cache.put(id, container);
+
         Maybe<SingleFeatureBean> ifEmptyFunc = super.containerFor(id, container)
-                .doOnComplete(() -> cache.put(id, container))
+                .doOnComplete(replaceFunc)
                 .toMaybe();
 
-        return Maybe.fromCallable(() -> cache.get(id))
+        return Maybe.fromCallable(getFunc)
                 .filter(Functions.equalsWith(container)) // Ensure the container is the same
                 .switchIfEmpty(ifEmptyFunc)
                 .ignoreElement()
@@ -64,8 +76,10 @@ public class ContainerCacheStore extends AbstractCacheStore<Id, SingleFeatureBea
     @Nonnull
     @Override
     public Completable removeContainer(Id id) {
+        Action removeFunc = () -> cache.invalidate(id);
+
         return super.removeContainer(id)
-                .doOnComplete(() -> cache.invalidate(id))
+                .doOnComplete(removeFunc)
                 .cache();
     }
 }

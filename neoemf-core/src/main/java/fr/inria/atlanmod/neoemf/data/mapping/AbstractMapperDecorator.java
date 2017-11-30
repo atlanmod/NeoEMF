@@ -129,41 +129,43 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
+    public <V> Maybe<V> valueOf(SingleFeatureBean key) {
         return next.valueOf(key);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
         return next.valueFor(key, value);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void removeValue(SingleFeatureBean key) {
-        next.removeValue(key);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
+    public Completable removeValue(SingleFeatureBean key) {
+        return next.removeValue(key);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Maybe<Id> referenceOf(SingleFeatureBean key) {
         return next.referenceOf(key);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
+    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
         return next.referenceFor(key, reference);
     }
 
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void removeReference(SingleFeatureBean key) {
-        next.removeReference(key);
+    public Completable removeReference(SingleFeatureBean key) {
+        return next.removeReference(key);
     }
 
     @Nonnull

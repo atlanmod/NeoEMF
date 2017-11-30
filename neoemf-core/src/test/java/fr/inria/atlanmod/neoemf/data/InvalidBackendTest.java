@@ -91,45 +91,33 @@ class InvalidBackendTest extends AbstractTest {
     }
 
     @Test
-    void testValueOf() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.valueOf(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testValueOf() throws InterruptedException {
+        assertHasError(invalidBackend.valueOf(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
-    void testValueFor() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.valueFor(mock(SingleFeatureBean.class), mock(Object.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testValueFor() throws InterruptedException {
+        assertHasError(invalidBackend.valueFor(mock(SingleFeatureBean.class), mock(Object.class)).test());
     }
 
     @Test
-    void testRemoveValue() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.removeValue(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testRemoveValue() throws InterruptedException {
+        assertHasError(invalidBackend.removeValue(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
-    void testReferenceOf() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.referenceOf(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testReferenceOf() throws InterruptedException {
+        assertHasError(invalidBackend.referenceOf(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
-    void testReferenceFor() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testReferenceFor() throws InterruptedException {
+        assertHasError(invalidBackend.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)).test());
     }
 
     @Test
-    void testRemoveReference() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.removeReference(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testRemoveReference() throws InterruptedException {
+        assertHasError(invalidBackend.removeReference(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
@@ -205,7 +193,7 @@ class InvalidBackendTest extends AbstractTest {
     @Test
     void testReferenceOfMany() {
         assertThat(
-                catchThrowable(() -> invalidBackend.referenceOf(mock(SingleFeatureBean.class)))
+                catchThrowable(() -> invalidBackend.referenceOf(mock(ManyFeatureBean.class)))
         ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
     }
 

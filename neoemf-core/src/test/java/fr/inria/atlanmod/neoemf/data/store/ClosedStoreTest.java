@@ -91,45 +91,33 @@ class ClosedStoreTest extends AbstractTest {
     }
 
     @Test
-    void testValueOf() {
-        assertThat(
-                catchThrowable(() -> store.valueOf(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testValueOf() throws InterruptedException {
+        assertHasError(store.valueOf(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
-    void testValueFor() {
-        assertThat(
-                catchThrowable(() -> store.valueFor(mock(SingleFeatureBean.class), mock(Object.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testValueFor() throws InterruptedException {
+        assertHasError(store.valueFor(mock(SingleFeatureBean.class), mock(Object.class)).test());
     }
 
     @Test
-    void testRemoveValue() {
-        assertThat(
-                catchThrowable(() -> store.removeValue(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testRemoveValue() throws InterruptedException {
+        assertHasError(store.removeValue(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
-    void testReferenceOf() {
-        assertThat(
-                catchThrowable(() -> store.referenceOf(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testReferenceOf() throws InterruptedException {
+        assertHasError(store.referenceOf(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
-    void testReferenceFor() {
-        assertThat(
-                catchThrowable(() -> store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testReferenceFor() throws InterruptedException {
+        assertHasError(store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)).test());
     }
 
     @Test
-    void testRemoveReference() {
-        assertThat(
-                catchThrowable(() -> store.removeReference(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testRemoveReference() throws InterruptedException {
+        assertHasError(store.removeReference(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
@@ -205,7 +193,7 @@ class ClosedStoreTest extends AbstractTest {
     @Test
     void testReferenceOfMany() {
         assertThat(
-                catchThrowable(() -> store.referenceOf(mock(SingleFeatureBean.class)))
+                catchThrowable(() -> store.referenceOf(mock(ManyFeatureBean.class)))
         ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
     }
 

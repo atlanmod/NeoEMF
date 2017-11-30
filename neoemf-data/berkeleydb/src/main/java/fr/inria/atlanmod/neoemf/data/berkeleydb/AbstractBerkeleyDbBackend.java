@@ -44,6 +44,7 @@ import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -226,28 +227,45 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Maybe<V> valueOf(SingleFeatureBean key) {
+        Action checkFunc = () -> checkNotNull(key, "key");
 
-        return Optional.ofNullable(get(features, key, serializers.forSingleFeature(), serializers.forAny()));
+        Callable<V> getFunc = () -> get(features, key, serializers.forSingleFeature(), serializers.forAny());
+
+        Maybe<V> databaseQuery = Maybe.fromCallable(getFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key, "key");
-        checkNotNull(value, "value");
+    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+        Action checkFunc = () -> {
+            checkNotNull(key, "key");
+            checkNotNull(value, "value");
+        };
 
-        Optional<V> previousValue = valueOf(key);
-        put(features, key, value, serializers.forSingleFeature(), serializers.forAny());
-        return previousValue;
+        Action setFunc = () -> put(features, key, value, serializers.forSingleFeature(), serializers.forAny());
+
+        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
+
+        Maybe<V> databaseQuery = this.<V>valueOf(key)
+                .doOnComplete(setFunc)
+                .doOnSuccess(replaceFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
+    @Nonnull
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Completable removeValue(SingleFeatureBean key) {
+        Action checkFunc = () -> checkNotNull(key, "key");
 
-        delete(features, key, serializers.forSingleFeature());
+        Action removeFunc = () -> delete(features, key, serializers.forSingleFeature());
+
+        Completable databaseQuery = Completable.fromAction(removeFunc);
+
+        return dispatcher().submit(checkFunc, databaseQuery);
     }
 
     @Nonnull

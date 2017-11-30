@@ -12,10 +12,11 @@ import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
-import java.util.Optional;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
 
 /**
  * A {@link ReferenceMapper} that provides a default behavior to use {@link M} instead of {@link Id} for references.
@@ -27,7 +28,7 @@ public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
 
     @Nonnull
     @Override
-    default Optional<Id> referenceOf(SingleFeatureBean key) {
+    default Maybe<Id> referenceOf(SingleFeatureBean key) {
         Converter<Id, M> converter = referenceConverter();
 
         return this.<M>valueOf(key)
@@ -36,16 +37,17 @@ public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
 
     @Nonnull
     @Override
-    default Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
+    default Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
         Converter<Id, M> converter = referenceConverter();
 
         return this.valueFor(key, converter.convert(reference))
                 .map(converter::revert);
     }
 
+    @Nonnull
     @Override
-    default void removeReference(SingleFeatureBean key) {
-        this.removeValue(key);
+    default Completable removeReference(SingleFeatureBean key) {
+        return this.removeValue(key);
     }
 
     /**
