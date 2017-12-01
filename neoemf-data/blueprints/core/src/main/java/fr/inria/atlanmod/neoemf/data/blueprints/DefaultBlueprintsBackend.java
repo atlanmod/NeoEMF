@@ -66,7 +66,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public <V> Maybe<V> valueOf(SingleFeatureBean key) {
-        Action checkFunc = () -> checkNotNull(key, "key");
+        checkNotNull(key, "key");
 
         Function<Vertex, Optional<V>> mapFunc = v -> Optional.ofNullable(v.getProperty(formatLabel(key)));
 
@@ -75,16 +75,14 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .filter(Optional::isPresent)
                 .map(Optional::get);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
-        Action checkFunc = () -> {
-            checkNotNull(key, "key");
-            checkNotNull(value, "value");
-        };
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         Function<Vertex, Optional<V>> mapFunc = v -> Optional.ofNullable(v.getProperty(formatLabel(key)));
 
@@ -99,13 +97,13 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .doOnComplete(setFunc)
                 .doOnSuccess(replaceFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable removeValue(SingleFeatureBean key) {
-        Action checkFunc = () -> checkNotNull(key, "key");
+        checkNotNull(key, "key");
 
         Consumer<Vertex> removeFunc = v -> v.removeProperty(formatLabel(key));
 
@@ -113,7 +111,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .doOnSuccess(removeFunc)
                 .ignoreElement();
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     //endregion
@@ -123,7 +121,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     @Nonnull
     @Override
     public Maybe<Id> referenceOf(SingleFeatureBean key) {
-        Action checkFunc = () -> checkNotNull(key, "key");
+        checkNotNull(key, "key");
 
         Function<Vertex, Iterable<Vertex>> getFunc = v -> v
                 .getVertices(Direction.OUT, formatLabel(key));
@@ -133,16 +131,14 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .singleElement()
                 .map(v -> idConverter.revert(v.getId()));
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        Action checkFunc = () -> {
-            checkNotNull(key, "key");
-            checkNotNull(reference, "reference");
-        };
+        checkNotNull(key, "key");
+        checkNotNull(reference, "reference");
 
         Function<Vertex, Iterable<Edge>> getFunc = v -> v
                 .getEdges(Direction.OUT, formatLabel(key));
@@ -162,13 +158,13 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .map(e -> e.getVertex(Direction.IN))
                 .map(v -> idConverter.revert(v.getId()));
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable removeReference(SingleFeatureBean key) {
-        Action checkFunc = () -> checkNotNull(key, "key");
+        checkNotNull(key, "key");
 
         Consumer<Vertex> removeFunc = v -> v
                 .getEdges(Direction.OUT, formatLabel(key))
@@ -178,7 +174,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .doOnSuccess(removeFunc)
                 .ignoreElement();
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     //endregion

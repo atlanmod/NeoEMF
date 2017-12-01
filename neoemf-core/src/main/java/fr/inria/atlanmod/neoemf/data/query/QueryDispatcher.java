@@ -20,7 +20,6 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.functions.Action;
 
 /**
  * An object that dispatches and executes queries on a {@link Backend} instance.
@@ -41,17 +40,6 @@ public interface QueryDispatcher extends Closeable {
     Completable submit(Completable query);
 
     /**
-     * Asynchronously executes the given tasks, using the {@code backend}.
-     *
-     * @param before the pre-processing method to execute before any database call; synchronous
-     * @param query  the query to execute on the database
-     *
-     * @return the deferred computation
-     */
-    @Nonnull
-    Completable submit(Action before, Completable query);
-
-    /**
      * Asynchronously executes the given {@code query}, using the {@code backend}.
      *
      * @param query the query to execute on the database
@@ -63,18 +51,6 @@ public interface QueryDispatcher extends Closeable {
     <T> Maybe<T> submit(Maybe<T> query);
 
     /**
-     * Asynchronously executes the given tasks, using the {@code backend}.
-     *
-     * @param before the pre-processing method to execute before any database call; synchronous
-     * @param query  the query to execute on the database
-     * @param <T>    the type of the expected result
-     *
-     * @return the deferred computation with a result
-     */
-    @Nonnull
-    <T> Maybe<T> submit(Action before, Maybe<T> query);
-
-    /**
      * Asynchronously executes the given {@code query}, using the {@code backend}.
      *
      * @param query the query to execute on the database
@@ -83,18 +59,6 @@ public interface QueryDispatcher extends Closeable {
      */
     @Nonnull
     <T> Single<T> submit(Single<T> query);
-
-    /**
-     * Asynchronously executes the given tasks, using the {@code backend}.
-     *
-     * @param before the pre-processing method to execute before any database call; synchronous
-     * @param query  the query to execute on the database
-     * @param <T>    the type of the expected result
-     *
-     * @return the deferred computation with a result
-     */
-    @Nonnull
-    <T> Single<T> submit(Action before, Single<T> query);
 
     /**
      * Asynchronously executes the given {@code query}, using the {@code backend}.
@@ -108,18 +72,6 @@ public interface QueryDispatcher extends Closeable {
     <T> Observable<T> submit(Observable<T> query);
 
     /**
-     * Asynchronously executes the given tasks, using the {@code backend}.
-     *
-     * @param before the pre-processing method to execute before any database call; synchronous
-     * @param query  the query to execute on the database
-     * @param <T>    the type of the expected result
-     *
-     * @return the deferred computation with results
-     */
-    @Nonnull
-    <T> Observable<T> submit(Action before, Observable<T> query);
-
-    /**
      * Asynchronously executes the given {@code query}, using the {@code backend}.
      *
      * @param query the query to execute on the database
@@ -129,16 +81,4 @@ public interface QueryDispatcher extends Closeable {
      */
     @Nonnull
     <T> Flowable<T> submit(Flowable<T> query);
-
-    /**
-     * Asynchronously executes the given tasks, using the {@code backend}.
-     *
-     * @param before the pre-processing method to execute before any database call; synchronous
-     * @param query  the query to execute on the database
-     * @param <T>    the type of the expected result
-     *
-     * @return the deferred computation with results
-     */
-    @Nonnull
-    <T> Flowable<T> submit(Action before, Flowable<T> query);
 }

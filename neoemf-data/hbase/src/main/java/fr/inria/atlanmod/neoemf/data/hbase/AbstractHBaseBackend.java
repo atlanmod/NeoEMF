@@ -131,7 +131,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     @Nonnull
     @Override
     public Maybe<SingleFeatureBean> containerOf(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Create get operation
         Callable<Get> createGet = () -> new Get(idConverter.convert(id));
@@ -151,16 +151,14 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .filter(r -> r.containsNonEmptyColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER))
                 .map(mapFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable containerFor(Id id, SingleFeatureBean container) {
-        Action checkFunc = () -> {
-            checkNotNull(id, "id");
-            checkNotNull(container, "container");
-        };
+        checkNotNull(id, "id");
+        checkNotNull(container, "container");
 
         // Create set operation
         Callable<Put> createPut = () -> new Put(idConverter.convert(id))
@@ -172,13 +170,13 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .doOnSuccess(table::put)
                 .ignoreElement();
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable removeContainer(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Create remove operation
         Callable<Delete> createDelete = () -> new Delete(idConverter.convert(id))
@@ -190,13 +188,13 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .doOnSuccess(table::delete)
                 .ignoreElement();
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Maybe<ClassBean> metaClassOf(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Create get operation
         Callable<Get> createGet = () -> new Get(idConverter.convert(id));
@@ -216,16 +214,14 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .filter(r -> r.containsNonEmptyColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME))
                 .map(mapFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable metaClassFor(Id id, ClassBean metaClass) {
-        Action checkFunc = () -> {
-            checkNotNull(id, "id");
-            checkNotNull(metaClass, "metaClass");
-        };
+        checkNotNull(id, "id");
+        checkNotNull(metaClass, "metaClass");
 
         // Create get operation
         Callable<Get> createGet = () -> new Get(idConverter.convert(id))
@@ -249,7 +245,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .switchIfEmpty(setIfAbsent.toMaybe())
                 .ignoreElement();
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
@@ -261,7 +257,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     @Nonnull
     @Override
     public <V> Maybe<V> valueOf(SingleFeatureBean key) {
-        Action checkFunc = () -> checkNotNull(key, "key");
+        checkNotNull(key, "key");
 
         Callable<Get> createGet = () -> new Get(idConverter.convert(key.owner()));
 
@@ -279,16 +275,14 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .filter(r -> r.containsNonEmptyColumn(FAMILY_PROPERTY, toQualifier.apply(key.id())))
                 .map(mapFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
-        Action checkFunc = () -> {
-            checkNotNull(key, "key");
-            checkNotNull(value, "value");
-        };
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         Function<Integer, byte[]> toQualifier = Ints::toBytes;
 
@@ -303,13 +297,13 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .doOnComplete(setFunc)
                 .doOnSuccess(replaceFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable removeValue(SingleFeatureBean key) {
-        Action checkFunc = () -> checkNotNull(key, "key");
+        checkNotNull(key, "key");
 
         Function<Integer, byte[]> toQualifier = Ints::toBytes;
 
@@ -320,6 +314,6 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .doOnSuccess(table::delete)
                 .ignoreElement();
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 }

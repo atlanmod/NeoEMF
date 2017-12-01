@@ -186,7 +186,9 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSet_Container_Null() throws InterruptedException {
-        mapper.containerFor(idBase, null).test().await().assertError(NullPointerException.class);
+        assertThat(catchThrowable(() ->
+                mapper.containerFor(idBase, null)
+        )).isExactlyInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -260,7 +262,9 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     public void testSet_Metaclass_Null() throws InterruptedException {
         Id id0 = Id.getProvider().fromLong(40);
 
-        mapper.metaClassFor(id0, null).test().await().assertError(NullPointerException.class);
+        assertThat(catchThrowable(() ->
+                mapper.metaClassFor(id0, null)
+        )).isExactlyInstanceOf(NullPointerException.class);
     }
 
     //endregion
@@ -294,7 +298,9 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSet_Value_Null() throws InterruptedException {
-        mapper.valueFor(sfBase, null).test().await().assertError(NullPointerException.class);
+        assertThat(catchThrowable(() ->
+                mapper.valueFor(sfBase, null)
+        )).isExactlyInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -356,7 +362,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @Test
     public void testSet_ManyValue_NotDefined() {
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(mfBase, valueDummy)).isNotPresent()
+                assertThat(mapper.valueFor(mfBase, valueDummy))
         )).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -366,7 +372,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @Test
     public void testSet_ManyValue_Null() {
         assertThat(catchThrowable(() ->
-                assertThat(mapper.valueFor(mfBase, null)).isNotPresent()
+                mapper.valueFor(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -812,12 +818,9 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @Test
     public void testSet_Reference_Null() throws InterruptedException {
-        try {
-            mapper.referenceFor(sfBase, null).test().await().assertError(NullPointerException.class);
-        }
-        catch (NullPointerException expected) {
-            // Good even if not sent by the deferred operation
-        }
+        assertThat(catchThrowable(() ->
+                mapper.referenceFor(sfBase, null)
+        )).isExactlyInstanceOf(NullPointerException.class);
     }
 
     /**
@@ -896,7 +899,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @Test
     public void testSet_ManyReference_Null() {
         assertThat(catchThrowable(() ->
-                assertThat(mapper.referenceFor(mfBase, null)).isNotPresent()
+                mapper.referenceFor(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 

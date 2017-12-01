@@ -137,7 +137,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     @Nonnull
     @Override
     public Maybe<SingleFeatureBean> containerOf(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Retrieve the container
         Callable<SingleFeatureBean> getFunc = () -> get(containers, id, serializers.forId(), serializers.forSingleFeature());
@@ -145,16 +145,14 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         // The composed query to execute on the database
         Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable containerFor(Id id, SingleFeatureBean container) {
-        Action checkFunc = () -> {
-            checkNotNull(id, "id");
-            checkNotNull(container, "container");
-        };
+        checkNotNull(id, "id");
+        checkNotNull(container, "container");
 
         // Define the container
         Action setFunc = () -> put(containers, id, container, serializers.forId(), serializers.forSingleFeature());
@@ -162,13 +160,13 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         // The composed query to execute on the database
         Completable databaseQuery = Completable.fromAction(setFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable removeContainer(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Remove the container
         Action removeFunc = () -> delete(containers, id, serializers.forId());
@@ -176,13 +174,13 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         // The composed query to execute on the database
         Completable databaseQuery = Completable.fromAction(removeFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Maybe<ClassBean> metaClassOf(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Retrieve the meta-class
         Callable<ClassBean> getFunc = () -> get(instances, id, serializers.forId(), serializers.forClass());
@@ -190,16 +188,14 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         // The composed query to execute on the database
         Maybe<ClassBean> databaseQuery = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable metaClassFor(Id id, ClassBean metaClass) {
-        Action checkFunc = () -> {
-            checkNotNull(id, "id");
-            checkNotNull(metaClass, "metaClass");
-        };
+        checkNotNull(id, "id");
+        checkNotNull(metaClass, "metaClass");
 
         // Define the meta-class, if it does not already exist
         Callable<Boolean> setFunc = () -> putIfAbsent(instances, id, metaClass, serializers.forId(), serializers.forClass());
@@ -210,7 +206,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .ignoreElement();
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
@@ -228,22 +224,20 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     @Nonnull
     @Override
     public <V> Maybe<V> valueOf(SingleFeatureBean key) {
-        Action checkFunc = () -> checkNotNull(key, "key");
+        checkNotNull(key, "key");
 
         Callable<V> getFunc = () -> get(features, key, serializers.forSingleFeature(), serializers.forAny());
 
         Maybe<V> databaseQuery = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
-        Action checkFunc = () -> {
-            checkNotNull(key, "key");
-            checkNotNull(value, "value");
-        };
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
 
         Action setFunc = () -> put(features, key, value, serializers.forSingleFeature(), serializers.forAny());
 
@@ -253,19 +247,19 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
                 .doOnComplete(setFunc)
                 .doOnSuccess(replaceFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable removeValue(SingleFeatureBean key) {
-        Action checkFunc = () -> checkNotNull(key, "key");
+        checkNotNull(key, "key");
 
         Action removeFunc = () -> delete(features, key, serializers.forSingleFeature());
 
         Completable databaseQuery = Completable.fromAction(removeFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull

@@ -32,7 +32,8 @@ public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
         Converter<Id, M> converter = referenceConverter();
 
         return this.<M>valueOf(key)
-                .map(converter::revert);
+                .map(converter::revert)
+                .cache();
     }
 
     @Nonnull
@@ -41,7 +42,8 @@ public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
         Converter<Id, M> converter = referenceConverter();
 
         return this.valueFor(key, converter.convert(reference))
-                .map(converter::revert);
+                .map(converter::revert)
+                .cache();
     }
 
     @Nonnull

@@ -31,18 +31,15 @@ import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
-import io.reactivex.functions.Action;
-import io.reactivex.internal.functions.Functions;
 import io.reactivex.schedulers.Schedulers;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
  * A {@link QueryDispatcher} that dispatches and executes queries asynchronously using an {@link ExecutorService}.
  */
 @ParametersAreNonnullByDefault
-public class AsyncQueryDispatcher implements QueryDispatcher {
+public class AsyncQueryDispatcher extends AbstractQueryDispatcher {
 
     /**
      * The default number of parallel threads for one {@link Backend} instance.
@@ -108,107 +105,47 @@ public class AsyncQueryDispatcher implements QueryDispatcher {
 
     @Nonnull
     @Override
-    public Completable submit(Completable query) {
-        return submit(Functions.EMPTY_ACTION, query);
-    }
-
-    @Nonnull
-    @Override
-    public Completable submit(Action before, Completable query) {
-        checkNotNull(query, "query");
-
-        Completable scheduledQuery = query
+    protected Completable map(Completable query) {
+        return query
                 .observeOn(scheduler.get())
                 .subscribeOn(scheduler.get())
                 .unsubscribeOn(scheduler.get());
-
-        return executeBefore(before)
-                .andThen(scheduledQuery)
-                .cache();
     }
 
     @Nonnull
     @Override
-    public <T> Maybe<T> submit(Maybe<T> query) {
-        return submit(Functions.EMPTY_ACTION, query);
-    }
-
-    @Nonnull
-    @Override
-    public <T> Maybe<T> submit(Action before, Maybe<T> query) {
-        checkNotNull(query, "query");
-
-        Maybe<T> scheduledQuery = query
+    protected <T> Maybe<T> map(Maybe<T> query) {
+        return query
                 .observeOn(scheduler.get())
                 .subscribeOn(scheduler.get())
                 .unsubscribeOn(scheduler.get());
-
-        return executeBefore(before)
-                .andThen(scheduledQuery)
-                .cache();
     }
 
     @Nonnull
     @Override
-    public <T> Single<T> submit(Single<T> query) {
-        return submit(Functions.EMPTY_ACTION, query);
-    }
-
-    @Nonnull
-    @Override
-    public <T> Single<T> submit(Action before, Single<T> query) {
-        checkNotNull(query, "query");
-
-        Single<T> scheduledQuery = query
+    protected <T> Single<T> map(Single<T> query) {
+        return query
                 .observeOn(scheduler.get())
                 .subscribeOn(scheduler.get())
                 .unsubscribeOn(scheduler.get());
-
-        return executeBefore(before)
-                .andThen(scheduledQuery)
-                .cache();
     }
 
     @Nonnull
     @Override
-    public <T> Observable<T> submit(Observable<T> query) {
-        return submit(Functions.EMPTY_ACTION, query);
-    }
-
-    @Nonnull
-    @Override
-    public <T> Observable<T> submit(Action before, Observable<T> query) {
-        checkNotNull(query, "query");
-
-        Observable<T> scheduledQuery = query
+    protected <T> Observable<T> map(Observable<T> query) {
+        return query
                 .observeOn(scheduler.get())
                 .subscribeOn(scheduler.get())
                 .unsubscribeOn(scheduler.get());
-
-        return executeBefore(before)
-                .andThen(scheduledQuery)
-                .cache();
     }
 
     @Nonnull
     @Override
-    public <T> Flowable<T> submit(Flowable<T> query) {
-        return submit(Functions.EMPTY_ACTION, query);
-    }
-
-    @Nonnull
-    @Override
-    public <T> Flowable<T> submit(Action before, Flowable<T> query) {
-        checkNotNull(query, "query");
-
-        Flowable<T> scheduledQuery = query
+    protected <T> Flowable<T> map(Flowable<T> query) {
+        return query
                 .observeOn(scheduler.get())
                 .subscribeOn(scheduler.get())
                 .unsubscribeOn(scheduler.get());
-
-        return executeBefore(before)
-                .andThen(scheduledQuery)
-                .cache();
     }
 
     @Override
@@ -219,19 +156,5 @@ public class AsyncQueryDispatcher implements QueryDispatcher {
                 throw new InconsistencyException(String.format("%d queries have not been executed", unstartedTasks.size()));
             }
         }
-    }
-
-    /**
-     * Executes the given tasks before executing any asynchronous task.
-     *
-     * @param before the pre-processing method to execute before any database call
-     *
-     * @return the deferred computation
-     */
-    @Nonnull
-    private Completable executeBefore(Action before) {
-        checkNotNull(before, "before");
-
-        return Completable.fromAction(before);
     }
 }

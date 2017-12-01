@@ -131,7 +131,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     @Nonnull
     @Override
     public Maybe<SingleFeatureBean> containerOf(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Define the container
         Callable<SingleFeatureBean> getFunc = () -> containers().get(id);
@@ -139,16 +139,14 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
         // The composed query to execute on the database
         Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable containerFor(Id id, SingleFeatureBean container) {
-        Action checkFunc = () -> {
-            checkNotNull(id, "id");
-            checkNotNull(container, "container");
-        };
+        checkNotNull(id, "id");
+        checkNotNull(container, "container");
 
         // Define the container
         Action setFunc = () -> containers().put(id, container);
@@ -156,13 +154,13 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
         // The composed query to execute on the database
         Completable databaseQuery = Completable.fromAction(setFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable removeContainer(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Remove the container
         Action removeFunc = () -> containers().remove(id);
@@ -170,13 +168,13 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
         // The composed query to execute on the database
         Completable databaseQuery = Completable.fromAction(removeFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Maybe<ClassBean> metaClassOf(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Retrieve the meta-class
         Callable<ClassBean> getFunc = () -> instances().get(id);
@@ -184,16 +182,14 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
         // The composed query to execute on the database
         Maybe<ClassBean> databaseQuery = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable metaClassFor(Id id, ClassBean metaClass) {
-        Action checkFunc = () -> {
-            checkNotNull(id, "id");
-            checkNotNull(metaClass, "metaClass");
-        };
+        checkNotNull(id, "id");
+        checkNotNull(metaClass, "metaClass");
 
         // Define the meta-class, if it does not already exist
         Callable<ClassBean> setFunc = () -> instances().putIfAbsent(id, metaClass);
@@ -203,7 +199,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .ignoreElement();
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
@@ -221,40 +217,38 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     @Nonnull
     @Override
     public <V> Maybe<V> valueOf(SingleFeatureBean key) {
-        Action checkFunc = () -> checkKey(key);
+        checkKey(key);
 
         Callable<V> getFunc = () -> cast(features().get(key));
 
         Maybe<V> databaseQuery = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
-        Action checkFunc = () -> {
-            checkKey(key);
-            checkNotNull(value, "value");
-        };
+        checkKey(key);
+        checkNotNull(value, "value");
 
         Callable<V> setFunc = () -> cast(features().put(key, value));
 
         Maybe<V> databaseQuery = Maybe.fromCallable(setFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable removeValue(SingleFeatureBean key) {
-        Action checkFunc = () -> checkKey(key);
+        checkKey(key);
 
         Action removeFunc = () -> features().remove(key);
 
         Completable databaseQuery = Completable.fromAction(removeFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull

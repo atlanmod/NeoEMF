@@ -265,7 +265,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     @Nonnull
     @Override
     public Maybe<SingleFeatureBean> containerOf(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Retrieve the container edge from a vertex (the only element of the returned iterable)
         Function<Vertex, Iterable<Edge>> getFunc = v -> v
@@ -282,16 +282,14 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .singleElement()
                 .map(mapFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable containerFor(Id id, SingleFeatureBean container) {
-        Action checkFunc = () -> {
-            checkNotNull(id, "id");
-            checkNotNull(container, "container");
-        };
+        checkNotNull(id, "id");
+        checkNotNull(container, "container");
 
         // Remove the container edge of a vertex
         Consumer<Vertex> removeFunc = v -> v
@@ -309,13 +307,13 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .doOnSuccess(setFunc)
                 .ignoreElement();
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable removeContainer(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Remove the container edge of a vertex
         Consumer<Vertex> removeFunc = v -> v
@@ -327,13 +325,13 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .doOnSuccess(removeFunc)
                 .ignoreElement();
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Maybe<ClassBean> metaClassOf(Id id) {
-        Action checkFunc = () -> checkNotNull(id, "id");
+        checkNotNull(id, "id");
 
         // Retrieve the meta-class vertex from a vertex (the only element of the returned iterable)
         Function<Vertex, Iterable<Vertex>> getFunc = v -> v
@@ -350,16 +348,14 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .singleElement()
                 .map(mapFunc);
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
     @Override
     public Completable metaClassFor(Id id, ClassBean metaClass) {
-        Action checkFunc = () -> {
-            checkNotNull(id, "id");
-            checkNotNull(metaClass, "metaClass");
-        };
+        checkNotNull(id, "id");
+        checkNotNull(metaClass, "metaClass");
 
         // Retrieve the meta-class from a vertex
         Function<Vertex, Iterable<Vertex>> getFromVertexFunc = v -> v
@@ -396,7 +392,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .switchIfEmpty(setFunc)
                 .ignoreElement();
 
-        return dispatcher().submit(checkFunc, databaseQuery);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
