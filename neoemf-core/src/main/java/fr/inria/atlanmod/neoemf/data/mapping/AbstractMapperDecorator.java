@@ -24,8 +24,8 @@ import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -116,14 +116,14 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Observable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+    public Flowable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         return next.allInstancesOf(metaClass, strict);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Observable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         return next.allInstancesOf(metaClasses);
     }
 

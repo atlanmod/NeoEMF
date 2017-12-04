@@ -18,8 +18,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
 
 /**
  * An object capable of mapping meta-classes.
@@ -64,7 +64,7 @@ public interface ClassMapper {
      * {@link UnsupportedOperationException} if this mapper does not support this operation
      */
     @Nonnull
-    Observable<Id> allInstancesOf(ClassBean metaClass, boolean strict);
+    Flowable<Id> allInstancesOf(ClassBean metaClass, boolean strict);
 
     /**
      * Retrieves all instances of the given {@code metaClasses}.
@@ -75,5 +75,5 @@ public interface ClassMapper {
      * {@link UnsupportedOperationException} if this mapper does not support this operation
      */
     @Nonnull
-    Observable<Id> allInstancesOf(Set<ClassBean> metaClasses);
+    Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses);
 }

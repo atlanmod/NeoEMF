@@ -43,8 +43,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -397,10 +397,10 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
     @Nonnull
     @Override
-    public Observable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         // The composed query to execute on the database
-        Observable<Id> databaseQuery = Maybe.fromCallable(() -> metaClasses)
-                .flattenAsObservable(Functions.identity())
+        Flowable<Id> databaseQuery = Maybe.fromCallable(() -> metaClasses)
+                .flattenAsFlowable(Functions.identity())
                 .flatMapIterable(mc -> metaClassIndex.get(PROPERTY_CLASS_NAME, mc.name()))
                 .flatMapIterable(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .map(v -> idConverter.revert(v.getId()));

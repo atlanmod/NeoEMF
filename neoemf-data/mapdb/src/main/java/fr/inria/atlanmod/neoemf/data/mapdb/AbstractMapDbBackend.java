@@ -38,8 +38,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 import io.reactivex.internal.functions.Functions;
 
@@ -226,10 +226,10 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
     @Nonnull
     @Override
-    public Observable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         // The composed query to execute on the database
-        Observable<Id> databaseQuery = Maybe.fromCallable(instances::getEntries)
-                .flattenAsObservable(Functions.identity())
+        Flowable<Id> databaseQuery = Maybe.fromCallable(instances::getEntries)
+                .flattenAsFlowable(Functions.identity())
                 .filter(e -> metaClasses.contains(e.getValue()))
                 .map(Map.Entry::getKey);
 

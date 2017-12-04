@@ -34,8 +34,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -250,7 +250,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
     @Nonnull
     @Override
-    public Observable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         return CommonQueries.unsupportedAllInstancesOf();
     }
 

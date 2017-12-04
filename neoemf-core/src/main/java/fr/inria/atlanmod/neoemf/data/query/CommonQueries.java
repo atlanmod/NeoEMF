@@ -15,13 +15,12 @@ import fr.inria.atlanmod.neoemf.data.mapping.ClassAlreadyExistsException;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
@@ -57,18 +56,18 @@ public final class CommonQueries {
     }
 
     /**
-     * Returns a {@link Callable} that creates the {@link RuntimeException} used when calling {@link
+     * Returns a deferred computation that sends the {@link RuntimeException} used when calling {@link
      * fr.inria.atlanmod.neoemf.data.mapping.DataMapper#allInstancesOf(Set)} on an instance that does not support this
      * operation.
      *
-     * @return a callable
+     * @return a deferred computation
      *
      * @see fr.inria.atlanmod.neoemf.data.mapping.ClassMapper#allInstancesOf(ClassBean, boolean)
      * @see fr.inria.atlanmod.neoemf.data.mapping.ClassMapper#allInstancesOf(Set)
      */
     @Nonnull
-    public static <V> Observable<V> unsupportedAllInstancesOf() {
-        return Observable.error(UnsupportedOperationException::new);
+    public static <V> Flowable<V> unsupportedAllInstancesOf() {
+        return Flowable.error(UnsupportedOperationException::new);
     }
 
     /**
