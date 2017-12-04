@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.commons.Stopwatch;
-import fr.inria.atlanmod.commons.concurrent.MoreThreads;
 import fr.inria.atlanmod.commons.function.Copier;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -39,16 +38,6 @@ import static java.util.Objects.isNull;
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractBackend extends AbstractDataMapper implements Backend {
-
-    /**
-     * A set that holds all active {@link Backend} instances.
-     */
-    @Nonnull
-    private static final Set<AbstractBackend> ACTIVE_BACKENDS = new HashSet<>();
-
-    static {
-        MoreThreads.executeAtExit(() -> ACTIVE_BACKENDS.parallelStream().forEach(b -> b.close(false)));
-    }
 
     /**
      * The unique name of this backend.
@@ -84,7 +73,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
         this.dispatcher = new AsyncQueryDispatcher(name);
 
         if (isPersistent()) {
-            ACTIVE_BACKENDS.add(this);
+            BackendManager.getInstance().register(this);
         }
     }
 
@@ -118,7 +107,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
      *
      * @param clean {@code true} if the registry must be cleaned after closure
      */
-    private synchronized void close(boolean clean) {
+    final synchronized void close(boolean clean) {
         if (isClosed) {
             return;
         }
@@ -138,7 +127,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
             isClosed = true;
 
             if (clean && isPersistent()) {
-                ACTIVE_BACKENDS.remove(this);
+                BackendManager.getInstance().unregister(this);
             }
 
             try {
