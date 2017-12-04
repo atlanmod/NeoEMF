@@ -26,6 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -171,7 +172,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
+    public <V> Maybe<V> valueOf(ManyFeatureBean key) {
         return next.valueOf(key);
     }
 
@@ -185,7 +186,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
+    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
         return next.valueFor(key, value);
     }
 
@@ -238,7 +239,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Id> referenceOf(ManyFeatureBean key) {
+    public Maybe<Id> referenceOf(ManyFeatureBean key) {
         return next.referenceOf(key);
     }
 
@@ -252,7 +253,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    public Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
         return next.referenceFor(key, reference);
     }
 

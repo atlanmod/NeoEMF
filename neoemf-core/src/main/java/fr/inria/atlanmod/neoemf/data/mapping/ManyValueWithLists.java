@@ -14,12 +14,15 @@ import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -37,13 +40,13 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueOf(ManyFeatureBean key) {
+    default <V> Maybe<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
         return this.<List<V>>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
                 .filter(values -> key.position() < values.size())
-                .map(values -> values.get(key.position()));
+                .map(values -> values.get(key.position()))
+                .cache();
     }
 
     @Nonnull
@@ -57,19 +60,20 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
+    default <V> Single<V> valueFor(ManyFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+        Consumer<List<V>> replaceFunc = vs -> {
+            vs.set(key.position(), value);
+            valueFor(key.withoutPosition(), vs).ignoreElement().subscribe();
+        };
 
-        Optional<V> previousValue = Optional.of(values.set(key.position(), value));
-
-        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
-
-        return previousValue;
+        return this.<List<V>>valueOf(key.withoutPosition())
+                .toSingle()
+                .doAfterSuccess(replaceFunc)
+                .map(vs -> vs.get(key.position()))
+                .cache();
     }
 
     @Override

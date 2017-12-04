@@ -33,6 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 /**
  * A {@link Backend} that does nothing.
@@ -128,8 +129,8 @@ public final class NoopBackend implements Backend, AllReferenceAs<Long> {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        return Optional.empty();
+    public <V> Maybe<V> valueOf(ManyFeatureBean key) {
+        return Maybe.empty();
     }
 
     @Nonnull
@@ -140,8 +141,8 @@ public final class NoopBackend implements Backend, AllReferenceAs<Long> {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        return Optional.empty();
+    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+        return Single.just(value);
     }
 
     @Override

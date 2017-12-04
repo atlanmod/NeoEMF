@@ -22,6 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
 
@@ -82,5 +83,18 @@ public final class CommonQueries {
     @Nonnull
     public static <R> Optional<R> toOptional(Maybe<R> maybe) {
         return maybe.to(v -> Optional.ofNullable(v.blockingGet()));
+    }
+
+    /**
+     * Returns a {@link Single} instance into an {@link Optional}.
+     *
+     * @param single the {@code Single} to convert
+     * @param <R>    the result type
+     *
+     * @return an {@link Optional} containing the value of {@code single}
+     */
+    @Nonnull
+    public static <R> Optional<R> toOptional(Single<R> single) {
+        return single.to(v -> Optional.ofNullable(v.blockingGet()));
     }
 }

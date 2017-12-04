@@ -21,6 +21,9 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+
 /**
  * A {@link ManyReferenceMapper} that provides a default behavior to use {@link M} instead of {@link Id} for
  * multi-valued references.
@@ -32,11 +35,12 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
 
     @Nonnull
     @Override
-    default Optional<Id> referenceOf(ManyFeatureBean key) {
+    default Maybe<Id> referenceOf(ManyFeatureBean key) {
         Converter<Id, M> converter = manyReferenceConverter();
 
         return this.<M>valueOf(key)
-                .map(converter::revert);
+                .map(converter::revert)
+                .cache();
     }
 
     @Nonnull
@@ -50,11 +54,12 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
 
     @Nonnull
     @Override
-    default Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    default Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
         Converter<Id, M> converter = manyReferenceConverter();
 
         return this.valueFor(key, converter.convert(reference))
-                .map(converter::revert);
+                .map(converter::revert)
+                .cache();
     }
 
     @Override

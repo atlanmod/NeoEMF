@@ -25,6 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -144,8 +145,8 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        throw e.get();
+    public <V> Maybe<V> valueOf(ManyFeatureBean key) {
+        return Maybe.error(e::get);
     }
 
     @Nonnull
@@ -156,8 +157,8 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        throw e.get();
+    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+        return Single.error(e::get);
     }
 
     @Override
@@ -199,8 +200,8 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(ManyFeatureBean key) {
-        throw e.get();
+    public Maybe<Id> referenceOf(ManyFeatureBean key) {
+        return Maybe.error(e::get);
     }
 
     @Nonnull
@@ -211,8 +212,8 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        throw e.get();
+    public Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
+        return Single.error(e::get);
     }
 
     @Override

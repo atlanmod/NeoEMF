@@ -15,13 +15,16 @@ import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -36,20 +39,18 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueOf(ManyFeatureBean key) {
+    default <V> Maybe<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
         return this.<V[]>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
                 .filter(values -> key.position() < values.length)
-                .map(values -> values[key.position()]);
+                .map(values -> values[key.position()])
+                .cache();
     }
 
     @Nonnull
     @Override
     default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
-
         return this.<V[]>valueOf(key)
                 .to(CommonQueries::toOptional)
                 .map(Arrays::stream)
@@ -58,21 +59,20 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
+    default <V> Single<V> valueFor(ManyFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+        Consumer<V[]> replaceFunc = vs -> {
+            vs[key.position()] = value;
+            valueFor(key.withoutPosition(), vs).ignoreElement().subscribe();
+        };
 
-        Optional<V> previousValue = Optional.of(values[key.position()]);
-
-        values[key.position()] = value;
-
-        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
-
-        return previousValue;
+        return this.<V[]>valueOf(key.withoutPosition())
+                .toSingle()
+                .doAfterSuccess(replaceFunc)
+                .map(vs -> vs[key.position()])
+                .cache();
     }
 
     @Override

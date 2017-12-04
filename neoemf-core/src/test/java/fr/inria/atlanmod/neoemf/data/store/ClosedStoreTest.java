@@ -121,10 +121,8 @@ class ClosedStoreTest extends AbstractTest {
     }
 
     @Test
-    void testValueOfMany() {
-        assertThat(
-                catchThrowable(() -> store.valueOf(mock(ManyFeatureBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testValueOfMany() throws InterruptedException {
+        assertHasError(store.valueOf(mock(ManyFeatureBean.class)).test());
     }
 
     @Test
@@ -135,10 +133,8 @@ class ClosedStoreTest extends AbstractTest {
     }
 
     @Test
-    void tetsValueForMany() {
-        assertThat(
-                catchThrowable(() -> store.valueFor(mock(ManyFeatureBean.class), mock(Object.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void tetsValueForMany() throws InterruptedException {
+        assertHasError(store.valueFor(mock(ManyFeatureBean.class), mock(Object.class)).test());
     }
 
     @Test
@@ -191,10 +187,8 @@ class ClosedStoreTest extends AbstractTest {
     }
 
     @Test
-    void testReferenceOfMany() {
-        assertThat(
-                catchThrowable(() -> store.referenceOf(mock(ManyFeatureBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testReferenceOfMany() throws InterruptedException {
+        assertHasError(store.referenceOf(mock(ManyFeatureBean.class)).test());
     }
 
     @Test
@@ -205,10 +199,8 @@ class ClosedStoreTest extends AbstractTest {
     }
 
     @Test
-    void testReferenceForMany() {
-        assertThat(
-                catchThrowable(() -> store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testReferenceForMany() throws InterruptedException {
+        assertHasError(store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)).test());
     }
 
     @Test

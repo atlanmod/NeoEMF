@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
-import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithLists;
+import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays;
 import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import net.openhft.chronicle.bytes.Bytes;
@@ -48,7 +48,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * An abstract {@link InMemoryBackend} that provides the default behavior of containers and meta-classes management.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemoryBackend, ManyValueWithLists, AllReferenceAs<Long> {
+public abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemoryBackend, ManyValueWithArrays, AllReferenceAs<Long> {
 
     /**
      * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.

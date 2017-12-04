@@ -30,6 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -219,8 +220,14 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        return onCallResult(super::valueOf, key);
+    public <V> Maybe<V> valueOf(ManyFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("valueOf").withKey(key);
+
+        return super.<V>valueOf(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
@@ -231,8 +238,13 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        return onCallResult(super::valueFor, key, value);
+    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("valueFor").withKey(key).withValue(value);
+
+        return super.valueFor(key, value)
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Override
@@ -277,8 +289,14 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(ManyFeatureBean key) {
-        return onCallResult(super::referenceOf, key);
+    public Maybe<Id> referenceOf(ManyFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("referenceOf").withKey(key);
+
+        return super.referenceOf(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
@@ -289,8 +307,13 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        return onCallResult(super::referenceFor, key, reference);
+    public Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("referenceFor").withKey(key).withValue(reference);
+
+        return super.referenceFor(key, reference)
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Override
@@ -331,18 +354,6 @@ public abstract class AbstractListenerStore extends AbstractStore {
     @Override
     public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
         return onCallResult(super::sizeOfReference, key);
-    }
-
-    /**
-     * Logs the call of a method.
-     *
-     * @param runnable the method to call
-     */
-    private void onCall(Runnable runnable) {
-        onCallResult((k, v) -> {
-            runnable.run();
-            return null;
-        }, null, null);
     }
 
     /**

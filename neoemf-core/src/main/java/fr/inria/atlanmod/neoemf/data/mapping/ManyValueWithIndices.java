@@ -25,6 +25,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.internal.functions.Functions;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -67,7 +73,9 @@ public interface ManyValueWithIndices extends ManyValueMapper {
                     throw new NoSuchElementException();
                 }
 
-                return ManyValueWithIndices.this.<V>valueOf(key.withPosition(currentIndex++)).orElse(null);
+                return ManyValueWithIndices.this.<V>valueOf(key.withPosition(currentIndex++))
+                        .to(CommonQueries::toOptional)
+                        .orElse(null);
             }
         };
 
@@ -76,18 +84,18 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
+    default <V> Single<V> valueFor(ManyFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        Optional<V> previousValue = valueOf(key);
-        if (!previousValue.isPresent()) {
-            throw new NoSuchElementException();
-        }
+        Action setFunc = () -> innerValueFor(key, value).subscribe();
 
-        innerValueFor(key, value);
+        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
 
-        return previousValue;
+        return this.<V>valueOf(key)
+                .toSingle()
+                .doAfterSuccess(replaceFunc)
+                .cache();
     }
 
     @Override
@@ -99,12 +107,12 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkPositionIndex(key.position(), size);
 
         for (int i = size - 1; i >= key.position(); i--) {
-            innerValueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+            innerValueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).toSingle().blockingGet()).blockingAwait();
         }
 
         sizeForValue(key.withoutPosition(), size + 1);
 
-        innerValueFor(key, value);
+        innerValueFor(key, value).blockingAwait();
     }
 
     @Override
@@ -132,13 +140,13 @@ public interface ManyValueWithIndices extends ManyValueMapper {
             return Optional.empty();
         }
 
-        Optional<V> previousValue = valueOf(key);
+        Optional<V> previousValue = this.<V>valueOf(key).to(CommonQueries::toOptional);
 
         for (int i = key.position(); i < size - 1; i++) {
-            innerValueFor(key.withPosition(i), valueOf(key.withPosition(i + 1)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+            innerValueFor(key.withPosition(i), valueOf(key.withPosition(i + 1)).toSingle().blockingGet()).blockingAwait();
         }
 
-        innerValueFor(key.withPosition(size - 1), null);
+        innerValueFor(key.withPosition(size - 1), null).blockingAwait();
 
         sizeForValue(key.withoutPosition(), size - 1);
 
@@ -148,7 +156,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Override
     default void removeAllValues(SingleFeatureBean key) {
         IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> innerValueFor(key.withPosition(i), null));
+                .forEach(i -> innerValueFor(key.withPosition(i), null).blockingAwait());
 
         removeValue(key).blockingAwait();
     }
@@ -197,5 +205,5 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    <V> void innerValueFor(ManyFeatureBean key, @Nullable V value);
+    <V> Completable innerValueFor(ManyFeatureBean key, @Nullable V value);
 }

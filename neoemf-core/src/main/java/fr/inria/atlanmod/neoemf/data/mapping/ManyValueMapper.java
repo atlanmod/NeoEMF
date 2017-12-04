@@ -20,6 +20,9 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -33,13 +36,10 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @param key the key identifying the multi-valued attribute
      *
-     * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the key hasn't any value or
-     * doesn't exist
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @return the deferred computation to execute, that may contains the value
      */
     @Nonnull
-    <V> Optional<V> valueOf(ManyFeatureBean key);
+    <V> Maybe<V> valueOf(ManyFeatureBean key);
 
     /**
      * Retrieves all values of the specified {@code key}.
@@ -60,18 +60,14 @@ public interface ManyValueMapper extends ValueMapper {
      * @param value the value to set
      * @param <V>   the type of value
      *
-     * @return an {@link Optional} containing the previous value of the {@code key}, or {@link Optional#empty()} if the
-     * key has no value before
+     * @return the deferred computation to execute, that may contains the previous value which has been replaced, or a
+     * {@link NoSuchElementException} if the {@code key} is not defined
      *
-     * @throws NoSuchElementException if the {@code key} doesn't exist
-     * @throws NullPointerException   if any parameter is {@code null}
-     * @implSpec This method is intended to modify an existing value. If the {@code key} is not defined, implementations
-     * should not add the value, but throw a {@link NoSuchElementException}.
      * @see #addValue(ManyFeatureBean, Object)
      * @see #appendValue(SingleFeatureBean, Object)
      */
     @Nonnull
-    <V> Optional<V> valueFor(ManyFeatureBean key, V value);
+    <V> Single<V> valueFor(ManyFeatureBean key, V value);
 
     /**
      * Adds the {@code value} to the specified {@code key} at a defined position.

@@ -140,10 +140,8 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testValueOfMany() {
-        assertThat(
-                catchThrowable(() -> store.valueOf(mock(ManyFeatureBean.class)))
-        ).isNull();
+    void testValueOfMany() throws InterruptedException {
+        assertNoError(store.valueOf(mock(ManyFeatureBean.class)).test());
     }
 
     @Test
@@ -154,10 +152,8 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void tetsValueForMany() {
-        assertThat(
-                catchThrowable(() -> store.valueFor(mock(ManyFeatureBean.class), mock(Object.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void tetsValueForMany() throws InterruptedException {
+        assertHasError(store.valueFor(mock(ManyFeatureBean.class), mock(Object.class)).test());
     }
 
     @Test
@@ -210,10 +206,8 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testReferenceOfMany() {
-        assertThat(
-                catchThrowable(() -> store.referenceOf(mock(ManyFeatureBean.class)))
-        ).isNull();
+    void testReferenceOfMany() throws InterruptedException {
+        assertNoError(store.referenceOf(mock(ManyFeatureBean.class)).test());
     }
 
     @Test
@@ -224,10 +218,8 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testReferenceForMany() {
-        assertThat(
-                catchThrowable(() -> store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testReferenceForMany() throws InterruptedException {
+        assertHasError(store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)).test());
     }
 
     @Test

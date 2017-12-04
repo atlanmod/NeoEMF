@@ -24,6 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 /**
  * A {@link Store} wrapper that only allows read operations on the underlying database.
@@ -101,8 +102,8 @@ public class ReadOnlyStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        throw e.get();
+    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+        return Single.error(e::get);
     }
 
     @Override
@@ -140,8 +141,8 @@ public class ReadOnlyStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        throw e.get();
+    public Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
+        return Single.error(e::get);
     }
 
     @Override

@@ -162,7 +162,7 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testValueOfMany() {
-        assertRecorded(() -> store.valueOf(mock(ManyFeatureBean.class)), "valueOf", CALLS_COUNT);
+        assertRecorded(() -> store.valueOf(mock(ManyFeatureBean.class)).blockingGet(), "valueOf", CALLS_COUNT);
     }
 
     @Test
@@ -172,7 +172,7 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void tetsValueForMany() {
-        assertRecorded(() -> store.valueFor(mock(ManyFeatureBean.class), mock(Object.class)), "valueFor", CALLS_COUNT);
+        assertRecorded(() -> store.valueFor(mock(ManyFeatureBean.class), mock(Object.class)).blockingGet(), "valueFor", CALLS_COUNT);
     }
 
     @Test
@@ -212,7 +212,7 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testReferenceOfMany() {
-        assertRecorded(() -> store.referenceOf(mock(ManyFeatureBean.class)), "referenceOf", CALLS_COUNT);
+        assertRecorded(() -> store.referenceOf(mock(ManyFeatureBean.class)).blockingGet(), "referenceOf", CALLS_COUNT);
     }
 
     @Test
@@ -222,7 +222,7 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testReferenceForMany() {
-        assertRecorded(() -> store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)), "referenceFor", CALLS_COUNT);
+        assertRecorded(() -> store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)).blockingGet(), "referenceFor", CALLS_COUNT);
     }
 
     @Test

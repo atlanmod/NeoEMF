@@ -27,6 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
@@ -127,17 +128,30 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
 
     @Nonnull
     @Override
-    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        return Optional.ofNullable((V) cache.get(key, k -> super.valueOf(ManyFeatureBean.class.cast(k)).orElse(null)));
+    @SuppressWarnings("unchecked")
+    public <V> Maybe<V> valueOf(ManyFeatureBean key) {
+        Callable<V> getFunc = () -> (V) cache.get(key);
+
+        Consumer<V> replaceFunc = v -> cache.put(key, v);
+
+        Maybe<V> ifEmptyFunc = super.<V>valueOf(key)
+                .doOnSuccess(replaceFunc);
+
+        return Maybe.fromCallable(getFunc)
+                .switchIfEmpty(ifEmptyFunc)
+                .cache();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        cache.put(key, value);
+    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+        Action setFunc = () -> cache.put(key, value);
 
-        return super.valueFor(key, value);
+        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
+
+        return super.valueFor(key, value)
+                .doOnSuccess(replaceFunc)
+                .cache();
     }
 
     @Override
@@ -203,17 +217,30 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
 
     @Nonnull
     @Override
-    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
-    public Optional<Id> referenceOf(ManyFeatureBean key) {
-        return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(ManyFeatureBean.class.cast(k)).orElse(null))));
+    @SuppressWarnings("unchecked")
+    public Maybe<Id> referenceOf(ManyFeatureBean key) {
+        Callable<Id> getFunc = () -> (Id) cache.get(key);
+
+        Consumer<Id> replaceFunc = v -> cache.put(key, v);
+
+        Maybe<Id> ifEmptyFunc = super.<Id>referenceOf(key)
+                .doOnSuccess(replaceFunc);
+
+        return Maybe.fromCallable(getFunc)
+                .switchIfEmpty(ifEmptyFunc)
+                .cache();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        cache.put(key, reference);
+    public Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
+        Action setFunc = () -> cache.put(key, reference);
 
-        return super.referenceFor(key, reference);
+        Consumer<Id> replaceFunc = Functions.actionConsumer(setFunc);
+
+        return super.referenceFor(key, reference)
+                .doOnSuccess(replaceFunc)
+                .cache();
     }
 
     @Override

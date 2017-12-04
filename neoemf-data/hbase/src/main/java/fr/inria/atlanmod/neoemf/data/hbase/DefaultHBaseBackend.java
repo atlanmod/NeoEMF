@@ -52,7 +52,7 @@ class DefaultHBaseBackend extends AbstractHBaseBackend implements ReferenceAs<St
                     .collect(Collectors.joining(DELIMITER)),
             r -> Arrays.stream(r.split(DELIMITER))
                     .map(Strings::emptyToNull)
-                    .map(IdConverters.withHexString()::revert)
+                    .map(s -> Optional.ofNullable(s).map(IdConverters.withHexString()::revert).orElse(null))
                     .collect(Collectors.toList()));
 
     /**

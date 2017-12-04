@@ -157,7 +157,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                 value = store.valueOf(key).to(CommonQueries::toOptional);
             }
             else {
-                value = store.valueOf(key.withPosition(index));
+                value = store.valueOf(key.withPosition(index)).to(CommonQueries::toOptional);
             }
 
             return value
@@ -170,7 +170,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                 reference = store.referenceOf(key).to(CommonQueries::toOptional);
             }
             else {
-                reference = store.referenceOf(key.withPosition(index));
+                reference = store.referenceOf(key.withPosition(index)).to(CommonQueries::toOptional);
             }
 
             return reference
@@ -206,7 +206,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                 previousValue = store.valueFor(key, attrConverter.convert(value, EObjects.asAttribute(feature))).to(CommonQueries::toOptional);
             }
             else {
-                previousValue = store.valueFor(key.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature)));
+                previousValue = store.valueFor(key.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature))).to(CommonQueries::toOptional);
             }
 
             return previousValue
@@ -222,7 +222,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                 previousReference = store.referenceFor(key, referencedObject.id()).to(CommonQueries::toOptional);
             }
             else {
-                previousReference = store.referenceFor(key.withPosition(index), referencedObject.id());
+                previousReference = store.referenceFor(key.withPosition(index), referencedObject.id()).to(CommonQueries::toOptional);
             }
 
             return previousReference

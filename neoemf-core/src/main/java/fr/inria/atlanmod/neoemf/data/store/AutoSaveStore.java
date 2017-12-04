@@ -28,6 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 import io.reactivex.internal.functions.Functions;
 
 /**
@@ -152,8 +153,10 @@ public class AutoSaveStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        return thenIncrementAndSave(() -> super.valueFor(key, value), 1);
+    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+        return super.valueFor(key, value)
+                .doOnSuccess(Functions.actionConsumer(this::incrementAndSave))
+                .cache();
     }
 
     @Override
@@ -191,8 +194,10 @@ public class AutoSaveStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        return thenIncrementAndSave(() -> super.referenceFor(key, reference), 1);
+    public Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
+        return super.referenceFor(key, reference)
+                .doOnSuccess(Functions.actionConsumer(this::incrementAndSave))
+                .cache();
     }
 
     @Override

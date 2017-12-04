@@ -21,6 +21,9 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -34,13 +37,10 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the key hasn't any reference
-     * or doesn't exist
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @return the deferred computation to execute, that may contains the reference
      */
     @Nonnull
-    Optional<Id> referenceOf(ManyFeatureBean key);
+    Maybe<Id> referenceOf(ManyFeatureBean key);
 
     /**
      * Retrieves all references of the specified {@code key}.
@@ -60,18 +60,14 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @param key       the key identifying the multi-valued reference
      * @param reference the reference to set
      *
-     * @return an {@link Optional} containing the previous reference of the {@code key}, or {@link Optional#empty()} if
-     * the key has no reference before
+     * @return the deferred computation to execute, that may contains the previous reference which has been replaced, or
+     * a {@link NoSuchElementException} if the {@code key} is not defined
      *
-     * @throws NoSuchElementException if the {@code key} doesn't exist
-     * @throws NullPointerException   if any parameter is {@code null}
-     * @implSpec This method is intended to modify an existing value. If the {@code key} is not defined, implementations
-     * should not add the value, but throw a {@link NoSuchElementException}.
      * @see #addReference(ManyFeatureBean, Id)
      * @see #appendReference(SingleFeatureBean, Id)
      */
     @Nonnull
-    Optional<Id> referenceFor(ManyFeatureBean key, Id reference);
+    Single<Id> referenceFor(ManyFeatureBean key, Id reference);
 
     /**
      * Adds the {@code reference} to the specified {@code key} at a defined position.

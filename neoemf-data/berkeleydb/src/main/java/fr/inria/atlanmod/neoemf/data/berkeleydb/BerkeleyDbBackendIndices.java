@@ -16,12 +16,14 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithIndices;
 
-import java.util.Optional;
+import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.functions.Action;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -75,21 +77,26 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
+    public <V> Maybe<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        return Optional.ofNullable(get(manyFeatures, key, serializers.forManyFeature(), serializers.forAny()));
+        Callable<V> getFunc = () -> get(manyFeatures, key, serializers.forManyFeature(), serializers.forAny());
+
+        Maybe<V> databaseQuery = Maybe.fromCallable(getFunc);
+
+        return dispatcher().submit(databaseQuery);
     }
 
     @Override
-    public <V> void innerValueFor(ManyFeatureBean key, @Nullable V value) {
+    public <V> Completable innerValueFor(ManyFeatureBean key, @Nullable V value) {
         checkNotNull(key, "key");
 
-        if (nonNull(value)) {
-            put(manyFeatures, key, value, serializers.forManyFeature(), serializers.forAny());
-        }
-        else {
-            delete(manyFeatures, key, serializers.forManyFeature());
-        }
+        Action setOrRemoveFunc = nonNull(value)
+                ? () -> put(manyFeatures, key, value, serializers.forManyFeature(), serializers.forAny())
+                : () -> delete(manyFeatures, key, serializers.forManyFeature());
+
+        Completable databaseQuery = Completable.fromAction(setOrRemoveFunc);
+
+        return dispatcher().submit(databaseQuery);
     }
 }

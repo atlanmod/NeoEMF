@@ -16,13 +16,16 @@ import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.functions.Consumer;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -41,14 +44,14 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
     @Nonnull
     @Override
-    default Optional<Id> referenceOf(ManyFeatureBean key) {
+    default Maybe<Id> referenceOf(ManyFeatureBean key) {
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
                 .map(converter::revert)
                 .filter(ids -> key.position() < ids.size())
-                .map(ids -> ids.get(key.position()));
+                .map(ids -> ids.get(key.position()))
+                .cache();
     }
 
     @Nonnull
@@ -65,24 +68,23 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
     @Nonnull
     @Override
-    default Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    default Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        List<Id> ids = this.<M>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
+        Consumer<List<Id>> replaceFunc = vs -> {
+            vs.set(key.position(), reference);
+            valueFor(key.withoutPosition(), converter.convert(vs)).ignoreElement().subscribe();
+        };
+
+        return this.<M>valueOf(key.withoutPosition())
+                .toSingle()
                 .map(converter::revert)
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
-
-        Optional<Id> previousId = Optional.of(ids.get(key.position()));
-
-        ids.set(key.position(), reference);
-
-        valueFor(key.withoutPosition(), converter.convert(ids)).ignoreElement().blockingAwait();
-
-        return previousId;
+                .doAfterSuccess(replaceFunc)
+                .map(vs -> vs.get(key.position()))
+                .cache();
     }
 
     @Override

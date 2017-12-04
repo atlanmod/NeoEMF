@@ -121,10 +121,8 @@ class InvalidBackendTest extends AbstractTest {
     }
 
     @Test
-    void testValueOfMany() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.valueOf(mock(ManyFeatureBean.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testValueOfMany() throws InterruptedException {
+        assertHasError(invalidBackend.valueOf(mock(ManyFeatureBean.class)).test());
     }
 
     @Test
@@ -135,10 +133,8 @@ class InvalidBackendTest extends AbstractTest {
     }
 
     @Test
-    void tetsValueForMany() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.valueFor(mock(ManyFeatureBean.class), mock(Object.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void tetsValueForMany() throws InterruptedException {
+        assertHasError(invalidBackend.valueFor(mock(ManyFeatureBean.class), mock(Object.class)).test());
     }
 
     @Test
@@ -191,10 +187,8 @@ class InvalidBackendTest extends AbstractTest {
     }
 
     @Test
-    void testReferenceOfMany() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.referenceOf(mock(ManyFeatureBean.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testReferenceOfMany() throws InterruptedException {
+        assertHasError(invalidBackend.referenceOf(mock(ManyFeatureBean.class)).test());
     }
 
     @Test
@@ -205,10 +199,8 @@ class InvalidBackendTest extends AbstractTest {
     }
 
     @Test
-    void testReferenceForMany() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testReferenceForMany() throws InterruptedException {
+        assertHasError(invalidBackend.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)).test());
     }
 
     @Test
