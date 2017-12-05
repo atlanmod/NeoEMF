@@ -48,9 +48,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return an immutable ordered {@link Stream} containing all references
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @return the deferred computation to execute, that contains all ordered references
      */
     @Nonnull
     Flowable<Id> allReferencesOf(SingleFeatureBean key);
@@ -165,10 +163,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return an {@link Optional} containing the number of reference of the {@code key}, or {@link Optional#empty()} if
-     * the {@code key} hasn't any reference
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @return the deferred computation to execute, that may contains the size
      */
     @Nonnull
     @Nonnegative

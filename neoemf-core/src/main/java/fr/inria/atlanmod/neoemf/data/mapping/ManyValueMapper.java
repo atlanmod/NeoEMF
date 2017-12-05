@@ -47,9 +47,7 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @param key the key identifying the multi-valued attribute
      *
-     * @return an immutable ordered {@link Stream} containing all values
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @return the deferred computation to execute, that contains all ordered values
      */
     @Nonnull
     <V> Flowable<V> allValuesOf(SingleFeatureBean key);
@@ -171,10 +169,7 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @param key the key identifying the multi-valued attribute
      *
-     * @return an {@link Optional} containing the number of value of the {@code key}, or {@link Optional#empty()} if the
-     * {@code key} hasn't any value, or if {@code size == 0}.
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @return the deferred computation to execute, that may contains the size
      */
     @Nonnull
     @Nonnegative
