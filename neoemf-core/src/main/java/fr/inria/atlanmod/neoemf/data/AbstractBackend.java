@@ -95,7 +95,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     @Override
     public final synchronized void save() {
         if (!isClosed) {
-            dispatcher.submit(Completable.fromAction(blockingSave())).subscribe();
+            lazySave().subscribe();
         }
     }
 
@@ -117,7 +117,9 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
 
         try {
             // Use #asyncSave() with a lock to ensure all queries are completed before closing
-            dispatcher().submit(Completable.fromAction(blockingSave())).blockingAwait();
+            lazySave().blockingAwait();
+
+            Log.debug("{0} is closing the database...", this);
             blockingClose().run();
         }
         catch (Exception e) {
@@ -150,12 +152,26 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     protected abstract Action blockingClose();
 
     /**
-     * Synchronously saves the last modifications.
+     * Synchronously saves all changes made on this back-end since the last call.
      *
      * @return the deferred action
      */
     @Nonnull
     protected abstract Action blockingSave();
+
+    /**
+     * Asynchronously saves all changes made on this back-end since the last call.
+     *
+     * @return the deferred computation
+     */
+    @Nonnull
+    private Completable lazySave() {
+        return dispatcher.submit(Completable.fromAction(blockingSave()))
+                .doOnSubscribe(d -> Log.debug("{0} is saving...", this))
+                .doOnComplete(() -> Log.debug("{0} has been saved", this))
+                .doOnError(e -> Log.debug(e, "{0} failed to save", this))
+                .cache();
+    }
 
     @Nonnull
     @Override
@@ -171,7 +187,6 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void copyTo(DataMapper target) {
         checkNotNull(target, "target");
 

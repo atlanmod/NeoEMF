@@ -15,14 +15,15 @@ import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
+import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -51,11 +52,10 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
+    default <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
         return this.<List<V>>valueOf(key)
-                .to(CommonQueries::toOptional)
-                .map(List::stream)
-                .orElseGet(Stream::empty);
+                .flattenAsFlowable(Functions.identity())
+                .cache();
     }
 
     @Nonnull

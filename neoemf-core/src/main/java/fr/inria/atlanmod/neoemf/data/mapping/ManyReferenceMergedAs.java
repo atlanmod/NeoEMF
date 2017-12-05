@@ -17,15 +17,16 @@ import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
+import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -56,14 +57,13 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
     @Nonnull
     @Override
-    default Stream<Id> allReferencesOf(SingleFeatureBean key) {
+    default Flowable<Id> allReferencesOf(SingleFeatureBean key) {
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key)
-                .to(CommonQueries::toOptional)
                 .map(converter::revert)
-                .map(List::stream)
-                .orElseGet(Stream::empty);
+                .flattenAsFlowable(Functions.identity())
+                .cache();
     }
 
     @Nonnull

@@ -15,12 +15,14 @@ import fr.inria.atlanmod.neoemf.data.mapping.ClassAlreadyExistsException;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
@@ -95,5 +97,57 @@ public final class CommonQueries {
     @Nonnull
     public static <R> Optional<R> toOptional(Single<R> single) {
         return single.to(v -> Optional.ofNullable(v.blockingGet()));
+    }
+
+    /**
+     * Returns a {@link Maybe} instance into an {@link Stream}.
+     *
+     * @param maybe the {@code Maybe} to convert
+     * @param <R>   the result type
+     *
+     * @return a {@link Stream} containing the value of {@code maybe}
+     */
+    @Nonnull
+    public static <R> Stream<R> toStream(Maybe<R> maybe) {
+        return toStream(maybe.toFlowable());
+    }
+
+    /**
+     * Returns a {@link Single} instance into an {@link Stream}.
+     *
+     * @param single the {@code Single} to convert
+     * @param <R>    the result type
+     *
+     * @return a {@link Stream} containing the value of {@code single}
+     */
+    @Nonnull
+    public static <R> Stream<R> toStream(Single<R> single) {
+        return toStream(single.toFlowable());
+    }
+
+    /**
+     * Returns a {@link Flowable} instance into an {@link Stream}.
+     *
+     * @param flowable the {@code Flowable} to convert
+     * @param <R>      the result type
+     *
+     * @return a {@link Stream} containing the values of {@code flowable}
+     */
+    @Nonnull
+    public static <R> Stream<R> toStream(Flowable<R> flowable) {
+        return flowable.to(f -> f.toList().blockingGet().stream());
+    }
+
+    /**
+     * Returns a {@link Observable} instance into an {@link Stream}.
+     *
+     * @param observable the {@code Observable} to convert
+     * @param <R>        the result type
+     *
+     * @return a {@link Stream} containing the values of {@code observable}
+     */
+    @Nonnull
+    public static <R> Stream<R> toStream(Observable<R> observable) {
+        return observable.to(f -> f.toList().blockingGet().stream());
     }
 }

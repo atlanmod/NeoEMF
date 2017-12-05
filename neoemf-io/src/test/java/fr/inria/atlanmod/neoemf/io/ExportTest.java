@@ -54,7 +54,9 @@ class ExportTest extends AbstractFileBasedTest {
         Log.info("Exporting to file... [{0}]", targetFile);
 
         try (DataMapper mapper = new DefaultInMemoryBackend(); InputStream in = new URL(uri.toString()).openStream()) {
-            Migrator.fromXmi(in).toMapper(mapper).migrate();
+            Migrator.fromXmi(in)
+                    .toMapper(mapper)
+                    .migrate();
 
             Migrator.fromMapper(mapper)
                     .toXmi(targetFile, useCompression)

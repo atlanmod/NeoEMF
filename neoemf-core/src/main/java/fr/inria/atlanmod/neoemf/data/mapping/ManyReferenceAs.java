@@ -16,11 +16,11 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
@@ -45,11 +45,12 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
 
     @Nonnull
     @Override
-    default Stream<Id> allReferencesOf(SingleFeatureBean key) {
+    default Flowable<Id> allReferencesOf(SingleFeatureBean key) {
         Converter<Id, M> converter = manyReferenceConverter();
 
         return this.<M>allValuesOf(key)
-                .map(converter::revert);
+                .map(converter::revert)
+                .cache();
     }
 
     @Nonnull

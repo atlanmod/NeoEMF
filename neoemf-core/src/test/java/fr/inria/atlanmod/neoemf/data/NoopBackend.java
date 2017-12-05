@@ -25,7 +25,6 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -135,8 +134,8 @@ public final class NoopBackend implements Backend, AllReferenceAs<Long> {
 
     @Nonnull
     @Override
-    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        return Stream.empty();
+    public <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
+        return Flowable.empty();
     }
 
     @Nonnull

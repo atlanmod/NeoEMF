@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
 import fr.inria.atlanmod.commons.cache.Cache;
-import fr.inria.atlanmod.commons.collect.MoreStreams;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -35,8 +34,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -44,6 +43,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.internal.functions.Functions;
 
@@ -121,6 +121,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Nonnull
     @Override
+    // FIXME Deadlock when calling resolve() with the same subscriber (1 thread-pool)
     public final PersistentEObject resolve(Id id) {
         checkNotNull(id, "id");
 
@@ -336,12 +337,19 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
+        Object comparison;
+        Flowable<?> flowable;
+
         if (EObjects.isAttribute(feature)) {
-            return store.allValuesOf(key).anyMatch(attrConverter.convert(value, EObjects.asAttribute(feature))::equals);
+            comparison = attrConverter.convert(value, EObjects.asAttribute(feature));
+            flowable = store.allValuesOf(key);
         }
         else {
-            return store.allReferencesOf(key).anyMatch(PersistentEObject.from(value).id()::equals);
+            comparison = PersistentEObject.from(value).id();
+            flowable = store.allReferencesOf(key);
         }
+
+        return flowable.any(comparison::equals).blockingGet();
     }
 
     @Override
@@ -360,14 +368,29 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
-        Optional<Integer> index;
+        Object comparison;
+        Flowable<?> flowable;
+
         if (EObjects.isAttribute(feature)) {
-            index = MoreStreams.indexOf(store.allValuesOf(key), attrConverter.convert(value, EObjects.asAttribute(feature)));
+            comparison = attrConverter.convert(value, EObjects.asAttribute(feature));
+            flowable = store.allValuesOf(key);
         }
         else {
-            index = MoreStreams.indexOf(store.allReferencesOf(key), PersistentEObject.from(value).id());
+            comparison = PersistentEObject.from(value).id();
+            flowable = store.allReferencesOf(key);
         }
-        return index.orElse(EStore.NO_INDEX);
+
+        AtomicInteger currentIndex = new AtomicInteger();
+
+        // TODO Use asynchronous iteration
+        for (Object o : flowable.blockingIterable()) {
+            if (comparison.equals(o)) {
+                return currentIndex.get();
+            }
+            currentIndex.incrementAndGet();
+        }
+
+        return NO_INDEX;
     }
 
     @Override
@@ -386,14 +409,30 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
-        Optional<Integer> index;
+        Object comparison;
+        Flowable<?> flowable;
+
         if (EObjects.isAttribute(feature)) {
-            index = MoreStreams.lastIndexOf(store.allValuesOf(key), attrConverter.convert(value, EObjects.asAttribute(feature)));
+            comparison = attrConverter.convert(value, EObjects.asAttribute(feature));
+            flowable = store.allValuesOf(key);
         }
         else {
-            index = MoreStreams.lastIndexOf(store.allReferencesOf(key), PersistentEObject.from(value).id());
+            comparison = PersistentEObject.from(value).id();
+            flowable = store.allReferencesOf(key);
         }
-        return index.orElse(EStore.NO_INDEX);
+
+        AtomicInteger currentIndex = new AtomicInteger();
+        AtomicInteger lastIndex = new AtomicInteger(NO_INDEX);
+
+        // TODO Use asynchronous iteration
+        for (Object o : flowable.blockingIterable()) {
+            if (comparison.equals(o)) {
+                lastIndex.set(currentIndex.get());
+            }
+            currentIndex.incrementAndGet();
+        }
+
+        return lastIndex.get();
     }
 
     @Override
@@ -556,36 +595,32 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
-            Stream<Object> stream;
+            Flowable<Object> flowable;
             if (!feature.isMany()) {
-                stream = store.valueOf(key)
-                        .to(CommonQueries::toOptional)
-                        .map(Stream::of)
-                        .orElseGet(Stream::empty);
+                flowable = store.valueOf(key).toFlowable();
             }
             else {
-                stream = store.allValuesOf(key);
+                flowable = store.allValuesOf(key);
             }
 
             EAttribute attribute = EObjects.asAttribute(feature);
 
-            return stream
+            return flowable
+                    .to(CommonQueries::toStream)
                     .map(v -> attrConverter.revert(v, attribute))
                     .collect(Collectors.toList());
         }
         else {
-            Stream<Id> stream;
+            Flowable<Id> flowable;
             if (!feature.isMany()) {
-                stream = store.referenceOf(key)
-                        .to(CommonQueries::toOptional)
-                        .map(Stream::of)
-                        .orElseGet(Stream::empty);
+                flowable = store.referenceOf(key).toFlowable();
             }
             else {
-                stream = store.allReferencesOf(key);
+                flowable = store.allReferencesOf(key);
             }
 
-            return stream
+            return flowable
+                    .to(CommonQueries::toStream)
                     .map(this::resolve)
                     .collect(Collectors.toList());
         }

@@ -31,6 +31,7 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.observers.TestObserver;
+import io.reactivex.subscribers.TestSubscriber;
 
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,6 +69,10 @@ class ReadOnlyStoreTest extends AbstractTest {
 
     private void assertNoError(TestObserver<?> observer) throws InterruptedException {
         observer.await().assertNoErrors();
+    }
+
+    private void assertNoError(TestSubscriber<?> subscriber) throws InterruptedException {
+        subscriber.await().assertNoErrors();
     }
 
     @Test
@@ -145,10 +150,8 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testAllValuesOf() {
-        assertThat(
-                catchThrowable(() -> store.allValuesOf(mock(SingleFeatureBean.class)))
-        ).isNull();
+    void testAllValuesOf() throws InterruptedException {
+        assertNoError(store.allValuesOf(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
@@ -211,10 +214,8 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testAllReferencesOf() {
-        assertThat(
-                catchThrowable(() -> store.allReferencesOf(mock(SingleFeatureBean.class)))
-        ).isNull();
+    void testAllReferencesOf() throws InterruptedException {
+        assertNoError(store.allReferencesOf(mock(SingleFeatureBean.class)).test());
     }
 
     @Test

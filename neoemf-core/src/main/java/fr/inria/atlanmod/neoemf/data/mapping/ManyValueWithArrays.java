@@ -16,12 +16,12 @@ import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
@@ -50,11 +50,10 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
+    default <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
         return this.<V[]>valueOf(key)
-                .to(CommonQueries::toOptional)
-                .map(Arrays::stream)
-                .orElseGet(Stream::empty);
+                .flattenAsFlowable(Arrays::asList)
+                .cache();
     }
 
     @Nonnull

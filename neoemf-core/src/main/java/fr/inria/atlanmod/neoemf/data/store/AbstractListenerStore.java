@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -29,8 +30,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -232,8 +235,16 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        return onCallResult(super::allValuesOf, key);
+    public <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("allValuesOf").withKey(key);
+
+        AtomicLong resultCount = new AtomicLong();
+
+        return super.<V>allValuesOf(key)
+                .doOnNext(Functions.actionConsumer(resultCount::incrementAndGet))
+                .doOnComplete(() -> onSuccess(callInfo.withResult(String.format("%d values", resultCount.get()))))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
@@ -301,8 +312,16 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
-        return onCallResult(super::allReferencesOf, key);
+    public Flowable<Id> allReferencesOf(SingleFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("allReferencesOf").withKey(key);
+
+        AtomicLong resultCount = new AtomicLong();
+
+        return super.allReferencesOf(key)
+                .doOnNext(Functions.actionConsumer(resultCount::incrementAndGet))
+                .doOnComplete(() -> onSuccess(callInfo.withResult(String.format("%d references", resultCount.get()))))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull

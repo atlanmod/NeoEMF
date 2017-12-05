@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
-import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -26,6 +24,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
@@ -49,7 +48,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
+    default <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
         final Iterator<V> iter = new Iterator<V>() {
 
             /**
@@ -79,7 +78,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
             }
         };
 
-        return MoreIterables.stream(() -> iter);
+        return Flowable.fromIterable(() -> iter);
     }
 
     @Nonnull

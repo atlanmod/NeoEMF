@@ -25,13 +25,13 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.functions.Action;
@@ -200,13 +200,13 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
+    public <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
 
         if (!vertex.isPresent()) {
-            return Stream.empty();
+            return Flowable.empty();
         }
 
         final Iterator<V> iter = new Iterator<V>() {
@@ -238,7 +238,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             }
         };
 
-        return MoreIterables.stream(() -> iter);
+        return Flowable.fromIterable(() -> iter);
     }
 
     @Nonnull
@@ -421,13 +421,13 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
+    public Flowable<Id> allReferencesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
 
         if (!vertex.isPresent()) {
-            return Stream.empty();
+            return Flowable.empty();
         }
 
         Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.<Integer>getProperty(PROPERTY_INDEX));
@@ -454,7 +454,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             }
         };
 
-        return MoreIterables.stream(() -> iter);
+        return Flowable.fromIterable(() -> iter);
     }
 
     @Nonnull

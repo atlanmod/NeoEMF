@@ -21,6 +21,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
@@ -52,7 +53,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    Stream<Id> allReferencesOf(SingleFeatureBean key);
+    Flowable<Id> allReferencesOf(SingleFeatureBean key);
 
     /**
      * Defines the {@code reference} of the specified {@code key} at a defined position.

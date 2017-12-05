@@ -27,6 +27,7 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.observers.TestObserver;
+import io.reactivex.subscribers.TestSubscriber;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -49,6 +50,10 @@ class ClosedStoreTest extends AbstractTest {
 
     private void assertHasError(TestObserver<?> observer) throws InterruptedException {
         observer.await().assertError(CLOSED_EXCEPTION_TYPE);
+    }
+
+    private void assertHasError(TestSubscriber<?> subscriber) throws InterruptedException {
+        subscriber.await().assertError(CLOSED_EXCEPTION_TYPE);
     }
 
     @Test
@@ -126,10 +131,8 @@ class ClosedStoreTest extends AbstractTest {
     }
 
     @Test
-    void testAllValuesOf() {
-        assertThat(
-                catchThrowable(() -> store.allValuesOf(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testAllValuesOf() throws InterruptedException {
+        assertHasError(store.allValuesOf(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
@@ -192,10 +195,8 @@ class ClosedStoreTest extends AbstractTest {
     }
 
     @Test
-    void testAllReferencesOf() {
-        assertThat(
-                catchThrowable(() -> store.allReferencesOf(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testAllReferencesOf() throws InterruptedException {
+        assertHasError(store.allReferencesOf(mock(SingleFeatureBean.class)).test());
     }
 
     @Test

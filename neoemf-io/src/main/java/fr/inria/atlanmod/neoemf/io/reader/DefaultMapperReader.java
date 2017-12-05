@@ -28,8 +28,6 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,6 +38,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -48,11 +47,6 @@ import static java.util.Objects.nonNull;
 @ParametersAreNonnullByDefault
 public class DefaultMapperReader extends AbstractReader<DataMapper> {
 
-    /**
-     * A LIFO that holds the current {@link EClass} chain. It contains the current element and the previous.
-     */
-    @Nonnull
-    private final Deque<EClass> previousClasses = new ArrayDeque<>();
     /**
      * The mapper to read.
      */
@@ -73,20 +67,30 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
 
         notifyInitialize();
 
-        // TODO Calculates the feature identifier
-        SingleFeatureBean rootKey = SingleFeatureBean.of(PersistentResource.ROOT_ID, -1);
-        source.allReferencesOf(rootKey).forEach(id -> readElement(id, true));
+        source.allReferencesOf(SingleFeatureBean.of(PersistentResource.ROOT_ID, -1))
+                .to(CommonQueries::toStream)
+                .forEach(this::readRoot);
 
         notifyComplete();
     }
 
     /**
+     * Reads the root element identified by its {@code id}.
+     *
+     * @param id the identifier of the root element
+     */
+    private void readRoot(Id id) {
+        readElement(id, null, null);
+    }
+
+    /**
      * Reads the element identified by its {@code id}.
      *
-     * @param id     the identifier of the element
-     * @param isRoot {@code true} if the element is a root element
+     * @param id          the identifier of the element
+     * @param parentClass the instance of the parent element; if {@code parentClass != null} this implied that
+     *                    {@code id} represents a containment element
      */
-    private void readElement(Id id, boolean isRoot) {
+    private void readElement(Id id, @Nullable EClass parentClass, @Nullable SingleFeatureBean container) {
         // Retrieve the meta-class and namespace
         EClass eClass = mapper.metaClassOf(id)
                 .map(ClassBean::get)
@@ -99,96 +103,130 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
 
         // Retrieve the name of the element
         // If root it's the name of the meta-class, otherwise the name of the containing feature from the previous class
-        String name = isRoot ? eClass.getName() : mapper.containerOf(id)
-                .map(SingleFeatureBean::id)
-                .map(previousClasses.getLast()::getEStructuralFeature)
-                .map(EStructuralFeature::getName)
-                .toSingle()
-                .blockingGet();
+        String name;
+        if (nonNull(parentClass) && nonNull(container)) {
+            name = Optional.of(container)
+                    .map(SingleFeatureBean::id)
+                    .map(parentClass::getEStructuralFeature)
+                    .map(EStructuralFeature::getName)
+                    .<IllegalStateException>orElseThrow(IllegalStateException::new);
+        }
+        else {
+            // Element is root
+            name = eClass.getName();
+        }
 
         // Create the element
         BasicElement element = new BasicElement();
         element.name(name);
         element.id(id);
-        element.isRoot(isRoot);
+        element.isRoot(isNull(parentClass));
 
         BasicMetaclass metaClass = new BasicMetaclass(ns);
         metaClass.eClass(eClass);
         element.metaClass(metaClass);
 
         notifyStartElement(element);
-        previousClasses.addLast(eClass);
 
-        // Process all features
         readAllFeatures(id, eClass);
 
-        previousClasses.removeLast();
         notifyEndElement();
     }
 
     /**
-     * Reads all features of the speficied {@code eClass} for the given {@code id}.
+     * Reads all features of the specified {@code eClass} for the given {@code id}.
      *
      * @param id     the identifier of the element
      * @param eClass the meta-class of the element
      */
     private void readAllFeatures(Id id, EClass eClass) {
-        // Read all feature of the element, and notify the next handler
-        List<Id> containmentId = eClass.getEAllStructuralFeatures().stream()
-                .flatMap(f -> {
-                    Stream<Id> containmentStream = Stream.empty();
+        eClass.getEAllStructuralFeatures().stream()
+                .flatMap(f -> readFeature(id, eClass, f))
+                .collect(Collectors.toList()) // Blocking collect to keep hierarchy
+                .forEach(next -> readNext(id, eClass, next));
+    }
 
-                    SingleFeatureBean key = SingleFeatureBean.of(id, eClass.getFeatureID(f));
+    /**
+     * Reads the {@code eFeature} of the specified {@code eClass} for the given {@code id}.
+     *
+     * @param id       the identifier of the element
+     * @param eClass   the meta-class of the element
+     * @param eFeature the current feature of the element
+     *
+     * @return a stream over containment elements if {@code eFeature} is a containment reference, otherwise a
+     * {@link Stream#empty()}
+     */
+    @Nonnull
+    private Stream<Id> readFeature(Id id, EClass eClass, EStructuralFeature eFeature) {
+        SingleFeatureBean key = SingleFeatureBean.of(id, eClass.getFeatureID(eFeature));
 
-                    if (EObjects.isAttribute(f)) {
-                        EAttribute eAttribute = EObjects.asAttribute(f);
+        if (EObjects.isAttribute(eFeature)) {
+            readAttribute(key, EObjects.asAttribute(eFeature));
+            return Stream.empty();
+        }
+        else {
+            return readReference(key, EObjects.asReference(eFeature));
+        }
+    }
 
-                        if (!f.isMany()) {
-                            mapper.valueOf(key).to(CommonQueries::toOptional).ifPresent(v -> createAttribute(key, eAttribute, v));
-                        }
-                        else {
-                            mapper.allValuesOf(key).forEach(v -> createAttribute(key, eAttribute, v));
-                        }
-                    }
-                    else {
-                        EReference eReference = EObjects.asReference(f);
-                        boolean isContainment = eReference.isContainment();
+    /**
+     * Reads the {@code eAttribute} of the specified {@code key}.
+     *
+     * @param key        the key identifying the current element
+     * @param eAttribute the current attribute of the element
+     */
+    private void readAttribute(SingleFeatureBean key, EAttribute eAttribute) {
+        Stream<Object> stream;
 
-                        if (!f.isMany()) {
-                            Optional<Id> reference = mapper.referenceOf(key)
-                                    .to(CommonQueries::toOptional)
-                                    .map(r -> createReference(key, eReference, r));
+        if (!eAttribute.isMany()) {
+            stream = mapper.valueOf(key).to(CommonQueries::toStream);
+        }
+        else {
+            stream = mapper.allValuesOf(key).to(CommonQueries::toStream);
+        }
 
-                            if (isContainment) {
-                                containmentStream = reference.map(Stream::of).orElseGet(Stream::empty);
-                            }
-                        }
-                        else {
-                            List<Id> references = mapper.allReferencesOf(key)
-                                    .map(r -> createReference(key, eReference, r))
-                                    .filter(Objects::nonNull)
-                                    .collect(Collectors.toList());
+        stream.forEach(v -> createAttribute(key, eAttribute, v));
+    }
 
-                            if (isContainment) {
-                                containmentStream = references.stream();
-                            }
-                        }
-                    }
+    /**
+     * Reads the {@code eReference} of the specified {@code key}.
+     *
+     * @param key        the key identifying the current element
+     * @param eReference the current reference of the element
+     *
+     * @return a stream over containment elements if {@code eReference} is a containment reference
+     */
+    @Nonnull
+    private Stream<Id> readReference(SingleFeatureBean key, EReference eReference) {
+        Stream<Id> stream;
 
-                    return containmentStream;
-                })
+        if (!eReference.isMany()) {
+            stream = mapper.referenceOf(key).to(CommonQueries::toStream);
+        }
+        else {
+            stream = mapper.allReferencesOf(key).to(CommonQueries::toStream);
+        }
+
+        List<Id> containments = stream
+                .map(r -> createReference(key, eReference, r))
                 .collect(Collectors.toList());
 
-        // Read the next element only if containerOf(next) == parent
-        containmentId.forEach(r -> {
-            SingleFeatureBean container = mapper.containerOf(r)
-                    .filter(c -> Objects.equals(c.owner(), id))
-                    .blockingGet();
+        return eReference.isContainment()
+                ? containments.stream()
+                : Stream.empty();
+    }
 
-            if (nonNull(container)) {
-                readElement(r, false);
-            }
-        });
+    /**
+     * Reads the next element, identified by {@code next}, only if {@code containerOf(next).id == id}.
+     *
+     * @param current the identifier of the current element
+     * @param next    the identifier of the next element
+     */
+    private void readNext(Id current, EClass eClass, Id next) {
+        mapper.containerOf(next)
+                .filter(c -> Objects.equals(c.owner(), current))
+                .to(CommonQueries::toOptional)
+                .ifPresent(c -> readElement(next, eClass, c));
     }
 
     /**

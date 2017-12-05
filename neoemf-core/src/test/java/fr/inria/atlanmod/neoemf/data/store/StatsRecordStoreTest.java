@@ -167,7 +167,7 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testAllValuesOf() {
-        assertRecorded(() -> store.allValuesOf(mock(SingleFeatureBean.class)), "allValuesOf", CALLS_COUNT);
+        assertRecorded(() -> store.allValuesOf(mock(SingleFeatureBean.class)).blockingSubscribe(), "allValuesOf", CALLS_COUNT);
     }
 
     @Test
@@ -217,7 +217,7 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testAllReferencesOf() {
-        assertRecorded(() -> store.allReferencesOf(mock(SingleFeatureBean.class)), "allReferencesOf", CALLS_COUNT);
+        assertRecorded(() -> store.allReferencesOf(mock(SingleFeatureBean.class)).blockingSubscribe(), "allReferencesOf", CALLS_COUNT);
     }
 
     @Test

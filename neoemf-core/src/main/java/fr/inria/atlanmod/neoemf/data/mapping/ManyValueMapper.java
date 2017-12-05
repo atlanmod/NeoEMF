@@ -20,6 +20,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
@@ -51,7 +52,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @throws NullPointerException if the {@code key} is {@code null}
      */
     @Nonnull
-    <V> Stream<V> allValuesOf(SingleFeatureBean key);
+    <V> Flowable<V> allValuesOf(SingleFeatureBean key);
 
     /**
      * Defines the {@code value} of the specified {@code key} at a defined position.

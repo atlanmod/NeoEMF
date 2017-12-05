@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -151,8 +150,8 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        throw e.get();
+    public <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
+        return Flowable.error(e::get);
     }
 
     @Nonnull
@@ -206,8 +205,8 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
-        throw e.get();
+    public Flowable<Id> allReferencesOf(SingleFeatureBean key) {
+        return Flowable.error(e::get);
     }
 
     @Nonnull

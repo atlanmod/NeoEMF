@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -185,7 +184,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureBean)} with a {@code null} value.
      */
     @Test
-    public void testSet_Container_Null() throws InterruptedException {
+    public void testSet_Container_Null() {
         assertThat(catchThrowable(() ->
                 mapper.containerFor(idBase, null)
         )).isExactlyInstanceOf(NullPointerException.class);
@@ -259,7 +258,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ClassMapper#metaClassFor(Id, ClassBean)} with a {@code null} value.
      */
     @Test
-    public void testSet_Metaclass_Null() throws InterruptedException {
+    public void testSet_Metaclass_Null() {
         Id id0 = Id.getProvider().fromLong(40);
 
         assertThat(catchThrowable(() ->
@@ -297,7 +296,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ValueMapper#valueFor(SingleFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testSet_Value_Null() throws InterruptedException {
+    public void testSet_Value_Null() {
         assertThat(catchThrowable(() ->
                 mapper.valueFor(sfBase, null)
         )).isExactlyInstanceOf(NullPointerException.class);
@@ -366,7 +365,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureBean, Object)} with a {@code null} value.
      */
     @Test
-    public void testSet_ManyValue_Null() throws InterruptedException {
+    public void testSet_ManyValue_Null() {
         assertThat(catchThrowable(() ->
                 mapper.valueFor(mfBase, null)
         )).isExactlyInstanceOf(NullPointerException.class);
@@ -382,7 +381,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.appendValue(sfBase, value1);
         mapper.appendValue(sfBase, value2);
 
-        List<Object> actualValues = mapper.allValuesOf(sfBase).collect(Collectors.toList());
+        List<Object> actualValues = mapper.allValuesOf(sfBase).toList().blockingGet();
         assertThat(actualValues).hasSize(3);
 
         assertThat(actualValues.get(0)).isEqualTo(value0);
@@ -395,10 +394,8 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * any element.
      */
     @Test
-    public void testGetAll_Empty() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.allValuesOf(sfBase)).isNotNull().isEmpty()
-        )).isNull();
+    public void testGetAll_Empty() throws InterruptedException {
+        mapper.allValuesOf(sfBase).test().await().assertNoErrors().assertNoValues();
     }
 
     /**
@@ -813,7 +810,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * reference.
      */
     @Test
-    public void testSet_Reference_Null() throws InterruptedException {
+    public void testSet_Reference_Null() {
         assertThat(catchThrowable(() ->
                 mapper.referenceFor(sfBase, null)
         )).isExactlyInstanceOf(NullPointerException.class);
@@ -907,7 +904,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.appendReference(sfBase, ref1);
         mapper.appendReference(sfBase, ref2);
 
-        List<Id> actualReferences = mapper.allReferencesOf(sfBase).collect(Collectors.toList());
+        List<Id> actualReferences = mapper.allReferencesOf(sfBase).toList().blockingGet();
         assertThat(actualReferences).hasSize(3);
 
         assertThat(actualReferences.get(0)).isEqualTo(ref0);
@@ -920,10 +917,8 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * contain any element.
      */
     @Test
-    public void testGetAll_ManyReference_Empty() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.allReferencesOf(sfBase)).isNotNull().isEmpty()
-        )).isNull();
+    public void testGetAll_ManyReference_Empty() throws InterruptedException {
+        mapper.allReferencesOf(sfBase).test().await().assertNoErrors().assertNoValues();
     }
 
     /**

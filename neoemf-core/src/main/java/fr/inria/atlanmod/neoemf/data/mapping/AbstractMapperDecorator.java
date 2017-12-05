@@ -16,7 +16,6 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -179,7 +178,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
+    public <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
         return next.allValuesOf(key);
     }
 
@@ -246,7 +245,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
+    public Flowable<Id> allReferencesOf(SingleFeatureBean key) {
         return next.allReferencesOf(key);
     }
 
