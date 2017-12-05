@@ -154,10 +154,10 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+    default Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
         return this.<Object[]>valueOf(key)
-                .to(CommonQueries::toOptional)
                 .map(a -> a.length)
-                .filter(s -> s > 0);
+                .filter(s -> s > 0)
+                .cache();
     }
 }

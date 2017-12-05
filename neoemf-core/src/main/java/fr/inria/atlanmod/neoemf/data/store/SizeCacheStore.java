@@ -15,19 +15,22 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
+import io.reactivex.functions.Consumer;
 
 /**
  * A {@link Store} wrapper that caches the size data.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically
-public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Optional<Integer>> {
+public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Integer> {
 
     /**
      * Constructs a new {@code SizeCacheStore}.
@@ -57,13 +60,13 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
 
     @Override
     public <V> void addValue(ManyFeatureBean key, V value) {
-        cacheSize(key.withoutPosition(), sizeOfValue(key.withoutPosition()).orElse(0) + 1);
+        cacheSize(key.withoutPosition(), sizeOfValue(key.withoutPosition()).blockingGet(0) + 1);
         super.addValue(key, value);
     }
 
     @Override
     public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        cacheSize(key.withoutPosition(), sizeOfValue(key.withoutPosition()).orElse(0) + collection.size());
+        cacheSize(key.withoutPosition(), sizeOfValue(key.withoutPosition()).blockingGet(0) + collection.size());
         super.addAllValues(key, collection);
     }
 
@@ -86,7 +89,10 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        sizeOfValue(key.withoutPosition()).ifPresent(s -> cacheSize(key.withoutPosition(), s - 1));
+        sizeOfValue(key.withoutPosition())
+                .doOnSuccess(s -> cacheSize(key.withoutPosition(), s - 1))
+                .subscribe();
+
         return super.removeValue(key);
     }
 
@@ -99,20 +105,28 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
     @Nonnull
     @Nonnegative
     @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        return cache.get(key, super::sizeOfValue);
+    public Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
+        Callable<Integer> getFunc = () -> cache.get(key);
+
+        Consumer<Integer> setFunc = s -> cacheSize(key, s);
+
+        Maybe<Integer> ifEmptyFunc = super.sizeOfValue(key)
+                .doOnSuccess(setFunc);
+
+        return Maybe.fromCallable(getFunc)
+                .switchIfEmpty(ifEmptyFunc)
+                .cache();
     }
 
     @Override
     public void addReference(ManyFeatureBean key, Id reference) {
-        cacheSize(key.withoutPosition(), sizeOfReference(key.withoutPosition()).orElse(0) + 1);
+        cacheSize(key.withoutPosition(), sizeOfReference(key.withoutPosition()).blockingGet(0) + 1);
         super.addReference(key, reference);
     }
 
     @Override
     public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        cacheSize(key.withoutPosition(), sizeOfReference(key.withoutPosition()).orElse(0) + collection.size());
+        cacheSize(key.withoutPosition(), sizeOfReference(key.withoutPosition()).blockingGet(0) + collection.size());
         super.addAllReferences(key, collection);
     }
 
@@ -135,7 +149,10 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureBean key) {
-        sizeOfReference(key.withoutPosition()).ifPresent(s -> cacheSize(key.withoutPosition(), s - 1));
+        sizeOfReference(key.withoutPosition())
+                .doOnSuccess(s -> cacheSize(key.withoutPosition(), s - 1))
+                .subscribe();
+
         return super.removeReference(key);
     }
 
@@ -148,9 +165,17 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
     @Nonnull
     @Nonnegative
     @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        return cache.get(key, super::sizeOfReference);
+    public Maybe<Integer> sizeOfReference(SingleFeatureBean key) {
+        Callable<Integer> getFunc = () -> cache.get(key);
+
+        Consumer<Integer> setFunc = s -> cacheSize(key, s);
+
+        Maybe<Integer> ifEmptyFunc = super.sizeOfReference(key)
+                .doOnSuccess(setFunc);
+
+        return Maybe.fromCallable(getFunc)
+                .switchIfEmpty(ifEmptyFunc)
+                .cache();
     }
 
     /**
@@ -160,6 +185,11 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
      * @param size the size
      */
     private void cacheSize(SingleFeatureBean key, @Nonnegative int size) {
-        cache.put(key, size != 0 ? Optional.of(size) : Optional.empty());
+        if (size != 0) {
+            cache.put(key, size);
+        }
+        else {
+            cache.invalidate(key);
+        }
     }
 }

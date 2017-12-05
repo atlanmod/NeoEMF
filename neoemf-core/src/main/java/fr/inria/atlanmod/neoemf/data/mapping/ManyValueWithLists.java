@@ -153,11 +153,11 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+    default Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
         return this.<List<Object>>valueOf(key)
-                .to(CommonQueries::toOptional)
                 .map(List::size)
-                .filter(s -> s > 0);
+                .filter(s -> s > 0)
+                .cache();
     }
 
     /**

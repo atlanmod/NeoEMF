@@ -183,10 +183,8 @@ class ClosedStoreTest extends AbstractTest {
     }
 
     @Test
-    void testSizeOfValue() {
-        assertThat(
-                catchThrowable(() -> store.sizeOfValue(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testSizeOfValue() throws InterruptedException {
+        assertHasError(store.sizeOfValue(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
@@ -249,9 +247,7 @@ class ClosedStoreTest extends AbstractTest {
     }
 
     @Test
-    void testSizeOfReference() {
-        assertThat(
-                catchThrowable(() -> store.sizeOfReference(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(CLOSED_EXCEPTION_TYPE);
+    void testSizeOfReference() throws InterruptedException {
+        assertHasError(store.sizeOfReference(mock(SingleFeatureBean.class)).test());
     }
 }

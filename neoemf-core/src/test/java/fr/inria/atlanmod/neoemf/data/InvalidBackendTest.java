@@ -183,10 +183,8 @@ class InvalidBackendTest extends AbstractTest {
     }
 
     @Test
-    void testSizeOfValue() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.sizeOfValue(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testSizeOfValue() throws InterruptedException {
+        assertHasError(invalidBackend.sizeOfValue(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
@@ -249,9 +247,7 @@ class InvalidBackendTest extends AbstractTest {
     }
 
     @Test
-    void testSizeOfReference() {
-        assertThat(
-                catchThrowable(() -> invalidBackend.sizeOfReference(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(INVALID_EXCEPTION_TYPE);
+    void testSizeOfReference() throws InterruptedException {
+        assertHasError(invalidBackend.sizeOfReference(mock(SingleFeatureBean.class)).test());
     }
 }

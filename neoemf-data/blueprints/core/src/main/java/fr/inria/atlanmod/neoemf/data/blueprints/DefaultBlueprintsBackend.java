@@ -14,16 +14,15 @@ import com.tinkerpop.blueprints.Element;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.Vertex;
 
-import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
+import java.util.AbstractMap;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
@@ -39,7 +38,6 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.functions.Functions;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 
@@ -87,7 +85,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         Function<Vertex, Optional<V>> mapFunc = v -> Optional.ofNullable(v.getProperty(formatLabel(key)));
 
-        Action setFunc = () -> getOrCreate(key.owner()).<V>setProperty(formatLabel(key), value);
+        Action setFunc = () -> getOrCreate(key.owner()).setProperty(formatLabel(key), value);
 
         Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
 
@@ -203,42 +201,13 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Optional<Vertex> vertex = get(key.owner());
+        Flowable<V> databaseQuery = asyncGet(key.owner())
+                .flattenAsFlowable(v -> IntStream.range(0, sizeOf(key, v))
+                        .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>(v, i))
+                        .collect(Collectors.toList()))
+                .map(e -> e.getKey().getProperty(formatProperty(key, e.getValue())));
 
-        if (!vertex.isPresent()) {
-            return Flowable.empty();
-        }
-
-        final Iterator<V> iter = new Iterator<V>() {
-
-            /**
-             * The size of the iterator.
-             */
-            @Nonnegative
-            final int size = sizeOfValue(key).orElse(0);
-
-            /**
-             * The current position.
-             */
-            @Nonnegative
-            int currentIndex = 0;
-
-            @Override
-            public boolean hasNext() {
-                return currentIndex < size;
-            }
-
-            @Override
-            public V next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
-
-                return vertex.get().getProperty(formatProperty(key, currentIndex++));
-            }
-        };
-
-        return Flowable.fromIterable(() -> iter);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
@@ -248,7 +217,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         Function<Vertex, Optional<V>> getFunc = v -> Optional.ofNullable(v.getProperty(formatProperty(key, key.position())));
 
-        Consumer<Vertex> replaceFunc = v -> v.<V>setProperty(formatProperty(key, key.position()), value);
+        Consumer<Vertex> replaceFunc = v -> v.setProperty(formatProperty(key, key.position()), value);
 
         Single<V> databaseQuery = asyncGet(key.owner())
                 .toSingle()
@@ -266,19 +235,19 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        int size = sizeOfValue(key.withoutPosition()).orElse(0);
-        checkPositionIndex(key.position(), size);
-
         Vertex vertex = getOrCreate(key.owner());
+
+        int size = sizeOf(key.withoutPosition(), vertex);
+        checkPositionIndex(key.position(), size);
 
         for (int i = size - 1; i >= key.position(); i--) {
             V movedValue = vertex.getProperty(formatProperty(key, i));
-            vertex.<V>setProperty(formatProperty(key, i + 1), movedValue);
+            vertex.setProperty(formatProperty(key, i + 1), movedValue);
         }
 
-        vertex.<V>setProperty(formatProperty(key, key.position()), value);
+        vertex.setProperty(formatProperty(key, key.position()), value);
 
-        sizeForValue(key.withoutPosition(), size + 1);
+        sizeFor(key.withoutPosition(), vertex, size + 1);
     }
 
     @Override
@@ -294,24 +263,25 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             throw new NullPointerException();
         }
 
-        int size = sizeOfValue(key.withoutPosition()).orElse(0);
+        Vertex vertex = getOrCreate(key.owner());
+
+        int size = sizeOf(key.withoutPosition(), vertex);
         checkPositionIndex(key.position(), size);
 
-        Vertex vertex = getOrCreate(key.owner());
         int additionCount = collection.size();
 
         for (int i = size - 1; i >= key.position(); i--) {
             V movedValue = vertex.getProperty(formatProperty(key, i));
-            vertex.<V>setProperty(formatProperty(key, i + additionCount), movedValue);
+            vertex.setProperty(formatProperty(key, i + additionCount), movedValue);
         }
 
         int i = 0;
         for (V value : collection) {
-            vertex.<V>setProperty(formatProperty(key, key.position() + i), value);
+            vertex.setProperty(formatProperty(key, key.position() + i), value);
             i++;
         }
 
-        sizeForValue(key.withoutPosition(), size + additionCount);
+        sizeFor(key.withoutPosition(), vertex, size + additionCount);
     }
 
     @Nonnull
@@ -324,21 +294,21 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             return Optional.empty();
         }
 
-        int size = sizeOfValue(key.withoutPosition()).orElse(0);
+        int size = sizeOf(key.withoutPosition(), vertex.get());
         if (size == 0) {
             return Optional.empty();
         }
 
-        Optional<V> previousValue = Optional.ofNullable(vertex.get().<V>getProperty(formatProperty(key, key.position())));
+        Optional<V> previousValue = Optional.ofNullable(vertex.get().getProperty(formatProperty(key, key.position())));
 
         for (int i = key.position(); i < size - 1; i++) {
             V movedValue = vertex.get().getProperty(formatProperty(key, i + 1));
-            vertex.get().<V>setProperty(formatProperty(key, i), movedValue);
+            vertex.get().setProperty(formatProperty(key, i), movedValue);
         }
 
         vertex.get().<V>removeProperty(formatProperty(key, size - 1));
 
-        sizeForValue(key.withoutPosition(), size - 1);
+        sizeFor(key.withoutPosition(), vertex.get(), size - 1);
 
         return previousValue;
     }
@@ -353,45 +323,23 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             return;
         }
 
-        IntStream.range(0, sizeOfValue(key).orElse(0))
+        IntStream.range(0, sizeOf(key, vertex.get()))
                 .forEach(i -> vertex.get().removeProperty(formatProperty(key, i)));
 
-        sizeForValue(key, 0);
+        sizeFor(key, vertex.get(), 0);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+    public Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        return get(key.owner())
-                .map(v -> v.<Integer>getProperty(formatProperty(key, PROPERTY_SIZE)))
+        Maybe<Integer> databaseQuery = asyncGet(key.owner())
+                .map(v -> sizeOf(key, v))
                 .filter(s -> s > 0);
-    }
 
-    /**
-     * Defines the number of value of the specified {@code key}.
-     *
-     * @param key  the key identifying the multi-valued attribute
-     * @param size the number of value
-     */
-    protected void sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
-        checkNotNull(key, "key");
-        checkArgument(size >= 0, "size (%d) must not be negative");
-
-        Optional<Vertex> vertex = get(key.owner());
-
-        if (!vertex.isPresent()) {
-            return;
-        }
-
-        if (size > 0) {
-            vertex.get().<Integer>setProperty(formatProperty(key, PROPERTY_SIZE), size);
-        }
-        else {
-            vertex.get().<Integer>removeProperty(formatProperty(key, PROPERTY_SIZE));
-        }
+        return dispatcher().submit(databaseQuery);
     }
 
     //endregion
@@ -424,37 +372,12 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public Flowable<Id> allReferencesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Optional<Vertex> vertex = get(key.owner());
+        Flowable<Id> databaseQuery = asyncGet(key.owner())
+                .flattenAsFlowable(v -> v.getEdges(Direction.OUT, formatLabel(key)))
+                .sorted(Comparator.comparingInt(e -> e.getProperty(PROPERTY_INDEX)))
+                .map(e -> idConverter.revert(e.getVertex(Direction.IN).getId()));
 
-        if (!vertex.isPresent()) {
-            return Flowable.empty();
-        }
-
-        Comparator<Edge> byPosition = Comparator.comparingInt(e -> e.<Integer>getProperty(PROPERTY_INDEX));
-
-        Iterable<Edge> edges = vertex.get().query()
-                .labels(formatLabel(key))
-                .direction(Direction.OUT)
-                .edges();
-
-        Iterator<Edge> sortedEdges = MoreIterables.stream(edges)
-                .sorted(byPosition)
-                .iterator();
-
-        final Iterator<Id> iter = new Iterator<Id>() {
-
-            @Override
-            public boolean hasNext() {
-                return sortedEdges.hasNext();
-            }
-
-            @Override
-            public Id next() {
-                return idConverter.revert(sortedEdges.next().getVertex(Direction.IN).getId());
-            }
-        };
-
-        return Flowable.fromIterable(() -> iter);
+        return dispatcher().submit(databaseQuery);
     }
 
     @Nonnull
@@ -491,10 +414,10 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
-        int size = sizeOfReference(key.withoutPosition()).orElse(0);
-        checkPositionIndex(key.position(), size);
-
         Vertex vertex = getOrCreate(key.owner());
+
+        int size = sizeOf(key.withoutPosition(), vertex);
+        checkPositionIndex(key.position(), size);
 
         if (key.position() < size) {
             int interval = size + 1 - key.position();
@@ -507,17 +430,17 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     .edges();
 
             edges.forEach(e -> {
-                int position = e.<Integer>getProperty(PROPERTY_INDEX);
-                e.<Integer>setProperty(PROPERTY_INDEX, position + 1);
+                int position = e.getProperty(PROPERTY_INDEX);
+                e.setProperty(PROPERTY_INDEX, position + 1);
             });
         }
 
         Vertex referencedVertex = getOrCreate(reference);
 
         Edge edge = vertex.addEdge(formatLabel(key), referencedVertex);
-        edge.<Integer>setProperty(PROPERTY_INDEX, key.position());
+        edge.setProperty(PROPERTY_INDEX, key.position());
 
-        sizeForReference(key.withoutPosition(), size + 1);
+        sizeFor(key.withoutPosition(), vertex, size + 1);
     }
 
     @Override
@@ -533,10 +456,11 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             throw new NullPointerException();
         }
 
-        int size = sizeOfReference(key.withoutPosition()).orElse(0);
+        Vertex vertex = getOrCreate(key.owner());
+
+        int size = sizeOf(key.withoutPosition(), vertex);
         checkPositionIndex(key.position(), size);
 
-        Vertex vertex = getOrCreate(key.owner());
         int additionCount = collection.size();
 
         if (key.position() < size) {
@@ -550,8 +474,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     .edges();
 
             edges.forEach(e -> {
-                int position = e.<Integer>getProperty(PROPERTY_INDEX);
-                e.<Integer>setProperty(PROPERTY_INDEX, position + additionCount);
+                int position = e.getProperty(PROPERTY_INDEX);
+                e.setProperty(PROPERTY_INDEX, position + additionCount);
             });
         }
 
@@ -560,11 +484,11 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             Vertex referencedVertex = getOrCreate(reference);
 
             Edge edge = vertex.addEdge(formatLabel(key), referencedVertex);
-            edge.<Integer>setProperty(PROPERTY_INDEX, key.position() + i);
+            edge.setProperty(PROPERTY_INDEX, key.position() + i);
             i++;
         }
 
-        sizeForReference(key.withoutPosition(), size + additionCount);
+        sizeFor(key.withoutPosition(), vertex, size + additionCount);
     }
 
     @Nonnull
@@ -577,7 +501,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             return Optional.empty();
         }
 
-        int size = sizeOfReference(key.withoutPosition()).orElse(0);
+        int size = sizeOf(key.withoutPosition(), vertex.get());
         if (size == 0) {
             return Optional.empty();
         }
@@ -593,10 +517,10 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         Optional<Id> previousId = Optional.empty();
         for (Edge edge : edges) {
-            int position = edge.<Integer>getProperty(PROPERTY_INDEX);
+            int position = edge.getProperty(PROPERTY_INDEX);
 
             if (position != key.position()) {
-                edge.<Integer>setProperty(PROPERTY_INDEX, position - 1);
+                edge.setProperty(PROPERTY_INDEX, position - 1);
             }
             else {
                 Vertex referencedVertex = edge.getVertex(Direction.IN);
@@ -605,7 +529,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             }
         }
 
-        sizeForReference(key.withoutPosition(), size - 1);
+        sizeFor(key.withoutPosition(), vertex.get(), size - 1);
 
         return previousId;
     }
@@ -627,23 +551,13 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         edges.forEach(Element::remove);
 
-        sizeForReference(key, 0);
+        sizeFor(key, vertex.get(), 0);
     }
 
     @Nonnull
     @Override
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
+    public Maybe<Integer> sizeOfReference(SingleFeatureBean key) {
         return sizeOfValue(key);
-    }
-
-    /**
-     * Defines the number of reference of the specified {@code key}.
-     *
-     * @param key  the key identifying the multi-valued attribute
-     * @param size the number of reference
-     */
-    protected void sizeForReference(SingleFeatureBean key, @Nonnegative int size) {
-        sizeForValue(key, size);
     }
 
     //endregion

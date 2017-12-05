@@ -38,6 +38,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -235,6 +236,35 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     private Index<Vertex> getOrCreateIndex(String name) {
         return Optional.ofNullable(graph.getIndex(name, Vertex.class))
                 .orElseGet(() -> graph.createIndex(name, Vertex.class));
+    }
+
+    /**
+     * Returns the size of the {@code key} for the given {@code vertex}.
+     *
+     * @param key    the key identifying the multi-valued feature
+     * @param vertex the related vertex; {@code vertex.id == key.id}
+     *
+     * @return the size
+     */
+    @Nonnegative
+    protected int sizeOf(SingleFeatureBean key, Vertex vertex) {
+        return Optional.<Integer>ofNullable(vertex.getProperty(formatProperty(key, PROPERTY_SIZE))).orElse(0);
+    }
+
+    /**
+     * Defines the {@code size} of the {@code key} for the given {@code vertex}.
+     *
+     * @param key    the key identifying the multi-valued feature
+     * @param vertex the related vertex; {@code vertex.id == key.id}
+     * @param size   the new size
+     */
+    protected void sizeFor(SingleFeatureBean key, Vertex vertex, @Nonnegative int size) {
+        if (size > 0) {
+            vertex.setProperty(formatProperty(key, PROPERTY_SIZE), size);
+        }
+        else {
+            vertex.removeProperty(formatProperty(key, PROPERTY_SIZE));
+        }
     }
 
     @Nonnull

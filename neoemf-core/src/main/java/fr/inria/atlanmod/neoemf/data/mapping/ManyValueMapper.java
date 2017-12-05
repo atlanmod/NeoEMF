@@ -111,7 +111,7 @@ public interface ManyValueMapper extends ValueMapper {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        int position = sizeOfValue(key).orElse(0);
+        int position = sizeOfValue(key).blockingGet(0);
 
         addValue(key.withPosition(position), value);
 
@@ -136,7 +136,7 @@ public interface ManyValueMapper extends ValueMapper {
         checkNotNull(key, "key");
         checkNotNull(collection, "collection");
 
-        int firstPosition = sizeOfValue(key).orElse(0);
+        int firstPosition = sizeOfValue(key).blockingGet(0);
 
         addAllValues(key.withPosition(firstPosition), collection);
 
@@ -178,5 +178,5 @@ public interface ManyValueMapper extends ValueMapper {
      */
     @Nonnull
     @Nonnegative
-    Optional<Integer> sizeOfValue(SingleFeatureBean key);
+    Maybe<Integer> sizeOfValue(SingleFeatureBean key);
 }

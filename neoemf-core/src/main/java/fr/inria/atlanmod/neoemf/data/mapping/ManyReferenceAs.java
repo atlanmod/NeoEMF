@@ -107,7 +107,7 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
 
     @Nonnull
     @Override
-    default Optional<Integer> sizeOfReference(SingleFeatureBean key) {
+    default Maybe<Integer> sizeOfReference(SingleFeatureBean key) {
         return this.sizeOfValue(key);
     }
 

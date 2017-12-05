@@ -174,14 +174,14 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
     @Nonnull
     @Nonnegative
     @Override
-    default Optional<Integer> sizeOfReference(SingleFeatureBean key) {
+    default Maybe<Integer> sizeOfReference(SingleFeatureBean key) {
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
         return this.<M>valueOf(key)
-                .to(CommonQueries::toOptional)
                 .map(converter::revert)
                 .map(List::size)
-                .filter(s -> s != 0);
+                .filter(s -> s != 0)
+                .cache();
     }
 
     /**

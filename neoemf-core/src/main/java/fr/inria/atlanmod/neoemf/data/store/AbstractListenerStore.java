@@ -294,8 +294,14 @@ public abstract class AbstractListenerStore extends AbstractStore {
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        return onCallResult(super::sizeOfValue, key);
+    public Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("sizeOfValue").withKey(key);
+
+        return super.sizeOfValue(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
@@ -371,8 +377,14 @@ public abstract class AbstractListenerStore extends AbstractStore {
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        return onCallResult(super::sizeOfReference, key);
+    public Maybe<Integer> sizeOfReference(SingleFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("sizeOfReference").withKey(key);
+
+        return super.sizeOfReference(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     /**

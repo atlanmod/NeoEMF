@@ -412,7 +412,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
         mapper.valueOf(sfBase.withPosition(2)).test().await().assertValue(value2);
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(3);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(3);
     }
 
     /**
@@ -475,7 +475,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
         mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(2);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -507,7 +507,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.valueOf(sfBase.withPosition(2)).test().await().assertValue(value3);
         mapper.valueOf(sfBase.withPosition(3)).test().await().assertValue(value1);
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(4);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(4);
     }
 
     /**
@@ -526,17 +526,17 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
         mapper.valueOf(sfBase.withPosition(2)).test().await().assertValue(value2);
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(3);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(3);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with an empty collection.
      */
     @Test
-    public void testAddAll_ManyValue_Empty() {
+    public void testAddAll_ManyValue_Empty() throws InterruptedException {
         mapper.addAllValues(mfBase, Collections.emptyList());
 
-        assertThat(mapper.sizeOfValue(mfBase.withoutPosition())).isNotPresent();
+        mapper.sizeOfValue(mfBase.withoutPosition()).test().await().assertNoValues();
     }
 
     /**
@@ -576,7 +576,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
         mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(2);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -599,7 +599,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
         mapper.valueOf(sfBase.withPosition(2)).test().await().assertValue(value2);
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(3);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(3);
     }
 
     /**
@@ -607,10 +607,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAppendAll_ManyValue_Empty() {
+    public void testAppendAll_ManyValue_Empty() throws InterruptedException {
         mapper.appendAllValues(sfBase, Collections.emptyList());
 
-        assertThat(mapper.sizeOfValue(sfBase)).isNotPresent();
+        mapper.sizeOfValue(sfBase).test().await().assertNoValues();
     }
 
     /**
@@ -640,16 +640,16 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testRemove_ManyValue(Object value0, Object value1) {
+    public void testRemove_ManyValue(Object value0, Object value1) throws InterruptedException {
         mapper.addValue(sfBase.withPosition(0), value0);
         mapper.addValue(sfBase.withPosition(1), value1);
-        assertThat(mapper.sizeOfValue(sfBase)).contains(2);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
 
         mapper.removeValue(sfBase.withPosition(0));
-        assertThat(mapper.sizeOfValue(sfBase)).contains(1);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(1);
 
         mapper.removeValue(sfBase.withPosition(0));
-        assertThat(mapper.sizeOfValue(sfBase)).isNotPresent();
+        mapper.sizeOfValue(sfBase).test().await().assertNoValues();
     }
 
     /**
@@ -668,7 +668,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value2);
         mapper.valueOf(sfBase.withPosition(2)).test().await().assertNoValues();
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(2);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -687,7 +687,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value2);
         mapper.valueOf(sfBase.withPosition(2)).test().await().assertNoValues();
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(2);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -706,7 +706,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
         mapper.valueOf(sfBase.withPosition(2)).test().await().assertNoValues();
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(2);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -729,7 +729,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.appendValue(sfBase, value1);
         mapper.appendValue(sfBase, value2);
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(3);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(3);
 
         mapper.removeAllValues(sfBase);
 
@@ -737,7 +737,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.valueOf(sfBase.withPosition(1)).test().await().assertNoValues();
         mapper.valueOf(sfBase.withPosition(2)).test().await().assertNoValues();
 
-        assertThat(mapper.sizeOfValue(sfBase)).isNotPresent();
+        mapper.sizeOfValue(sfBase).test().await().assertNoValues();
     }
 
     /**
@@ -755,26 +755,24 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ValueProvider.class)
-    public void testSize_ManyValue(Object value0, Object value1, Object value2) {
+    public void testSize_ManyValue(Object value0, Object value1, Object value2) throws InterruptedException {
         mapper.appendValue(sfBase, value0);
         mapper.appendValue(sfBase, value1);
         mapper.appendValue(sfBase, value2);
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(3);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(3);
 
         mapper.removeValue(sfBase.withPosition(1));
 
-        assertThat(mapper.sizeOfValue(sfBase)).contains(2);
+        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#sizeOfValue(SingleFeatureBean)} when the value doesn't exist.
      */
     @Test
-    public void testSize_ManyValue_NotDefined() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.sizeOfValue(sfBase)).isNotPresent()
-        )).isNull();
+    public void testSize_ManyValue_NotDefined() throws InterruptedException {
+        mapper.sizeOfValue(sfBase).test().await().assertNoErrors().assertNoValues();
     }
 
     //endregion
@@ -937,7 +935,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
         mapper.referenceOf(sfBase.withPosition(2)).test().await().assertValue(ref2);
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(3);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(3);
     }
 
     /**
@@ -982,7 +980,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         assertThat(index).isEqualTo(1);
         mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(2);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -1010,7 +1008,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
         mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(2);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -1046,7 +1044,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.referenceOf(sfBase.withPosition(2)).test().await().assertValue(ref3);
         mapper.referenceOf(sfBase.withPosition(3)).test().await().assertValue(ref1);
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(4);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(4);
     }
 
     /**
@@ -1067,7 +1065,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
         mapper.referenceOf(sfBase.withPosition(2)).test().await().assertValue(ref2);
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(3);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(3);
     }
 
     /**
@@ -1075,10 +1073,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAddAll_ManyReference_Empty() {
+    public void testAddAll_ManyReference_Empty() throws InterruptedException {
         mapper.addAllReferences(mfBase, Collections.emptyList());
 
-        assertThat(mapper.sizeOfReference(mfBase.withoutPosition())).isNotPresent();
+        mapper.sizeOfReference(mfBase.withoutPosition()).test().await().assertNoValues();
     }
 
     /**
@@ -1120,7 +1118,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
         mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(2);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -1145,7 +1143,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
         mapper.referenceOf(sfBase.withPosition(2)).test().await().assertValue(ref2);
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(3);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(3);
     }
 
     /**
@@ -1153,10 +1151,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * collection.
      */
     @Test
-    public void testAppendAll_ManyReference_Empty() {
+    public void testAppendAll_ManyReference_Empty() throws InterruptedException {
         mapper.appendAllReferences(sfBase, Collections.emptyList());
 
-        assertThat(mapper.sizeOfReference(sfBase)).isNotPresent();
+        mapper.sizeOfReference(sfBase).test().await().assertNoValues();
     }
 
     /**
@@ -1186,18 +1184,18 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_ManyReference(Id ref0, Id ref1) {
+    public void testRemove_ManyReference(Id ref0, Id ref1) throws InterruptedException {
         updateInstanceOf(ref0, ref1);
 
         mapper.addReference(sfBase.withPosition(0), ref0);
         mapper.addReference(sfBase.withPosition(1), ref1);
-        assertThat(mapper.sizeOfReference(sfBase)).contains(2);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
 
         mapper.removeReference(sfBase.withPosition(0));
-        assertThat(mapper.sizeOfReference(sfBase)).contains(1);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(1);
 
         mapper.removeReference(sfBase.withPosition(0));
-        assertThat(mapper.sizeOfReference(sfBase)).isNotPresent();
+        mapper.sizeOfReference(sfBase).test().await().assertNoValues();
     }
 
     /**
@@ -1218,7 +1216,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref2);
         mapper.referenceOf(sfBase.withPosition(2)).test().await().assertNoValues();
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(2);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -1239,7 +1237,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref2);
         mapper.referenceOf(sfBase.withPosition(2)).test().await().assertNoValues();
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(2);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -1260,7 +1258,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
         mapper.referenceOf(sfBase.withPosition(2)).test().await().assertNoValues();
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(2);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -1286,7 +1284,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.appendReference(sfBase, ref1);
         mapper.appendReference(sfBase, ref2);
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(3);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(3);
 
         mapper.removeAllReferences(sfBase);
 
@@ -1294,7 +1292,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         mapper.referenceOf(sfBase.withPosition(1)).test().await().assertNoValues();
         mapper.referenceOf(sfBase.withPosition(2)).test().await().assertNoValues();
 
-        assertThat(mapper.sizeOfReference(sfBase)).isNotPresent();
+        mapper.sizeOfReference(sfBase).test().await().assertNoValues();
     }
 
     /**
@@ -1313,18 +1311,18 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ReferenceProvider.class)
-    public void testSize_ManyReference(Id ref0, Id ref1, Id ref2) {
+    public void testSize_ManyReference(Id ref0, Id ref1, Id ref2) throws InterruptedException {
         updateInstanceOf(ref0, ref1, ref2);
 
         mapper.appendReference(sfBase, ref0);
         mapper.appendReference(sfBase, ref1);
         mapper.appendReference(sfBase, ref2);
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(3);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(3);
 
         mapper.removeReference(sfBase.withPosition(1));
 
-        assertThat(mapper.sizeOfReference(sfBase)).contains(2);
+        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
     }
 
     /**
@@ -1332,10 +1330,8 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * exist.
      */
     @Test
-    public void testSize_ManyReference_NotDefined() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.sizeOfReference(sfBase)).isNotPresent()
-        )).isNull();
+    public void testSize_ManyReference_NotDefined() throws InterruptedException {
+        mapper.sizeOfReference(sfBase).test().await().assertNoErrors().assertNoValues();
     }
 
     //endregion

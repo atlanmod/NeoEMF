@@ -202,10 +202,8 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testSizeOfValue() {
-        assertThat(
-                catchThrowable(() -> store.sizeOfValue(mock(SingleFeatureBean.class)))
-        ).isNull();
+    void testSizeOfValue() throws InterruptedException {
+        assertNoError(store.sizeOfValue(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
@@ -268,9 +266,7 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testSizeOfReference() {
-        assertThat(
-                catchThrowable(() -> store.sizeOfReference(mock(SingleFeatureBean.class)))
-        ).isNull();
+    void testSizeOfReference() throws InterruptedException {
+        assertNoError(store.sizeOfReference(mock(SingleFeatureBean.class)).test());
     }
 }

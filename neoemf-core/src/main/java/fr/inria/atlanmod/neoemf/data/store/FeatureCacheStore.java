@@ -158,7 +158,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
     public <V> void addValue(ManyFeatureBean key, V value) {
         cache.put(key, value);
 
-        IntStream.range(key.position() + 1, sizeOfValue(key.withoutPosition()).orElseGet(() -> key.position() + 1))
+        IntStream.range(key.position() + 1, sizeOfValue(key.withoutPosition()).blockingGet(key.position() + 1))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.addValue(key, value);
@@ -171,7 +171,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
         IntStream.range(0, collection.size())
                 .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
 
-        IntStream.range(firstPosition + collection.size(), sizeOfValue(key.withoutPosition()).orElseGet(() -> firstPosition + collection.size()))
+        IntStream.range(firstPosition + collection.size(), sizeOfValue(key.withoutPosition()).blockingGet(firstPosition + collection.size()))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.addAllValues(key, collection);
@@ -201,7 +201,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
     @Nonnull
     @Override
     public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        IntStream.range(key.position(), sizeOfValue(key.withoutPosition()).orElseGet(key::position))
+        IntStream.range(key.position(), sizeOfValue(key.withoutPosition()).blockingGet(key.position()))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         return super.removeValue(key);
@@ -209,7 +209,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
 
     @Override
     public void removeAllValues(SingleFeatureBean key) {
-        IntStream.range(0, sizeOfValue(key).orElse(0))
+        IntStream.range(0, sizeOfValue(key).blockingGet(0))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.removeAllValues(key);
@@ -247,7 +247,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
     public void addReference(ManyFeatureBean key, Id reference) {
         cache.put(key, reference);
 
-        IntStream.range(key.position() + 1, sizeOfReference(key.withoutPosition()).orElseGet(() -> key.position() + 1))
+        IntStream.range(key.position() + 1, sizeOfReference(key.withoutPosition()).blockingGet(key.position() + 1))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.addReference(key, reference);
@@ -260,7 +260,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
         IntStream.range(0, collection.size())
                 .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
 
-        IntStream.range(firstPosition + collection.size(), sizeOfReference(key.withoutPosition()).orElseGet(() -> firstPosition + collection.size()))
+        IntStream.range(firstPosition + collection.size(), sizeOfReference(key.withoutPosition()).blockingGet(firstPosition + collection.size()))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.addAllReferences(key, collection);
@@ -290,7 +290,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
     @Nonnull
     @Override
     public Optional<Id> removeReference(ManyFeatureBean key) {
-        IntStream.range(key.position(), sizeOfReference(key.withoutPosition()).orElseGet(key::position))
+        IntStream.range(key.position(), sizeOfReference(key.withoutPosition()).blockingGet(key.position()))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         return super.removeReference(key);
@@ -298,7 +298,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
 
     @Override
     public void removeAllReferences(SingleFeatureBean key) {
-        IntStream.range(0, sizeOfReference(key).orElse(0))
+        IntStream.range(0, sizeOfReference(key).blockingGet(0))
                 .forEach(i -> cache.invalidate(key.withPosition(i)));
 
         super.removeAllReferences(key);

@@ -8,14 +8,15 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
+import fr.inria.atlanmod.commons.collect.SizedIterator;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
@@ -25,6 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
@@ -49,36 +51,13 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
-        final Iterator<V> iter = new Iterator<V>() {
+        int size = sizeOfValue(key).blockingGet(0);
 
-            /**
-             * The size of the iterator.
-             */
-            final int size = sizeOfValue(key).orElse(0);
+        IntFunction<V> mappingFunc = i -> this.<V>valueOf(key.withPosition(i))
+                .to(CommonQueries::toOptional)
+                .orElse(null);
 
-            /**
-             * The current position.
-             */
-            int currentIndex = 0;
-
-            @Override
-            public boolean hasNext() {
-                return currentIndex < size;
-            }
-
-            @Override
-            public V next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
-
-                return ManyValueWithIndices.this.<V>valueOf(key.withPosition(currentIndex++))
-                        .to(CommonQueries::toOptional)
-                        .orElse(null);
-            }
-        };
-
-        return Flowable.fromIterable(() -> iter);
+        return Flowable.fromIterable(() -> new SizedIterator<>(size, mappingFunc));
     }
 
     @Nonnull
@@ -102,14 +81,14 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        int size = sizeOfValue(key.withoutPosition()).orElse(0);
+        int size = sizeOfValue(key.withoutPosition()).blockingGet(0);
         checkPositionIndex(key.position(), size);
 
         for (int i = size - 1; i >= key.position(); i--) {
             innerValueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).toSingle().blockingGet()).blockingAwait();
         }
 
-        sizeForValue(key.withoutPosition(), size + 1);
+        sizeForValue(key.withoutPosition(), size + 1).blockingAwait();
 
         innerValueFor(key, value).blockingAwait();
     }
@@ -119,7 +98,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkNotNull(key, "key");
         checkNotNull(collection, "collection");
 
-        if (collection.contains(null)) {
+        if (collection.stream().anyMatch(Objects::isNull)) {
             throw new NullPointerException();
         }
 
@@ -134,7 +113,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     default <V> Optional<V> removeValue(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        int size = sizeOfValue(key.withoutPosition()).orElse(0);
+        int size = sizeOfValue(key.withoutPosition()).blockingGet(0);
         if (size == 0) {
             return Optional.empty();
         }
@@ -147,14 +126,14 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
         innerValueFor(key.withPosition(size - 1), null).blockingAwait();
 
-        sizeForValue(key.withoutPosition(), size - 1);
+        sizeForValue(key.withoutPosition(), size - 1).blockingAwait();
 
         return previousValue;
     }
 
     @Override
     default void removeAllValues(SingleFeatureBean key) {
-        IntStream.range(0, sizeOfValue(key).orElse(0))
+        IntStream.range(0, sizeOfValue(key).blockingGet(0))
                 .forEach(i -> innerValueFor(key.withPosition(i), null).blockingAwait());
 
         removeValue(key).blockingAwait();
@@ -163,12 +142,12 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Nonnegative
     @Override
-    default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+    default Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
         return this.<Integer>valueOf(key)
-                .to(CommonQueries::toOptional)
-                .filter(s -> s > 0);
+                .filter(s -> s > 0)
+                .cache();
     }
 
     /**
@@ -180,16 +159,13 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      * @throws NullPointerException     if the {@code key} is {@code null}
      * @throws IllegalArgumentException if {@code size < 0}
      */
-    default void sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
+    default Completable sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
         checkNotNull(key, "key");
         checkArgument(size >= 0, "size (%d) must not be negative");
 
-        if (size > 0) {
-            valueFor(key, size).ignoreElement().blockingAwait();
-        }
-        else {
-            removeValue(key).blockingAwait();
-        }
+        return size > 0
+                ? valueFor(key, size).ignoreElement()
+                : removeValue(key);
     }
 
     /**

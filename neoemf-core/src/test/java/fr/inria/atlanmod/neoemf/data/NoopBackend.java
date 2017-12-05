@@ -167,8 +167,8 @@ public final class NoopBackend implements Backend, AllReferenceAs<Long> {
 
     @Nonnull
     @Override
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        return Optional.empty();
+    public Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
+        return Maybe.empty();
     }
 
     @Nonnull

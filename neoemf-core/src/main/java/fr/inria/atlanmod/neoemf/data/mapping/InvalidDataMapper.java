@@ -193,8 +193,8 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        throw e.get();
+    public Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
+        return Maybe.error(e::get);
     }
 
     @Nonnull
@@ -248,7 +248,7 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        throw e.get();
+    public Maybe<Integer> sizeOfReference(SingleFeatureBean key) {
+        return Maybe.error(e::get);
     }
 }

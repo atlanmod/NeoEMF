@@ -301,7 +301,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                 return store.valueOf(key).to(CommonQueries::toOptional).isPresent();
             }
             else {
-                return store.sizeOfValue(key).isPresent();
+                return store.sizeOfValue(key).isEmpty().map(e -> !e).blockingGet();
             }
         }
         else {
@@ -309,7 +309,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                 return store.referenceOf(key).to(CommonQueries::toOptional).isPresent();
             }
             else {
-                return store.sizeOfReference(key).isPresent();
+                return store.sizeOfReference(key).isEmpty().map(e -> !e).blockingGet();
             }
         }
     }
@@ -358,14 +358,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean key = SingleFeatureBean.from(object, feature);
 
-        Optional<Integer> size;
+        Maybe<Integer> size;
         if (EObjects.isAttribute(feature)) {
             size = store.sizeOfValue(key);
         }
         else {
             size = store.sizeOfReference(key);
         }
-        return size.orElse(0);
+        return size.blockingGet(0);
     }
 
     @Override

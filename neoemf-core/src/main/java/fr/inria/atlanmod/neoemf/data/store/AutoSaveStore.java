@@ -189,7 +189,7 @@ public class AutoSaveStore extends AbstractStore {
 
     @Override
     public void removeAllValues(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.removeAllValues(key), sizeOfValue(key).orElse(0));
+        thenIncrementAndSave(() -> super.removeAllValues(key), sizeOfValue(key).blockingGet(0));
     }
 
     @Nonnull
@@ -230,7 +230,7 @@ public class AutoSaveStore extends AbstractStore {
 
     @Override
     public void removeAllReferences(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.removeAllReferences(key), sizeOfReference(key).orElse(0));
+        thenIncrementAndSave(() -> super.removeAllReferences(key), sizeOfReference(key).blockingGet(0));
     }
 
     /**

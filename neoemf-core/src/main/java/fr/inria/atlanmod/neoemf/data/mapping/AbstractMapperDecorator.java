@@ -231,7 +231,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
+    public Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
         return next.sizeOfValue(key);
     }
 
@@ -298,7 +298,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
+    public Maybe<Integer> sizeOfReference(SingleFeatureBean key) {
         return next.sizeOfReference(key);
     }
 }
