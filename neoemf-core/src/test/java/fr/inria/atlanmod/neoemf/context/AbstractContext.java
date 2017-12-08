@@ -17,8 +17,10 @@ import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -69,6 +71,24 @@ public abstract class AbstractContext implements Context {
     @Override
     public DataMapper createMapper(File file) {
         return new ContextualResourceBuilder(this).file(file).createMapper();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name());
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!AbstractContext.class.isInstance(o)) {
+            return false;
+        }
+
+        AbstractContext that = AbstractContext.class.cast(o);
+        return Objects.equals(name(), that.name());
     }
 
     @Nonnull

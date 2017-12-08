@@ -24,6 +24,6 @@ class DefaultInMemoryBackendTest extends AbstractDataMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return CoreContext.get();
+        return CoreContext.getDefault();
     }
 }

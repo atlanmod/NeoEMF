@@ -33,18 +33,22 @@ public abstract class BlueprintsNeo4jContext extends BlueprintsContext {
      */
     @Nonnull
     public static Context getDefault() {
-        return new BlueprintsNeo4jContext() {
-            @Nonnull
-            @Override
-            public Config config() {
-                return BlueprintsNeo4jConfig.newConfig();
-            }
-        };
+        return new Default();
     }
 
     @Nonnull
     @Override
     public String name() {
-        return "Neo4j";
+        return super.name() + "#Neo4j";
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class Default extends BlueprintsNeo4jContext {
+
+        @Nonnull
+        @Override
+        public Config config() {
+            return BlueprintsNeo4jConfig.newConfig();
+        }
     }
 }

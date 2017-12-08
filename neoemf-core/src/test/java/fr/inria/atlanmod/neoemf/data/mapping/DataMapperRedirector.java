@@ -17,17 +17,17 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.reactivex.observers.TestObserver;
-import io.reactivex.subscribers.TestSubscriber;
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Maybe;
+import io.reactivex.Single;
 
 /**
  * A tester for {@link DataMapper} instances that redirects all calls according to a defined {@link RedirectionType}.
- * <p>
- * <b>NOTE:</b> All calls wait for a result (value, complete, error) before returning any {@link TestObserver} or {@link TestSubscriber}.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unchecked")
-class DataMapperTester {
+class DataMapperRedirector {
 
     /**
      * The delegated mapper where to execute queries.
@@ -42,12 +42,12 @@ class DataMapperTester {
     private final RedirectionType type;
 
     /**
-     * Constructs a new {@code DataMapperTester} on the {@code delegate} mapper, with the given redirection {@code type}.
+     * Constructs a new {@code DataMapperRedirector} on the {@code delegate} mapper, with the given redirection {@code type}.
      *
      * @param delegate the delegated mapper where to execute queries
      * @param type     the type of redirection
      */
-    public DataMapperTester(DataMapper delegate, RedirectionType type) {
+    public DataMapperRedirector(DataMapper delegate, RedirectionType type) {
         this.delegate = delegate;
         this.type = type;
     }
@@ -58,12 +58,12 @@ class DataMapperTester {
      * @return a test observer on the result
      */
     @Nonnull
-    public <V> TestObserver<V> get(SingleFeatureBean key) throws InterruptedException {
+    public <V> Maybe<V> get(SingleFeatureBean key) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.<V>valueOf(key).test().await();
+            return delegate.valueOf(key);
         }
         else {
-            return (TestObserver<V>) delegate.referenceOf(key).test().await();
+            return (Maybe<V>) delegate.referenceOf(key);
         }
     }
 
@@ -73,12 +73,12 @@ class DataMapperTester {
      * @return a test observer on the result
      */
     @Nonnull
-    public <V> TestObserver<Void> set(SingleFeatureBean key, V value) throws InterruptedException {
+    public <V> Completable set(SingleFeatureBean key, V value) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.valueFor(key, value).test().await();
+            return delegate.valueFor(key, value);
         }
         else {
-            return delegate.referenceFor(key, (Id) value).test().await();
+            return delegate.referenceFor(key, (Id) value);
         }
     }
 
@@ -88,12 +88,12 @@ class DataMapperTester {
      * @return a test observer on the result
      */
     @Nonnull
-    public TestObserver<Void> remove(SingleFeatureBean key) throws InterruptedException {
+    public Completable remove(SingleFeatureBean key) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.removeValue(key).test().await();
+            return delegate.removeValue(key);
         }
         else {
-            return delegate.removeReference(key).test().await();
+            return delegate.removeReference(key);
         }
     }
 
@@ -103,12 +103,12 @@ class DataMapperTester {
      * @return a test observer on the result
      */
     @Nonnull
-    public <V> TestObserver<V> get(ManyFeatureBean key) throws InterruptedException {
+    public <V> Maybe<V> get(ManyFeatureBean key) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.<V>valueOf(key).test().await();
+            return delegate.valueOf(key);
         }
         else {
-            return (TestObserver<V>) delegate.referenceOf(key).test().await();
+            return (Maybe<V>) delegate.referenceOf(key);
         }
     }
 
@@ -118,12 +118,12 @@ class DataMapperTester {
      * @return a test subscriber on the result
      */
     @Nonnull
-    public <V> TestSubscriber<V> getAll(SingleFeatureBean key) throws InterruptedException {
+    public <V> Flowable<V> getAll(SingleFeatureBean key) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.<V>allValuesOf(key).test().await();
+            return delegate.allValuesOf(key);
         }
         else {
-            return (TestSubscriber<V>) delegate.allReferencesOf(key).test().await();
+            return (Flowable<V>) delegate.allReferencesOf(key);
         }
     }
 
@@ -133,12 +133,12 @@ class DataMapperTester {
      * @return a test observer on the result
      */
     @Nonnull
-    public <V> TestObserver<Void> set(ManyFeatureBean key, V value) throws InterruptedException {
+    public <V> Completable set(ManyFeatureBean key, V value) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.valueFor(key, value).test().await();
+            return delegate.valueFor(key, value);
         }
         else {
-            return delegate.referenceFor(key, (Id) value).test().await();
+            return delegate.referenceFor(key, (Id) value);
         }
     }
 
@@ -148,12 +148,12 @@ class DataMapperTester {
      * @return a test observer on the result
      */
     @Nonnull
-    public <V> TestObserver<Void> add(ManyFeatureBean key, V value) throws InterruptedException {
+    public <V> Completable add(ManyFeatureBean key, V value) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.addValue(key, value).test().await();
+            return delegate.addValue(key, value);
         }
         else {
-            return delegate.addReference(key, (Id) value).test().await();
+            return delegate.addReference(key, (Id) value);
         }
     }
 
@@ -164,12 +164,12 @@ class DataMapperTester {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    public <V> TestObserver<Void> addAll(ManyFeatureBean key, List<? extends V> values) throws InterruptedException {
+    public <V> Completable addAll(ManyFeatureBean key, List<? extends V> values) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.addAllValues(key, values).test().await();
+            return delegate.addAllValues(key, values);
         }
         else {
-            return delegate.addAllReferences(key, (List<Id>) values).test().await();
+            return delegate.addAllReferences(key, (List<Id>) values);
         }
     }
 
@@ -179,12 +179,12 @@ class DataMapperTester {
      * @return a test observer on the result
      */
     @Nonnull
-    public <V> TestObserver<Integer> append(SingleFeatureBean key, V value) throws InterruptedException {
+    public <V> Single<Integer> append(SingleFeatureBean key, V value) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.appendValue(key, value).test().await();
+            return delegate.appendValue(key, value);
         }
         else {
-            return delegate.appendReference(key, (Id) value).test().await();
+            return delegate.appendReference(key, (Id) value);
         }
     }
 
@@ -195,12 +195,12 @@ class DataMapperTester {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    public <V> TestObserver<Integer> appendAll(SingleFeatureBean key, List<? extends V> values) throws InterruptedException {
+    public <V> Single<Integer> appendAll(SingleFeatureBean key, List<? extends V> values) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.appendAllValues(key, values).test().await();
+            return delegate.appendAllValues(key, values);
         }
         else {
-            return delegate.appendAllReferences(key, (List<Id>) values).test().await();
+            return delegate.appendAllReferences(key, (List<Id>) values);
         }
     }
 
@@ -210,12 +210,12 @@ class DataMapperTester {
      * @return a test observer on the result
      */
     @Nonnull
-    public <V> TestObserver<V> remove(ManyFeatureBean key) throws InterruptedException {
+    public <V> Maybe<V> remove(ManyFeatureBean key) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.<V>removeValue(key).test().await();
+            return delegate.removeValue(key);
         }
         else {
-            return (TestObserver<V>) delegate.removeReference(key).test().await();
+            return (Maybe<V>) delegate.removeReference(key);
         }
     }
 
@@ -225,12 +225,12 @@ class DataMapperTester {
      * @return a test observer on the result
      */
     @Nonnull
-    public TestObserver<Void> removeAll(SingleFeatureBean key) throws InterruptedException {
+    public Completable removeAll(SingleFeatureBean key) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.removeAllValues(key).test().await();
+            return delegate.removeAllValues(key);
         }
         else {
-            return delegate.removeAllReferences(key).test().await();
+            return delegate.removeAllReferences(key);
         }
     }
 
@@ -240,12 +240,12 @@ class DataMapperTester {
      * @return a test observer on the result
      */
     @Nonnull
-    public TestObserver<Integer> sizeOf(SingleFeatureBean key) throws InterruptedException {
+    public Maybe<Integer> sizeOf(SingleFeatureBean key) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.sizeOfValue(key).test().await();
+            return delegate.sizeOfValue(key);
         }
         else {
-            return delegate.sizeOfReference(key).test().await();
+            return delegate.sizeOfReference(key);
         }
     }
 }

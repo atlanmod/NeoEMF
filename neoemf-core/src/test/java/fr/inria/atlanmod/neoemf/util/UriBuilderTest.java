@@ -34,7 +34,7 @@ class UriBuilderTest extends AbstractUriTest {
     @Nonnull
     @Override
     protected Context context() {
-        return CoreContext.get();
+        return CoreContext.getDefault();
     }
 
     @Test

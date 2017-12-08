@@ -36,13 +36,7 @@ public abstract class HBaseContext extends AbstractContext {
      */
     @Nonnull
     public static Context getDefault() {
-        return new HBaseContext() {
-            @Nonnull
-            @Override
-            public Config config() {
-                return HBaseConfig.newConfig();
-            }
-        };
+        return new Default();
     }
 
     @Override
@@ -78,5 +72,15 @@ public abstract class HBaseContext extends AbstractContext {
     @Override
     public URI createUri(File file) {
         return UriBuilder.forScheme(uriScheme()).fromServer(HBaseCluster.host(), HBaseCluster.port(), file.getName());
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class Default extends HBaseContext {
+
+        @Nonnull
+        @Override
+        public Config config() {
+            return HBaseConfig.newConfig();
+        }
     }
 }

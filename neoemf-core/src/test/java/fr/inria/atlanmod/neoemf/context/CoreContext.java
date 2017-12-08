@@ -9,16 +9,24 @@
 package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.im.BoundInMemoryBackend;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
 import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.eclipse.emf.common.util.URI;
+
 import java.io.File;
-import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * A specific {@link Context} for the core.
@@ -32,9 +40,13 @@ public abstract class CoreContext extends AbstractContext {
      * @return the instance of this class.
      */
     @Nonnull
-    public static Context get() {
-        return new CoreContext() {
-        };
+    public static Context getDefault() {
+        return new Default();
+    }
+
+    @Nonnull
+    public static Context boundTo(Id id) {
+        return new Bound(id);
     }
 
     @Nonnull
@@ -64,7 +76,38 @@ public abstract class CoreContext extends AbstractContext {
      */
     @Nonnull
     @Override
-    public PersistentResource loadResource(File file) throws IOException {
+    public PersistentResource loadResource(File file) {
         throw new UnsupportedOperationException();
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class Default extends CoreContext {
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class Bound extends CoreContext {
+
+        @Nonnull
+        private final Id id;
+
+        public Bound(Id id) {
+            this.id = id;
+        }
+
+        @Nonnull
+        @Override
+        public String name() {
+            return super.name() + "#Bound[" + id + ']';
+        }
+
+        @Nonnull
+        @Override
+        public BackendFactory factory() {
+            BackendFactory factory = mock(InMemoryBackendFactory.class);
+            when(factory.name()).thenCallRealMethod();
+            when(factory.supportsTransient()).thenCallRealMethod();
+            when(factory.createBackend(any(URI.class), any(ImmutableConfig.class))).thenAnswer((i) -> new BoundInMemoryBackend(id));
+            return factory;
+        }
     }
 }

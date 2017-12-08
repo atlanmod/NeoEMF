@@ -31,19 +31,7 @@ public abstract class BerkeleyDbContext extends AbstractContext {
      */
     @Nonnull
     public static Context getWithIndices() {
-        return new BerkeleyDbContext() {
-            @Nonnull
-            @Override
-            public String name() {
-                return super.name() + "-Indices";
-            }
-
-            @Nonnull
-            @Override
-            public Config config() {
-                return BerkeleyDbConfig.newConfig().withIndices();
-            }
-        };
+        return new WithIndices();
     }
 
     /**
@@ -53,19 +41,7 @@ public abstract class BerkeleyDbContext extends AbstractContext {
      */
     @Nonnull
     public static Context getWithArrays() {
-        return new BerkeleyDbContext() {
-            @Nonnull
-            @Override
-            public String name() {
-                return super.name() + "-Arrays";
-            }
-
-            @Nonnull
-            @Override
-            public Config config() {
-                return BerkeleyDbConfig.newConfig().withArrays();
-            }
-        };
+        return new WithArrays();
     }
 
     /**
@@ -75,19 +51,7 @@ public abstract class BerkeleyDbContext extends AbstractContext {
      */
     @Nonnull
     public static Context getWithLists() {
-        return new BerkeleyDbContext() {
-            @Nonnull
-            @Override
-            public String name() {
-                return super.name() + "-Lists";
-            }
-
-            @Nonnull
-            @Override
-            public Config config() {
-                return BerkeleyDbConfig.newConfig().withLists();
-            }
-        };
+        return new WithLists();
     }
 
     @Nonnull
@@ -100,5 +64,53 @@ public abstract class BerkeleyDbContext extends AbstractContext {
     @Override
     public BackendFactory factory() {
         return BerkeleyDbBackendFactory.getInstance();
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class WithIndices extends BerkeleyDbContext {
+
+        @Nonnull
+        @Override
+        public String name() {
+            return super.name() + "#Indices";
+        }
+
+        @Nonnull
+        @Override
+        public Config config() {
+            return BerkeleyDbConfig.newConfig().withIndices();
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class WithArrays extends BerkeleyDbContext {
+
+        @Nonnull
+        @Override
+        public String name() {
+            return super.name() + "#Arrays";
+        }
+
+        @Nonnull
+        @Override
+        public Config config() {
+            return BerkeleyDbConfig.newConfig().withArrays();
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class WithLists extends BerkeleyDbContext {
+
+        @Nonnull
+        @Override
+        public String name() {
+            return super.name() + "#Lists";
+        }
+
+        @Nonnull
+        @Override
+        public Config config() {
+            return BerkeleyDbConfig.newConfig().withLists();
+        }
     }
 }

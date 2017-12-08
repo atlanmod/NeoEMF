@@ -30,9 +30,7 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.reactivex.observers.TestObserver;
-import io.reactivex.subscribers.TestSubscriber;
-
+import static fr.inria.atlanmod.neoemf.util.RxTestUtils.await;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -63,18 +61,6 @@ class ReadOnlyStoreTest extends AbstractTest {
         }
     }
 
-    private void assertHasError(TestObserver<?> observer) throws InterruptedException {
-        observer.await().assertError(READONLY_EXCEPTION_TYPE);
-    }
-
-    private void assertNoError(TestObserver<?> observer) throws InterruptedException {
-        observer.await().assertNoErrors();
-    }
-
-    private void assertNoError(TestSubscriber<?> subscriber) throws InterruptedException {
-        subscriber.await().assertNoErrors();
-    }
-
     @Test
     void testClose() {
         assertThat(
@@ -83,164 +69,164 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testSave() throws InterruptedException {
-        assertHasError(store.save().test());
+    void testSave() {
+        await(store.save()).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testContainerOf() throws InterruptedException {
-        assertNoError(store.containerOf(mock(Id.class)).test());
+    void testContainerOf() {
+        await(store.containerOf(mock(Id.class))).assertNoErrors();
     }
 
     @Test
-    void testContainerFor() throws InterruptedException {
-        assertHasError(store.containerFor(mock(Id.class), mock(SingleFeatureBean.class)).test());
+    void testContainerFor() {
+        await(store.containerFor(mock(Id.class), mock(SingleFeatureBean.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveContainer() throws InterruptedException {
-        assertHasError(store.removeContainer(mock(Id.class)).test());
+    void testRemoveContainer() {
+        await(store.removeContainer(mock(Id.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testMetaClassOf() throws InterruptedException {
-        assertNoError(store.metaClassOf(mock(Id.class)).test());
+    void testMetaClassOf() {
+        await(store.metaClassOf(mock(Id.class))).assertNoErrors();
     }
 
     @Test
-    void testMetaClassFor() throws InterruptedException {
-        assertHasError(store.metaClassFor(mock(Id.class), mock(ClassBean.class)).test());
+    void testMetaClassFor() {
+        await(store.metaClassFor(mock(Id.class), mock(ClassBean.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testValueOf() throws InterruptedException {
-        assertNoError(store.valueOf(mock(SingleFeatureBean.class)).test());
+    void testValueOf() {
+        await(store.valueOf(mock(SingleFeatureBean.class))).assertNoErrors();
     }
 
     @Test
-    void testValueFor() throws InterruptedException {
-        assertHasError(store.valueFor(mock(SingleFeatureBean.class), mock(Object.class)).test());
+    void testValueFor() {
+        await(store.valueFor(mock(SingleFeatureBean.class), mock(Object.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveValue() throws InterruptedException {
-        assertHasError(store.removeValue(mock(SingleFeatureBean.class)).test());
+    void testRemoveValue() {
+        await(store.removeValue(mock(SingleFeatureBean.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testReferenceOf() throws InterruptedException {
-        assertNoError(store.referenceOf(mock(SingleFeatureBean.class)).test());
+    void testReferenceOf() {
+        await(store.referenceOf(mock(SingleFeatureBean.class))).assertNoErrors();
     }
 
     @Test
-    void testReferenceFor() throws InterruptedException {
-        assertHasError(store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)).test());
+    void testReferenceFor() {
+        await(store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveReference() throws InterruptedException {
-        assertHasError(store.removeReference(mock(SingleFeatureBean.class)).test());
+    void testRemoveReference() {
+        await(store.removeReference(mock(SingleFeatureBean.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testValueOfMany() throws InterruptedException {
-        assertNoError(store.valueOf(mock(ManyFeatureBean.class)).test());
+    void testValueOfMany() {
+        await(store.valueOf(mock(ManyFeatureBean.class))).assertNoErrors();
     }
 
     @Test
-    void testAllValuesOf() throws InterruptedException {
-        assertNoError(store.allValuesOf(mock(SingleFeatureBean.class)).test());
+    void testAllValuesOf() {
+        await(store.allValuesOf(mock(SingleFeatureBean.class))).assertNoErrors();
     }
 
     @Test
-    void tetsValueForMany() throws InterruptedException {
-        assertHasError(store.valueFor(mock(ManyFeatureBean.class), mock(Object.class)).test());
+    void tetsValueForMany() {
+        await(store.valueFor(mock(ManyFeatureBean.class), mock(Object.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAddValue() throws InterruptedException {
-        assertHasError(store.addValue(mock(ManyFeatureBean.class), mock(Object.class)).test());
+    void testAddValue() {
+        await(store.addValue(mock(ManyFeatureBean.class), mock(Object.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAddAllValues() throws InterruptedException {
-        assertHasError(store.addAllValues(mock(ManyFeatureBean.class), Collections.emptyList()).test());
+    void testAddAllValues() {
+        await(store.addAllValues(mock(ManyFeatureBean.class), Collections.emptyList())).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAppendValue() throws InterruptedException {
-        assertHasError(store.appendValue(mock(SingleFeatureBean.class), mock(Object.class)).test());
+    void testAppendValue() {
+        await(store.appendValue(mock(SingleFeatureBean.class), mock(Object.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAppendAllValues() throws InterruptedException {
-        assertHasError(store.appendAllValues(mock(SingleFeatureBean.class), Collections.emptyList()).test());
+    void testAppendAllValues() {
+        await(store.appendAllValues(mock(SingleFeatureBean.class), Collections.emptyList())).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveValueMany() throws InterruptedException {
-        assertHasError(store.removeValue(mock(ManyFeatureBean.class)).test());
+    void testRemoveValueMany() {
+        await(store.removeValue(mock(ManyFeatureBean.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveAllValues() throws InterruptedException {
-        assertHasError(store.removeAllValues(mock(SingleFeatureBean.class)).test());
+    void testRemoveAllValues() {
+        await(store.removeAllValues(mock(SingleFeatureBean.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testSizeOfValue() throws InterruptedException {
-        assertNoError(store.sizeOfValue(mock(SingleFeatureBean.class)).test());
+    void testSizeOfValue() {
+        await(store.sizeOfValue(mock(SingleFeatureBean.class))).assertNoErrors();
     }
 
     @Test
-    void testReferenceOfMany() throws InterruptedException {
-        assertNoError(store.referenceOf(mock(ManyFeatureBean.class)).test());
+    void testReferenceOfMany() {
+        await(store.referenceOf(mock(ManyFeatureBean.class))).assertNoErrors();
     }
 
     @Test
-    void testAllReferencesOf() throws InterruptedException {
-        assertNoError(store.allReferencesOf(mock(SingleFeatureBean.class)).test());
+    void testAllReferencesOf() {
+        await(store.allReferencesOf(mock(SingleFeatureBean.class))).assertNoErrors();
     }
 
     @Test
-    void testReferenceForMany() throws InterruptedException {
-        assertHasError(store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)).test());
+    void testReferenceForMany() {
+        await(store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAddReference() throws InterruptedException {
-        assertHasError(store.addReference(mock(ManyFeatureBean.class), mock(Id.class)).test());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void testAddAllReferences() throws InterruptedException {
-        assertHasError(store.addAllReferences(mock(ManyFeatureBean.class), mock(List.class)).test());
-    }
-
-    @Test
-    void testAppendReference() throws InterruptedException {
-        assertHasError(store.appendReference(mock(SingleFeatureBean.class), mock(Id.class)).test());
+    void testAddReference() {
+        await(store.addReference(mock(ManyFeatureBean.class), mock(Id.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    void testAppendAllReferences() throws InterruptedException {
-        assertHasError(store.appendAllReferences(mock(SingleFeatureBean.class), mock(List.class)).test());
+    void testAddAllReferences() {
+        await(store.addAllReferences(mock(ManyFeatureBean.class), mock(List.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveReferenceMany() throws InterruptedException {
-        assertHasError(store.removeReference(mock(ManyFeatureBean.class)).test());
+    void testAppendReference() {
+        await(store.appendReference(mock(SingleFeatureBean.class), mock(Id.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveAllReferences() throws InterruptedException {
-        assertHasError(store.removeAllReferences(mock(SingleFeatureBean.class)).test());
+    @SuppressWarnings("unchecked")
+    void testAppendAllReferences() {
+        await(store.appendAllReferences(mock(SingleFeatureBean.class), mock(List.class))).assertError(READONLY_EXCEPTION_TYPE);
     }
 
     @Test
-    void testSizeOfReference() throws InterruptedException {
-        assertNoError(store.sizeOfReference(mock(SingleFeatureBean.class)).test());
+    void testRemoveReferenceMany() {
+        await(store.removeReference(mock(ManyFeatureBean.class))).assertError(READONLY_EXCEPTION_TYPE);
+    }
+
+    @Test
+    void testRemoveAllReferences() {
+        await(store.removeAllReferences(mock(SingleFeatureBean.class))).assertError(READONLY_EXCEPTION_TYPE);
+    }
+
+    @Test
+    void testSizeOfReference() {
+        await(store.sizeOfReference(mock(SingleFeatureBean.class))).assertNoErrors();
     }
 }

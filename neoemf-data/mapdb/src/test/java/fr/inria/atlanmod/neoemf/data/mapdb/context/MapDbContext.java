@@ -31,19 +31,7 @@ public abstract class MapDbContext extends AbstractContext {
      */
     @Nonnull
     public static Context getWithIndices() {
-        return new MapDbContext() {
-            @Nonnull
-            @Override
-            public String name() {
-                return super.name() + "-Indices";
-            }
-
-            @Nonnull
-            @Override
-            public Config config() {
-                return MapDbConfig.newConfig().withIndices();
-            }
-        };
+        return new WithIndices();
     }
 
     /**
@@ -53,19 +41,7 @@ public abstract class MapDbContext extends AbstractContext {
      */
     @Nonnull
     public static Context getWithArrays() {
-        return new MapDbContext() {
-            @Nonnull
-            @Override
-            public String name() {
-                return super.name() + "-Arrays";
-            }
-
-            @Nonnull
-            @Override
-            public Config config() {
-                return MapDbConfig.newConfig().withArrays();
-            }
-        };
+        return new WithArrays();
     }
 
     /**
@@ -75,19 +51,7 @@ public abstract class MapDbContext extends AbstractContext {
      */
     @Nonnull
     public static Context getWithLists() {
-        return new MapDbContext() {
-            @Nonnull
-            @Override
-            public String name() {
-                return super.name() + "-Lists";
-            }
-
-            @Nonnull
-            @Override
-            public Config config() {
-                return MapDbConfig.newConfig().withLists();
-            }
-        };
+        return new WithLists();
     }
 
     @Nonnull
@@ -100,5 +64,53 @@ public abstract class MapDbContext extends AbstractContext {
     @Override
     public BackendFactory factory() {
         return MapDbBackendFactory.getInstance();
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class WithIndices extends MapDbContext {
+
+        @Nonnull
+        @Override
+        public String name() {
+            return super.name() + "#Indices";
+        }
+
+        @Nonnull
+        @Override
+        public Config config() {
+            return MapDbConfig.newConfig().withIndices();
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class WithArrays extends MapDbContext {
+
+        @Nonnull
+        @Override
+        public String name() {
+            return super.name() + "#Arrays";
+        }
+
+        @Nonnull
+        @Override
+        public Config config() {
+            return MapDbConfig.newConfig().withArrays();
+        }
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class WithLists extends MapDbContext {
+
+        @Nonnull
+        @Override
+        public String name() {
+            return super.name() + "#Lists";
+        }
+
+        @Nonnull
+        @Override
+        public Config config() {
+            return MapDbConfig.newConfig().withLists();
+        }
     }
 }

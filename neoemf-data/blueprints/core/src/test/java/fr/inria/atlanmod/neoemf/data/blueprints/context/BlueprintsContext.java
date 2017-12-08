@@ -31,24 +31,34 @@ public abstract class BlueprintsContext extends AbstractContext {
      */
     @Nonnull
     public static Context getDefault() {
-        return new BlueprintsContext() {
-            @Nonnull
-            @Override
-            public Config config() {
-                return BlueprintsTinkerConfig.newConfig();
-            }
-        };
+        return new Default();
     }
 
     @Nonnull
     @Override
     public String name() {
-        return "Tinker";
+        return "Blueprints";
     }
 
     @Nonnull
     @Override
     public BackendFactory factory() {
         return BlueprintsBackendFactory.getInstance();
+    }
+
+    @ParametersAreNonnullByDefault
+    private static class Default extends BlueprintsContext {
+
+        @Nonnull
+        @Override
+        public Config config() {
+            return BlueprintsTinkerConfig.newConfig();
+        }
+
+        @Nonnull
+        @Override
+        public String name() {
+            return super.name() + "#Tinker";
+        }
     }
 }

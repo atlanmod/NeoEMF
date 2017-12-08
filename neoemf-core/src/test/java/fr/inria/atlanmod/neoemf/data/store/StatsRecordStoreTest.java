@@ -33,6 +33,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.neoemf.util.RxTestUtils.await;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -70,11 +71,11 @@ class StatsRecordStoreTest extends AbstractTest {
     }
 
     /**
-     * Calls the {@code runnable}, and checks the results in the resulting {@link StoreStats}.
+     * Calls the {@code before}, and checks the results in the resulting {@link StoreStats}.
      */
-    private void assertRecorded(Runnable runnable, String name, long count) {
+    private void assertRecorded(Runnable before, String name, long count) {
         for (int i = 0; i < count; i++) {
-            runnable.run();
+            before.run();
         }
 
         StoreStats stats = store.stats();
@@ -82,13 +83,13 @@ class StatsRecordStoreTest extends AbstractTest {
     }
 
     @Test
-    void testNoStats() throws InterruptedException {
+    void testNoStats() {
         ImmutableConfig config = BaseConfig.newConfig();
 
         Store store = StoreFactory.getInstance().createStore(new NoopBackend(), config);
 
         // Do a call
-        store.containerOf(mock(Id.class)).test().await().assertComplete();
+        await(store.containerOf(mock(Id.class))).assertComplete();
 
         StoreStats stats = store.stats();
         assertThat(stats).isNotNull();
@@ -97,158 +98,158 @@ class StatsRecordStoreTest extends AbstractTest {
 
     @Test
     void testContainerOf() {
-        assertRecorded(() -> store.containerOf(mock(Id.class)).blockingGet(), "containerOf", CALLS_COUNT);
+        assertRecorded(() -> await(store.containerOf(mock(Id.class))), "containerOf", CALLS_COUNT);
     }
 
     @Test
     void testContainerFor() {
-        assertRecorded(() -> store.containerFor(mock(Id.class), mock(SingleFeatureBean.class)).blockingAwait(), "containerFor", CALLS_COUNT);
+        assertRecorded(() -> await(store.containerFor(mock(Id.class), mock(SingleFeatureBean.class))), "containerFor", CALLS_COUNT);
     }
 
     @Test
     void testRemoveContainer() {
-        assertRecorded(() -> store.removeContainer(mock(Id.class)).blockingAwait(), "removeContainer", CALLS_COUNT);
+        assertRecorded(() -> await(store.removeContainer(mock(Id.class))), "removeContainer", CALLS_COUNT);
     }
 
     @Test
     void testMetaClassOf() {
-        assertRecorded(() -> store.metaClassOf(mock(Id.class)).blockingGet(), "metaClassOf", CALLS_COUNT);
+        assertRecorded(() -> await(store.metaClassOf(mock(Id.class))), "metaClassOf", CALLS_COUNT);
     }
 
     @Test
     void testMetaClassFor() {
-        assertRecorded(() -> store.metaClassFor(mock(Id.class), mock(ClassBean.class)).blockingGet(), "metaClassFor", CALLS_COUNT);
+        assertRecorded(() -> await(store.metaClassFor(mock(Id.class), mock(ClassBean.class))), "metaClassFor", CALLS_COUNT);
     }
 
     @Test
     void testValueOf() {
-        assertRecorded(() -> store.valueOf(mock(SingleFeatureBean.class)).blockingGet(), "valueOf", CALLS_COUNT);
+        assertRecorded(() -> await(store.valueOf(mock(SingleFeatureBean.class))), "valueOf", CALLS_COUNT);
     }
 
     @Test
     void testValueFor() {
-        assertRecorded(() -> store.valueFor(mock(SingleFeatureBean.class), mock(Object.class)).blockingAwait(), "valueFor", CALLS_COUNT);
+        assertRecorded(() -> await(store.valueFor(mock(SingleFeatureBean.class), mock(Object.class))), "valueFor", CALLS_COUNT);
     }
 
     @Test
     void testRemoveValue() {
-        assertRecorded(() -> store.removeValue(mock(SingleFeatureBean.class)).blockingAwait(), "removeValue", CALLS_COUNT);
+        assertRecorded(() -> await(store.removeValue(mock(SingleFeatureBean.class))), "removeValue", CALLS_COUNT);
     }
 
     @Test
     void testReferenceOf() {
-        assertRecorded(() -> store.referenceOf(mock(SingleFeatureBean.class)).blockingGet(), "referenceOf", CALLS_COUNT);
+        assertRecorded(() -> await(store.referenceOf(mock(SingleFeatureBean.class))), "referenceOf", CALLS_COUNT);
     }
 
     @Test
     void testReferenceFor() {
-        assertRecorded(() -> store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)).blockingAwait(), "referenceFor", CALLS_COUNT);
+        assertRecorded(() -> await(store.referenceFor(mock(SingleFeatureBean.class), mock(Id.class))), "referenceFor", CALLS_COUNT);
     }
 
     @Test
     void testRemoveReference() {
-        assertRecorded(() -> store.removeReference(mock(SingleFeatureBean.class)).blockingAwait(), "removeReference", CALLS_COUNT);
+        assertRecorded(() -> await(store.removeReference(mock(SingleFeatureBean.class))), "removeReference", CALLS_COUNT);
     }
 
     @Test
     void testValueOfMany() {
-        assertRecorded(() -> store.valueOf(mock(ManyFeatureBean.class)).blockingGet(), "valueOf", CALLS_COUNT);
+        assertRecorded(() -> await(store.valueOf(mock(ManyFeatureBean.class))), "valueOf", CALLS_COUNT);
     }
 
     @Test
     void testAllValuesOf() {
-        assertRecorded(() -> store.allValuesOf(mock(SingleFeatureBean.class)).blockingSubscribe(), "allValuesOf", CALLS_COUNT);
+        assertRecorded(() -> await(store.allValuesOf(mock(SingleFeatureBean.class))), "allValuesOf", CALLS_COUNT);
     }
 
     @Test
     void tetsValueForMany() {
-        assertRecorded(() -> store.valueFor(mock(ManyFeatureBean.class), mock(Object.class)).blockingAwait(), "valueFor", CALLS_COUNT);
+        assertRecorded(() -> await(store.valueFor(mock(ManyFeatureBean.class), mock(Object.class))), "valueFor", CALLS_COUNT);
     }
 
     @Test
     void testAddValue() {
-        assertRecorded(() -> store.addValue(mock(ManyFeatureBean.class), mock(Object.class)).blockingAwait(), "addValue", CALLS_COUNT);
+        assertRecorded(() -> await(store.addValue(mock(ManyFeatureBean.class), mock(Object.class))), "addValue", CALLS_COUNT);
     }
 
     @Test
     void testAddAllValues() {
-        assertRecorded(() -> store.addAllValues(mock(ManyFeatureBean.class), Collections.emptyList()).blockingAwait(), "addAllValues", CALLS_COUNT);
+        assertRecorded(() -> await(store.addAllValues(mock(ManyFeatureBean.class), Collections.emptyList())), "addAllValues", CALLS_COUNT);
     }
 
     @Test
     void testAppendValue() {
-        assertRecorded(() -> store.appendValue(mock(SingleFeatureBean.class), mock(Object.class)).blockingGet(), "appendValue", CALLS_COUNT);
+        assertRecorded(() -> await(store.appendValue(mock(SingleFeatureBean.class), mock(Object.class))), "appendValue", CALLS_COUNT);
     }
 
     @Test
     void testAppendAllValues() {
-        assertRecorded(() -> store.appendAllValues(mock(SingleFeatureBean.class), Collections.emptyList()).blockingGet(), "appendAllValues", CALLS_COUNT);
+        assertRecorded(() -> await(store.appendAllValues(mock(SingleFeatureBean.class), Collections.emptyList())), "appendAllValues", CALLS_COUNT);
     }
 
     @Test
     void testRemoveValueMany() {
-        assertRecorded(() -> store.removeValue(mock(ManyFeatureBean.class)).blockingGet(), "removeValue", CALLS_COUNT);
+        assertRecorded(() -> await(store.removeValue(mock(ManyFeatureBean.class))), "removeValue", CALLS_COUNT);
     }
 
     @Test
     void testRemoveAllValues() {
-        assertRecorded(() -> store.removeAllValues(mock(SingleFeatureBean.class)).blockingAwait(), "removeAllValues", CALLS_COUNT);
+        assertRecorded(() -> await(store.removeAllValues(mock(SingleFeatureBean.class))), "removeAllValues", CALLS_COUNT);
     }
 
     @Test
     void testSizeOfValue() {
-        assertRecorded(() -> store.sizeOfValue(mock(SingleFeatureBean.class)).blockingGet(), "sizeOfValue", CALLS_COUNT);
+        assertRecorded(() -> await(store.sizeOfValue(mock(SingleFeatureBean.class))), "sizeOfValue", CALLS_COUNT);
     }
 
     @Test
     void testReferenceOfMany() {
-        assertRecorded(() -> store.referenceOf(mock(ManyFeatureBean.class)).blockingGet(), "referenceOf", CALLS_COUNT);
+        assertRecorded(() -> await(store.referenceOf(mock(ManyFeatureBean.class))), "referenceOf", CALLS_COUNT);
     }
 
     @Test
     void testAllReferencesOf() {
-        assertRecorded(() -> store.allReferencesOf(mock(SingleFeatureBean.class)).blockingSubscribe(), "allReferencesOf", CALLS_COUNT);
+        assertRecorded(() -> await(store.allReferencesOf(mock(SingleFeatureBean.class))), "allReferencesOf", CALLS_COUNT);
     }
 
     @Test
     void testReferenceForMany() {
-        assertRecorded(() -> store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)).blockingAwait(), "referenceFor", CALLS_COUNT);
+        assertRecorded(() -> await(store.referenceFor(mock(ManyFeatureBean.class), mock(Id.class))), "referenceFor", CALLS_COUNT);
     }
 
     @Test
     void testAddReference() {
-        assertRecorded(() -> store.addReference(mock(ManyFeatureBean.class), mock(Id.class)).blockingAwait(), "addReference", CALLS_COUNT);
+        assertRecorded(() -> await(store.addReference(mock(ManyFeatureBean.class), mock(Id.class))), "addReference", CALLS_COUNT);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void testAddAllReferences() {
-        assertRecorded(() -> store.addAllReferences(mock(ManyFeatureBean.class), mock(List.class)).blockingAwait(), "addAllReferences", CALLS_COUNT);
+        assertRecorded(() -> await(store.addAllReferences(mock(ManyFeatureBean.class), mock(List.class))), "addAllReferences", CALLS_COUNT);
     }
 
     @Test
     void testAppendReference() {
-        assertRecorded(() -> store.appendReference(mock(SingleFeatureBean.class), mock(Id.class)).blockingGet(), "appendReference", CALLS_COUNT);
+        assertRecorded(() -> await(store.appendReference(mock(SingleFeatureBean.class), mock(Id.class))), "appendReference", CALLS_COUNT);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void testAppendAllReferences() {
-        assertRecorded(() -> store.appendAllReferences(mock(SingleFeatureBean.class), mock(List.class)).blockingGet(), "appendAllReferences", CALLS_COUNT);
+        assertRecorded(() -> await(store.appendAllReferences(mock(SingleFeatureBean.class), mock(List.class))), "appendAllReferences", CALLS_COUNT);
     }
 
     @Test
     void testRemoveReferenceMany() {
-        assertRecorded(() -> store.removeReference(mock(ManyFeatureBean.class)).blockingGet(), "removeReference", CALLS_COUNT);
+        assertRecorded(() -> await(store.removeReference(mock(ManyFeatureBean.class))), "removeReference", CALLS_COUNT);
     }
 
     @Test
     void testRemoveAllReferences() {
-        assertRecorded(() -> store.removeAllReferences(mock(SingleFeatureBean.class)).blockingAwait(), "removeAllReferences", CALLS_COUNT);
+        assertRecorded(() -> await(store.removeAllReferences(mock(SingleFeatureBean.class))), "removeAllReferences", CALLS_COUNT);
     }
 
     @Test
     void testSizeOfReference() {
-        assertRecorded(() -> store.sizeOfReference(mock(SingleFeatureBean.class)).blockingGet(), "sizeOfReference", CALLS_COUNT);
+        assertRecorded(() -> await(store.sizeOfReference(mock(SingleFeatureBean.class))), "sizeOfReference", CALLS_COUNT);
     }
 }

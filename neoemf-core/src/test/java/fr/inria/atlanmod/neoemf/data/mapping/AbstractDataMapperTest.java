@@ -35,8 +35,12 @@ import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.internal.functions.Functions;
 
+import static fr.inria.atlanmod.neoemf.util.RxTestUtils.await;
+import static fr.inria.atlanmod.neoemf.util.RxTestUtils.submit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -46,6 +50,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 @Timeout(timeout = 2)
 @ParametersAreNonnullByDefault
 @SuppressWarnings("ConstantConditions") // Test with `@Nonnull`
+// TODO Use async for multi-valued features
 public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
     /**
@@ -102,9 +107,11 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * @param references the references to update
      */
     private void updateInstanceOf(Id... references) {
-        Arrays.stream(references).forEach(i -> mapper.metaClassFor(i, cBase)
-                .onErrorComplete(Functions.isInstanceOf(ClassAlreadyExistsException.class))
-                .blockingAwait());
+        Flowable.fromArray(references)
+                .map(i -> mapper.metaClassFor(i, cBase))
+                .map(c -> c.onErrorComplete(Functions.isInstanceOf(ClassAlreadyExistsException.class)))
+                .map(Completable::subscribe)
+                .subscribe();
     }
 
     /**
@@ -134,17 +141,20 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * SingleFeatureBean)}.
      */
     @Test
-    public void testGetSet_Container_Same() throws InterruptedException {
+    public void testGetSet_Container_Same() {
         SingleFeatureBean container = SingleFeatureBean.of(id0, 20);
 
-        mapper.containerFor(idBase, container).test().await().assertComplete();
-        mapper.containerOf(idBase).test().await().assertValue(container);
+        submit(mapper.containerFor(idBase, container));
+        await(mapper.containerOf(idBase)).assertValue(container);
 
-        mapper.containerFor(id1, container).test().await().assertComplete();
-        mapper.containerOf(id1).test().await().assertValue(container);
+        submit(mapper.containerFor(id1, container));
+        await(mapper.containerOf(id1)).assertValue(container);
 
-        mapper.removeContainer(idBase).test().await().assertComplete();
-        mapper.removeContainer(id1).test().await().assertComplete();
+        submit(mapper.removeContainer(idBase));
+        submit(mapper.removeContainer(id1));
+
+        await(mapper.containerOf(idBase)).assertNoValues();
+        await(mapper.containerOf(id1)).assertNoValues();
     }
 
     /**
@@ -152,29 +162,32 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * SingleFeatureBean)}.
      */
     @Test
-    public void testGetSet_Container_Different() throws InterruptedException {
+    public void testGetSet_Container_Different() {
         SingleFeatureBean container0 = SingleFeatureBean.of(id0, 20);
         SingleFeatureBean container1 = SingleFeatureBean.of(id0, 21);
 
-        mapper.containerFor(idBase, container0).test().await().assertComplete();
-        mapper.containerOf(idBase).test().await().assertValue(container0);
+        submit(mapper.containerFor(idBase, container0));
+        await(mapper.containerOf(idBase)).assertValue(container0);
 
-        mapper.containerFor(id1, container1).test().await().assertComplete();
-        mapper.containerOf(id1).test().await().assertValue(container1);
+        submit(mapper.containerFor(id1, container1));
+        await(mapper.containerOf(id1)).assertValue(container1);
 
-        mapper.containerFor(idBase, container1).test().await().assertComplete();
-        mapper.containerOf(idBase).test().await().assertValue(container1);
+        submit(mapper.containerFor(idBase, container1));
+        await(mapper.containerOf(idBase)).assertValue(container1);
 
-        mapper.removeContainer(idBase).test().await().assertComplete();
-        mapper.removeContainer(id1).test().await().assertComplete();
+        submit(mapper.removeContainer(idBase));
+        submit(mapper.removeContainer(id1));
+
+        await(mapper.containerOf(idBase)).assertNoValues();
+        await(mapper.containerOf(id1)).assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ContainerMapper#containerOf(Id)} when the element doesn't exist.
      */
     @Test
-    public void testGet_Container_NotDefined() throws InterruptedException {
-        mapper.containerOf(idBase).test().await().assertNoErrors().assertNoValues();
+    public void testGet_Container_NotDefined() {
+        await(mapper.containerOf(idBase)).assertNoErrors().assertNoValues();
     }
 
     /**
@@ -191,16 +204,16 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureBean)} with a {@code null} value.
      */
     @Test
-    public void testRemove_Container() throws InterruptedException {
+    public void testRemove_Container() {
         SingleFeatureBean container0 = SingleFeatureBean.of(id0, 20);
 
-        mapper.containerFor(idBase, container0).test().await().assertComplete();
-        mapper.containerOf(idBase).test().await().assertValue(container0);
+        submit(mapper.containerFor(idBase, container0));
+        await(mapper.containerOf(idBase)).assertValue(container0);
 
-        mapper.removeContainer(idBase).test().await().assertComplete();
-        mapper.containerOf(idBase).test().await().assertComplete().assertNoValues();
+        submit(mapper.removeContainer(idBase));
+        await(mapper.containerOf(idBase)).assertComplete().assertNoValues();
 
-        mapper.removeContainer(idBase).test().await().assertComplete();
+        await(mapper.removeContainer(idBase));
     }
 
     //endregion
@@ -211,44 +224,44 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} and {@link ClassMapper#metaClassFor(Id, ClassBean)}.
      */
     @Test
-    public void testGetSet_Metaclass_Same() throws InterruptedException {
+    public void testGetSet_Metaclass_Same() {
         Id id0 = Id.getProvider().fromLong(40);
         Id id1 = Id.getProvider().fromLong(41);
 
         ClassBean metaClass = ClassBean.of("Metaclass1", "Uri1");
 
-        mapper.metaClassFor(id0, metaClass).test().await().assertComplete();
-        mapper.metaClassOf(id0).test().await().assertValue(metaClass);
+        submit(mapper.metaClassFor(id0, metaClass));
+        await(mapper.metaClassOf(id0)).assertValue(metaClass);
 
-        mapper.metaClassFor(id1, metaClass).test().await().assertComplete();
-        mapper.metaClassOf(id1).test().await().assertValue(metaClass);
+        submit(mapper.metaClassFor(id1, metaClass));
+        await(mapper.metaClassOf(id1)).assertValue(metaClass);
     }
 
     /**
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} and {@link ClassMapper#metaClassFor(Id, ClassBean)}.
      */
     @Test
-    public void testGetSet_Metaclass_Different() throws InterruptedException {
+    public void testGetSet_Metaclass_Different() {
         Id id0 = Id.getProvider().fromLong(40);
 
         ClassBean metaClass0 = ClassBean.of("Metaclass1", "Uri1");
         ClassBean metaClass1 = ClassBean.of("Metaclass2", "Uri2");
 
-        mapper.metaClassFor(id0, metaClass0).test().await().assertComplete();
-        mapper.metaClassOf(id0).test().await().assertValue(metaClass0);
+        submit(mapper.metaClassFor(id0, metaClass0));
+        await(mapper.metaClassOf(id0)).assertValue(metaClass0);
 
-        mapper.metaClassFor(id0, metaClass1).test().await().assertError(ClassAlreadyExistsException.class);
-        mapper.metaClassOf(id0).test().await().assertValue(metaClass0);
+        await(mapper.metaClassFor(id0, metaClass1)).assertError(ClassAlreadyExistsException.class);
+        await(mapper.metaClassOf(id0)).assertValue(metaClass0);
     }
 
     /**
      * Checks the behavior of {@link ClassMapper#metaClassOf(Id)} when the element doesn't exist..
      */
     @Test
-    public void testGet_Metaclass_NotDefined() throws InterruptedException {
+    public void testGet_Metaclass_NotDefined() {
         Id id0 = Id.getProvider().fromLong(40);
 
-        mapper.metaClassOf(id0).test().await().assertNoErrors().assertNoValues();
+        await(mapper.metaClassOf(id0)).assertNoErrors().assertNoValues();
     }
 
     /**
@@ -273,14 +286,14 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testGetSet_Single(RedirectionType type, Object value0, Object value1) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testGetSet_Single(RedirectionType type, Object value0, Object value1) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.set(sfBase, value0).assertComplete();
-        m.get(sfBase).assertValue(value0);
+        submit(m.set(sfBase, value0));
+        await(m.get(sfBase)).assertValue(value0);
 
-        m.set(sfBase, value1).assertComplete();
-        m.get(sfBase).assertValue(value1);
+        submit(m.set(sfBase, value1));
+        await(m.get(sfBase)).assertValue(value1);
     }
 
     /**
@@ -288,10 +301,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testGet_Single_NotDefined(RedirectionType type) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testGet_Single_NotDefined(RedirectionType type) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.get(sfBase).assertNoErrors().assertNoValues();
+        await(m.get(sfBase)).assertNoErrors().assertNoValues();
     }
 
     /**
@@ -300,7 +313,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
     public void testSet_Single_Null(RedirectionType type) {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         assertThat(catchThrowable(() ->
                 m.set(sfBase, null)
@@ -312,14 +325,14 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testRemove_Single(RedirectionType type, Object value0) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testRemove_Single(RedirectionType type, Object value0) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.set(sfBase, value0).assertComplete();
-        m.get(sfBase).assertValue(value0);
+        submit(m.set(sfBase, value0));
+        await(m.get(sfBase)).assertValue(value0);
 
-        m.remove(sfBase).assertComplete();
-        m.get(sfBase).assertNoValues();
+        submit(m.remove(sfBase));
+        await(m.get(sfBase)).assertNoValues();
     }
 
     /**
@@ -327,10 +340,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testRemove_Single_NotDefined(RedirectionType type) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testRemove_Single_NotDefined(RedirectionType type) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.remove(sfBase).assertNoErrors().assertComplete();
+        await(m.remove(sfBase)).assertNoErrors().assertComplete();
     }
 
     //endregion
@@ -343,17 +356,16 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testGetSet_Many(RedirectionType type, Object value0, Object value1, Object value2, Object value3) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testGetSet_Many(RedirectionType type, Object value0, Object value1, Object value2, Object value3) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.add(sfBase.withPosition(0), value0).assertComplete();
-        m.add(sfBase.withPosition(1), value1).assertComplete();
+        await(m.appendAll(sfBase, Arrays.asList(value0, value1))).assertComplete();
 
-        m.set(sfBase.withPosition(0), value2).assertComplete();
-        m.get(sfBase.withPosition(0)).assertValue(value2);
+        await(m.set(sfBase.withPosition(0), value2)).assertComplete();
+        await(m.get(sfBase.withPosition(0))).assertValue(value2);
 
-        m.set(sfBase.withPosition(1), value3).assertComplete();
-        m.get(sfBase.withPosition(1)).assertValue(value3);
+        await(m.set(sfBase.withPosition(1), value3)).assertComplete();
+        await(m.get(sfBase.withPosition(1))).assertValue(value3);
     }
 
     /**
@@ -361,10 +373,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testGet_Many_NotDefined(RedirectionType type) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testGet_Many_NotDefined(RedirectionType type) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.get(mfBase).assertNoErrors().assertNoValues();
+        await(m.get(mfBase)).assertNoErrors().assertNoValues();
     }
 
     /**
@@ -373,13 +385,13 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testSet_Many_NotDefined(RedirectionType type, Object value0, Object value1) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testSet_Many_NotDefined(RedirectionType type, Object value0, Object value1) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.set(sfBase.withPosition(0), value0).assertError(NoSuchElementException.class);
-        m.add(sfBase.withPosition(0), value0).assertComplete();
+        await(m.set(sfBase.withPosition(0), value0)).assertError(NoSuchElementException.class);
+        await(m.add(sfBase.withPosition(0), value0)).assertComplete();
 
-        m.set(sfBase.withPosition(1), value1).assertError(NoSuchElementException.class);
+        await(m.set(sfBase.withPosition(1), value1)).assertError(NoSuchElementException.class);
     }
 
     /**
@@ -388,7 +400,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
     public void testSet_Many_Null(RedirectionType type) {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         assertThat(catchThrowable(() ->
                 m.set(mfBase, null)
@@ -400,18 +412,12 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testGetAll_Many(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testGetAll_Many(RedirectionType type, Object value0, Object value1, Object value2) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.append(sfBase, value0).assertComplete();
-        m.append(sfBase, value1).assertComplete();
-        m.append(sfBase, value2).assertComplete();
+        await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
-        m.getAll(sfBase)
-                .assertValueCount(3)
-                .assertValueAt(0, value0)
-                .assertValueAt(1, value1)
-                .assertValueAt(2, value2);
+        await(m.getAll(sfBase)).assertValueCount(3).assertValues(value0, value1, value2);
     }
 
     /**
@@ -420,10 +426,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testGetAll_Many_Empty(RedirectionType type) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testGetAll_Many_Empty(RedirectionType type) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.getAll(sfBase).assertNoErrors().assertNoValues();
+        await(m.getAll(sfBase)).assertNoErrors().assertNoValues();
     }
 
     /**
@@ -431,18 +437,18 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testAdd_Many(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testAdd_Many(RedirectionType type, Object value0, Object value1, Object value2) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.add(sfBase.withPosition(0), value0).assertComplete();
-        m.add(sfBase.withPosition(1), value1).assertComplete();
-        m.add(sfBase.withPosition(2), value2).assertComplete();
+        await(m.add(sfBase.withPosition(0), value0)).assertComplete();
+        await(m.add(sfBase.withPosition(1), value1)).assertComplete();
+        await(m.add(sfBase.withPosition(2), value2)).assertComplete();
 
-        m.get(sfBase.withPosition(0)).assertValue(value0);
-        m.get(sfBase.withPosition(1)).assertValue(value1);
-        m.get(sfBase.withPosition(2)).assertValue(value2);
+        await(m.get(sfBase.withPosition(0))).assertValue(value0);
+        await(m.get(sfBase.withPosition(1))).assertValue(value1);
+        await(m.get(sfBase.withPosition(2))).assertValue(value2);
 
-        m.sizeOf(sfBase).assertValue(3);
+        await(m.sizeOf(sfBase)).assertValue(3);
     }
 
     /**
@@ -451,7 +457,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
     public void testAdd_Many_OverSize(RedirectionType type, Object value0) {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         assertThat(catchThrowable(() ->
                 m.add(sfBase.withPosition(2), value0)
@@ -464,7 +470,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
     public void testAdd_Many_Null(RedirectionType type) {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         assertThat(catchThrowable(() ->
                 m.add(mfBase, null)
@@ -476,16 +482,16 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testAppend_Many(RedirectionType type, Object value0, Object value1) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testAppend_Many(RedirectionType type, Object value0, Object value1) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.append(sfBase, value0).assertValue(0);
-        m.get(sfBase.withPosition(0)).assertValue(value0);
+        await(m.append(sfBase, value0)).assertValue(0);
+        await(m.get(sfBase.withPosition(0))).assertValue(value0);
 
-        m.append(sfBase, value1).assertValue(1);
-        m.get(sfBase.withPosition(1)).assertValue(value1);
+        await(m.append(sfBase, value1)).assertValue(1);
+        await(m.get(sfBase.withPosition(1))).assertValue(value1);
 
-        m.sizeOf(sfBase).assertValue(2);
+        await(m.sizeOf(sfBase)).assertValue(2);
     }
 
     /**
@@ -494,7 +500,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
     public void testAppend_Many_Null(RedirectionType type) {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         assertThat(catchThrowable(() ->
                 m.append(sfBase, null)
@@ -507,15 +513,15 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testAddAll_Many_FromStart(RedirectionType type, Object value0, Object value1) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testAddAll_Many_FromStart(RedirectionType type, Object value0, Object value1) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.addAll(sfBase.withPosition(0), Arrays.asList(value0, value1)).assertComplete();
+        await(m.addAll(sfBase.withPosition(0), Arrays.asList(value0, value1))).assertComplete();
 
-        m.get(sfBase.withPosition(0)).assertValue(value0);
-        m.get(sfBase.withPosition(1)).assertValue(value1);
+        await(m.get(sfBase.withPosition(0))).assertValue(value0);
+        await(m.get(sfBase.withPosition(1))).assertValue(value1);
 
-        m.sizeOf(sfBase).assertValue(2);
+        await(m.sizeOf(sfBase)).assertValue(2);
     }
 
     /**
@@ -525,7 +531,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
     public void testAddAll_Many_WithOffset(RedirectionType type, Object value0, Object value1) {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         assertThat(catchThrowable(() ->
                 m.addAll(sfBase.withPosition(1), Arrays.asList(value0, value1))
@@ -538,20 +544,19 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testAddAll_Many_FromMiddle(RedirectionType type, Object value0, Object value1, Object value2, Object value3) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testAddAll_Many_FromMiddle(RedirectionType type, Object value0, Object value1, Object value2, Object value3) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.append(sfBase, value0).assertComplete();
-        m.append(sfBase, value1).assertComplete();
+        await(m.append(sfBase, value0)).assertComplete();
+        await(m.append(sfBase, value1)).assertComplete();
 
-        m.addAll(sfBase.withPosition(1), Arrays.asList(value2, value3)).assertComplete();
+        await(m.addAll(sfBase.withPosition(1), Arrays.asList(value2, value3))).assertComplete();
+        await(m.sizeOf(sfBase)).assertValue(4);
 
-        m.get(sfBase.withPosition(0)).assertValue(value0);
-        m.get(sfBase.withPosition(1)).assertValue(value2);
-        m.get(sfBase.withPosition(2)).assertValue(value3);
-        m.get(sfBase.withPosition(3)).assertValue(value1);
-
-        m.sizeOf(sfBase).assertValue(4);
+        await(m.get(sfBase.withPosition(0))).assertValue(value0);
+        await(m.get(sfBase.withPosition(1))).assertValue(value2);
+        await(m.get(sfBase.withPosition(2))).assertValue(value3);
+        await(m.get(sfBase.withPosition(3))).assertValue(value1);
     }
 
     /**
@@ -560,19 +565,17 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testAddAll_Many_FromEnd(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testAddAll_Many_FromEnd(RedirectionType type, Object value0, Object value1, Object value2) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.append(sfBase, value0).assertComplete();
-        m.get(sfBase.withPosition(0)).assertValue(value0);
+        await(m.append(sfBase, value0)).assertComplete();
 
-        m.addAll(sfBase.withPosition(1), Arrays.asList(value1, value2)).assertComplete();
+        await(m.addAll(sfBase.withPosition(1), Arrays.asList(value1, value2))).assertComplete();
+        await(m.sizeOf(sfBase)).assertValue(3);
 
-        m.get(sfBase.withPosition(0)).assertValue(value0);
-        m.get(sfBase.withPosition(1)).assertValue(value1);
-        m.get(sfBase.withPosition(2)).assertValue(value2);
-
-        m.sizeOf(sfBase).assertValue(3);
+        await(m.get(sfBase.withPosition(0))).assertValue(value0);
+        await(m.get(sfBase.withPosition(1))).assertValue(value1);
+        await(m.get(sfBase.withPosition(2))).assertValue(value2);
     }
 
     /**
@@ -580,12 +583,11 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testAddAll_Many_Empty(RedirectionType type) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testAddAll_Many_Empty(RedirectionType type) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.addAll(mfBase, Collections.emptyList()).assertComplete();
-
-        m.sizeOf(mfBase.withoutPosition()).assertNoValues();
+        await(m.addAll(mfBase, Collections.emptyList())).assertComplete();
+        await(m.sizeOf(mfBase.withoutPosition())).assertNoValues();
     }
 
     /**
@@ -595,7 +597,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
     public void testAddAll_Many_WithNull(RedirectionType type, Object value0) {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         assertThat(catchThrowable(() ->
                 m.addAll(mfBase, Arrays.asList(value0, null))
@@ -609,7 +611,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
     public void testAddAll_Many_Null(RedirectionType type) {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         assertThat(catchThrowable(() ->
                 m.addAll(mfBase, null)
@@ -622,15 +624,15 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testAppendAll_Many_FromStart(RedirectionType type, Object value0, Object value1) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testAppendAll_Many_FromStart(RedirectionType type, Object value0, Object value1) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.appendAll(sfBase, Arrays.asList(value0, value1)).assertValue(0);
+        await(m.appendAll(sfBase, Arrays.asList(value0, value1))).assertValue(0);
 
-        m.get(sfBase.withPosition(0)).assertValue(value0);
-        m.get(sfBase.withPosition(1)).assertValue(value1);
+        await(m.get(sfBase.withPosition(0))).assertValue(value0);
+        await(m.get(sfBase.withPosition(1))).assertValue(value1);
 
-        m.sizeOf(sfBase).assertValue(2);
+        await(m.sizeOf(sfBase)).assertValue(2);
     }
 
     /**
@@ -639,19 +641,18 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testAppendAll_Many_FromEnd(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testAppendAll_Many_FromEnd(RedirectionType type, Object value0, Object value1, Object value2) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.append(sfBase, value0).assertValue(0);
-        m.get(sfBase.withPosition(0)).assertValue(value0);
+        await(m.append(sfBase, value0)).assertValue(0);
+        await(m.get(sfBase.withPosition(0))).assertValue(value0);
 
-        m.appendAll(sfBase, Arrays.asList(value1, value2)).assertValue(1);
+        await(m.appendAll(sfBase, Arrays.asList(value1, value2))).assertValue(1);
+        await(m.sizeOf(sfBase)).assertValue(3);
 
-        m.get(sfBase.withPosition(0)).assertValue(value0);
-        m.get(sfBase.withPosition(1)).assertValue(value1);
-        m.get(sfBase.withPosition(2)).assertValue(value2);
-
-        m.sizeOf(sfBase).assertValue(3);
+        await(m.get(sfBase.withPosition(0))).assertValue(value0);
+        await(m.get(sfBase.withPosition(1))).assertValue(value1);
+        await(m.get(sfBase.withPosition(2))).assertValue(value2);
     }
 
     /**
@@ -660,12 +661,12 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testAppendAll_Many_Empty(RedirectionType type) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testAppendAll_Many_Empty(RedirectionType type) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.appendAll(sfBase, Collections.emptyList()).assertValue(0);
+        await(m.appendAll(sfBase, Collections.emptyList())).assertValue(0);
 
-        m.sizeOf(sfBase).assertNoValues();
+        await(m.sizeOf(sfBase)).assertNoValues();
     }
 
     /**
@@ -675,7 +676,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
     public void testAppendAll_Many_WithNull(RedirectionType type, Object value0) {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         assertThat(catchThrowable(() ->
                 m.appendAll(sfBase, Arrays.asList(value0, null))
@@ -689,7 +690,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
     public void testAppendAll_Many_Null(RedirectionType type) {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         assertThat(catchThrowable(() ->
                 m.appendAll(sfBase, null)
@@ -701,18 +702,16 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testRemove_Many(RedirectionType type, Object value0, Object value1) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testRemove_Many(RedirectionType type, Object value0, Object value1) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.add(sfBase.withPosition(0), value0).assertComplete();
-        m.add(sfBase.withPosition(1), value1).assertComplete();
-        m.sizeOf(sfBase).assertValue(2);
+        await(m.appendAll(sfBase, Arrays.asList(value0, value1))).assertComplete();
 
-        m.remove(sfBase.withPosition(0)).assertValue(value0);
-        m.sizeOf(sfBase).assertValue(1);
+        await(m.remove(sfBase.withPosition(0))).assertValue(value0);
+        await(m.sizeOf(sfBase)).assertValue(1);
 
-        m.remove(sfBase.withPosition(0)).assertValue(value1);
-        m.sizeOf(sfBase).assertNoValues();
+        await(m.remove(sfBase.withPosition(0))).assertValue(value1);
+        await(m.sizeOf(sfBase)).assertNoValues();
     }
 
     /**
@@ -720,20 +719,17 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testRemove_Many_Before(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testRemove_Many_Before(RedirectionType type, Object value0, Object value1, Object value2) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.add(sfBase.withPosition(0), value0).assertComplete();
-        m.add(sfBase.withPosition(1), value1).assertComplete();
-        m.add(sfBase.withPosition(2), value2).assertComplete();
+        await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
-        m.remove(sfBase.withPosition(0)).assertValue(value0);
+        await(m.remove(sfBase.withPosition(0))).assertValue(value0);
+        await(m.sizeOf(sfBase)).assertValue(2);
 
-        m.get(sfBase.withPosition(0)).assertValue(value1);
-        m.get(sfBase.withPosition(1)).assertValue(value2);
-        m.get(sfBase.withPosition(2)).assertNoValues();
-
-        m.sizeOf(sfBase).assertValue(2);
+        await(m.get(sfBase.withPosition(0))).assertValue(value1);
+        await(m.get(sfBase.withPosition(1))).assertValue(value2);
+        await(m.get(sfBase.withPosition(2))).assertNoValues();
     }
 
     /**
@@ -741,20 +737,17 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testRemove_Many_After(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testRemove_Many_After(RedirectionType type, Object value0, Object value1, Object value2) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.add(sfBase.withPosition(0), value0).assertComplete();
-        m.add(sfBase.withPosition(1), value1).assertComplete();
-        m.add(sfBase.withPosition(2), value2).assertComplete();
+        await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
-        m.remove(sfBase.withPosition(1)).assertValue(value1);
+        await(m.remove(sfBase.withPosition(1))).assertValue(value1);
+        await(m.sizeOf(sfBase)).assertValue(2);
 
-        m.get(sfBase.withPosition(0)).assertValue(value0);
-        m.get(sfBase.withPosition(1)).assertValue(value2);
-        m.get(sfBase.withPosition(2)).assertNoValues();
-
-        m.sizeOf(sfBase).assertValue(2);
+        await(m.get(sfBase.withPosition(0))).assertValue(value0);
+        await(m.get(sfBase.withPosition(1))).assertValue(value2);
+        await(m.get(sfBase.withPosition(2))).assertNoValues();
     }
 
     /**
@@ -762,20 +755,17 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testRemove_Many_Last(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testRemove_Many_Last(RedirectionType type, Object value0, Object value1, Object value2) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.add(sfBase.withPosition(0), value0).assertComplete();
-        m.add(sfBase.withPosition(1), value1).assertComplete();
-        m.add(sfBase.withPosition(2), value2).assertComplete();
+        await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
-        m.remove(sfBase.withPosition(2)).assertValue(value2);
+        await(m.remove(sfBase.withPosition(2))).assertValue(value2);
+        await(m.sizeOf(sfBase)).assertValue(2);
 
-        m.get(sfBase.withPosition(0)).assertValue(value0);
-        m.get(sfBase.withPosition(1)).assertValue(value1);
-        m.get(sfBase.withPosition(2)).assertNoValues();
-
-        m.sizeOf(sfBase).assertValue(2);
+        await(m.get(sfBase.withPosition(0))).assertValue(value0);
+        await(m.get(sfBase.withPosition(1))).assertValue(value1);
+        await(m.get(sfBase.withPosition(2))).assertNoValues();
     }
 
     /**
@@ -783,10 +773,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testRemove_Many_NotDefined(RedirectionType type) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testRemove_Many_NotDefined(RedirectionType type) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.remove(mfBase).assertNoErrors().assertNoValues();
+        await(m.remove(mfBase)).assertNoErrors().assertNoValues();
     }
 
     /**
@@ -794,22 +784,17 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testRemoveAll_Many(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testRemoveAll_Many(RedirectionType type, Object value0, Object value1, Object value2) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.append(sfBase, value0).assertComplete();
-        m.append(sfBase, value1).assertComplete();
-        m.append(sfBase, value2).assertComplete();
+        await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
-        m.sizeOf(sfBase).assertValue(3);
+        await(m.removeAll(sfBase)).assertComplete();
+        await(m.sizeOf(sfBase)).assertNoValues();
 
-        m.removeAll(sfBase).assertComplete();
-
-        m.get(sfBase.withPosition(0)).assertNoValues();
-        m.get(sfBase.withPosition(1)).assertNoValues();
-        m.get(sfBase.withPosition(2)).assertNoValues();
-
-        m.sizeOf(sfBase).assertNoValues();
+        await(m.get(sfBase.withPosition(0))).assertNoValues();
+        await(m.get(sfBase.withPosition(1))).assertNoValues();
+        await(m.get(sfBase.withPosition(2))).assertNoValues();
     }
 
     /**
@@ -817,10 +802,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testRemoveAll_Many_NotDefined(RedirectionType type) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testRemoveAll_Many_NotDefined(RedirectionType type) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.removeAll(sfBase).assertNoErrors().assertComplete();
+        await(m.removeAll(sfBase)).assertNoErrors().assertComplete();
     }
 
     /**
@@ -828,18 +813,14 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testSize_Many(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testSize_Many(RedirectionType type, Object value0, Object value1, Object value2) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.append(sfBase, value0).assertComplete();
-        m.append(sfBase, value1).assertComplete();
-        m.append(sfBase, value2).assertComplete();
+        await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
+        await(m.sizeOf(sfBase)).assertValue(3);
 
-        m.sizeOf(sfBase).assertValue(3);
-
-        m.remove(sfBase.withPosition(1)).assertValue(value1);
-
-        m.sizeOf(sfBase).assertValue(2);
+        await(m.remove(sfBase.withPosition(1))).assertValue(value1);
+        await(m.sizeOf(sfBase)).assertValue(2);
     }
 
     /**
@@ -847,10 +828,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ParametersProvider.class)
-    public void testSize_Many_NotDefined(RedirectionType type) throws InterruptedException {
-        DataMapperTester m = new DataMapperTester(mapper, type);
+    public void testSize_Many_NotDefined(RedirectionType type) {
+        DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        m.sizeOf(sfBase).assertNoErrors().assertNoValues();
+        await(m.sizeOf(sfBase)).assertNoErrors().assertNoValues();
     }
 
     //endregion

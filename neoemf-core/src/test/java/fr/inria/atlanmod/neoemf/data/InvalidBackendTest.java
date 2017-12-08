@@ -26,9 +26,7 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.reactivex.observers.TestObserver;
-import io.reactivex.subscribers.TestSubscriber;
-
+import static fr.inria.atlanmod.neoemf.util.RxTestUtils.await;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
@@ -48,14 +46,6 @@ class InvalidBackendTest extends AbstractTest {
         invalidBackend = new InvalidBackend("");
     }
 
-    private void assertHasError(TestObserver<?> observer) throws InterruptedException {
-        observer.await().assertError(INVALID_EXCEPTION_TYPE);
-    }
-
-    private void assertHasError(TestSubscriber<?> subscriber) throws InterruptedException {
-        subscriber.await().assertError(INVALID_EXCEPTION_TYPE);
-    }
-
     @Test
     void testClose() {
         assertThat(
@@ -64,164 +54,164 @@ class InvalidBackendTest extends AbstractTest {
     }
 
     @Test
-    void testSave() throws InterruptedException {
-        invalidBackend.save().test().await().assertNoErrors().assertComplete();
+    void testSave() {
+        await(invalidBackend.save()).assertNoErrors();
     }
 
     @Test
-    void testContainerOf() throws InterruptedException {
-        assertHasError(invalidBackend.containerOf(mock(Id.class)).test());
+    void testContainerOf() {
+        await(invalidBackend.containerOf(mock(Id.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testContainerFor() throws InterruptedException {
-        assertHasError(invalidBackend.containerFor(mock(Id.class), mock(SingleFeatureBean.class)).test());
+    void testContainerFor() {
+        await(invalidBackend.containerFor(mock(Id.class), mock(SingleFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveContainer() throws InterruptedException {
-        assertHasError(invalidBackend.removeContainer(mock(Id.class)).test());
+    void testRemoveContainer() {
+        await(invalidBackend.removeContainer(mock(Id.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testMetaClassOf() throws InterruptedException {
-        assertHasError(invalidBackend.metaClassOf(mock(Id.class)).test());
+    void testMetaClassOf() {
+        await(invalidBackend.metaClassOf(mock(Id.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testmMetaClassFor() throws InterruptedException {
-        assertHasError(invalidBackend.metaClassFor(mock(Id.class), mock(ClassBean.class)).test());
+    void testmMetaClassFor() {
+        await(invalidBackend.metaClassFor(mock(Id.class), mock(ClassBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testValueOf() throws InterruptedException {
-        assertHasError(invalidBackend.valueOf(mock(SingleFeatureBean.class)).test());
+    void testValueOf() {
+        await(invalidBackend.valueOf(mock(SingleFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testValueFor() throws InterruptedException {
-        assertHasError(invalidBackend.valueFor(mock(SingleFeatureBean.class), mock(Object.class)).test());
+    void testValueFor() {
+        await(invalidBackend.valueFor(mock(SingleFeatureBean.class), mock(Object.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveValue() throws InterruptedException {
-        assertHasError(invalidBackend.removeValue(mock(SingleFeatureBean.class)).test());
+    void testRemoveValue() {
+        await(invalidBackend.removeValue(mock(SingleFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testReferenceOf() throws InterruptedException {
-        assertHasError(invalidBackend.referenceOf(mock(SingleFeatureBean.class)).test());
+    void testReferenceOf() {
+        await(invalidBackend.referenceOf(mock(SingleFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testReferenceFor() throws InterruptedException {
-        assertHasError(invalidBackend.referenceFor(mock(SingleFeatureBean.class), mock(Id.class)).test());
+    void testReferenceFor() {
+        await(invalidBackend.referenceFor(mock(SingleFeatureBean.class), mock(Id.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveReference() throws InterruptedException {
-        assertHasError(invalidBackend.removeReference(mock(SingleFeatureBean.class)).test());
+    void testRemoveReference() {
+        await(invalidBackend.removeReference(mock(SingleFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testValueOfMany() throws InterruptedException {
-        assertHasError(invalidBackend.valueOf(mock(ManyFeatureBean.class)).test());
+    void testValueOfMany() {
+        await(invalidBackend.valueOf(mock(ManyFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAllValuesOf() throws InterruptedException {
-        assertHasError(invalidBackend.allValuesOf(mock(SingleFeatureBean.class)).test());
+    void testAllValuesOf() {
+        await(invalidBackend.allValuesOf(mock(SingleFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void tetsValueForMany() throws InterruptedException {
-        assertHasError(invalidBackend.valueFor(mock(ManyFeatureBean.class), mock(Object.class)).test());
+    void tetsValueForMany() {
+        await(invalidBackend.valueFor(mock(ManyFeatureBean.class), mock(Object.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAddValue() throws InterruptedException {
-        assertHasError(invalidBackend.addValue(mock(ManyFeatureBean.class), mock(Object.class)).test());
+    void testAddValue() {
+        await(invalidBackend.addValue(mock(ManyFeatureBean.class), mock(Object.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAddAllValues() throws InterruptedException {
-        assertHasError(invalidBackend.addAllValues(mock(ManyFeatureBean.class), Collections.emptyList()).test());
+    void testAddAllValues() {
+        await(invalidBackend.addAllValues(mock(ManyFeatureBean.class), Collections.emptyList())).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAppendValue() throws InterruptedException {
-        assertHasError(invalidBackend.appendValue(mock(SingleFeatureBean.class), mock(Object.class)).test());
+    void testAppendValue() {
+        await(invalidBackend.appendValue(mock(SingleFeatureBean.class), mock(Object.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAppendAllValues() throws InterruptedException {
-        assertHasError(invalidBackend.appendAllValues(mock(SingleFeatureBean.class), Collections.emptyList()).test());
+    void testAppendAllValues() {
+        await(invalidBackend.appendAllValues(mock(SingleFeatureBean.class), Collections.emptyList())).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveValueMany() throws InterruptedException {
-        assertHasError(invalidBackend.removeValue(mock(ManyFeatureBean.class)).test());
+    void testRemoveValueMany() {
+        await(invalidBackend.removeValue(mock(ManyFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveAllValues() throws InterruptedException {
-        assertHasError(invalidBackend.removeAllValues(mock(SingleFeatureBean.class)).test());
+    void testRemoveAllValues() {
+        await(invalidBackend.removeAllValues(mock(SingleFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testSizeOfValue() throws InterruptedException {
-        assertHasError(invalidBackend.sizeOfValue(mock(SingleFeatureBean.class)).test());
+    void testSizeOfValue() {
+        await(invalidBackend.sizeOfValue(mock(SingleFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testReferenceOfMany() throws InterruptedException {
-        assertHasError(invalidBackend.referenceOf(mock(ManyFeatureBean.class)).test());
+    void testReferenceOfMany() {
+        await(invalidBackend.referenceOf(mock(ManyFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAllReferencesOf() throws InterruptedException {
-        assertHasError(invalidBackend.allReferencesOf(mock(SingleFeatureBean.class)).test());
+    void testAllReferencesOf() {
+        await(invalidBackend.allReferencesOf(mock(SingleFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testReferenceForMany() throws InterruptedException {
-        assertHasError(invalidBackend.referenceFor(mock(ManyFeatureBean.class), mock(Id.class)).test());
+    void testReferenceForMany() {
+        await(invalidBackend.referenceFor(mock(ManyFeatureBean.class), mock(Id.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testAddReference() throws InterruptedException {
-        assertHasError(invalidBackend.addReference(mock(ManyFeatureBean.class), mock(Id.class)).test());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void testAddAllReferences() throws InterruptedException {
-        assertHasError(invalidBackend.addAllReferences(mock(ManyFeatureBean.class), mock(List.class)).test());
-    }
-
-    @Test
-    void testAppendReference() throws InterruptedException {
-        assertHasError(invalidBackend.appendReference(mock(SingleFeatureBean.class), mock(Id.class)).test());
+    void testAddReference() {
+        await(invalidBackend.addReference(mock(ManyFeatureBean.class), mock(Id.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    void testAppendAllReferences() throws InterruptedException {
-        assertHasError(invalidBackend.appendAllReferences(mock(SingleFeatureBean.class), mock(List.class)).test());
+    void testAddAllReferences() {
+        await(invalidBackend.addAllReferences(mock(ManyFeatureBean.class), mock(List.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveReferenceMany() throws InterruptedException {
-        assertHasError(invalidBackend.removeReference(mock(ManyFeatureBean.class)).test());
+    void testAppendReference() {
+        await(invalidBackend.appendReference(mock(SingleFeatureBean.class), mock(Id.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testRemoveAllReferences() throws InterruptedException {
-        assertHasError(invalidBackend.removeAllReferences(mock(SingleFeatureBean.class)).test());
+    @SuppressWarnings("unchecked")
+    void testAppendAllReferences() {
+        await(invalidBackend.appendAllReferences(mock(SingleFeatureBean.class), mock(List.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 
     @Test
-    void testSizeOfReference() throws InterruptedException {
-        assertHasError(invalidBackend.sizeOfReference(mock(SingleFeatureBean.class)).test());
+    void testRemoveReferenceMany() {
+        await(invalidBackend.removeReference(mock(ManyFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
+    }
+
+    @Test
+    void testRemoveAllReferences() {
+        await(invalidBackend.removeAllReferences(mock(SingleFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
+    }
+
+    @Test
+    void testSizeOfReference() {
+        await(invalidBackend.sizeOfReference(mock(SingleFeatureBean.class))).assertError(INVALID_EXCEPTION_TYPE);
     }
 }

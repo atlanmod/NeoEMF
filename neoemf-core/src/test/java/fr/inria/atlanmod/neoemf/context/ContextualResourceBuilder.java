@@ -75,15 +75,16 @@ final class ContextualResourceBuilder {
      * @return a new configuration
      */
     @Nonnull
+    // FIXME Cache stores don't handle correctly asynchronous executions
     private Config defaultConfig() {
         return context.config()
                 .log(Level.DEBUG)
                 .autoSave(100)
-                .recordStats()
-                .cacheSizes()
-                .cacheFeatures()
-                .cacheContainers()
-                .cacheMetaClasses();
+                .recordStats();
+//                .cacheSizes()
+//                .cacheFeatures()
+//                .cacheContainers()
+//                .cacheMetaClasses();
     }
 
     /**

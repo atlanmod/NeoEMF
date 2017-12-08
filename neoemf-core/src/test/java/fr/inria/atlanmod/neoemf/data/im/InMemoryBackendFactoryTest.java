@@ -28,7 +28,7 @@ class InMemoryBackendFactoryTest extends AbstractBackendFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return CoreContext.get();
+        return CoreContext.getDefault();
     }
 
     @Disabled("Not supported")

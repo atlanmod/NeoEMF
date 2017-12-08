@@ -12,7 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A type of redirection for {@link DataMapperTester}.
+ * A type of redirection for {@link DataMapperRedirector}.
  */
 @ParametersAreNonnullByDefault
 enum RedirectionType {
