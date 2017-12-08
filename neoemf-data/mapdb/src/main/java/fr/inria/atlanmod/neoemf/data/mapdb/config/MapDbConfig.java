@@ -53,7 +53,7 @@ public class MapDbConfig extends BaseConfig<MapDbConfig> {
      * This mapping corresponds to a simple representation of multi-valued features, by using the {@link
      * fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean#position()}.
      * <p>
-     * <b>Note:</b> This is the default mapping.
+     * <b>NOTE:</b> This is the default mapping.
      *
      * @return this configuration (for chaining)
      *

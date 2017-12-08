@@ -12,19 +12,10 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
-import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -50,48 +41,6 @@ public abstract class AbstractListenerStore extends AbstractStore {
      */
     protected AbstractListenerStore(Store store) {
         super(store);
-    }
-
-    @Override
-    public void close() {
-        CallInfoBuilder callInfo = CallInfo.forMethod("close");
-
-        try {
-            super.close();
-            onSuccess(callInfo);
-        }
-        catch (RuntimeException e) {
-            onFailure(callInfo.withThrownException(e));
-            throw e;
-        }
-    }
-
-    @Override
-    public void save() {
-        CallInfoBuilder callInfo = CallInfo.forMethod("save");
-
-        try {
-            super.save();
-            onSuccess(callInfo);
-        }
-        catch (RuntimeException e) {
-            onFailure(callInfo.withThrownException(e));
-            throw e;
-        }
-    }
-
-    @Override
-    public void copyTo(DataMapper target) {
-        CallInfoBuilder callInfo = CallInfo.forMethod("copyTo");
-
-        try {
-            super.copyTo(target);
-            onSuccess(callInfo);
-        }
-        catch (RuntimeException e) {
-            onFailure(callInfo.withThrownException(e));
-            throw e;
-        }
     }
 
     @Nonnull
@@ -165,12 +114,11 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Completable valueFor(SingleFeatureBean key, V value) {
         CallInfoBuilder callInfo = CallInfo.forMethod("valueFor").withKey(key).withValue(value);
 
         return super.valueFor(key, value)
                 .doOnComplete(() -> onSuccess(callInfo))
-                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
                 .doOnError(e -> onFailure(callInfo.withThrownException(e)))
                 .cache();
     }
@@ -200,12 +148,11 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
+    public Completable referenceFor(SingleFeatureBean key, Id reference) {
         CallInfoBuilder callInfo = CallInfo.forMethod("referenceFor").withKey(key).withValue(reference);
 
         return super.referenceFor(key, reference)
                 .doOnComplete(() -> onSuccess(callInfo))
-                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
                 .doOnError(e -> onFailure(callInfo.withThrownException(e)))
                 .cache();
     }
@@ -249,50 +196,83 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+    public <V> Completable valueFor(ManyFeatureBean key, V value) {
         CallInfoBuilder callInfo = CallInfo.forMethod("valueFor").withKey(key).withValue(value);
 
         return super.valueFor(key, value)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public <V> Completable addValue(ManyFeatureBean key, V value) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("addValue").withKey(key).withValue(value);
+
+        return super.addValue(key, value)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("addAllValues").withKey(key).withValue(values);
+
+        return super.addAllValues(key, values)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public <V> Single<Integer> appendValue(SingleFeatureBean key, V value) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("appendValue").withKey(key).withValue(value);
+
+        return super.appendValue(key, value)
                 .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
                 .doOnError(e -> onFailure(callInfo.withThrownException(e)))
                 .cache();
     }
 
+    @Nonnull
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        onCall(super::addValue, key, value);
-    }
+    public <V> Single<Integer> appendAllValues(SingleFeatureBean key, List<? extends V> values) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("appendAllValues").withKey(key).withValue(values);
 
-    @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        onCall(super::addAllValues, key, collection);
-    }
-
-    @Nonnegative
-    @Override
-    public <V> int appendValue(SingleFeatureBean key, V value) {
-        return onCallResult(super::appendValue, key, value);
-    }
-
-    @Nonnegative
-    @Override
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        return onCallResult(super::appendAllValues, key, collection);
+        return super.appendAllValues(key, values)
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        return onCallResult(super::removeValue, key);
-    }
+    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("removeValue").withKey(key);
 
-    @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        onCall(super::removeAllValues, key);
+        return super.<V>removeValue(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
-    @Nonnegative
+    @Override
+    public Completable removeAllValues(SingleFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("removeAllValues").withKey(key);
+
+        return super.removeAllValues(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
     @Override
     public Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
         CallInfoBuilder callInfo = CallInfo.forMethod("sizeOfValue").withKey(key);
@@ -332,50 +312,83 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    public Completable referenceFor(ManyFeatureBean key, Id reference) {
         CallInfoBuilder callInfo = CallInfo.forMethod("referenceFor").withKey(key).withValue(reference);
 
         return super.referenceFor(key, reference)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Completable addReference(ManyFeatureBean key, Id reference) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("addReference").withKey(key).withValue(reference);
+
+        return super.addReference(key, reference)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Completable addAllReferences(ManyFeatureBean key, List<Id> references) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("addAllReferences").withKey(key).withValue(references);
+
+        return super.addAllReferences(key, references)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Single<Integer> appendReference(SingleFeatureBean key, Id reference) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("appendReference").withKey(key).withValue(reference);
+
+        return super.appendReference(key, reference)
                 .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
                 .doOnError(e -> onFailure(callInfo.withThrownException(e)))
                 .cache();
     }
 
+    @Nonnull
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
-        onCall(super::addReference, key, reference);
-    }
+    public Single<Integer> appendAllReferences(SingleFeatureBean key, List<Id> references) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("appendAllReferences").withKey(key).withValue(references);
 
-    @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        onCall(super::addAllReferences, key, collection);
-    }
-
-    @Nonnegative
-    @Override
-    public int appendReference(SingleFeatureBean key, Id reference) {
-        return onCallResult(super::appendReference, key, reference);
-    }
-
-    @Nonnegative
-    @Override
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        return onCallResult(super::appendAllReferences, key, collection);
+        return super.appendAllReferences(key, references)
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        return onCallResult(super::removeReference, key);
-    }
+    public Maybe<Id> removeReference(ManyFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("removeReference").withKey(key);
 
-    @Override
-    public void removeAllReferences(SingleFeatureBean key) {
-        onCall(super::removeAllReferences, key);
+        return super.removeReference(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
     }
 
     @Nonnull
-    @Nonnegative
+    @Override
+    public Completable removeAllReferences(SingleFeatureBean key) {
+        CallInfoBuilder callInfo = CallInfo.forMethod("removeAllReferences").withKey(key);
+
+        return super.removeAllReferences(key)
+                .doOnComplete(() -> onSuccess(callInfo))
+                .doOnError(e -> onFailure(callInfo.withThrownException(e)))
+                .cache();
+    }
+
+    @Nonnull
     @Override
     public Maybe<Integer> sizeOfReference(SingleFeatureBean key) {
         CallInfoBuilder callInfo = CallInfo.forMethod("sizeOfReference").withKey(key);
@@ -385,80 +398,6 @@ public abstract class AbstractListenerStore extends AbstractStore {
                 .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
                 .doOnError(e -> onFailure(callInfo.withThrownException(e)))
                 .cache();
-    }
-
-    /**
-     * Logs the call of a method.
-     *
-     * @param consumer the method to call
-     * @param key      the key used during the call
-     */
-    private <K> void onCall(Consumer<K> consumer, @Nullable K key) {
-        onCallResult((k, v) -> {
-            consumer.accept(k);
-            return null;
-        }, key, null);
-    }
-
-    /**
-     * Logs the call of a method.
-     *
-     * @param consumer the method to call
-     * @param key      the key used during the call
-     * @param value    the value of the key
-     */
-    private <K, V> void onCall(BiConsumer<K, V> consumer, @Nullable K key, @Nullable V value) {
-        onCallResult((k, v) -> {
-            consumer.accept(k, v);
-            return null;
-        }, key, value);
-    }
-
-    /**
-     * Logs the call of a method and returns the result.
-     *
-     * @param function the method to call
-     * @param key      the key used during the call
-     *
-     * @return the result of the call
-     */
-    private <K, R> R onCallResult(Function<K, R> function, @Nullable K key) {
-        return onCallResult((k, v) -> function.apply(k), key, null);
-    }
-
-    /**
-     * Logs the call of a method and returns the result.
-     *
-     * @param function the method to call
-     * @param key      the key used during the call
-     * @param value    the value of the key
-     *
-     * @return the result of the call
-     */
-    @SuppressWarnings("unchecked")
-    private <K, V, R> R onCallResult(BiFunction<K, V, R> function, @Nullable K key, @Nullable V value) {
-        CallInfoBuilder callInfo = CallInfo.forMethod(getCallingMethod()).withKey(key).withValue(value);
-
-        try {
-            R result = function.apply(key, value);
-            Object resultToLog = result;
-
-            // Clone the stream
-            if (Stream.class.isInstance(result)) {
-                Stream<?> stream = Stream.class.cast(result);
-                List<?> list = stream.collect(Collectors.toList());
-
-                result = (R) list.stream();
-                resultToLog = list;
-            }
-
-            onSuccess(callInfo.withResult(resultToLog));
-            return result;
-        }
-        catch (RuntimeException e) {
-            onFailure(callInfo.withThrownException(e));
-            throw e;
-        }
     }
 
     /**
@@ -474,24 +413,6 @@ public abstract class AbstractListenerStore extends AbstractStore {
      * @param info information about the call
      */
     protected abstract void onFailure(CallInfo info);
-
-    /**
-     * Returns the name of the calling method.
-     *
-     * @return the name
-     */
-    @Nonnull
-    private String getCallingMethod() {
-        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-        for (int i = 3; i < stack.length; i++) {
-            String methodName = stack[i].getMethodName();
-            if (!methodName.startsWith("onCall")) {
-                return methodName;
-            }
-        }
-
-        throw new IllegalStateException(); // Should never happen
-    }
 
     /**
      * An object representing a call.

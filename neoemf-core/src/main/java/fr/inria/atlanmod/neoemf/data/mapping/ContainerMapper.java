@@ -32,7 +32,7 @@ public interface ContainerMapper {
      *
      * @param id the {@link Id} of the contained element
      *
-     * @return the deferred computation to execute, that may contains the container
+     * @return the deferred computation that may contains the container
      */
     @Nonnull
     Maybe<SingleFeatureBean> containerOf(Id id);
@@ -43,7 +43,7 @@ public interface ContainerMapper {
      * @param id        the {@link Id} of the contained element
      * @param container the containing element's container information to store
      *
-     * @return the deferred computation to execute
+     * @return the deferred computation
      */
     @Nonnull
     Completable containerFor(Id id, SingleFeatureBean container);
@@ -56,7 +56,7 @@ public interface ContainerMapper {
      *
      * @param id the {@link Id} of the contained element
      *
-     * @return the deferred computation to execute
+     * @return the deferred computation
      */
     @Nonnull
     Completable removeContainer(Id id);

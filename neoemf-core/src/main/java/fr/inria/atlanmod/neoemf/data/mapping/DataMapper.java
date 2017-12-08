@@ -9,9 +9,13 @@
 package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.commons.Copiable;
-import fr.inria.atlanmod.neoemf.data.DataManager;
 
+import java.io.Closeable;
+
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import io.reactivex.Completable;
 
 /**
  * An object capable of mapping features, containers and meta-classes represented as a set of key/value pair.
@@ -24,5 +28,22 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see ManyReferenceMapper
  */
 @ParametersAreNonnullByDefault
-public interface DataMapper extends DataManager, Copiable<DataMapper>, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
+public interface DataMapper extends Closeable, Copiable<DataMapper>, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
+
+    /**
+     * Cleanly closes this mapper, clear all data in-memory and releases any system resources associated with it. All
+     * modifications are saved before closing.
+     * <p>
+     * If the mapper is already closed, then invoking this method has no effect.
+     */
+    @Override
+    void close();
+
+    /**
+     * Saves all changes made on this mapper since the last call.
+     *
+     * @return the deferred computation
+     */
+    @Nonnull
+    Completable save();
 }

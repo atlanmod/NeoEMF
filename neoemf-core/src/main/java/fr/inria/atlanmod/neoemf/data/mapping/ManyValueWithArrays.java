@@ -15,15 +15,15 @@ import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -58,101 +58,105 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+    default <V> Completable valueFor(ManyFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
         Consumer<V[]> replaceFunc = vs -> {
             vs[key.position()] = value;
-            valueFor(key.withoutPosition(), vs).ignoreElement().subscribe();
+            valueFor(key.withoutPosition(), vs).subscribe();
         };
 
         return this.<V[]>valueOf(key.withoutPosition())
+                .filter(vs -> key.position() < vs.length)
                 .toSingle()
-                .doAfterSuccess(replaceFunc)
-                .map(vs -> vs[key.position()])
+                .doOnSuccess(replaceFunc)
+                .toCompletable()
                 .cache();
-    }
-
-    @Override
-    default <V> void addValue(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
-        checkNotNull(value, "value");
-
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
-                .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
-
-        checkPositionIndex(key.position(), values.length);
-
-        values = MoreArrays.add(values, key.position(), value);
-
-        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
-    }
-
-    @Override
-    default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
-
-        if (collection.isEmpty()) {
-            return;
-        }
-
-        if (collection.contains(null)) {
-            throw new NullPointerException();
-        }
-
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
-                .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
-
-        int firstPosition = key.position();
-        checkPositionIndex(firstPosition, values.length);
-
-        values = MoreArrays.addAll(values, firstPosition, collection);
-
-        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
     }
 
     @Nonnull
     @Override
-    default <V> Optional<V> removeValue(ManyFeatureBean key) {
+    default <V> Completable addValue(ManyFeatureBean key, V value) {
+        checkNotNull(key, "key");
+        checkNotNull(value, "value");
+
+        V[] vs = this.<V[]>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
+                .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
+
+        checkPositionIndex(key.position(), vs.length);
+
+        vs = MoreArrays.add(vs, key.position(), value);
+
+        return valueFor(key.withoutPosition(), vs);
+    }
+
+    @Nonnull
+    @Override
+    default <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
+        checkNotNull(key, "key");
+        checkNotNull(values, "collection");
+
+        if (values.isEmpty()) {
+            return Completable.complete();
+        }
+
+        if (values.stream().anyMatch(Objects::isNull)) {
+            throw new NullPointerException();
+        }
+
+        V[] vs = this.<V[]>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
+                .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
+
+        checkPositionIndex(key.position(), vs.length);
+
+        vs = MoreArrays.addAll(vs, key.position(), values);
+
+        return valueFor(key.withoutPosition(), vs);
+    }
+
+    @Nonnull
+    @Override
+    default <V> Maybe<V> removeValue(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
+        V[] vs = this.<V[]>valueOf(key.withoutPosition())
                 .to(CommonQueries::toOptional)
                 .orElse(null);
 
-        if (isNull(values)) {
-            return Optional.empty();
+        if (isNull(vs)) {
+            return Maybe.empty();
         }
 
         Optional<V> previousValue = Optional.empty();
 
-        if (key.position() < values.length) {
-            previousValue = Optional.of(values[key.position()]);
+        if (key.position() < vs.length) {
+            previousValue = Optional.of(vs[key.position()]);
 
-            values = MoreArrays.remove(values, key.position());
+            vs = MoreArrays.remove(vs, key.position());
 
-            if (values.length == 0) {
-                removeAllValues(key.withoutPosition());
+            if (vs.length == 0) {
+                removeAllValues(key.withoutPosition()).blockingAwait();
             }
             else {
-                valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
+                valueFor(key.withoutPosition(), vs).blockingAwait();
             }
         }
 
-        return previousValue;
-    }
-
-    @Override
-    default void removeAllValues(SingleFeatureBean key) {
-        this.removeValue(key).blockingAwait();
+        return previousValue
+                .map(Maybe::just)
+                .orElseGet(Maybe::empty);
     }
 
     @Nonnull
-    @Nonnegative
+    @Override
+    default Completable removeAllValues(SingleFeatureBean key) {
+        return this.removeValue(key);
+    }
+
+    @Nonnull
     @Override
     default Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
         return this.<Object[]>valueOf(key)

@@ -73,9 +73,6 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     private static Id id0 = Id.getProvider().fromLong(0);
     private static Id id1 = Id.getProvider().fromLong(1);
 
-    private static String valueDummy = "DUMMY";
-    private static Id refDummy = Id.getProvider().fromLong(0xf);
-
     /**
      * The {@link DataMapper} used for this test case.
      */
@@ -275,30 +272,38 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * ValueMapper#valueFor(SingleFeatureBean, Object)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testGetSet_Value(Object value0, Object value1) throws InterruptedException {
-        mapper.valueFor(sfBase, value0).test().await().assertNoValues();
-        mapper.valueOf(sfBase).test().await().assertValue(value0);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testGetSet_Single(RedirectionType type, Object value0, Object value1) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.valueFor(sfBase, value1).test().await().assertValue(value0);
-        mapper.valueOf(sfBase).test().await().assertValue(value1);
+        m.set(sfBase, value0).assertComplete();
+        m.get(sfBase).assertValue(value0);
+
+        m.set(sfBase, value1).assertComplete();
+        m.get(sfBase).assertValue(value1);
     }
 
     /**
      * Checks the behavior of {@link ValueMapper#valueOf(SingleFeatureBean)}.
      */
-    @Test
-    public void testGet_Value_NotDefined() throws InterruptedException {
-        mapper.valueOf(sfBase).test().await().assertNoErrors().assertNoValues();
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testGet_Single_NotDefined(RedirectionType type) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
+        m.get(sfBase).assertNoErrors().assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ValueMapper#valueFor(SingleFeatureBean, Object)} with a {@code null} value.
      */
-    @Test
-    public void testSet_Value_Null() {
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testSet_Single_Null(RedirectionType type) {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
         assertThat(catchThrowable(() ->
-                mapper.valueFor(sfBase, null)
+                m.set(sfBase, null)
         )).isExactlyInstanceOf(NullPointerException.class);
     }
 
@@ -306,21 +311,26 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ValueMapper#removeValue(SingleFeatureBean)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testRemove_Value(Object value0) throws InterruptedException {
-        mapper.valueFor(sfBase, value0).test().await().assertNoValues();
-        mapper.valueOf(sfBase).test().await().assertValue(value0);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testRemove_Single(RedirectionType type, Object value0) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.removeValue(sfBase).test().await().assertComplete();
-        mapper.valueOf(sfBase).test().await().assertNoValues();
+        m.set(sfBase, value0).assertComplete();
+        m.get(sfBase).assertValue(value0);
+
+        m.remove(sfBase).assertComplete();
+        m.get(sfBase).assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ValueMapper#removeValue(SingleFeatureBean)} when the value doesn't exist.
      */
-    @Test
-    public void testRemove_Value_NotDefined() throws InterruptedException {
-        mapper.removeValue(sfBase).test().await().assertNoErrors().assertComplete();
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testRemove_Single_NotDefined(RedirectionType type) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
+        m.remove(sfBase).assertNoErrors().assertComplete();
     }
 
     //endregion
@@ -332,42 +342,56 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * ManyValueMapper#valueFor(ManyFeatureBean, Object)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testGetSet_ManyValue(Object value0, Object value1, Object value2, Object value3) throws InterruptedException {
-        mapper.addValue(sfBase.withPosition(0), value0);
-        mapper.addValue(sfBase.withPosition(1), value1);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testGetSet_Many(RedirectionType type, Object value0, Object value1, Object value2, Object value3) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.valueFor(sfBase.withPosition(0), value2).test().await().assertValue(value0);
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value2);
+        m.add(sfBase.withPosition(0), value0).assertComplete();
+        m.add(sfBase.withPosition(1), value1).assertComplete();
 
-        mapper.valueFor(sfBase.withPosition(1), value3).test().await().assertValue(value1);
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value3);
+        m.set(sfBase.withPosition(0), value2).assertComplete();
+        m.get(sfBase.withPosition(0)).assertValue(value2);
+
+        m.set(sfBase.withPosition(1), value3).assertComplete();
+        m.get(sfBase.withPosition(1)).assertValue(value3);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#valueOf(ManyFeatureBean)} when the value doesn't exist.
      */
-    @Test
-    public void testGet_ManyValue_NotDefined() throws InterruptedException {
-        mapper.valueOf(mfBase).test().await().assertNoErrors().assertNoValues();
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testGet_Many_NotDefined(RedirectionType type) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
+        m.get(mfBase).assertNoErrors().assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureBean, Object)} when the reference doesn't
      * exist.
      */
-    @Test
-    public void testSet_ManyValue_NotDefined() throws InterruptedException {
-        mapper.valueFor(mfBase, valueDummy).test().await().assertError(NoSuchElementException.class);
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testSet_Many_NotDefined(RedirectionType type, Object value0, Object value1) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
+        m.set(sfBase.withPosition(0), value0).assertError(NoSuchElementException.class);
+        m.add(sfBase.withPosition(0), value0).assertComplete();
+
+        m.set(sfBase.withPosition(1), value1).assertError(NoSuchElementException.class);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureBean, Object)} with a {@code null} value.
      */
-    @Test
-    public void testSet_ManyValue_Null() {
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testSet_Many_Null(RedirectionType type) {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
         assertThat(catchThrowable(() ->
-                mapper.valueFor(mfBase, null)
+                m.set(mfBase, null)
         )).isExactlyInstanceOf(NullPointerException.class);
     }
 
@@ -375,64 +399,75 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#allValuesOf(SingleFeatureBean)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testGetAll_ManyValue(Object value0, Object value1, Object value2) {
-        mapper.appendValue(sfBase, value0);
-        mapper.appendValue(sfBase, value1);
-        mapper.appendValue(sfBase, value2);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testGetAll_Many(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        List<Object> actualValues = mapper.allValuesOf(sfBase).toList().blockingGet();
-        assertThat(actualValues).hasSize(3);
+        m.append(sfBase, value0).assertComplete();
+        m.append(sfBase, value1).assertComplete();
+        m.append(sfBase, value2).assertComplete();
 
-        assertThat(actualValues.get(0)).isEqualTo(value0);
-        assertThat(actualValues.get(1)).isEqualTo(value1);
-        assertThat(actualValues.get(2)).isEqualTo(value2);
+        m.getAll(sfBase)
+                .assertValueCount(3)
+                .assertValueAt(0, value0)
+                .assertValueAt(1, value1)
+                .assertValueAt(2, value2);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#allValuesOf(SingleFeatureBean)} when the feature doesn't contain
      * any element.
      */
-    @Test
-    public void testGetAll_Empty() throws InterruptedException {
-        mapper.allValuesOf(sfBase).test().await().assertNoErrors().assertNoValues();
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testGetAll_Many_Empty(RedirectionType type) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
+        m.getAll(sfBase).assertNoErrors().assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureBean, Object)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testAdd_ManyValue(Object value0, Object value1, Object value2) throws InterruptedException {
-        mapper.addValue(sfBase.withPosition(0), value0);
-        mapper.addValue(sfBase.withPosition(1), value1);
-        mapper.addValue(sfBase.withPosition(2), value2);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAdd_Many(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
-        mapper.valueOf(sfBase.withPosition(2)).test().await().assertValue(value2);
+        m.add(sfBase.withPosition(0), value0).assertComplete();
+        m.add(sfBase.withPosition(1), value1).assertComplete();
+        m.add(sfBase.withPosition(2), value2).assertComplete();
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(3);
+        m.get(sfBase.withPosition(0)).assertValue(value0);
+        m.get(sfBase.withPosition(1)).assertValue(value1);
+        m.get(sfBase.withPosition(2)).assertValue(value2);
+
+        m.sizeOf(sfBase).assertValue(3);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureBean, Object)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testAdd_ManyValue_OverSize(@SuppressWarnings("unused") Object value0, @SuppressWarnings("unused") Object value1, Object value2) {
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAdd_Many_OverSize(RedirectionType type, Object value0) {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
         assertThat(catchThrowable(() ->
-                mapper.addValue(sfBase.withPosition(2), value2)
+                m.add(sfBase.withPosition(2), value0)
         )).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureBean, Object)} with a {@code null} value.
      */
-    @Test
-    public void testAdd_ManyValue_Null() {
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAdd_Many_Null(RedirectionType type) {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
         assertThat(catchThrowable(() ->
-                mapper.addValue(mfBase, null)
+                m.add(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -440,26 +475,29 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#appendValue(SingleFeatureBean, Object)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testAppend_ManyValue(Object value0, Object value1) throws InterruptedException {
-        int index;
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAppend_Many(RedirectionType type, Object value0, Object value1) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        index = mapper.appendValue(sfBase, value0);
-        assertThat(index).isEqualTo(0);
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
+        m.append(sfBase, value0).assertValue(0);
+        m.get(sfBase.withPosition(0)).assertValue(value0);
 
-        index = mapper.appendValue(sfBase, value1);
-        assertThat(index).isEqualTo(1);
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
+        m.append(sfBase, value1).assertValue(1);
+        m.get(sfBase.withPosition(1)).assertValue(value1);
+
+        m.sizeOf(sfBase).assertValue(2);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#appendValue(SingleFeatureBean, Object)} with a {@code null} value.
      */
-    @Test
-    public void testAppend_ManyValue_Null() {
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAppend_Many_Null(RedirectionType type) {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
         assertThat(catchThrowable(() ->
-                mapper.appendValue(sfBase, null)
+                m.append(sfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -468,14 +506,16 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * defined yet.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testAddAll_ManyValue_FromStart(Object value0, Object value1) throws InterruptedException {
-        mapper.addAllValues(sfBase.withPosition(0), Arrays.asList(value0, value1));
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAddAll_Many_FromStart(RedirectionType type, Object value0, Object value1) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
+        m.addAll(sfBase.withPosition(0), Arrays.asList(value0, value1)).assertComplete();
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
+        m.get(sfBase.withPosition(0)).assertValue(value0);
+        m.get(sfBase.withPosition(1)).assertValue(value1);
+
+        m.sizeOf(sfBase).assertValue(2);
     }
 
     /**
@@ -483,10 +523,12 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * defined yet.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testAddAll_ManyValue_WithOffset(Object value0, Object value1) {
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAddAll_Many_WithOffset(RedirectionType type, Object value0, Object value1) {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
         assertThat(catchThrowable(() ->
-                mapper.addAllValues(sfBase.withPosition(1), Arrays.asList(value0, value1))
+                m.addAll(sfBase.withPosition(1), Arrays.asList(value0, value1))
         )).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
@@ -495,19 +537,21 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * values.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testAddAll_ManyValue_FromMiddle(Object value0, Object value1, Object value2, Object value3) throws InterruptedException {
-        mapper.appendValue(sfBase, value0);
-        mapper.appendValue(sfBase, value1);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAddAll_Many_FromMiddle(RedirectionType type, Object value0, Object value1, Object value2, Object value3) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.addAllValues(sfBase.withPosition(1), Arrays.asList(value2, value3));
+        m.append(sfBase, value0).assertComplete();
+        m.append(sfBase, value1).assertComplete();
 
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value2);
-        mapper.valueOf(sfBase.withPosition(2)).test().await().assertValue(value3);
-        mapper.valueOf(sfBase.withPosition(3)).test().await().assertValue(value1);
+        m.addAll(sfBase.withPosition(1), Arrays.asList(value2, value3)).assertComplete();
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(4);
+        m.get(sfBase.withPosition(0)).assertValue(value0);
+        m.get(sfBase.withPosition(1)).assertValue(value2);
+        m.get(sfBase.withPosition(2)).assertValue(value3);
+        m.get(sfBase.withPosition(3)).assertValue(value1);
+
+        m.sizeOf(sfBase).assertValue(4);
     }
 
     /**
@@ -515,38 +559,46 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * values.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testAddAll_ManyValue_FromEnd(Object value0, Object value1, Object value2) throws InterruptedException {
-        mapper.appendValue(sfBase, value0);
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAddAll_Many_FromEnd(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.addAllValues(sfBase.withPosition(1), Arrays.asList(value1, value2));
+        m.append(sfBase, value0).assertComplete();
+        m.get(sfBase.withPosition(0)).assertValue(value0);
 
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
-        mapper.valueOf(sfBase.withPosition(2)).test().await().assertValue(value2);
+        m.addAll(sfBase.withPosition(1), Arrays.asList(value1, value2)).assertComplete();
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(3);
+        m.get(sfBase.withPosition(0)).assertValue(value0);
+        m.get(sfBase.withPosition(1)).assertValue(value1);
+        m.get(sfBase.withPosition(2)).assertValue(value2);
+
+        m.sizeOf(sfBase).assertValue(3);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with an empty collection.
      */
-    @Test
-    public void testAddAll_ManyValue_Empty() throws InterruptedException {
-        mapper.addAllValues(mfBase, Collections.emptyList());
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAddAll_Many_Empty(RedirectionType type) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.sizeOfValue(mfBase.withoutPosition()).test().await().assertNoValues();
+        m.addAll(mfBase, Collections.emptyList()).assertComplete();
+
+        m.sizeOf(mfBase.withoutPosition()).assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with a collection that
      * contains a {@code null} element.
      */
-    @Test
-    public void testAddAll_ManyValue_WithNull() {
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAddAll_Many_WithNull(RedirectionType type, Object value0) {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
         assertThat(catchThrowable(() ->
-                mapper.addAllValues(mfBase, Arrays.asList(valueDummy, null))
+                m.addAll(mfBase, Arrays.asList(value0, null))
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -554,10 +606,13 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with a {@code null}
      * collection.
      */
-    @Test
-    public void testAddAll_ManyValue_Null() {
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAddAll_Many_Null(RedirectionType type) {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
         assertThat(catchThrowable(() ->
-                mapper.addAllValues(mfBase, null)
+                m.addAll(mfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -566,17 +621,16 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * defined yet.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testAppendAll_ManyValue_FromStart(Object value0, Object value1) throws InterruptedException {
-        int index;
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAppendAll_Many_FromStart(RedirectionType type, Object value0, Object value1) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        index = mapper.appendAllValues(sfBase, Arrays.asList(value0, value1));
-        assertThat(index).isEqualTo(0);
+        m.appendAll(sfBase, Arrays.asList(value0, value1)).assertValue(0);
 
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
+        m.get(sfBase.withPosition(0)).assertValue(value0);
+        m.get(sfBase.withPosition(1)).assertValue(value1);
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
+        m.sizeOf(sfBase).assertValue(2);
     }
 
     /**
@@ -584,43 +638,47 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * has values.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testAppendAll_ManyValue_FromEnd(Object value0, Object value1, Object value2) throws InterruptedException {
-        int index;
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAppendAll_Many_FromEnd(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        index = mapper.appendValue(sfBase, value0);
-        assertThat(index).isEqualTo(0);
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
+        m.append(sfBase, value0).assertValue(0);
+        m.get(sfBase.withPosition(0)).assertValue(value0);
 
-        index = mapper.appendAllValues(sfBase, Arrays.asList(value1, value2));
-        assertThat(index).isEqualTo(1);
+        m.appendAll(sfBase, Arrays.asList(value1, value2)).assertValue(1);
 
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
-        mapper.valueOf(sfBase.withPosition(2)).test().await().assertValue(value2);
+        m.get(sfBase.withPosition(0)).assertValue(value0);
+        m.get(sfBase.withPosition(1)).assertValue(value1);
+        m.get(sfBase.withPosition(2)).assertValue(value2);
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(3);
+        m.sizeOf(sfBase).assertValue(3);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureBean, List)} with an empty
      * collection.
      */
-    @Test
-    public void testAppendAll_ManyValue_Empty() throws InterruptedException {
-        mapper.appendAllValues(sfBase, Collections.emptyList());
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAppendAll_Many_Empty(RedirectionType type) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.sizeOfValue(sfBase).test().await().assertNoValues();
+        m.appendAll(sfBase, Collections.emptyList()).assertValue(0);
+
+        m.sizeOf(sfBase).assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureBean, List)} with a collection that
      * contains a {@code null} element.
      */
-    @Test
-    public void testAppendAll_ManyValue_WithNull() {
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAppendAll_Many_WithNull(RedirectionType type, Object value0) {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
         assertThat(catchThrowable(() ->
-                mapper.appendAllValues(sfBase, Arrays.asList(valueDummy, null))
+                m.appendAll(sfBase, Arrays.asList(value0, null))
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -628,10 +686,13 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureBean, List)} with a {@code null}
      * collection.
      */
-    @Test
-    public void testAppendAll_ManyValue_Null() {
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testAppendAll_Many_Null(RedirectionType type) {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
         assertThat(catchThrowable(() ->
-                mapper.appendAllValues(sfBase, null)
+                m.appendAll(sfBase, null)
         )).isInstanceOf(NullPointerException.class);
     }
 
@@ -639,727 +700,179 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testRemove_ManyValue(Object value0, Object value1) throws InterruptedException {
-        mapper.addValue(sfBase.withPosition(0), value0);
-        mapper.addValue(sfBase.withPosition(1), value1);
-        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testRemove_Many(RedirectionType type, Object value0, Object value1) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.removeValue(sfBase.withPosition(0));
-        mapper.sizeOfValue(sfBase).test().await().assertValue(1);
+        m.add(sfBase.withPosition(0), value0).assertComplete();
+        m.add(sfBase.withPosition(1), value1).assertComplete();
+        m.sizeOf(sfBase).assertValue(2);
 
-        mapper.removeValue(sfBase.withPosition(0));
-        mapper.sizeOfValue(sfBase).test().await().assertNoValues();
+        m.remove(sfBase.withPosition(0)).assertValue(value0);
+        m.sizeOf(sfBase).assertValue(1);
+
+        m.remove(sfBase.withPosition(0)).assertValue(value1);
+        m.sizeOf(sfBase).assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testRemove_ManyValue_Before(Object value0, Object value1, Object value2) throws InterruptedException {
-        mapper.addValue(sfBase.withPosition(0), value0);
-        mapper.addValue(sfBase.withPosition(1), value1);
-        mapper.addValue(sfBase.withPosition(2), value2);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testRemove_Many_Before(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        assertThat(mapper.removeValue(sfBase.withPosition(0))).contains(value0);
+        m.add(sfBase.withPosition(0), value0).assertComplete();
+        m.add(sfBase.withPosition(1), value1).assertComplete();
+        m.add(sfBase.withPosition(2), value2).assertComplete();
 
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value1);
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value2);
-        mapper.valueOf(sfBase.withPosition(2)).test().await().assertNoValues();
+        m.remove(sfBase.withPosition(0)).assertValue(value0);
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
+        m.get(sfBase.withPosition(0)).assertValue(value1);
+        m.get(sfBase.withPosition(1)).assertValue(value2);
+        m.get(sfBase.withPosition(2)).assertNoValues();
+
+        m.sizeOf(sfBase).assertValue(2);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testRemove_ManyValue_After(Object value0, Object value1, Object value2) throws InterruptedException {
-        mapper.addValue(sfBase.withPosition(0), value0);
-        mapper.addValue(sfBase.withPosition(1), value1);
-        mapper.addValue(sfBase.withPosition(2), value2);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testRemove_Many_After(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        assertThat(mapper.removeValue(sfBase.withPosition(1))).contains(value1);
+        m.add(sfBase.withPosition(0), value0).assertComplete();
+        m.add(sfBase.withPosition(1), value1).assertComplete();
+        m.add(sfBase.withPosition(2), value2).assertComplete();
 
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value2);
-        mapper.valueOf(sfBase.withPosition(2)).test().await().assertNoValues();
+        m.remove(sfBase.withPosition(1)).assertValue(value1);
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
+        m.get(sfBase.withPosition(0)).assertValue(value0);
+        m.get(sfBase.withPosition(1)).assertValue(value2);
+        m.get(sfBase.withPosition(2)).assertNoValues();
+
+        m.sizeOf(sfBase).assertValue(2);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testRemove_ManyValue_Last(Object value0, Object value1, Object value2) throws InterruptedException {
-        mapper.addValue(sfBase.withPosition(0), value0);
-        mapper.addValue(sfBase.withPosition(1), value1);
-        mapper.addValue(sfBase.withPosition(2), value2);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testRemove_Many_Last(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        assertThat(mapper.removeValue(sfBase.withPosition(2))).contains(value2);
+        m.add(sfBase.withPosition(0), value0).assertComplete();
+        m.add(sfBase.withPosition(1), value1).assertComplete();
+        m.add(sfBase.withPosition(2), value2).assertComplete();
 
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertValue(value0);
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertValue(value1);
-        mapper.valueOf(sfBase.withPosition(2)).test().await().assertNoValues();
+        m.remove(sfBase.withPosition(2)).assertValue(value2);
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
+        m.get(sfBase.withPosition(0)).assertValue(value0);
+        m.get(sfBase.withPosition(1)).assertValue(value1);
+        m.get(sfBase.withPosition(2)).assertNoValues();
+
+        m.sizeOf(sfBase).assertValue(2);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)} when the value doesn't exist.
      */
-    @Test
-    public void testRemove_ManyValue_NotDefined() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.removeValue(mfBase)).isNotPresent()
-        )).isNull();
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testRemove_Many_NotDefined(RedirectionType type) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
+        m.remove(mfBase).assertNoErrors().assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#removeAllValues(SingleFeatureBean)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testRemoveAll_ManyValue(Object value0, Object value1, Object value2) throws InterruptedException {
-        mapper.appendValue(sfBase, value0);
-        mapper.appendValue(sfBase, value1);
-        mapper.appendValue(sfBase, value2);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testRemoveAll_Many(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(3);
+        m.append(sfBase, value0).assertComplete();
+        m.append(sfBase, value1).assertComplete();
+        m.append(sfBase, value2).assertComplete();
 
-        mapper.removeAllValues(sfBase);
+        m.sizeOf(sfBase).assertValue(3);
 
-        mapper.valueOf(sfBase.withPosition(0)).test().await().assertNoValues();
-        mapper.valueOf(sfBase.withPosition(1)).test().await().assertNoValues();
-        mapper.valueOf(sfBase.withPosition(2)).test().await().assertNoValues();
+        m.removeAll(sfBase).assertComplete();
 
-        mapper.sizeOfValue(sfBase).test().await().assertNoValues();
+        m.get(sfBase.withPosition(0)).assertNoValues();
+        m.get(sfBase.withPosition(1)).assertNoValues();
+        m.get(sfBase.withPosition(2)).assertNoValues();
+
+        m.sizeOf(sfBase).assertNoValues();
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#removeAllValues(SingleFeatureBean)} when the value doesn't exist.
      */
-    @Test
-    public void testRemoveAll_ManyValue_NotDefined() {
-        assertThat(catchThrowable(() ->
-                mapper.removeAllValues(sfBase)
-        )).isNull();
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testRemoveAll_Many_NotDefined(RedirectionType type) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
+        m.removeAll(sfBase).assertNoErrors().assertComplete();
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#sizeOfValue(SingleFeatureBean)}.
      */
     @ParameterizedTest
-    @ArgumentsSource(ValueProvider.class)
-    public void testSize_ManyValue(Object value0, Object value1, Object value2) throws InterruptedException {
-        mapper.appendValue(sfBase, value0);
-        mapper.appendValue(sfBase, value1);
-        mapper.appendValue(sfBase, value2);
+    @ArgumentsSource(ParametersProvider.class)
+    public void testSize_Many(RedirectionType type, Object value0, Object value1, Object value2) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(3);
+        m.append(sfBase, value0).assertComplete();
+        m.append(sfBase, value1).assertComplete();
+        m.append(sfBase, value2).assertComplete();
 
-        mapper.removeValue(sfBase.withPosition(1));
+        m.sizeOf(sfBase).assertValue(3);
 
-        mapper.sizeOfValue(sfBase).test().await().assertValue(2);
+        m.remove(sfBase.withPosition(1)).assertValue(value1);
+
+        m.sizeOf(sfBase).assertValue(2);
     }
 
     /**
      * Checks the behavior of {@link ManyValueMapper#sizeOfValue(SingleFeatureBean)} when the value doesn't exist.
      */
-    @Test
-    public void testSize_ManyValue_NotDefined() throws InterruptedException {
-        mapper.sizeOfValue(sfBase).test().await().assertNoErrors().assertNoValues();
+    @ParameterizedTest
+    @ArgumentsSource(ParametersProvider.class)
+    public void testSize_Many_NotDefined(RedirectionType type) throws InterruptedException {
+        DataMapperTester m = new DataMapperTester(mapper, type);
+
+        m.sizeOf(sfBase).assertNoErrors().assertNoValues();
     }
 
     //endregion
 
-    //region Single-valued references
-
-    /**
-     * Checks the behavior of {@link ReferenceMapper#referenceOf(SingleFeatureBean)} and {@link
-     * ReferenceMapper#referenceFor(SingleFeatureBean, Id)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testGetSet_Reference(Id ref0, Id ref1) throws InterruptedException {
-        updateInstanceOf(ref0, ref1);
-
-        mapper.referenceFor(sfBase, ref0).test().await().assertNoValues();
-        mapper.referenceOf(sfBase).test().await().assertValue(ref0);
-
-        mapper.referenceFor(sfBase, ref1).test().await().assertValue(ref0);
-        mapper.referenceOf(sfBase).test().await().assertValue(ref1);
-    }
-
-    /**
-     * Checks the behavior of {@link ReferenceMapper#referenceOf(SingleFeatureBean)}.
-     */
-    @Test
-    public void testGet_Reference_NotDefined() throws InterruptedException {
-        mapper.referenceOf(sfBase).test().await().assertNoErrors().assertNoValues();
-    }
-
-    /**
-     * Checks the behavior of {@link ReferenceMapper#referenceFor(SingleFeatureBean, Id)} with a {@code null}
-     * reference.
-     */
-    @Test
-    public void testSet_Reference_Null() {
-        assertThat(catchThrowable(() ->
-                mapper.referenceFor(sfBase, null)
-        )).isExactlyInstanceOf(NullPointerException.class);
-    }
-
-    /**
-     * Checks the behavior of {@link ReferenceMapper#removeReference(SingleFeatureBean)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_Reference(Id ref0) throws InterruptedException {
-        updateInstanceOf(ref0);
-
-        mapper.referenceFor(sfBase, ref0).test().await().assertNoValues();
-        mapper.referenceOf(sfBase).test().await().assertValue(ref0);
-
-        mapper.removeReference(sfBase).test().await().assertComplete();
-        mapper.referenceOf(sfBase).test().await().assertNoValues();
-    }
-
-    /**
-     * Checks the behavior of {@link ReferenceMapper#removeReference(SingleFeatureBean)} when the reference doesn't
-     * exist.
-     */
-    @Test
-    public void testRemove_Reference_NotDefined() throws InterruptedException {
-        mapper.removeReference(sfBase).test().await().assertNoErrors().assertComplete();
-    }
-
-    //endregion
-
-    //region Multi-valued references
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#referenceOf(ManyFeatureBean)} and {@link
-     * ManyReferenceMapper#referenceFor(ManyFeatureBean, Id)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testGetSet_ManyReference(Id ref0, Id ref1, Id ref2, Id ref3) throws InterruptedException {
-        updateInstanceOf(ref0, ref1, ref2, ref3);
-
-        mapper.addReference(sfBase.withPosition(0), ref0);
-        mapper.addReference(sfBase.withPosition(1), ref1);
-
-        mapper.referenceFor(sfBase.withPosition(0), ref2).test().await().assertValue(ref0);
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref2);
-
-        mapper.referenceFor(sfBase.withPosition(1), ref3).test().await().assertValue(ref1);
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref3);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#referenceOf(ManyFeatureBean)} when the reference doesn't
-     * exist.
-     */
-    @Test
-    public void testGet_ManyReference_NotDefined() throws InterruptedException {
-        mapper.referenceOf(mfBase).test().await().assertNoErrors().assertNoValues();
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#referenceFor(ManyFeatureBean, Id)} when the reference doesn't
-     * exist.
-     */
-    @Test
-    public void testSet_ManyReference_NotDefined() throws InterruptedException {
-        mapper.referenceFor(mfBase, refDummy).test().await().assertError(NoSuchElementException.class);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#referenceFor(ManyFeatureBean, Id)} with a {@code null}
-     * reference.
-     */
-    @Test
-    public void testSet_ManyReference_Null() {
-        assertThat(catchThrowable(() ->
-                mapper.referenceFor(mfBase, null)
-        )).isExactlyInstanceOf(NullPointerException.class);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#allReferencesOf(SingleFeatureBean)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testGetAll_ManyReference(Id ref0, Id ref1, Id ref2) {
-        updateInstanceOf(ref0, ref1, ref2);
-
-        mapper.appendReference(sfBase, ref0);
-        mapper.appendReference(sfBase, ref1);
-        mapper.appendReference(sfBase, ref2);
-
-        List<Id> actualReferences = mapper.allReferencesOf(sfBase).toList().blockingGet();
-        assertThat(actualReferences).hasSize(3);
-
-        assertThat(actualReferences.get(0)).isEqualTo(ref0);
-        assertThat(actualReferences.get(1)).isEqualTo(ref1);
-        assertThat(actualReferences.get(2)).isEqualTo(ref2);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#allReferencesOf(SingleFeatureBean)} when the feature doesn't
-     * contain any element.
-     */
-    @Test
-    public void testGetAll_ManyReference_Empty() throws InterruptedException {
-        mapper.allReferencesOf(sfBase).test().await().assertNoErrors().assertNoValues();
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#addReference(ManyFeatureBean, Id)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testAdd_ManyReference(Id ref0, Id ref1, Id ref2) throws InterruptedException {
-        updateInstanceOf(ref0, ref1, ref2);
-
-        mapper.addReference(sfBase.withPosition(0), ref0);
-        mapper.addReference(sfBase.withPosition(1), ref1);
-        mapper.addReference(sfBase.withPosition(2), ref2);
-
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
-        mapper.referenceOf(sfBase.withPosition(2)).test().await().assertValue(ref2);
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(3);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#addReference(ManyFeatureBean, Id)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testAdd_ManyReference_OverSize(@SuppressWarnings("unused") Id ref0, @SuppressWarnings("unused") Id ref1, Id ref2) {
-        updateInstanceOf(ref2);
-
-        assertThat(catchThrowable(() ->
-                mapper.addReference(sfBase.withPosition(2), ref2)
-        )).isInstanceOf(IndexOutOfBoundsException.class);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#addReference(ManyFeatureBean, Id)} with a {@code null}
-     * reference.
-     */
-    @Test
-    public void testAdd_ManyReference_Null() {
-        assertThat(catchThrowable(() ->
-                mapper.addReference(mfBase, null)
-        )).isInstanceOf(NullPointerException.class);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#appendReference(SingleFeatureBean, Id)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testAppend_ManyReference(Id ref0, Id ref1) throws InterruptedException {
-        updateInstanceOf(ref0, ref1);
-
-        int index;
-
-        index = mapper.appendReference(sfBase, ref0);
-        assertThat(index).isEqualTo(0);
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
-
-        index = mapper.appendReference(sfBase, ref1);
-        assertThat(index).isEqualTo(1);
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#appendReference(SingleFeatureBean, Id)} with a {@code null}
-     * reference.
-     */
-    @Test
-    public void testAppend_ManyReference_Null() {
-        assertThat(catchThrowable(() ->
-                mapper.appendReference(sfBase, null)
-        )).isInstanceOf(NullPointerException.class);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} when the feature is
-     * not defined yet.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testAddAll_ManyReference_FromStart(Id ref0, Id ref1) throws InterruptedException {
-        updateInstanceOf(ref0, ref1);
-
-        mapper.addAllReferences(sfBase.withPosition(0), Arrays.asList(ref0, ref1));
-
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} when the feature is
-     * not defined yet.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testAddAll_ManyReference_WithOffset(Id ref0, Id ref1) {
-        updateInstanceOf(ref0, ref1);
-
-        assertThat(catchThrowable(() ->
-                mapper.addAllReferences(sfBase.withPosition(1), Arrays.asList(ref0, ref1))
-        )).isInstanceOf(IndexOutOfBoundsException.class);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} when the feature
-     * already has values.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testAddAll_ManyReference_FromMiddle(Id ref0, Id ref1, Id ref2, Id ref3) throws InterruptedException {
-        updateInstanceOf(ref0, ref1, ref2, ref3);
-
-        mapper.appendReference(sfBase, ref0);
-        mapper.appendReference(sfBase, ref1);
-
-        mapper.addAllReferences(sfBase.withPosition(1), Arrays.asList(ref2, ref3));
-
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref2);
-        mapper.referenceOf(sfBase.withPosition(2)).test().await().assertValue(ref3);
-        mapper.referenceOf(sfBase.withPosition(3)).test().await().assertValue(ref1);
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(4);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} when the feature
-     * already has values.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testAddAll_ManyReference_FromEnd(Id ref0, Id ref1, Id ref2) throws InterruptedException {
-        updateInstanceOf(ref0, ref1, ref2);
-
-        mapper.appendReference(sfBase, ref0);
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
-
-        mapper.addAllReferences(sfBase.withPosition(1), Arrays.asList(ref1, ref2));
-
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
-        mapper.referenceOf(sfBase.withPosition(2)).test().await().assertValue(ref2);
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(3);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} with an empty
-     * collection.
-     */
-    @Test
-    public void testAddAll_ManyReference_Empty() throws InterruptedException {
-        mapper.addAllReferences(mfBase, Collections.emptyList());
-
-        mapper.sizeOfReference(mfBase.withoutPosition()).test().await().assertNoValues();
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} with a collection that
-     * contains a {@code null} element.
-     */
-    @Test
-    public void testAddAll_ManyReference_WithNull() {
-        assertThat(catchThrowable(() ->
-                mapper.addAllReferences(mfBase, Arrays.asList(refDummy, null))
-        )).isInstanceOf(NullPointerException.class);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#addAllReferences(ManyFeatureBean, List)} with a {@code null}
-     * collection.
-     */
-    @Test
-    public void testAddAll_ManyReference_Null() {
-        assertThat(catchThrowable(() ->
-                mapper.addAllReferences(mfBase, null)
-        )).isInstanceOf(NullPointerException.class);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureBean, List)} when the feature
-     * is not defined yet.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testAppendAll_ManyReference_FromStart(Id ref0, Id ref1) throws InterruptedException {
-        updateInstanceOf(ref0, ref1);
-
-        int index;
-
-        index = mapper.appendAllReferences(sfBase, Arrays.asList(ref0, ref1));
-        assertThat(index).isEqualTo(0);
-
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureBean, List)} when the feature
-     * already has values.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testAppendAll_ManyReference_FromEnd(Id ref0, Id ref1, Id ref2) throws InterruptedException {
-        updateInstanceOf(ref0, ref1, ref2);
-
-        int index;
-
-        index = mapper.appendReference(sfBase, ref0);
-        assertThat(index).isEqualTo(0);
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
-
-        index = mapper.appendAllReferences(sfBase, Arrays.asList(ref1, ref2));
-        assertThat(index).isEqualTo(1);
-
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
-        mapper.referenceOf(sfBase.withPosition(2)).test().await().assertValue(ref2);
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(3);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureBean, List)} with an empty
-     * collection.
-     */
-    @Test
-    public void testAppendAll_ManyReference_Empty() throws InterruptedException {
-        mapper.appendAllReferences(sfBase, Collections.emptyList());
-
-        mapper.sizeOfReference(sfBase).test().await().assertNoValues();
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureBean, List)} with a collection
-     * that contains a {@code null} element.
-     */
-    @Test
-    public void testAppendAll_ManyReference_WithNull() {
-        assertThat(catchThrowable(() ->
-                mapper.appendAllReferences(sfBase, Arrays.asList(refDummy, null))
-        )).isInstanceOf(NullPointerException.class);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#appendAllReferences(SingleFeatureBean, List)} with a {@code
-     * null} collection.
-     */
-    @Test
-    public void testAppendAll_ManyReference_Null() {
-        assertThat(catchThrowable(() ->
-                mapper.appendAllReferences(sfBase, null)
-        )).isInstanceOf(NullPointerException.class);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureBean)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_ManyReference(Id ref0, Id ref1) throws InterruptedException {
-        updateInstanceOf(ref0, ref1);
-
-        mapper.addReference(sfBase.withPosition(0), ref0);
-        mapper.addReference(sfBase.withPosition(1), ref1);
-        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
-
-        mapper.removeReference(sfBase.withPosition(0));
-        mapper.sizeOfReference(sfBase).test().await().assertValue(1);
-
-        mapper.removeReference(sfBase.withPosition(0));
-        mapper.sizeOfReference(sfBase).test().await().assertNoValues();
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureBean)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_ManyReference_Before(Id ref0, Id ref1, Id ref2) throws InterruptedException {
-        updateInstanceOf(ref0, ref1, ref2);
-
-        mapper.addReference(sfBase.withPosition(0), ref0);
-        mapper.addReference(sfBase.withPosition(1), ref1);
-        mapper.addReference(sfBase.withPosition(2), ref2);
-
-        assertThat(mapper.removeReference(sfBase.withPosition(0))).contains(ref0);
-
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref1);
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref2);
-        mapper.referenceOf(sfBase.withPosition(2)).test().await().assertNoValues();
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureBean)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_ManyReference_After(Id ref0, Id ref1, Id ref2) throws InterruptedException {
-        updateInstanceOf(ref0, ref1, ref2);
-
-        mapper.addReference(sfBase.withPosition(0), ref0);
-        mapper.addReference(sfBase.withPosition(1), ref1);
-        mapper.addReference(sfBase.withPosition(2), ref2);
-
-        assertThat(mapper.removeReference(sfBase.withPosition(1))).contains(ref1);
-
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref2);
-        mapper.referenceOf(sfBase.withPosition(2)).test().await().assertNoValues();
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureBean)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testRemove_ManyReference_Last(Id ref0, Id ref1, Id ref2) throws InterruptedException {
-        updateInstanceOf(ref0, ref1, ref2);
-
-        mapper.addReference(sfBase.withPosition(0), ref0);
-        mapper.addReference(sfBase.withPosition(1), ref1);
-        mapper.addReference(sfBase.withPosition(2), ref2);
-
-        assertThat(mapper.removeReference(sfBase.withPosition(2))).contains(ref2);
-
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertValue(ref0);
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertValue(ref1);
-        mapper.referenceOf(sfBase.withPosition(2)).test().await().assertNoValues();
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#removeReference(ManyFeatureBean)} when the reference doesn't
-     * exist.
-     */
-    @Test
-    public void testRemove_ManyReference_NotDefined() {
-        assertThat(catchThrowable(() ->
-                assertThat(mapper.removeReference(mfBase)).isNotPresent()
-        )).isNull();
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#removeAllReferences(SingleFeatureBean)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testRemoveAll_ManyReference(Id ref0, Id ref1, Id ref2) throws InterruptedException {
-        updateInstanceOf(ref0, ref1, ref2);
-
-        mapper.appendReference(sfBase, ref0);
-        mapper.appendReference(sfBase, ref1);
-        mapper.appendReference(sfBase, ref2);
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(3);
-
-        mapper.removeAllReferences(sfBase);
-
-        mapper.referenceOf(sfBase.withPosition(0)).test().await().assertNoValues();
-        mapper.referenceOf(sfBase.withPosition(1)).test().await().assertNoValues();
-        mapper.referenceOf(sfBase.withPosition(2)).test().await().assertNoValues();
-
-        mapper.sizeOfReference(sfBase).test().await().assertNoValues();
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#removeAllReferences(SingleFeatureBean)} when the reference
-     * doesn't exist.
-     */
-    @Test
-    public void testRemoveAll_ManyReference_NotDefined() {
-        assertThat(catchThrowable(() ->
-                mapper.removeAllReferences(sfBase)
-        )).isNull();
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#sizeOfReference(SingleFeatureBean)}.
-     */
-    @ParameterizedTest
-    @ArgumentsSource(ReferenceProvider.class)
-    public void testSize_ManyReference(Id ref0, Id ref1, Id ref2) throws InterruptedException {
-        updateInstanceOf(ref0, ref1, ref2);
-
-        mapper.appendReference(sfBase, ref0);
-        mapper.appendReference(sfBase, ref1);
-        mapper.appendReference(sfBase, ref2);
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(3);
-
-        mapper.removeReference(sfBase.withPosition(1));
-
-        mapper.sizeOfReference(sfBase).test().await().assertValue(2);
-    }
-
-    /**
-     * Checks the behavior of {@link ManyReferenceMapper#sizeOfReference(SingleFeatureBean)} when the reference doesn't
-     * exist.
-     */
-    @Test
-    public void testSize_ManyReference_NotDefined() throws InterruptedException {
-        mapper.sizeOfReference(sfBase).test().await().assertNoErrors().assertNoValues();
-    }
-
-    //endregion
-
-    /**
-     * An {@link ArgumentsProvider} with values of different kinds.
-     */
     @ParametersAreNonnullByDefault
-    public static final class ValueProvider implements ArgumentsProvider {
+    public static final class ParametersProvider implements ArgumentsProvider {
 
         @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
-                    Arguments.of("Value0", "Value1", "Value2", "Value3")
-            );
-        }
-    }
-
-    /**
-     * An {@link ArgumentsProvider} with {@link Id}s of different kinds.
-     */
-    @ParametersAreNonnullByDefault
-    public static final class ReferenceProvider implements ArgumentsProvider {
-
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(
-                    Arguments.of(Stream.of(0xa, 0xb, 0xc, 0xd).map(Id.getProvider()::fromLong).toArray())
+                    Arguments.of(RedirectionType.ATTRIBUTE,
+                            "Value0",
+                            "Value1",
+                            "Value2",
+                            "Value3"
+                    ),
+                    Arguments.of(RedirectionType.REFERENCE,
+                            Id.getProvider().fromLong(0xa),
+                            Id.getProvider().fromLong(0xb),
+                            Id.getProvider().fromLong(0xc),
+                            Id.getProvider().fromLong(0xd)
+                    )
             );
         }
     }

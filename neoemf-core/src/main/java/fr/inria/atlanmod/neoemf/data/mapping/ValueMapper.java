@@ -28,7 +28,7 @@ public interface ValueMapper {
      * @param key the key identifying the value
      * @param <V> the type of value
      *
-     * @return the deferred computation to execute, that may contains the value
+     * @return the deferred computation that may contains the value
      */
     @Nonnull
     <V> Maybe<V> valueOf(SingleFeatureBean key);
@@ -40,17 +40,17 @@ public interface ValueMapper {
      * @param value the value to set
      * @param <V>   the type of value
      *
-     * @return the deferred computation to execute, that may contains the previous value which has been replaced
+     * @return the deferred computation
      */
     @Nonnull
-    <V> Maybe<V> valueFor(SingleFeatureBean key, V value);
+    <V> Completable valueFor(SingleFeatureBean key, V value);
 
     /**
      * Removes the value of the specified {@code key}.
      *
      * @param key the key identifying the value
      *
-     * @return the deferred computation to execute
+     * @return the deferred computation
      */
     @Nonnull
     Completable removeValue(SingleFeatureBean key);

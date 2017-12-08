@@ -23,6 +23,8 @@ import org.eclipse.emf.compare.utils.UseIdentifiers;
 import org.eclipse.emf.ecore.EObject;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -67,9 +69,24 @@ public final class ModelComparisonUtils {
             Log.info("Models are equivalent");
         }
         else {
-            Log.warn("Models have {0} differences", differences.size());
+            Log.warn("Models have {0} differences:", differences.size());
+
+            Log.warn("# By Kind:");
+            differences.stream().map(Diff::getKind)
+                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                    .forEach((kind, count) -> Log.warn("#   {0}: {1}", kind, count));
+
+            Log.warn("# By Source:");
+            differences.stream().map(Diff::getSource)
+                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                    .forEach((source, count) -> Log.warn("#   {0}: {1}", source, count));
+
+            Log.warn("# By State:");
+            differences.stream().map(Diff::getState)
+                    .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                    .forEach((state, count) -> Log.warn("#   {0}: {1}", state, count));
         }
 
-        assertThat(differences).hasSize(0);
+        assertThat(differences.size()).isEqualTo(0);
     }
 }

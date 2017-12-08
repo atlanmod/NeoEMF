@@ -15,10 +15,8 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -53,9 +51,10 @@ public class ReadOnlyStore extends AbstractStore {
         super(store);
     }
 
+    @Nonnull
     @Override
-    public void save() {
-        throw e.get();
+    public Completable save() {
+        return Completable.error(e::get);
     }
 
     @Nonnull
@@ -78,8 +77,8 @@ public class ReadOnlyStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
-        return Maybe.error(e::get);
+    public <V> Completable valueFor(SingleFeatureBean key, V value) {
+        return Completable.error(e::get);
     }
 
     @Nonnull
@@ -90,8 +89,8 @@ public class ReadOnlyStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        return Maybe.error(e::get);
+    public Completable referenceFor(SingleFeatureBean key, Id reference) {
+        return Completable.error(e::get);
     }
 
     @Nonnull
@@ -102,79 +101,85 @@ public class ReadOnlyStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+    public <V> Completable valueFor(ManyFeatureBean key, V value) {
+        return Completable.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Completable addValue(ManyFeatureBean key, V value) {
+        return Completable.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
+        return Completable.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Single<Integer> appendValue(SingleFeatureBean key, V value) {
         return Single.error(e::get);
     }
 
-    @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        throw e.get();
-    }
-
-    @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        throw e.get();
-    }
-
-    @Nonnegative
-    @Override
-    public <V> int appendValue(SingleFeatureBean key, V value) {
-        throw e.get();
-    }
-
-    @Nonnegative
-    @Override
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        throw e.get();
-    }
-
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        throw e.get();
-    }
-
-    @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        throw e.get();
-    }
-
-    @Nonnull
-    @Override
-    public Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    public <V> Single<Integer> appendAllValues(SingleFeatureBean key, List<? extends V> values) {
         return Single.error(e::get);
     }
 
+    @Nonnull
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
-        throw e.get();
-    }
-
-    @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        throw e.get();
-    }
-
-    @Nonnegative
-    @Override
-    public int appendReference(SingleFeatureBean key, Id reference) {
-        throw e.get();
-    }
-
-    @Nonnegative
-    @Override
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        throw e.get();
+    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
+        return Maybe.error(e::get);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        throw e.get();
+    public Completable removeAllValues(SingleFeatureBean key) {
+        return Completable.error(e::get);
     }
 
+    @Nonnull
     @Override
-    public void removeAllReferences(SingleFeatureBean key) {
-        throw e.get();
+    public Completable referenceFor(ManyFeatureBean key, Id reference) {
+        return Completable.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public Completable addReference(ManyFeatureBean key, Id reference) {
+        return Completable.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public Completable addAllReferences(ManyFeatureBean key, List<Id> references) {
+        return Completable.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public Single<Integer> appendReference(SingleFeatureBean key, Id reference) {
+        return Single.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public Single<Integer> appendAllReferences(SingleFeatureBean key, List<Id> references) {
+        return Single.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public Maybe<Id> removeReference(ManyFeatureBean key) {
+        return Maybe.error(e::get);
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeAllReferences(SingleFeatureBean key) {
+        return Completable.error(e::get);
     }
 }

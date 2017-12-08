@@ -14,13 +14,11 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Stream;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
@@ -38,7 +36,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return the deferred computation to execute, that may contains the reference
+     * @return the deferred computation that may contains the reference
      */
     @Nonnull
     Maybe<Id> referenceOf(ManyFeatureBean key);
@@ -48,7 +46,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return the deferred computation to execute, that contains all ordered references
+     * @return the deferred computation that contains all ordered references
      */
     @Nonnull
     Flowable<Id> allReferencesOf(SingleFeatureBean key);
@@ -59,14 +57,13 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @param key       the key identifying the multi-valued reference
      * @param reference the reference to set
      *
-     * @return the deferred computation to execute, that may contains the previous reference which has been replaced, or
-     * a {@link NoSuchElementException} if the {@code key} is not defined
+     * @return the deferred computation that may contains a {@link NoSuchElementException} if the {@code key} is not defined
      *
      * @see #addReference(ManyFeatureBean, Id)
      * @see #appendReference(SingleFeatureBean, Id)
      */
     @Nonnull
-    Single<Id> referenceFor(ManyFeatureBean key, Id reference);
+    Completable referenceFor(ManyFeatureBean key, Id reference);
 
     /**
      * Adds the {@code reference} to the specified {@code key} at a defined position.
@@ -74,21 +71,21 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @param key       the key identifying the multi-valued reference
      * @param reference the reference to add
      *
-     * @throws NullPointerException      if any parameter is {@code null}
-     * @throws IndexOutOfBoundsException if {@code key#position() > size}
+     * @return the deferred computation
      */
-    void addReference(ManyFeatureBean key, Id reference);
+    @Nonnull
+    Completable addReference(ManyFeatureBean key, Id reference);
 
     /**
      * Adds all the {@code collection} to the specified {@code key} from the position of the {@code key}.
      *
      * @param key        the key identifying the multi-valued attribute
-     * @param collection the values to add
+     * @param references the references to add
      *
-     * @throws NullPointerException      if any parameter is {@code null}
-     * @throws IndexOutOfBoundsException if {@code key#position() > size}
+     * @return the deferred computation
      */
-    void addAllReferences(ManyFeatureBean key, List<Id> collection);
+    @Nonnull
+    Completable addAllReferences(ManyFeatureBean key, List<Id> references);
 
     /**
      * Adds the {@code reference} to the specified {@code key} at the last position.
@@ -96,19 +93,15 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @param key       the key identifying the multi-valued reference
      * @param reference the reference to add
      *
-     * @return the position to which the reference was added
-     *
-     * @throws NullPointerException if any parameter is {@code null}
-     * @see #addReference(ManyFeatureBean, Id)
+     * @return the deferred computation that contains the position to which the reference was added
      */
-    @Nonnegative
-    default int appendReference(SingleFeatureBean key, Id reference) {
+    @Nonnull
+    default Single<Integer> appendReference(SingleFeatureBean key, Id reference) {
         checkNotNull(key, "key");
+        checkNotNull(reference, "reference");
 
-        int position = sizeOfReference(key).blockingGet(0);
-
-        addReference(key.withPosition(position), reference);
-
+        Single<Integer> position = sizeOfReference(key).toSingle(0);
+        addReference(key.withPosition(position.blockingGet()), reference).blockingAwait();
         return position;
     }
 
@@ -116,23 +109,20 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * Adds all the {@code collection} to the specified {@code key} from the last position.
      *
      * @param key        the key identifying the multi-valued reference
-     * @param collection the references to add
+     * @param references the references to add
      *
-     * @return the position to which the first reference was added
+     * @return the deferred computation that contains the position to which the first reference was added
      *
-     * @throws NullPointerException if any parameter is {@code null}
      * @see #addReference(ManyFeatureBean, Id)
      * @see #appendReference(SingleFeatureBean, Id)
      */
-    @Nonnegative
-    default int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
+    @Nonnull
+    default Single<Integer> appendAllReferences(SingleFeatureBean key, List<Id> references) {
         checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
+        checkNotNull(references, "collection");
 
-        int firstPosition = sizeOfReference(key).blockingGet(0);
-
-        addAllReferences(key.withPosition(firstPosition), collection);
-
+        Single<Integer> firstPosition = sizeOfReference(key).toSingle(0);
+        addAllReferences(key.withPosition(firstPosition.blockingGet()), references).blockingAwait();
         return firstPosition;
     }
 
@@ -141,31 +131,28 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return an {@link Optional} containing the removed reference, or {@link Optional#empty()} if the key has no
-     * reference before
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @return the deferred computation that may contains the previous reference
      */
     @Nonnull
-    Optional<Id> removeReference(ManyFeatureBean key);
+    Maybe<Id> removeReference(ManyFeatureBean key);
 
     /**
      * Removes all references of the specified {@code key}.
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @return the deferred computation
      */
-    void removeAllReferences(SingleFeatureBean key);
+    @Nonnull
+    Completable removeAllReferences(SingleFeatureBean key);
 
     /**
      * Returns the number of reference of the specified {@code key}.
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return the deferred computation to execute, that may contains the size
+     * @return the deferred computation that may contains the size
      */
     @Nonnull
-    @Nonnegative
     Maybe<Integer> sizeOfReference(SingleFeatureBean key);
 }

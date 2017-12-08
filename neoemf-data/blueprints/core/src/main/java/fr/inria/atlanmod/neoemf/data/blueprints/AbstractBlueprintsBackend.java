@@ -46,6 +46,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -297,22 +298,19 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     public Maybe<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id, "id");
 
-        // Retrieve the container edge from a vertex (the only element of the returned iterable)
         Function<Vertex, Iterable<Edge>> getFunc = v -> v
                 .getEdges(Direction.OUT, EDGE_CONTAINER);
 
-        // Convert an edge to a container
         Function<Edge, SingleFeatureBean> mapFunc = e -> SingleFeatureBean.of(
                 idConverter.revert(e.getVertex(Direction.IN).getId()),
                 e.getProperty(PROPERTY_FEATURE_NAME));
 
-        // The composed query to execute on the database
-        Maybe<SingleFeatureBean> databaseQuery = asyncGet(id)
+        Maybe<SingleFeatureBean> query = asyncGet(id)
                 .flattenAsFlowable(getFunc)
                 .singleElement()
                 .map(mapFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -321,23 +319,20 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         checkNotNull(id, "id");
         checkNotNull(container, "container");
 
-        // Remove the container edge of a vertex
         Consumer<Vertex> removeFunc = v -> v
                 .getEdges(Direction.OUT, EDGE_CONTAINER)
                 .forEach(Edge::remove);
 
-        // Define the container edge of a vertex
         Consumer<Vertex> setFunc = v -> v
                 .addEdge(EDGE_CONTAINER, getOrCreate(container.owner()))
                 .setProperty(PROPERTY_FEATURE_NAME, container.id());
 
-        // The composed query to execute on the database
-        Completable databaseQuery = asyncGetOrCreate(id)
+        Completable query = asyncGetOrCreate(id)
                 .doOnSuccess(removeFunc)
                 .doOnSuccess(setFunc)
-                .ignoreElement();
+                .toCompletable();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -345,17 +340,15 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     public Completable removeContainer(Id id) {
         checkNotNull(id, "id");
 
-        // Remove the container edge of a vertex
         Consumer<Vertex> removeFunc = v -> v
                 .getEdges(Direction.OUT, EDGE_CONTAINER)
                 .forEach(Edge::remove);
 
-        // The composed query to execute on the database
-        Completable databaseQuery = asyncGet(id)
+        Completable query = asyncGet(id)
                 .doOnSuccess(removeFunc)
                 .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -363,22 +356,19 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     public Maybe<ClassBean> metaClassOf(Id id) {
         checkNotNull(id, "id");
 
-        // Retrieve the meta-class vertex from a vertex (the only element of the returned iterable)
         Function<Vertex, Iterable<Vertex>> getFunc = v -> v
                 .getVertices(Direction.OUT, EDGE_INSTANCE_OF);
 
-        // Convert a vertex to a meta-class
         Function<Vertex, ClassBean> mapFunc = v -> ClassBean.of(
                 v.getProperty(PROPERTY_CLASS_NAME),
                 v.getProperty(PROPERTY_CLASS_URI));
 
-        // The composed query to execute on the database
-        Maybe<ClassBean> databaseQuery = asyncGet(id)
+        Maybe<ClassBean> query = asyncGet(id)
                 .flattenAsFlowable(getFunc)
                 .singleElement()
                 .map(mapFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -387,11 +377,9 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         checkNotNull(id, "id");
         checkNotNull(metaClass, "metaClass");
 
-        // Retrieve the meta-class from a vertex
         Function<Vertex, Iterable<Vertex>> getFromVertexFunc = v -> v
                 .getVertices(Direction.OUT, EDGE_INSTANCE_OF);
 
-        // Create a new meta-class vertex
         Callable<Vertex> createFunc = () -> {
             Vertex mcv = graph.addVertex(idConverter.convert(generateClassId(metaClass)));
             mcv.setProperty(PROPERTY_CLASS_NAME, metaClass.name());
@@ -399,43 +387,38 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
             return mcv;
         };
 
-        // Create and set the meta-class into the index, if it does not exist
         Maybe<Vertex> setInIndexFunc = Maybe.fromCallable(createFunc)
                 .doOnSuccess(v -> metaClassIndex.put(PROPERTY_CLASS_NAME, metaClass.name(), v))
                 .doOnSuccess(v -> metaClassSet.add(metaClass));
 
-        // Retrieve the meta-class from the index
         Maybe<Vertex> getFromIndexFunc = Maybe.fromCallable(() -> metaClassIndex.get(PROPERTY_CLASS_NAME, metaClass.name()))
                 .flattenAsFlowable(Functions.identity())
                 .singleElement()
                 .switchIfEmpty(setInIndexFunc);
 
-        // Set the meta-class, if it does not exist
         Maybe<Vertex> setFunc = getFromIndexFunc
                 .doOnSuccess(v -> getOrCreate(id).addEdge(EDGE_INSTANCE_OF, v));
 
-        // The composed query to execute on the database
-        Completable databaseQuery = asyncGetOrCreate(id)
+        Completable query = asyncGetOrCreate(id)
                 .flattenAsFlowable(getFromVertexFunc)
                 .singleElement()
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .switchIfEmpty(setFunc)
                 .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
     @Override
     public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        // The composed query to execute on the database
-        Flowable<Id> databaseQuery = Maybe.fromCallable(() -> metaClasses)
+        Flowable<Id> query = Maybe.fromCallable(() -> metaClasses)
                 .flattenAsFlowable(Functions.identity())
                 .flatMapIterable(mc -> metaClassIndex.get(PROPERTY_CLASS_NAME, mc.name()))
                 .flatMapIterable(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .map(v -> idConverter.revert(v.getId()));
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     /**
@@ -479,8 +462,8 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * @return the deferred computation to execute, that contains the container
      */
     @Nonnull
-    protected Maybe<Vertex> asyncGetOrCreate(Id id) {
-        return Maybe.fromCallable(() -> getOrCreate(id));
+    protected Single<Vertex> asyncGetOrCreate(Id id) {
+        return Single.fromCallable(() -> getOrCreate(id));
     }
 
     /**

@@ -70,7 +70,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
      */
     protected AbstractBackend(@Nullable String name) {
         this.name = name;
-        this.dispatcher = new AsyncQueryDispatcher(name);
+        this.dispatcher = new AsyncQueryDispatcher(toString());
 
         if (isPersistent()) {
             BackendManager.getInstance().register(this);
@@ -92,11 +92,18 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
         close(true);
     }
 
+    @Nonnull
     @Override
-    public final synchronized void save() {
+    public final Completable save() {
         if (!isClosed) {
-            lazySave().subscribe();
+            return dispatcher.submit(Completable.fromAction(blockingSave()))
+                    .doOnSubscribe(d -> Log.debug("{0} is saving...", this))
+                    .doOnComplete(() -> Log.debug("{0} has been saved", this))
+                    .doOnError(e -> Log.debug(e, "{0} failed to save", this))
+                    .cache();
         }
+
+        return Completable.complete();
     }
 
     /**
@@ -116,8 +123,8 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
         final Stopwatch stopwatch = Stopwatch.createStarted();
 
         try {
-            // Use #asyncSave() with a lock to ensure all queries are completed before closing
-            lazySave().blockingAwait();
+            // Blocking save to ensure all queries are completed before closing
+            save().blockingAwait();
 
             Log.debug("{0} is closing the database...", this);
             blockingClose().run();
@@ -158,20 +165,6 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
      */
     @Nonnull
     protected abstract Action blockingSave();
-
-    /**
-     * Asynchronously saves all changes made on this back-end since the last call.
-     *
-     * @return the deferred computation
-     */
-    @Nonnull
-    private Completable lazySave() {
-        return dispatcher.submit(Completable.fromAction(blockingSave()))
-                .doOnSubscribe(d -> Log.debug("{0} is saving...", this))
-                .doOnComplete(() -> Log.debug("{0} has been saved", this))
-                .doOnError(e -> Log.debug(e, "{0} failed to save", this))
-                .cache();
-    }
 
     @Nonnull
     @Override
@@ -229,6 +222,13 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
         }
     }
 
+    /**
+     * Finds the default {@link Copier} instance and uses it to copy all the contents from this backend to the {@code target}.
+     * <p>
+     * <b>NOTE:</b> This method requires the module {@code neoemf-io}.
+     *
+     * @param target the backend where to store the copied content
+     */
     @SuppressWarnings("unchecked")
     private void defaultCopyTo(DataMapper target) {
         final String typeName = "fr.inria.atlanmod.neoemf.io.DirectDataCopier";

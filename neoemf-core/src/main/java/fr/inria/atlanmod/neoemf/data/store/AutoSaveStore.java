@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -18,9 +17,7 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import org.eclipse.emf.ecore.InternalEObject.EStore;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Supplier;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -35,14 +32,14 @@ import io.reactivex.internal.functions.Functions;
  * A {@link Store} wrapper that automatically saves modifications as calls are made.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings({"unused", "MethodDoesntCallSuperMethod"}) // Called dynamically
+@SuppressWarnings("unused") // Called dynamically
 public class AutoSaveStore extends AbstractStore {
 
     /**
      * The default number of allowed changes between saves.
      */
     @Nonnegative
-    public static final long DEFAULT_CHUNK = Runtime.getRuntime().maxMemory() / (long) Math.pow(2, 15);
+    public static final long DEFAULT_CHUNK = Runtime.getRuntime().maxMemory() / (long) Math.pow(2, 15); // 1GB = ~250k
 
     /**
      * Number of allowed changes between saves on the underlying {@link EStore} for this store.
@@ -77,27 +74,21 @@ public class AutoSaveStore extends AbstractStore {
         this(store, DEFAULT_CHUNK);
     }
 
+    @Nonnull
     @Override
-    public void close() {
-        save();
-        super.close();
-    }
+    public Completable save() {
+        count.set(0L);
 
-    @Override
-    public void save() {
-        try {
-            super.save();
-        }
-        catch (Exception e) {
-            Log.warn(e);
-        }
+        return super.save()
+                .onErrorComplete()
+                .cache();
     }
 
     @Nonnull
     @Override
     public Completable containerFor(Id id, SingleFeatureBean container) {
         return super.containerFor(id, container)
-                .doOnComplete(this::incrementAndSave)
+                .doOnComplete(() -> incrementAndSave(2))
                 .cache();
     }
 
@@ -105,7 +96,7 @@ public class AutoSaveStore extends AbstractStore {
     @Override
     public Completable removeContainer(Id id) {
         return super.removeContainer(id)
-                .doOnComplete(this::incrementAndSave)
+                .doOnComplete(() -> incrementAndSave(1))
                 .cache();
     }
 
@@ -113,16 +104,15 @@ public class AutoSaveStore extends AbstractStore {
     @Override
     public Completable metaClassFor(Id id, ClassBean metaClass) {
         return super.metaClassFor(id, metaClass)
-                .doOnComplete(this::incrementAndSave)
+                .doOnComplete(() -> incrementAndSave(1))
                 .cache();
     }
 
     @Nonnull
     @Override
-    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Completable valueFor(SingleFeatureBean key, V value) {
         return super.valueFor(key, value)
-                .doOnComplete(this::incrementAndSave)
-                .doOnSuccess(Functions.actionConsumer(this::incrementAndSave))
+                .doOnComplete(() -> incrementAndSave(2))
                 .cache();
     }
 
@@ -130,16 +120,15 @@ public class AutoSaveStore extends AbstractStore {
     @Override
     public Completable removeValue(SingleFeatureBean key) {
         return super.removeValue(key)
-                .doOnComplete(this::incrementAndSave)
+                .doOnComplete(() -> incrementAndSave(1))
                 .cache();
     }
 
     @Nonnull
     @Override
-    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
+    public Completable referenceFor(SingleFeatureBean key, Id reference) {
         return super.referenceFor(key, reference)
-                .doOnComplete(this::incrementAndSave)
-                .doOnSuccess(Functions.actionConsumer(this::incrementAndSave))
+                .doOnComplete(() -> incrementAndSave(2))
                 .cache();
     }
 
@@ -147,128 +136,130 @@ public class AutoSaveStore extends AbstractStore {
     @Override
     public Completable removeReference(SingleFeatureBean key) {
         return super.removeReference(key)
-                .doOnComplete(this::incrementAndSave)
+                .doOnComplete(() -> incrementAndSave(1))
                 .cache();
     }
 
     @Nonnull
     @Override
-    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+    public <V> Completable valueFor(ManyFeatureBean key, V value) {
         return super.valueFor(key, value)
-                .doOnSuccess(Functions.actionConsumer(this::incrementAndSave))
+                .doOnComplete(() -> incrementAndSave(2))
                 .cache();
     }
 
+    @Nonnull
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        thenIncrementAndSave(() -> super.addValue(key, value), 1);
-    }
-
-    @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        thenIncrementAndSave(() -> super.addAllValues(key, collection), collection.size());
-    }
-
-    @Nonnegative
-    @Override
-    public <V> int appendValue(SingleFeatureBean key, V value) {
-        return thenIncrementAndSave(() -> super.appendValue(key, value), 1);
-    }
-
-    @Nonnegative
-    @Override
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        return thenIncrementAndSave(() -> super.appendAllValues(key, collection), collection.size());
+    public <V> Completable addValue(ManyFeatureBean key, V value) {
+        return super.addValue(key, value)
+                .doOnComplete(() -> incrementAndSave(1))
+                .cache();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        return thenIncrementAndSave(() -> super.removeValue(key), 1);
-    }
-
-    @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.removeAllValues(key), sizeOfValue(key).blockingGet(0));
+    public <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
+        return super.addAllValues(key, values)
+                .doOnComplete(() -> incrementAndSave(values.size()))
+                .cache();
     }
 
     @Nonnull
     @Override
-    public Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    public <V> Single<Integer> appendValue(SingleFeatureBean key, V value) {
+        return super.appendValue(key, value)
+                .doOnSuccess(Functions.actionConsumer(() -> incrementAndSave(1)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public <V> Single<Integer> appendAllValues(SingleFeatureBean key, List<? extends V> values) {
+        return super.appendAllValues(key, values)
+                .doOnSuccess(Functions.actionConsumer(() -> incrementAndSave(values.size())))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
+        return super.<V>removeValue(key)
+                .doOnSuccess(Functions.actionConsumer(() -> incrementAndSave(1)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeAllValues(SingleFeatureBean key) {
+        // TODO Use async
+        int previousSize = sizeOfValue(key)
+                .toSingle(0)
+                .blockingGet();
+
+        return super.removeAllValues(key)
+                .doOnComplete(() -> incrementAndSave(previousSize))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Completable referenceFor(ManyFeatureBean key, Id reference) {
         return super.referenceFor(key, reference)
-                .doOnSuccess(Functions.actionConsumer(this::incrementAndSave))
+                .doOnComplete(() -> incrementAndSave(2))
                 .cache();
-    }
-
-    @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
-        thenIncrementAndSave(() -> super.addReference(key, reference), 1);
-    }
-
-    @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        thenIncrementAndSave(() -> super.addAllReferences(key, collection), collection.size());
-    }
-
-    @Nonnegative
-    @Override
-    public int appendReference(SingleFeatureBean key, Id reference) {
-        return thenIncrementAndSave(() -> super.appendReference(key, reference), 1);
-    }
-
-    @Nonnegative
-    @Override
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        return thenIncrementAndSave(() -> super.appendAllReferences(key, collection), collection.size());
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        return thenIncrementAndSave(() -> super.removeReference(key), 1);
+    public Completable addReference(ManyFeatureBean key, Id reference) {
+        return super.addReference(key, reference)
+                .doOnComplete(() -> incrementAndSave(1))
+                .cache();
     }
 
+    @Nonnull
     @Override
-    public void removeAllReferences(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.removeAllReferences(key), sizeOfReference(key).blockingGet(0));
+    public Completable addAllReferences(ManyFeatureBean key, List<Id> references) {
+        return super.addAllReferences(key, references)
+                .doOnComplete(() -> incrementAndSave(references.size()))
+                .cache();
     }
 
-    /**
-     * Calls the given {@code method}, and increments the number of operation, and saves if necessary, i.e when {@code
-     * count % chunk == 0}.
-     *
-     * @param method the method to call before saving
-     * @param count  the number of changes made
-     *
-     * @return the result of the {@code method}
-     *
-     * @see #incrementAndSave(int)
-     */
-    private <V> V thenIncrementAndSave(Supplier<V> method, int count) {
-        V result = method.get();
-        incrementAndSave(count);
-        return result;
+    @Nonnull
+    @Override
+    public Single<Integer> appendReference(SingleFeatureBean key, Id reference) {
+        return super.appendReference(key, reference)
+                .doOnSuccess(Functions.actionConsumer(() -> incrementAndSave(1)))
+                .cache();
     }
 
-    /**
-     * Calls the given {@code method}, and increments the number of operation, and saves if necessary, i.e when {@code
-     * count % chunk == 0}.
-     *
-     * @param method the method to call before saving
-     * @param count  the number of changes made
-     *
-     * @see #incrementAndSave(int)
-     */
-    private void thenIncrementAndSave(Runnable method, int count) {
-        method.run();
-        incrementAndSave(count);
+    @Nonnull
+    @Override
+    public Single<Integer> appendAllReferences(SingleFeatureBean key, List<Id> references) {
+        return super.appendAllReferences(key, references)
+                .doOnSuccess(Functions.actionConsumer(() -> incrementAndSave(references.size())))
+                .cache();
     }
 
-    /**
-     * Increments the number of operation by one, and saves if necessary, i.e when {@code count % chunk == 0}.
-     */
-    private void incrementAndSave() {
-        incrementAndSave(1);
+    @Nonnull
+    @Override
+    public Maybe<Id> removeReference(ManyFeatureBean key) {
+        return super.removeReference(key)
+                .doOnSuccess(Functions.actionConsumer(() -> incrementAndSave(1)))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeAllReferences(SingleFeatureBean key) {
+        // TODO Use async
+        int previousSize = sizeOfReference(key)
+                .toSingle(0)
+                .blockingGet();
+
+        return super.removeAllReferences(key)
+                .doOnComplete(() -> incrementAndSave(previousSize))
+                .cache();
     }
 
     /**
@@ -280,8 +271,7 @@ public class AutoSaveStore extends AbstractStore {
      */
     private void incrementAndSave(int count) {
         if (this.count.addAndGet(count) >= chunk) {
-            this.count.set(0L);
-            save();
+            save().subscribe();
         }
     }
 }

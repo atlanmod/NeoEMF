@@ -28,18 +28,17 @@ import org.mapdb.Serializer;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.internal.functions.Functions;
 
@@ -153,13 +152,9 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     public Maybe<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id, "id");
 
-        // Retrieve the container
-        Callable<SingleFeatureBean> getFunc = () -> get(containers, id);
+        Maybe<SingleFeatureBean> query = get(containers, id);
 
-        // The composed query to execute on the database
-        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(getFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -168,13 +163,9 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
         checkNotNull(id, "id");
         checkNotNull(container, "container");
 
-        // Define the container
-        Action setFunc = () -> put(containers, id, container);
+        Completable query = put(containers, id, container);
 
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(setFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -182,13 +173,9 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     public Completable removeContainer(Id id) {
         checkNotNull(id, "id");
 
-        // Remove the container
-        Action removeFunc = () -> delete(containers, id);
+        Completable query = delete(containers, id);
 
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(removeFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -196,13 +183,9 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     public Maybe<ClassBean> metaClassOf(Id id) {
         checkNotNull(id, "id");
 
-        // Retrieve the meta-class
-        Callable<ClassBean> getFunc = () -> get(instances, id);
+        Maybe<ClassBean> query = get(instances, id);
 
-        // The composed query to execute on the database
-        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(getFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -211,29 +194,23 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
         checkNotNull(id, "id");
         checkNotNull(metaClass, "metaClass");
 
-        // Define the meta-class, if it does not already exist
-        Callable<ClassBean> setFunc = () -> putIfAbsent(instances, id, metaClass);
-
-        // The composed query to execute on the database
-        Completable databaseQuery = Maybe.fromCallable(setFunc)
-                .isEmpty()
+        Completable query = putIfAbsent(instances, id, metaClass)
                 .filter(Functions.equalsWith(false))
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
     @Override
     public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        // The composed query to execute on the database
-        Flowable<Id> databaseQuery = Maybe.fromCallable(instances::getEntries)
+        Flowable<Id> query = Maybe.fromCallable(instances::getEntries)
                 .flattenAsFlowable(Functions.identity())
                 .filter(e -> metaClasses.contains(e.getValue()))
                 .map(Map.Entry::getKey);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -241,24 +218,20 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     public <V> Maybe<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Callable<V> getFunc = () -> get(singleFeatures, key);
+        Maybe<V> query = get(singleFeatures, key);
 
-        Maybe<V> databaseQuery = Maybe.fromCallable(getFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
     @Override
-    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Completable valueFor(SingleFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        Callable<V> setFunc = () -> put(singleFeatures, key, value);
+        Completable query = put(singleFeatures, key, value);
 
-        Maybe<V> databaseQuery = Maybe.fromCallable(setFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -266,11 +239,9 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     public Completable removeValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Action removeFunc = () -> delete(singleFeatures, key);
+        Completable query = delete(singleFeatures, key);
 
-        Completable databaseQuery = Completable.fromAction(removeFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -287,13 +258,14 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
      * @param <K>      the type of the key
      * @param <V>      the type of the value
      *
-     * @return an {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
-     * found
+     * @return the deffered computation that may contains the value
      */
-    @Nullable
+    @Nonnull
     @SuppressWarnings("unchecked")
-    protected <K, V> V get(HTreeMap<K, ? super V> database, K key) {
-        return (V) database.get(key);
+    protected <K, V> Maybe<V> get(HTreeMap<? super K, ? super V> database, K key) {
+        Callable<V> getFunc = () -> (V) database.get(key);
+
+        return Maybe.fromCallable(getFunc);
     }
 
     /**
@@ -305,13 +277,13 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
      * @param <K>      the type of the key
      * @param <V>      the type of the value
      *
-     * @return an {@link Optional} containing the previous element, or an empty {@link Optional} if there is not any
-     * previous element
+     * @return the deffered computation
      */
-    @Nullable
-    @SuppressWarnings("unchecked")
-    protected <K, V> V put(HTreeMap<K, ? super V> database, K key, V value) {
-        return (V) database.put(key, value);
+    @Nonnull
+    protected <K, V> Completable put(HTreeMap<K, ? super V> database, K key, V value) {
+        Action setFunc = () -> database.put(key, value);
+
+        return Completable.fromAction(setFunc);
     }
 
     /**
@@ -326,10 +298,13 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
      *
      * @return {@code true} if the {@code key} has been saved
      */
-    @Nullable
+    @Nonnull
     @SuppressWarnings("unchecked")
-    protected <K, V> V putIfAbsent(HTreeMap<K, ? super V> database, K key, V value) {
-        return (V) database.putIfAbsent(key, value);
+    protected <K, V> Single<Boolean> putIfAbsent(HTreeMap<K, ? super V> database, K key, V value) {
+        Callable<V> setIfAbsentFunc = () -> (V) database.putIfAbsent(key, value);
+
+        return Maybe.fromCallable(setIfAbsentFunc)
+                .isEmpty();
     }
 
     /**
@@ -338,9 +313,14 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
      * @param database the database where to remove the value
      * @param key      the key of the element to remove
      * @param <K>      the type of the key
+     *
+     * @return the deferred computation
      */
-    protected <K> void delete(HTreeMap<K, ?> database, K key) {
-        database.remove(key);
+    @Nonnull
+    protected <K> Completable delete(HTreeMap<K, ?> database, K key) {
+        Action removeFunc = () -> database.remove(key);
+
+        return Completable.fromAction(removeFunc);
     }
 
     /**

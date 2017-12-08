@@ -16,8 +16,6 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithIndices;
 
-import java.util.concurrent.Callable;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -80,23 +78,19 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     public <V> Maybe<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        Callable<V> getFunc = () -> get(manyFeatures, key, serializers.forManyFeature(), serializers.forAny());
+        Maybe<V> query = get(manyFeatures, key, serializers.forManyFeature(), serializers.forAny());
 
-        Maybe<V> databaseQuery = Maybe.fromCallable(getFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Override
     public <V> Completable innerValueFor(ManyFeatureBean key, @Nullable V value) {
         checkNotNull(key, "key");
 
-        Action setOrRemoveFunc = nonNull(value)
-                ? () -> put(manyFeatures, key, value, serializers.forManyFeature(), serializers.forAny())
-                : () -> delete(manyFeatures, key, serializers.forManyFeature());
+        Completable query = nonNull(value)
+                ? put(manyFeatures, key, value, serializers.forManyFeature(), serializers.forAny())
+                : delete(manyFeatures, key, serializers.forManyFeature());
 
-        Completable databaseQuery = Completable.fromAction(setOrRemoveFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 }

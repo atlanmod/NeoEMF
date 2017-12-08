@@ -12,18 +12,21 @@ import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.internal.functions.Functions;
 
 /**
  * A {@link Store} wrapper that caches the size data.
@@ -45,151 +48,204 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Intege
     @Nonnull
     @Override
     public Completable removeValue(SingleFeatureBean key) {
+        Action removeFunc = () -> cache.invalidate(key);
+
         return super.removeValue(key)
-                .doOnComplete(() -> cacheSize(key, 0))
+                .doOnComplete(removeFunc)
                 .cache();
     }
 
     @Nonnull
     @Override
     public Completable removeReference(SingleFeatureBean key) {
+        Action removeFunc = () -> cache.invalidate(key);
+
         return super.removeReference(key)
-                .doOnComplete(() -> cacheSize(key, 0))
+                .doOnComplete(removeFunc)
                 .cache();
     }
 
+    @Nonnull
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        cacheSize(key.withoutPosition(), sizeOfValue(key.withoutPosition()).blockingGet(0) + 1);
-        super.addValue(key, value);
-    }
+    public <V> Completable addValue(ManyFeatureBean key, V value) {
+        final int defaultSize = 0;
 
-    @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        cacheSize(key.withoutPosition(), sizeOfValue(key.withoutPosition()).blockingGet(0) + collection.size());
-        super.addAllValues(key, collection);
-    }
+        final int size = sizeOfValue(key.withoutPosition())
+                .toSingle(defaultSize)
+                .blockingGet();
 
-    @Nonnegative
-    @Override
-    public <V> int appendValue(SingleFeatureBean key, V value) {
-        int position = super.appendValue(key, value);
-        cacheSize(key, position + 1);
-        return position;
-    }
+        Action setFunc = () -> cache.put(key.withoutPosition(), size + 1);
 
-    @Nonnegative
-    @Override
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        int firstPosition = super.appendAllValues(key, collection);
-        cacheSize(key, firstPosition + collection.size());
-        return firstPosition;
+        return super.addValue(key, value)
+                .doOnComplete(setFunc)
+                .cache();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        sizeOfValue(key.withoutPosition())
-                .doOnSuccess(s -> cacheSize(key.withoutPosition(), s - 1))
-                .subscribe();
+    public <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
+        final int defaultSize = 0;
 
-        return super.removeValue(key);
-    }
+        final int size = sizeOfValue(key.withoutPosition())
+                .toSingle(defaultSize)
+                .blockingGet();
 
-    @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        cacheSize(key, 0);
-        super.removeAllValues(key);
+        Action setFunc = () -> cache.put(key.withoutPosition(), size + values.size());
+
+        return super.addAllValues(key, values)
+                .doOnComplete(setFunc)
+                .cache();
     }
 
     @Nonnull
-    @Nonnegative
+    @Override
+    public <V> Single<Integer> appendValue(SingleFeatureBean key, V value) {
+        Consumer<Integer> setFunc = position -> cache.put(key, position + 1);
+
+        return super.appendValue(key, value)
+                .doOnSuccess(setFunc)
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public <V> Single<Integer> appendAllValues(SingleFeatureBean key, List<? extends V> values) {
+        Consumer<Integer> setFunc = firstPosition -> cache.put(key, firstPosition + values.size());
+
+        return super.appendAllValues(key, values)
+                .doOnSuccess(setFunc)
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
+        final Optional<Integer> size = sizeOfValue(key.withoutPosition())
+                .filter(s -> key.position() < s)
+                .to(CommonQueries::toOptional);
+
+        Action setFunc = () -> size.ifPresent(s -> cache.put(key.withoutPosition(), s - 1));
+
+        return super.<V>removeValue(key)
+                .doOnSuccess(Functions.actionConsumer(setFunc))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeAllValues(SingleFeatureBean key) {
+        Action removeFunc = () -> cache.invalidate(key);
+
+        return super.removeAllValues(key)
+                .doOnComplete(removeFunc)
+                .cache();
+    }
+
+    @Nonnull
     @Override
     public Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
         Callable<Integer> getFunc = () -> cache.get(key);
 
-        Consumer<Integer> setFunc = s -> cacheSize(key, s);
+        Consumer<Integer> setFunc = size -> cache.put(key, size);
 
         Maybe<Integer> ifEmptyFunc = super.sizeOfValue(key)
                 .doOnSuccess(setFunc);
 
         return Maybe.fromCallable(getFunc)
                 .switchIfEmpty(ifEmptyFunc)
+                .filter(s -> s > 0)
                 .cache();
     }
 
+    @Nonnull
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
-        cacheSize(key.withoutPosition(), sizeOfReference(key.withoutPosition()).blockingGet(0) + 1);
-        super.addReference(key, reference);
-    }
+    public Completable addReference(ManyFeatureBean key, Id reference) {
+        final int defaultSize = 0;
 
-    @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        cacheSize(key.withoutPosition(), sizeOfReference(key.withoutPosition()).blockingGet(0) + collection.size());
-        super.addAllReferences(key, collection);
-    }
+        final int size = sizeOfReference(key.withoutPosition())
+                .toSingle(defaultSize)
+                .blockingGet();
 
-    @Nonnegative
-    @Override
-    public int appendReference(SingleFeatureBean key, Id reference) {
-        int position = super.appendReference(key, reference);
-        cacheSize(key, position + 1);
-        return position;
-    }
+        Action setFunc = () -> cache.put(key.withoutPosition(), size + 1);
 
-    @Nonnegative
-    @Override
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        int firstPosition = super.appendAllReferences(key, collection);
-        cacheSize(key, firstPosition + collection.size());
-        return firstPosition;
+        return super.addReference(key, reference)
+                .doOnComplete(setFunc)
+                .cache();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        sizeOfReference(key.withoutPosition())
-                .doOnSuccess(s -> cacheSize(key.withoutPosition(), s - 1))
-                .subscribe();
+    public Completable addAllReferences(ManyFeatureBean key, List<Id> references) {
+        final int defaultSize = 0;
 
-        return super.removeReference(key);
-    }
+        final int size = sizeOfReference(key.withoutPosition())
+                .toSingle(defaultSize)
+                .blockingGet();
 
-    @Override
-    public void removeAllReferences(SingleFeatureBean key) {
-        cacheSize(key, 0);
-        super.removeAllReferences(key);
+        Action setFunc = () -> cache.put(key.withoutPosition(), size + references.size());
+
+        return super.addAllReferences(key, references)
+                .doOnComplete(setFunc)
+                .cache();
     }
 
     @Nonnull
-    @Nonnegative
+    @Override
+    public Single<Integer> appendReference(SingleFeatureBean key, Id reference) {
+        Consumer<Integer> setFunc = position -> cache.put(key, position + 1);
+
+        return super.appendReference(key, reference)
+                .doOnSuccess(setFunc)
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Single<Integer> appendAllReferences(SingleFeatureBean key, List<Id> references) {
+        Consumer<Integer> setFunc = firstPosition -> cache.put(key, firstPosition + references.size());
+
+        return super.appendAllReferences(key, references)
+                .doOnSuccess(setFunc)
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Maybe<Id> removeReference(ManyFeatureBean key) {
+        final Optional<Integer> size = sizeOfReference(key.withoutPosition())
+                .filter(s -> key.position() < s)
+                .to(CommonQueries::toOptional);
+
+        Action setFunc = () -> size.ifPresent(s -> cache.put(key.withoutPosition(), s - 1));
+
+        return super.removeReference(key)
+                .doOnSuccess(Functions.actionConsumer(setFunc))
+                .cache();
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeAllReferences(SingleFeatureBean key) {
+        Action removeFunc = () -> cache.invalidate(key);
+
+        return super.removeAllReferences(key)
+                .doOnComplete(removeFunc)
+                .cache();
+    }
+
+    @Nonnull
     @Override
     public Maybe<Integer> sizeOfReference(SingleFeatureBean key) {
         Callable<Integer> getFunc = () -> cache.get(key);
 
-        Consumer<Integer> setFunc = s -> cacheSize(key, s);
+        Consumer<Integer> setFunc = size -> cache.put(key, size);
 
         Maybe<Integer> ifEmptyFunc = super.sizeOfReference(key)
                 .doOnSuccess(setFunc);
 
         return Maybe.fromCallable(getFunc)
                 .switchIfEmpty(ifEmptyFunc)
+                .filter(s -> s > 0)
                 .cache();
-    }
-
-    /**
-     * Defines the number of elements of the given {@code key}.
-     *
-     * @param key  the key to define the size
-     * @param size the size
-     */
-    private void cacheSize(SingleFeatureBean key, @Nonnegative int size) {
-        if (size != 0) {
-            cache.put(key, size);
-        }
-        else {
-            cache.invalidate(key);
-        }
     }
 }

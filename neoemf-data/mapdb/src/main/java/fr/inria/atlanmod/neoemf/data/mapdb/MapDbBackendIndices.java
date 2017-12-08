@@ -15,15 +15,12 @@ import org.mapdb.DB;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
-import java.util.concurrent.Callable;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
-import io.reactivex.functions.Action;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
@@ -65,23 +62,19 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
     public <V> Maybe<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        Callable<V> getFunc = () -> get(manyFeatures, key);
+        Maybe<V> query = get(manyFeatures, key);
 
-        Maybe<V> databaseQuery = Maybe.fromCallable(getFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Override
     public <V> Completable innerValueFor(ManyFeatureBean key, @Nullable V value) {
         checkNotNull(key, "key");
 
-        Action setOrRemoveFunc = nonNull(value)
-                ? () -> put(manyFeatures, key, value)
-                : () -> delete(manyFeatures, key);
+        Completable query = nonNull(value)
+                ? put(manyFeatures, key, value)
+                : delete(manyFeatures, key);
 
-        Completable databaseQuery = Completable.fromAction(setOrRemoveFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 }

@@ -27,7 +27,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
@@ -51,7 +50,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
-        int size = sizeOfValue(key).blockingGet(0);
+        int size = sizeOfValue(key).toSingle(0).blockingGet();
 
         IntFunction<V> mappingFunc = i -> this.<V>valueOf(key.withPosition(i))
                 .to(CommonQueries::toOptional)
@@ -62,7 +61,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+    default <V> Completable valueFor(ManyFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
@@ -72,16 +71,18 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
         return this.<V>valueOf(key)
                 .toSingle()
-                .doAfterSuccess(replaceFunc)
+                .doOnSuccess(replaceFunc)
+                .toCompletable()
                 .cache();
     }
 
+    @Nonnull
     @Override
-    default <V> void addValue(ManyFeatureBean key, V value) {
+    default <V> Completable addValue(ManyFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        int size = sizeOfValue(key.withoutPosition()).blockingGet(0);
+        int size = sizeOfValue(key.withoutPosition()).toSingle(0).blockingGet();
         checkPositionIndex(key.position(), size);
 
         for (int i = size - 1; i >= key.position(); i--) {
@@ -90,32 +91,33 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
         sizeForValue(key.withoutPosition(), size + 1).blockingAwait();
 
-        innerValueFor(key, value).blockingAwait();
-    }
-
-    @Override
-    default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
-
-        if (collection.stream().anyMatch(Objects::isNull)) {
-            throw new NullPointerException();
-        }
-
-        int firstPosition = key.position();
-
-        IntStream.range(0, collection.size())
-                .forEach(i -> addValue(key.withPosition(firstPosition + i), collection.get(i)));
+        return innerValueFor(key, value);
     }
 
     @Nonnull
     @Override
-    default <V> Optional<V> removeValue(ManyFeatureBean key) {
+    default <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
+        checkNotNull(key, "key");
+        checkNotNull(values, "collection");
+
+        if (values.stream().anyMatch(Objects::isNull)) {
+            throw new NullPointerException();
+        }
+
+        IntStream.range(0, values.size())
+                .forEach(i -> addValue(key.withPosition(key.position() + i), values.get(i)).blockingAwait());
+
+        return Completable.complete();
+    }
+
+    @Nonnull
+    @Override
+    default <V> Maybe<V> removeValue(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        int size = sizeOfValue(key.withoutPosition()).blockingGet(0);
+        int size = sizeOfValue(key.withoutPosition()).toSingle(0).blockingGet();
         if (size == 0) {
-            return Optional.empty();
+            return Maybe.empty();
         }
 
         Optional<V> previousValue = this.<V>valueOf(key).to(CommonQueries::toOptional);
@@ -128,19 +130,21 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
         sizeForValue(key.withoutPosition(), size - 1).blockingAwait();
 
-        return previousValue;
-    }
-
-    @Override
-    default void removeAllValues(SingleFeatureBean key) {
-        IntStream.range(0, sizeOfValue(key).blockingGet(0))
-                .forEach(i -> innerValueFor(key.withPosition(i), null).blockingAwait());
-
-        removeValue(key).blockingAwait();
+        return previousValue
+                .map(Maybe::just)
+                .orElseGet(Maybe::empty);
     }
 
     @Nonnull
-    @Nonnegative
+    @Override
+    default Completable removeAllValues(SingleFeatureBean key) {
+        IntStream.range(0, sizeOfValue(key).toSingle(0).blockingGet())
+                .forEach(i -> innerValueFor(key.withPosition(i), null).blockingAwait());
+
+        return removeValue(key);
+    }
+
+    @Nonnull
     @Override
     default Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
@@ -164,7 +168,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkArgument(size >= 0, "size (%d) must not be negative");
 
         return size > 0
-                ? valueFor(key, size).ignoreElement()
+                ? valueFor(key, size)
                 : removeValue(key);
     }
 

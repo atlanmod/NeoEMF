@@ -83,10 +83,8 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testSave() {
-        assertThat(
-                catchThrowable(() -> store.save())
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testSave() throws InterruptedException {
+        assertHasError(store.save().test());
     }
 
     @Test
@@ -160,45 +158,33 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testAddValue() {
-        assertThat(
-                catchThrowable(() -> store.addValue(mock(ManyFeatureBean.class), mock(Object.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testAddValue() throws InterruptedException {
+        assertHasError(store.addValue(mock(ManyFeatureBean.class), mock(Object.class)).test());
     }
 
     @Test
-    void testAddAllValues() {
-        assertThat(
-                catchThrowable(() -> store.addAllValues(mock(ManyFeatureBean.class), Collections.emptyList()))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testAddAllValues() throws InterruptedException {
+        assertHasError(store.addAllValues(mock(ManyFeatureBean.class), Collections.emptyList()).test());
     }
 
     @Test
-    void testAppendValue() {
-        assertThat(
-                catchThrowable(() -> store.appendValue(mock(SingleFeatureBean.class), mock(Object.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testAppendValue() throws InterruptedException {
+        assertHasError(store.appendValue(mock(SingleFeatureBean.class), mock(Object.class)).test());
     }
 
     @Test
-    void testAppendAllValues() {
-        assertThat(
-                catchThrowable(() -> store.appendAllValues(mock(SingleFeatureBean.class), Collections.emptyList()))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testAppendAllValues() throws InterruptedException {
+        assertHasError(store.appendAllValues(mock(SingleFeatureBean.class), Collections.emptyList()).test());
     }
 
     @Test
-    void testRemoveValueMany() {
-        assertThat(
-                catchThrowable(() -> store.removeValue(mock(ManyFeatureBean.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testRemoveValueMany() throws InterruptedException {
+        assertHasError(store.removeValue(mock(ManyFeatureBean.class)).test());
     }
 
     @Test
-    void testRemoveAllValues() {
-        assertThat(
-                catchThrowable(() -> store.removeAllValues(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testRemoveAllValues() throws InterruptedException {
+        assertHasError(store.removeAllValues(mock(SingleFeatureBean.class)).test());
     }
 
     @Test
@@ -222,47 +208,35 @@ class ReadOnlyStoreTest extends AbstractTest {
     }
 
     @Test
-    void testAddReference() {
-        assertThat(
-                catchThrowable(() -> store.addReference(mock(ManyFeatureBean.class), mock(Id.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testAddReference() throws InterruptedException {
+        assertHasError(store.addReference(mock(ManyFeatureBean.class), mock(Id.class)).test());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    void testAddAllReferences() {
-        assertThat(
-                catchThrowable(() -> store.addAllReferences(mock(ManyFeatureBean.class), mock(List.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testAddAllReferences() throws InterruptedException {
+        assertHasError(store.addAllReferences(mock(ManyFeatureBean.class), mock(List.class)).test());
     }
 
     @Test
-    void testAppendReference() {
-        assertThat(
-                catchThrowable(() -> store.appendReference(mock(SingleFeatureBean.class), mock(Id.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testAppendReference() throws InterruptedException {
+        assertHasError(store.appendReference(mock(SingleFeatureBean.class), mock(Id.class)).test());
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    void testAppendAllReferences() {
-        assertThat(
-                catchThrowable(() -> store.appendAllReferences(mock(SingleFeatureBean.class), mock(List.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testAppendAllReferences() throws InterruptedException {
+        assertHasError(store.appendAllReferences(mock(SingleFeatureBean.class), mock(List.class)).test());
     }
 
     @Test
-    void testRemoveReferenceMany() {
-        assertThat(
-                catchThrowable(() -> store.removeReference(mock(ManyFeatureBean.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testRemoveReferenceMany() throws InterruptedException {
+        assertHasError(store.removeReference(mock(ManyFeatureBean.class)).test());
     }
 
     @Test
-    void testRemoveAllReferences() {
-        assertThat(
-                catchThrowable(() -> store.removeAllReferences(mock(SingleFeatureBean.class)))
-        ).isExactlyInstanceOf(READONLY_EXCEPTION_TYPE);
+    void testRemoveAllReferences() throws InterruptedException {
+        assertHasError(store.removeAllReferences(mock(SingleFeatureBean.class)).test());
     }
 
     @Test

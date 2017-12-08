@@ -34,7 +34,7 @@ public interface ClassMapper {
      *
      * @param id the {@link Id} of the element
      *
-     * @return the deferred computation to execute, that may contains the meta-class.
+     * @return the deferred computation that may contains the meta-class.
      */
     @Nonnull
     Maybe<ClassBean> metaClassOf(Id id);
@@ -46,7 +46,7 @@ public interface ClassMapper {
      * @param id        the {@link Id} of the element
      * @param metaClass the containing element's meta-class information to store
      *
-     * @return the deferred computation to execute, that contains a {@link ClassAlreadyExistsException} if a meta-class
+     * @return the deferred computation that may contains a {@link ClassAlreadyExistsException} if a meta-class
      * is already defined for {@code id}
      *
      * @see CommonQueries#classAlreadyExists()
@@ -60,7 +60,7 @@ public interface ClassMapper {
      * @param metaClass the meta-class to compute the instances of
      * @param strict    {@code true} if the lookup searches for strict instances
      *
-     * @return the deferred computation to execute, that may contains the instances of the {@code metaClass} or an
+     * @return the deferred computation that contains the instances of the {@code metaClass} or an
      * {@link UnsupportedOperationException} if this mapper does not support this operation
      */
     @Nonnull
@@ -71,7 +71,7 @@ public interface ClassMapper {
      *
      * @param metaClasses the meta-classes to compute the instances of
      *
-     * @return the deferred computation to execute, that may contains the instances of the {@code metaClass} or an
+     * @return the deferred computation that contains the instances of the {@code metaClass} or an
      * {@link UnsupportedOperationException} if this mapper does not support this operation
      */
     @Nonnull

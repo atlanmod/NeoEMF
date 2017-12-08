@@ -14,14 +14,15 @@ import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
 import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
 
@@ -60,24 +61,26 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+    default <V> Completable valueFor(ManyFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
         Consumer<List<V>> replaceFunc = vs -> {
             vs.set(key.position(), value);
-            valueFor(key.withoutPosition(), vs).ignoreElement().subscribe();
+            valueFor(key.withoutPosition(), vs).subscribe();
         };
 
         return this.<List<V>>valueOf(key.withoutPosition())
+                .filter(vs -> key.position() < vs.size())
                 .toSingle()
-                .doAfterSuccess(replaceFunc)
-                .map(vs -> vs.get(key.position()))
+                .doOnSuccess(replaceFunc)
+                .toCompletable()
                 .cache();
     }
 
+    @Nonnull
     @Override
-    default <V> void addValue(ManyFeatureBean key, V value) {
+    default <V> Completable addValue(ManyFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
@@ -89,37 +92,37 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
         values.add(key.position(), value);
 
-        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
-    }
-
-    @Override
-    default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
-
-        if (collection.isEmpty()) {
-            return;
-        }
-
-        if (collection.contains(null)) {
-            throw new NullPointerException();
-        }
-
-        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
-                .orElseGet(() -> getOrCreateList(key.withoutPosition()));
-
-        int firstPosition = key.position();
-        checkPositionIndex(firstPosition, values.size());
-
-        values.addAll(firstPosition, collection);
-
-        valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
+        return valueFor(key.withoutPosition(), values);
     }
 
     @Nonnull
     @Override
-    default <V> Optional<V> removeValue(ManyFeatureBean key) {
+    default <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
+        checkNotNull(key, "key");
+        checkNotNull(values, "collection");
+
+        if (values.isEmpty()) {
+            return Completable.complete();
+        }
+
+        if (values.stream().anyMatch(Objects::isNull)) {
+            throw new NullPointerException();
+        }
+
+        List<V> vs = this.<List<V>>valueOf(key.withoutPosition())
+                .to(CommonQueries::toOptional)
+                .orElseGet(() -> getOrCreateList(key.withoutPosition()));
+
+        checkPositionIndex(key.position(), vs.size());
+
+        vs.addAll(key.position(), values);
+
+        return valueFor(key.withoutPosition(), vs);
+    }
+
+    @Nonnull
+    @Override
+    default <V> Maybe<V> removeValue(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
@@ -127,7 +130,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
                 .orElse(null);
 
         if (isNull(values)) {
-            return Optional.empty();
+            return Maybe.empty();
         }
 
         Optional<V> previousValue = Optional.empty();
@@ -136,19 +139,22 @@ public interface ManyValueWithLists extends ManyValueMapper {
             previousValue = Optional.of(values.remove(key.position()));
 
             if (values.isEmpty()) {
-                removeAllValues(key.withoutPosition());
+                removeAllValues(key.withoutPosition()).blockingAwait();
             }
             else {
-                valueFor(key.withoutPosition(), values).ignoreElement().blockingAwait();
+                valueFor(key.withoutPosition(), values).blockingAwait();
             }
         }
 
-        return previousValue;
+        return previousValue
+                .map(Maybe::just)
+                .orElseGet(Maybe::empty);
     }
 
+    @Nonnull
     @Override
-    default void removeAllValues(SingleFeatureBean key) {
-        removeValue(key).blockingAwait();
+    default Completable removeAllValues(SingleFeatureBean key) {
+        return removeValue(key);
     }
 
     @Nonnull

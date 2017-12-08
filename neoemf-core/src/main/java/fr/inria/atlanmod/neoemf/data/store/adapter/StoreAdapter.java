@@ -11,7 +11,6 @@ package fr.inria.atlanmod.neoemf.data.store.adapter;
 import fr.inria.atlanmod.commons.Copiable;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.DataManager;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
@@ -21,6 +20,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import java.io.Closeable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +36,21 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public interface StoreAdapter extends DataManager, Copiable<StoreAdapter>, InternalEObject.EStore {
+public interface StoreAdapter extends Closeable, Copiable<StoreAdapter>, InternalEObject.EStore {
+
+    /**
+     * Cleanly closes this store, clear all data in-memory and releases any system resources associated with it. All
+     * modifications are saved before closing.
+     * <p>
+     * If the manager is already closed, then invoking this method has no effect.
+     */
+    @Override
+    void close();
+
+    /**
+     * Saves all changes made on this store since the last call.
+     */
+    void save();
 
     /**
      * Returns the adapted store.
@@ -219,7 +233,7 @@ public interface StoreAdapter extends DataManager, Copiable<StoreAdapter>, Inter
     /**
      * Creates the instance of the {@code object} in a {@link ClassBean} object and persists it in the database.
      * <p>
-     * <b>Note:</b> The type is not updated if {@code object} was previously mapped to another type.
+     * <b>NOTE:</b> The type is not updated if {@code object} was previously mapped to another type.
      *
      * @param object the object to store the instance-of information from
      */

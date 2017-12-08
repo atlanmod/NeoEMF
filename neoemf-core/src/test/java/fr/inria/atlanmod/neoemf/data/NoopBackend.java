@@ -23,7 +23,6 @@ import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -32,7 +31,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
 
 /**
  * A {@link Backend} that does nothing.
@@ -61,9 +59,10 @@ public final class NoopBackend implements Backend, AllReferenceAs<Long> {
         // Do nothing
     }
 
+    @Nonnull
     @Override
-    public void save() {
-        // Do nothing
+    public Completable save() {
+        return Completable.complete();
     }
 
     @Nonnull
@@ -116,8 +115,8 @@ public final class NoopBackend implements Backend, AllReferenceAs<Long> {
 
     @Nonnull
     @Override
-    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
-        return Maybe.empty();
+    public <V> Completable valueFor(SingleFeatureBean key, V value) {
+        return Completable.complete();
     }
 
     @Nonnull
@@ -140,29 +139,32 @@ public final class NoopBackend implements Backend, AllReferenceAs<Long> {
 
     @Nonnull
     @Override
-    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
-        return Single.just(value);
-    }
-
-    @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        // Do nothing
-    }
-
-    @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        // Do nothing
+    public <V> Completable valueFor(ManyFeatureBean key, V value) {
+        return Completable.complete();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        return Optional.empty();
+    public <V> Completable addValue(ManyFeatureBean key, V value) {
+        return Completable.complete();
     }
 
+    @Nonnull
     @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        // Do nothing
+    public <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
+        return Completable.complete();
+    }
+
+    @Nonnull
+    @Override
+    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
+        return Maybe.empty();
+    }
+
+    @Nonnull
+    @Override
+    public Completable removeAllValues(SingleFeatureBean key) {
+        return Completable.complete();
     }
 
     @Nonnull

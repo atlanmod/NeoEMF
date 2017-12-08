@@ -142,7 +142,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     /**
      * Reads a new element.
      * <p>
-     * <b>Note:</b> An element must be flushed with the {@link #flushCurrentElement()} method after analysing all its
+     * <b>NOTE:</b> An element must be flushed with the {@link #flushCurrentElement()} method after analysing all its
      * attributes.
      *
      * @param uri  the URI of the element

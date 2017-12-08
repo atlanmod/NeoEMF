@@ -37,7 +37,6 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.internal.functions.Functions;
 
@@ -133,10 +132,8 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     public Maybe<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id, "id");
 
-        // Create get operation
         Callable<Get> createGet = () -> new Get(idConverter.convert(id));
 
-        // Deserialize the container
         Function<Result, SingleFeatureBean> mapFunc = r -> {
             byte[] byteId = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER);
             byte[] byteName = r.getValue(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
@@ -144,14 +141,13 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             return SingleFeatureBean.of(idConverter.revert(byteId), Bytes.toInt(byteName));
         };
 
-        // The composed query to execute on the database
-        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(createGet)
+        Maybe<SingleFeatureBean> query = Maybe.fromCallable(createGet)
                 .map(table::get)
                 .filter(r -> !r.isEmpty())
                 .filter(r -> r.containsNonEmptyColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER))
                 .map(mapFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -160,17 +156,15 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
         checkNotNull(id, "id");
         checkNotNull(container, "container");
 
-        // Create set operation
         Callable<Put> createPut = () -> new Put(idConverter.convert(id))
                 .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER, idConverter.convert(container.owner()))
                 .addColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE, Ints.toBytes(container.id()));
 
-        // The composed query to execute on the database
-        Completable databaseQuery = Maybe.fromCallable(createPut)
+        Completable query = Maybe.fromCallable(createPut)
                 .doOnSuccess(table::put)
                 .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -178,17 +172,15 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     public Completable removeContainer(Id id) {
         checkNotNull(id, "id");
 
-        // Create remove operation
         Callable<Delete> createDelete = () -> new Delete(idConverter.convert(id))
                 .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER)
                 .addColumns(FAMILY_CONTAINMENT, QUALIFIER_CONTAINING_FEATURE);
 
-        // The composed query to execute on the database
-        Completable databaseQuery = Maybe.fromCallable(createDelete)
+        Completable query = Maybe.fromCallable(createDelete)
                 .doOnSuccess(table::delete)
                 .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -196,10 +188,8 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     public Maybe<ClassBean> metaClassOf(Id id) {
         checkNotNull(id, "id");
 
-        // Create get operation
         Callable<Get> createGet = () -> new Get(idConverter.convert(id));
 
-        // Deserialize the meta-class
         Function<Result, ClassBean> mapFunc = r -> {
             byte[] byteName = r.getValue(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
             byte[] byteUri = r.getValue(FAMILY_TYPE, QUALIFIER_CLASS_URI);
@@ -207,14 +197,13 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             return ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri));
         };
 
-        // The composed query to execute on the database
-        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(createGet)
+        Maybe<ClassBean> query = Maybe.fromCallable(createGet)
                 .map(table::get)
                 .filter(r -> !r.isEmpty())
                 .filter(r -> r.containsNonEmptyColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME))
                 .map(mapFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -223,29 +212,25 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
         checkNotNull(id, "id");
         checkNotNull(metaClass, "metaClass");
 
-        // Create get operation
         Callable<Get> createGet = () -> new Get(idConverter.convert(id))
                 .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME);
 
-        // Create put operation
         Callable<Put> createPut = () -> new Put(idConverter.convert(id))
                 .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME, Strings.toBytes(metaClass.name()))
                 .addColumn(FAMILY_TYPE, QUALIFIER_CLASS_URI, Strings.toBytes(metaClass.uri()));
 
-        // Set the meta-class, if it does not already exists
         Completable setIfAbsent = Maybe.fromCallable(createPut)
                 .doOnSuccess(table::put)
                 .ignoreElement();
 
-        // The composed query to execute on the database
-        Completable databaseQuery = Maybe.fromCallable(createGet)
+        Completable query = Maybe.fromCallable(createGet)
                 .map(table::exists)
                 .filter(Functions.equalsWith(true))
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .switchIfEmpty(setIfAbsent.toMaybe())
                 .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -269,18 +254,18 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             return serializers.<V>forAny().deserialize(byteValue);
         };
 
-        Maybe<V> databaseQuery = Maybe.fromCallable(createGet)
+        Maybe<V> query = Maybe.fromCallable(createGet)
                 .map(table::get)
                 .filter(r -> !r.isEmpty())
                 .filter(r -> r.containsNonEmptyColumn(FAMILY_PROPERTY, toQualifier.apply(key.id())))
                 .map(mapFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
     @Override
-    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Completable valueFor(SingleFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
@@ -289,15 +274,9 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
         Callable<Put> createPut = () -> new Put(idConverter.convert(key.owner()))
                 .addColumn(FAMILY_PROPERTY, toQualifier.apply(key.id()), serializers.<V>forAny().serialize(value));
 
-        Action setFunc = () -> table.put(createPut.call());
+        Completable query = Completable.fromAction(() -> table.put(createPut.call()));
 
-        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
-
-        Maybe<V> databaseQuery = this.<V>valueOf(key)
-                .doOnComplete(setFunc)
-                .doOnSuccess(replaceFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -310,10 +289,10 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
         Callable<Delete> createDelete = () -> new Delete(idConverter.convert(key.owner()))
                 .addColumns(FAMILY_PROPERTY, toQualifier.apply(key.id()));
 
-        Completable databaseQuery = Maybe.fromCallable(createDelete)
+        Completable query = Maybe.fromCallable(createDelete)
                 .doOnSuccess(table::delete)
                 .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 }

@@ -7,7 +7,7 @@
  */
 
 /**
- * <b>Note:</b> This package and the classes it contains should not be used.
+ * <b>NOTE:</b> This package and the classes it contains should not be used.
  */
 
 package fr.inria.atlanmod.neoemf.tests;

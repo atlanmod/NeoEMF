@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -38,14 +39,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
-import io.reactivex.Maybe;
 import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link InMemoryBackend}, bound to a unique {@link Id}, that stores all elements in {@link Map}s.
@@ -116,19 +113,19 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
 
     @Nonnull
     @Override
-    protected Map<Id, SingleFeatureBean> containers() {
+    protected ChronicleMap<Id, SingleFeatureBean> allContainers() {
         return dataHolder.containers;
     }
 
     @Nonnull
     @Override
-    protected Map<Id, ClassBean> instances() {
+    protected ChronicleMap<Id, ClassBean> allInstances() {
         return dataHolder.instances;
     }
 
     @Nonnull
     @Override
-    protected Map<SingleFeatureBean, Object> features() {
+    protected ChronicleMap<SingleFeatureBean, Object> allFeatures() {
         return dataHolder.features;
     }
 
@@ -140,16 +137,14 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
 
     @Nonnull
     @Override
-    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Completable valueFor(SingleFeatureBean key, V value) {
         Action setFunc = () -> dataHolder.featuresById
                 .computeIfAbsent(key.owner(), id -> new HashSet<>())
                 .add(key.id());
 
-        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
-
         return super.valueFor(key, value)
                 .doOnComplete(setFunc)
-                .doOnSuccess(replaceFunc);
+                .cache();
     }
 
     @Nonnull
@@ -160,7 +155,8 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
                 .remove(key.id());
 
         return super.removeValue(key)
-                .doOnComplete(unregisterFunc);
+                .doOnComplete(unregisterFunc)
+                .cache();
     }
 
     @Override
@@ -245,29 +241,31 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
          * Initializes all maps.
          */
         public void init() {
+            final String prefix = "bound";
+
             containers = ChronicleMapBuilder.of(Id.class, SingleFeatureBean.class)
-                    .name("bound/containers")
-                    .entries(Sizes.ENTRIES)
-                    .averageKeySize(Sizes.ID)
-                    .averageValueSize(Sizes.FEATURE)
+                    .name(prefix + "/containers")
+                    .entries(DataSizes.ENTRIES)
+                    .averageKeySize(DataSizes.ID)
+                    .averageValueSize(DataSizes.FEATURE)
                     .keyMarshaller(new BeanMarshaller<>(serializers.forId()))
                     .valueMarshaller(new BeanMarshaller<>(serializers.forSingleFeature()))
                     .create();
 
             instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
-                    .name("bound/instances")
-                    .entries(Sizes.ENTRIES)
-                    .averageKeySize(Sizes.ID)
-                    .averageValueSize(Sizes.CLASS)
+                    .name(prefix + "/instances")
+                    .entries(DataSizes.ENTRIES)
+                    .averageKeySize(DataSizes.ID)
+                    .averageValueSize(DataSizes.CLASS)
                     .keyMarshaller(new BeanMarshaller<>(serializers.forId()))
                     .valueMarshaller(new BeanMarshaller<>(serializers.forClass()))
                     .create();
 
             features = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
-                    .name("bound/features")
-                    .entries(Sizes.ENTRIES)
-                    .averageKeySize(Sizes.FEATURE)
-                    .averageValueSize(Sizes.FEATURE_VALUE)
+                    .name(prefix + "/features")
+                    .entries(DataSizes.ENTRIES)
+                    .averageKeySize(DataSizes.FEATURE)
+                    .averageValueSize(DataSizes.FEATURE_VALUE)
                     .keyMarshaller(new BeanMarshaller<>(serializers.forSingleFeature()))
                     .create();
 
@@ -288,11 +286,9 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
                 // Remove the container from the id if present (accessible only by the id)
                 containers.remove(id);
 
-                // Unregister the current back-end and clear all features associated with the id
-                Set<Integer> relatedFeatures = featuresById.remove(id);
-                if (nonNull(relatedFeatures)) {
-                    relatedFeatures.forEach(n -> features.remove(SingleFeatureBean.of(id, n)));
-                }
+                // Unregister the current back-end and clear all features related to the id
+                Optional.ofNullable(featuresById.remove(id))
+                        .ifPresent(rf -> rf.forEach(n -> features.remove(SingleFeatureBean.of(id, n))));
             }
         }
 
@@ -304,19 +300,14 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
             final Stopwatch stopwatch = Stopwatch.createStarted();
 
             try {
-                containers.clear();
                 containers.close();
-
-                instances.clear();
                 instances.close();
-
-                features.clear();
                 features.close();
 
                 featuresById.clear();
             }
             finally {
-                Log.debug("BoundInMemoryBackend is now closed. Took {1}", stopwatch.stop().elapsed());
+                Log.debug("BoundInMemoryBackend is now closed. Took {0}", stopwatch.stop().elapsed());
             }
         }
 

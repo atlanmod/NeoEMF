@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
@@ -32,8 +31,6 @@ import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
-
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link QueryDispatcher} that dispatches and executes queries asynchronously using an {@link ExecutorService}.
@@ -61,42 +58,24 @@ public class AsyncQueryDispatcher extends AbstractQueryDispatcher {
 
     /**
      * Constructs a new {@code AsyncQueryDispatcher}.
-     */
-    public AsyncQueryDispatcher() {
-        this(null);
-    }
-
-    /**
-     * Constructs a new {@code AsyncQueryDispatcher}.
      *
      * @param name the name of threads
      */
-    public AsyncQueryDispatcher(@Nullable String name) {
-        this(DEFAULT_THREAD_COUNT, name);
+    public AsyncQueryDispatcher(String name) {
+        this(name, DEFAULT_THREAD_COUNT);
     }
 
     /**
      * Constructs a new {@code AsyncQueryDispatcher}.
      *
-     * @param nThreads the number of threads to use
-     *
-     * @throws IllegalArgumentException if {@code nThreads <= 0}
-     */
-    public AsyncQueryDispatcher(@Nonnegative int nThreads) {
-        this(nThreads, null);
-    }
-
-    /**
-     * Constructs a new {@code AsyncQueryDispatcher}.
-     *
-     * @param nThreads the number of threads to use
      * @param name     the name of threads
+     * @param nThreads the number of threads to use
      *
      * @throws IllegalArgumentException if {@code nThreads <= 0}
      */
-    public AsyncQueryDispatcher(@Nonnegative int nThreads, @Nullable String name) {
+    public AsyncQueryDispatcher(String name, @Nonnegative int nThreads) {
         this.pool = LazyObject.with(() -> {
-            ThreadFactory threadFactory = MoreThreads.newThreadFactory(nonNull(name) ? name : getClass().getSimpleName() + '@' + hashCode());
+            ThreadFactory threadFactory = MoreThreads.newThreadFactory(name);
             return Executors.newFixedThreadPool(nThreads, threadFactory);
         });
 

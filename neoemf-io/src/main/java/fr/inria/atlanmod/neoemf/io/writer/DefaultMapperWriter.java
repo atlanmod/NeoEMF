@@ -52,7 +52,8 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
 
     @Override
     public void onComplete() {
-        target.save();
+        // Blocking save to ensure all queries are completed before exiting
+        target.save().blockingAwait();
     }
 
     @Override
@@ -67,10 +68,12 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
         SingleFeatureBean key = SingleFeatureBean.of(attribute.owner(), attribute.id());
 
         if (!attribute.isMany()) {
-            target.valueFor(key, values.get(0)).ignoreElement().blockingAwait();
+            // TODO Use async
+            target.valueFor(key, values.get(0)).blockingAwait();
         }
         else {
-            target.appendAllValues(key, values);
+            // TODO Use async
+            target.appendAllValues(key, values).toCompletable().blockingAwait();
         }
     }
 
@@ -80,16 +83,17 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
 
         // Update the containment reference if needed
         if (reference.isContainment()) {
-            values.forEach(i -> target.containerFor(i, key)
-                    .blockingAwait());
-//                    .subscribe()); // TODO Use `subscribe()` for async work
+            // TODO Use async
+            values.forEach(i -> target.containerFor(i, key).blockingAwait());
         }
 
         if (!reference.isMany()) {
-            target.referenceFor(key, values.get(0)).ignoreElement().blockingAwait();
+            // TODO Use async
+            target.referenceFor(key, values.get(0)).blockingAwait();
         }
         else {
-            target.appendAllReferences(key, values);
+            // TODO Use async
+            target.appendAllReferences(key, values).toCompletable().blockingAwait();
         }
     }
 
@@ -106,6 +110,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
         BasicMetaclass metaClass = element.metaClass();
 
         try {
+            // TODO Use async
             target.metaClassFor(element.id(), ClassBean.of(metaClass.name(), metaClass.ns().uri())).blockingAwait();
         }
         catch (ClassAlreadyExistsException e) {

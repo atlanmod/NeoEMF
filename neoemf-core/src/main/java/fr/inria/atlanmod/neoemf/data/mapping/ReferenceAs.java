@@ -38,12 +38,10 @@ public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
 
     @Nonnull
     @Override
-    default Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
+    default Completable referenceFor(SingleFeatureBean key, Id reference) {
         Converter<Id, M> converter = referenceConverter();
 
-        return this.valueFor(key, converter.convert(reference))
-                .map(converter::revert)
-                .cache();
+        return this.valueFor(key, converter.convert(reference));
     }
 
     @Nonnull

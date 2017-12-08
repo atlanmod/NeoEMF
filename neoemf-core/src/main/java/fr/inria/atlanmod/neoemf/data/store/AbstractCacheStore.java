@@ -11,6 +11,7 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.commons.cache.CacheBuilder;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -44,5 +45,15 @@ public abstract class AbstractCacheStore<K, V> extends AbstractStore {
         cache.cleanUp();
 
         super.close();
+    }
+
+    /**
+     * Returns the in-memory cache.
+     *
+     * @return the cache
+     */
+    @Nonnull
+    public Cache<K, V> cache() {
+        return cache;
     }
 }

@@ -25,6 +25,7 @@ import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.hash.serialization.BytesReader;
 import net.openhft.chronicle.hash.serialization.BytesWriter;
+import net.openhft.chronicle.map.ChronicleMap;
 
 import java.io.IOException;
 import java.util.Map;
@@ -48,7 +49,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * An abstract {@link InMemoryBackend} that provides the default behavior of containers and meta-classes management.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemoryBackend, ManyValueWithArrays, AllReferenceAs<Long> {
+abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemoryBackend, ManyValueWithArrays, AllReferenceAs<Long> {
 
     /**
      * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
@@ -101,7 +102,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
      * @return a mutable map
      */
     @Nonnull
-    protected abstract Map<Id, SingleFeatureBean> containers();
+    protected abstract ChronicleMap<Id, SingleFeatureBean> allContainers();
 
     /**
      * Returns the map that holds all instances.
@@ -109,7 +110,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
      * @return a mutable map
      */
     @Nonnull
-    protected abstract Map<Id, ClassBean> instances();
+    protected abstract ChronicleMap<Id, ClassBean> allInstances();
 
     /**
      * Returns the map that holds single-features.
@@ -117,7 +118,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
      * @return a mutable map
      */
     @Nonnull
-    protected abstract Map<SingleFeatureBean, Object> features();
+    protected abstract ChronicleMap<SingleFeatureBean, Object> allFeatures();
 
     /**
      * Checks the specified {@code key} before using it.
@@ -133,13 +134,11 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     public Maybe<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id, "id");
 
-        // Define the container
-        Callable<SingleFeatureBean> getFunc = () -> containers().get(id);
+        Callable<SingleFeatureBean> getFunc = () -> allContainers().get(id);
 
-        // The composed query to execute on the database
-        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(getFunc);
+        Maybe<SingleFeatureBean> query = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -148,13 +147,11 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
         checkNotNull(id, "id");
         checkNotNull(container, "container");
 
-        // Define the container
-        Action setFunc = () -> containers().put(id, container);
+        Action setFunc = () -> allContainers().put(id, container);
 
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(setFunc);
+        Completable query = Completable.fromAction(setFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -162,13 +159,11 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     public Completable removeContainer(Id id) {
         checkNotNull(id, "id");
 
-        // Remove the container
-        Action removeFunc = () -> containers().remove(id);
+        Action removeFunc = () -> allContainers().remove(id);
 
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(removeFunc);
+        Completable query = Completable.fromAction(removeFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -176,13 +171,11 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     public Maybe<ClassBean> metaClassOf(Id id) {
         checkNotNull(id, "id");
 
-        // Retrieve the meta-class
-        Callable<ClassBean> getFunc = () -> instances().get(id);
+        Callable<ClassBean> getFunc = () -> allInstances().get(id);
 
-        // The composed query to execute on the database
-        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(getFunc);
+        Maybe<ClassBean> query = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -191,27 +184,24 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
         checkNotNull(id, "id");
         checkNotNull(metaClass, "metaClass");
 
-        // Define the meta-class, if it does not already exist
-        Callable<ClassBean> setFunc = () -> instances().putIfAbsent(id, metaClass);
+        Callable<ClassBean> setFunc = () -> allInstances().putIfAbsent(id, metaClass);
 
-        // The composed query to execute on the database
-        Completable databaseQuery = Maybe.fromCallable(setFunc)
+        Completable query = Maybe.fromCallable(setFunc)
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
     @Override
     public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        // The composed query to execute on the database
-        Flowable<Id> databaseQuery = Maybe.fromCallable(() -> instances().entrySet())
+        Flowable<Id> query = Maybe.fromCallable(() -> allInstances().entrySet())
                 .flattenAsFlowable(Functions.identity())
                 .filter(e -> metaClasses.contains(e.getValue()))
                 .map(Map.Entry::getKey);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -219,24 +209,24 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     public <V> Maybe<V> valueOf(SingleFeatureBean key) {
         checkKey(key);
 
-        Callable<V> getFunc = () -> cast(features().get(key));
+        Callable<V> getFunc = () -> cast(allFeatures().get(key));
 
-        Maybe<V> databaseQuery = Maybe.fromCallable(getFunc);
+        Maybe<V> query = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
     @Override
-    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Completable valueFor(SingleFeatureBean key, V value) {
         checkKey(key);
         checkNotNull(value, "value");
 
-        Callable<V> setFunc = () -> cast(features().put(key, value));
+        Action setFunc = () -> allFeatures().put(key, value);
 
-        Maybe<V> databaseQuery = Maybe.fromCallable(setFunc);
+        Completable query = Completable.fromAction(setFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -244,11 +234,11 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     public Completable removeValue(SingleFeatureBean key) {
         checkKey(key);
 
-        Action removeFunc = () -> features().remove(key);
+        Action removeFunc = () -> allFeatures().remove(key);
 
-        Completable databaseQuery = Completable.fromAction(removeFunc);
+        Completable query = Completable.fromAction(removeFunc);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -262,7 +252,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
      */
     @Static
     @ParametersAreNonnullByDefault
-    protected static final class Sizes {
+    protected static final class DataSizes {
 
         /**
          * The estimated number of entries in maps.
@@ -294,7 +284,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
          *
          * @throws IllegalStateException every time
          */
-        private Sizes() {
+        private DataSizes() {
             throw new IllegalStateException("This class should not be instantiated");
         }
     }

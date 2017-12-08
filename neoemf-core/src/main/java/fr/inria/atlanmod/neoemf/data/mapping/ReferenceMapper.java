@@ -28,7 +28,7 @@ public interface ReferenceMapper {
      *
      * @param key the key identifying the reference
      *
-     * @return the deferred computation to execute, that may contains the reference
+     * @return the deferred computation that may contains the reference
      */
     @Nonnull
     Maybe<Id> referenceOf(SingleFeatureBean key);
@@ -39,17 +39,17 @@ public interface ReferenceMapper {
      * @param key       the key identifying the reference
      * @param reference the reference to set
      *
-     * @return the deferred computation to execute, that may contains the previous reference which has been replaced
+     * @return the deferred computation
      */
     @Nonnull
-    Maybe<Id> referenceFor(SingleFeatureBean key, Id reference);
+    Completable referenceFor(SingleFeatureBean key, Id reference);
 
     /**
      * Removes the reference of the specified {@code key}.
      *
      * @param key the key identifying the reference
      *
-     * @return the deferred computation to execute
+     * @return the deferred computation
      */
     @Nonnull
     Completable removeReference(SingleFeatureBean key);

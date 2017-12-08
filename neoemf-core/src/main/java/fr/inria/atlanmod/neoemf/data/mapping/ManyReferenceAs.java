@@ -14,12 +14,12 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
@@ -55,54 +55,66 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
 
     @Nonnull
     @Override
-    default Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    default Completable referenceFor(ManyFeatureBean key, Id reference) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.valueFor(key, converter.convert(reference))
-                .map(converter::revert)
-                .cache();
+        return this.valueFor(key, converter.convert(reference));
     }
 
+    @Nonnull
     @Override
-    default void addReference(ManyFeatureBean key, Id reference) {
+    default Completable addReference(ManyFeatureBean key, Id reference) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        this.addValue(key, converter.convert(reference));
+        return this.addValue(key, converter.convert(reference));
     }
 
+    @Nonnull
     @Override
-    default void addAllReferences(ManyFeatureBean key, List<Id> collection) {
+    default Completable addAllReferences(ManyFeatureBean key, List<Id> references) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        this.addAllValues(key, collection.stream().map(converter::convert).collect(Collectors.toList()));
+        List<M> mappedReferences = references
+                .stream()
+                .map(converter::convert)
+                .collect(Collectors.toList());
+
+        return this.addAllValues(key, mappedReferences);
     }
 
+    @Nonnull
     @Override
-    default int appendReference(SingleFeatureBean key, Id reference) {
+    default Single<Integer> appendReference(SingleFeatureBean key, Id reference) {
         Converter<Id, M> converter = manyReferenceConverter();
 
         return this.appendValue(key, converter.convert(reference));
     }
 
+    @Nonnull
     @Override
-    default int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
+    default Single<Integer> appendAllReferences(SingleFeatureBean key, List<Id> references) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.appendAllValues(key, collection.stream().map(converter::convert).collect(Collectors.toList()));
+        List<M> mappedReferences = references.stream()
+                .map(converter::convert)
+                .collect(Collectors.toList());
+
+        return this.appendAllValues(key, mappedReferences);
     }
 
     @Nonnull
     @Override
-    default Optional<Id> removeReference(ManyFeatureBean key) {
+    default Maybe<Id> removeReference(ManyFeatureBean key) {
         Converter<Id, M> converter = manyReferenceConverter();
 
         return this.<M>removeValue(key)
                 .map(converter::revert);
     }
 
+    @Nonnull
     @Override
-    default void removeAllReferences(SingleFeatureBean key) {
-        this.removeAllValues(key);
+    default Completable removeAllReferences(SingleFeatureBean key) {
+        return this.removeAllValues(key);
     }
 
     @Nonnull

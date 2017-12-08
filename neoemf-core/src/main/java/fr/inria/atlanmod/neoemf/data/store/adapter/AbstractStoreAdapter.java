@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
 import fr.inria.atlanmod.commons.cache.Cache;
+import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -45,8 +46,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.internal.functions.Functions;
 
@@ -63,6 +66,7 @@ import static java.util.Objects.nonNull;
  */
 @Immutable
 @ParametersAreNonnullByDefault
+// TODO Requires cleaning: difficult to read and understand
 public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     /**
@@ -70,18 +74,21 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      */
     @Nonnull
     private final AttributeConverter attrConverter = new AttributeConverter(new FeatureMapConverter(this));
-
     /**
      * The adapted store.
      */
     @Nonnull
     private Store store;
-
     /**
      * The resource to store and access.
      */
     @Nullable
     private Resource.Internal resource;
+    /**
+     * The converter used to transform identifier of {@link PersistentEObject}s.
+     */
+    @Nonnull
+    private final Converter<PersistentEObject, Id> refConverter = Converter.from(PersistentEObject::id, this::resolve);
 
     /**
      * Constructs a new {@code AbstractStoreAdapter} on the given {@code store}.
@@ -159,7 +166,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public void save() {
-        store.save();
+        store.save().blockingAwait();
     }
 
     @Nonnull
@@ -207,34 +214,36 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             checkElementIndex(index, size(internalObject, feature));
         }
 
-        PersistentEObject object = adaptAndRefresh(internalObject);
-
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean key = SingleFeatureBean.from(adaptAndRefresh(internalObject), feature);
 
         if (EObjects.isAttribute(feature)) {
-            Optional<Object> value;
+            Maybe<Object> getFunc;
+
             if (!feature.isMany()) {
-                value = store.valueOf(key).to(CommonQueries::toOptional);
+                getFunc = store.valueOf(key);
             }
             else {
-                value = store.valueOf(key.withPosition(index)).to(CommonQueries::toOptional);
+                getFunc = store.valueOf(key.withPosition(index));
             }
 
-            return value
+            return getFunc
+                    .to(CommonQueries::toOptional)
                     .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .orElse(null);
         }
         else {
-            Optional<Id> reference;
+            Maybe<Id> getFunc;
+
             if (!feature.isMany()) {
-                reference = store.referenceOf(key).to(CommonQueries::toOptional);
+                getFunc = store.referenceOf(key);
             }
             else {
-                reference = store.referenceOf(key.withPosition(index)).to(CommonQueries::toOptional);
+                getFunc = store.referenceOf(key.withPosition(index));
             }
 
-            return reference
-                    .map(this::resolve)
+            return getFunc
+                    .to(CommonQueries::toOptional)
+                    .map(refConverter::revert)
                     .orElse(null);
         }
     }
@@ -254,90 +263,102 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             checkElementIndex(index, size(internalObject, feature));
         }
 
-        PersistentEObject object = adaptAndUpdate(internalObject);
+        SingleFeatureBean key = SingleFeatureBean.from(adaptAndUpdate(internalObject), feature);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        Object previous;
+        Completable setFunc;
 
         if (EObjects.isAttribute(feature)) {
-            Optional<Object> previousValue;
+            Object primitiveValue = attrConverter.convert(value, EObjects.asAttribute(feature));
+
+            Maybe<Object> getFunc;
+
             if (!feature.isMany()) {
-                previousValue = store.valueFor(key, attrConverter.convert(value, EObjects.asAttribute(feature))).to(CommonQueries::toOptional);
+                getFunc = store.valueOf(key);
+                setFunc = store.valueFor(key, primitiveValue);
             }
             else {
-                previousValue = store.valueFor(key.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature))).to(CommonQueries::toOptional);
+                getFunc = store.valueOf(key.withPosition(index));
+                setFunc = store.valueFor(key.withPosition(index), primitiveValue);
             }
 
-            return previousValue
+            previous = getFunc
+                    .to(CommonQueries::toOptional)
                     .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .orElse(null);
         }
         else {
-            PersistentEObject referencedObject = adaptAndUpdate(value);
+            Id referencedId = refConverter.convert(adaptAndUpdate(value));
 
-            Optional<Id> previousReference;
+            Maybe<Id> getFunc;
+
             if (!feature.isMany()) {
-                previousReference = store.referenceFor(key, referencedObject.id()).to(CommonQueries::toOptional);
+                getFunc = store.referenceOf(key);
+                setFunc = store.referenceFor(key, referencedId);
             }
             else {
-                previousReference = store.referenceFor(key.withPosition(index), referencedObject.id()).to(CommonQueries::toOptional);
+                getFunc = store.referenceOf(key.withPosition(index));
+                setFunc = store.referenceFor(key.withPosition(index), referencedId);
             }
 
-            return previousReference
-                    .map(this::resolve)
+            previous = getFunc
+                    .to(CommonQueries::toOptional)
+                    .map(refConverter::revert)
                     .orElse(null);
         }
+
+        // TODO Use async
+        setFunc.blockingAwait();
+
+        return previous;
     }
 
     @Override
     public final boolean isSet(InternalEObject internalObject, EStructuralFeature feature) {
         checkParameters(internalObject, feature);
 
-        PersistentEObject object = adaptAndRefresh(internalObject);
+        SingleFeatureBean key = SingleFeatureBean.from(adaptAndRefresh(internalObject), feature);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        Maybe<?> getFunc;
 
         if (EObjects.isAttribute(feature)) {
-            if (!feature.isMany()) {
-                return store.valueOf(key).to(CommonQueries::toOptional).isPresent();
-            }
-            else {
-                return store.sizeOfValue(key).isEmpty().map(e -> !e).blockingGet();
-            }
+            getFunc = !feature.isMany()
+                    ? store.valueOf(key)
+                    : store.sizeOfValue(key);
         }
         else {
-            if (!feature.isMany()) {
-                return store.referenceOf(key).to(CommonQueries::toOptional).isPresent();
-            }
-            else {
-                return store.sizeOfReference(key).isEmpty().map(e -> !e).blockingGet();
-            }
+            getFunc = !feature.isMany()
+                    ? store.referenceOf(key)
+                    : store.sizeOfReference(key);
         }
+
+        return getFunc
+                .isEmpty()
+                .map(exists -> !exists)
+                .blockingGet();
     }
 
     @Override
     public final void unset(InternalEObject internalObject, EStructuralFeature feature) {
         checkParameters(internalObject, feature);
 
-        PersistentEObject object = adaptAndRefresh(internalObject);
+        SingleFeatureBean key = SingleFeatureBean.from(adaptAndRefresh(internalObject), feature);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        Completable removeFunc;
 
         if (EObjects.isAttribute(feature)) {
-            if (!feature.isMany()) {
-                store.removeValue(key).blockingAwait();
-            }
-            else {
-                store.removeAllValues(key);
-            }
+            removeFunc = !feature.isMany()
+                    ? store.removeValue(key)
+                    : store.removeAllValues(key);
         }
         else {
-            if (!feature.isMany()) {
-                store.removeReference(key).blockingAwait();
-            }
-            else {
-                store.removeAllReferences(key);
-            }
+            removeFunc = !feature.isMany()
+                    ? store.removeReference(key)
+                    : store.removeAllReferences(key);
         }
+
+        // TODO Use async
+        removeFunc.blockingAwait();
     }
 
     @Override
@@ -354,18 +375,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkParameters(internalObject, feature);
         checkIsMany("size", feature);
 
-        PersistentEObject object = adaptAndRefresh(internalObject);
+        SingleFeatureBean key = SingleFeatureBean.from(adaptAndRefresh(internalObject), feature);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        Maybe<Integer> sizeFunc = EObjects.isAttribute(feature)
+                ? store.sizeOfValue(key)
+                : store.sizeOfReference(key);
 
-        Maybe<Integer> size;
-        if (EObjects.isAttribute(feature)) {
-            size = store.sizeOfValue(key);
-        }
-        else {
-            size = store.sizeOfReference(key);
-        }
-        return size.blockingGet(0);
+        return sizeFunc.toSingle(0)
+                .blockingGet();
     }
 
     @Override
@@ -385,9 +402,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             return EStore.NO_INDEX;
         }
 
-        PersistentEObject object = adaptAndRefresh(internalObject);
-
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean key = SingleFeatureBean.from(adaptAndRefresh(internalObject), feature);
 
         Object comparison;
         Flowable<?> flowable;
@@ -397,13 +412,13 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             flowable = store.allValuesOf(key);
         }
         else {
-            comparison = PersistentEObject.from(value).id();
+            comparison = refConverter.convert(PersistentEObject.from(value));
             flowable = store.allReferencesOf(key);
         }
 
         AtomicInteger currentIndex = new AtomicInteger();
 
-        // TODO Use async iteration
+        // TODO Use async
         for (Object o : flowable.blockingIterable()) {
             if (comparison.equals(o)) {
                 return currentIndex.get();
@@ -423,9 +438,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             return EStore.NO_INDEX;
         }
 
-        PersistentEObject object = adaptAndRefresh(internalObject);
-
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean key = SingleFeatureBean.from(adaptAndRefresh(internalObject), feature);
 
         Object comparison;
         Flowable<?> flowable;
@@ -435,14 +448,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             flowable = store.allValuesOf(key);
         }
         else {
-            comparison = PersistentEObject.from(value).id();
+            comparison = refConverter.convert(PersistentEObject.from(value));
             flowable = store.allReferencesOf(key);
         }
 
         AtomicInteger currentIndex = new AtomicInteger();
         AtomicInteger lastIndex = new AtomicInteger(NO_INDEX);
 
-        // TODO Use async iteration
+        // TODO Use async
         for (Object o : flowable.blockingIterable()) {
             if (comparison.equals(o)) {
                 lastIndex.set(currentIndex.get());
@@ -462,28 +475,27 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             checkPositionIndex(index, size(internalObject, feature));
         }
 
-        PersistentEObject object = adaptAndUpdate(internalObject);
+        SingleFeatureBean key = SingleFeatureBean.from(adaptAndUpdate(internalObject), feature);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        Completable addFunc;
 
         if (EObjects.isAttribute(feature)) {
-            if (index == EStore.NO_INDEX) {
-                store.appendValue(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
-            }
-            else {
-                store.addValue(key.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature)));
-            }
+            Object primitiveValue = attrConverter.convert(value, EObjects.asAttribute(feature));
+
+            addFunc = index == EStore.NO_INDEX
+                    ? store.appendValue(key, primitiveValue).toCompletable()
+                    : store.addValue(key.withPosition(index), primitiveValue);
         }
         else {
-            PersistentEObject referencedObject = adaptAndUpdate(value);
+            Id referencedId = refConverter.convert(adaptAndUpdate(value));
 
-            if (index == EStore.NO_INDEX) {
-                store.appendReference(key, referencedObject.id());
-            }
-            else {
-                store.addReference(key.withPosition(index), referencedObject.id());
-            }
+            addFunc = index == EStore.NO_INDEX
+                    ? store.appendReference(key, referencedId).toCompletable()
+                    : store.addReference(key.withPosition(index), referencedId);
         }
+
+        // TODO Use async
+        addFunc.blockingAwait();
     }
 
     @Nullable
@@ -493,18 +505,19 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkIsMany("remove", feature);
         checkElementIndex(index, size(internalObject, feature));
 
-        PersistentEObject object = adaptAndRefresh(internalObject);
+        ManyFeatureBean key = ManyFeatureBean.from(adaptAndRefresh(internalObject), feature, index);
 
-        ManyFeatureBean key = ManyFeatureBean.from(object, feature, index);
-
+        // TODO Use `get` then asynchronously remove
         if (EObjects.isAttribute(feature)) {
             return store.removeValue(key)
+                    .to(CommonQueries::toOptional)
                     .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .orElse(null);
         }
         else {
             return store.removeReference(key)
-                    .map(this::resolve)
+                    .to(CommonQueries::toOptional)
+                    .map(refConverter::revert)
                     .orElse(null);
         }
     }
@@ -528,16 +541,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkParameters(internalObject, feature);
         checkIsMany("clear", feature);
 
-        PersistentEObject object = adaptAndRefresh(internalObject);
+        SingleFeatureBean key = SingleFeatureBean.from(adaptAndRefresh(internalObject), feature);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        Completable clearFunc = EObjects.isAttribute(feature)
+                ? store.removeAllValues(key)
+                : store.removeAllReferences(key);
 
-        if (EObjects.isAttribute(feature)) {
-            store.removeAllValues(key);
-        }
-        else {
-            store.removeAllReferences(key);
-        }
+        // TODO Use async
+        clearFunc.blockingAwait();
     }
 
     @Nonnull
@@ -556,7 +567,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         List<T> values = (List<T>) getAll(internalObject, feature);
 
-        return (T[]) (isNull(array) ? values.toArray() : values.toArray(array));
+        return isNull(array) ? (T[]) values.toArray() : values.toArray(array);
     }
 
     @Override
@@ -570,9 +581,9 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         PersistentEObject object = PersistentEObject.from(internalObject);
 
-        return store.containerOf(object.id())
+        return store.containerOf(refConverter.convert(object))
                 .to(CommonQueries::toOptional)
-                .map(c -> resolve(c.owner()))
+                .map(c -> refConverter.revert(c.owner()))
                 .orElse(null);
     }
 
@@ -582,9 +593,9 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         PersistentEObject object = PersistentEObject.from(internalObject);
 
-        return store.containerOf(object.id())
+        return store.containerOf(refConverter.convert(object))
                 .to(CommonQueries::toOptional)
-                .map(c -> resolve(c.owner()).eClass().getEStructuralFeature(c.id()))
+                .map(c -> refConverter.revert(c.owner()).eClass().getEStructuralFeature(c.id()))
                 .map(EObjects::asReference)
                 .orElse(null);
     }
@@ -594,12 +605,11 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     public List<Object> getAll(InternalEObject internalObject, EStructuralFeature feature) {
         checkParameters(internalObject, feature);
 
-        PersistentEObject object = adaptAndRefresh(internalObject);
-
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean key = SingleFeatureBean.from(adaptAndRefresh(internalObject), feature);
 
         if (EObjects.isAttribute(feature)) {
             Flowable<Object> flowable;
+
             if (!feature.isMany()) {
                 flowable = store.valueOf(key).toFlowable();
             }
@@ -607,15 +617,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                 flowable = store.allValuesOf(key);
             }
 
-            EAttribute attribute = EObjects.asAttribute(feature);
-
             return flowable
                     .to(CommonQueries::toStream)
-                    .map(v -> attrConverter.revert(v, attribute))
+                    .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .collect(Collectors.toList());
         }
         else {
             Flowable<Id> flowable;
+
             if (!feature.isMany()) {
                 flowable = store.referenceOf(key).toFlowable();
             }
@@ -625,7 +634,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
             return flowable
                     .to(CommonQueries::toStream)
-                    .map(this::resolve)
+                    .map(refConverter::revert)
                     .collect(Collectors.toList());
         }
     }
@@ -635,8 +644,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkParameters(internalObject, feature, values);
         checkIsMany("setAll", feature);
 
+        // TODO Use async
         unset(internalObject, feature);
-
         addAll(internalObject, feature, NO_INDEX, values);
     }
 
@@ -645,39 +654,37 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkParameters(internalObject, feature, values);
         checkIsMany("addAll", feature);
 
-        PersistentEObject object = adaptAndUpdate(internalObject);
+        SingleFeatureBean key = SingleFeatureBean.from(adaptAndUpdate(internalObject), feature);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        Single<Integer> addAllFunc;
 
         if (EObjects.isAttribute(feature)) {
-            EAttribute attribute = EObjects.asAttribute(feature);
-
-            List<Object> valuesToAdd = values.stream()
-                    .map(v -> attrConverter.convert(v, attribute))
+            List<Object> primiviteValues = values.stream()
+                    .map(v -> attrConverter.convert(v, EObjects.asAttribute(feature)))
                     .collect(Collectors.toList());
 
             if (index == NO_INDEX) {
-                return store.appendAllValues(key, valuesToAdd);
+                addAllFunc = store.appendAllValues(key, primiviteValues);
             }
             else {
-                store.addAllValues(key.withPosition(index), valuesToAdd);
-                return index;
+                addAllFunc = store.addAllValues(key.withPosition(index), primiviteValues).toSingleDefault(index);
             }
         }
         else {
-            List<Id> referencesToAdd = values.stream()
+            List<Id> referencedIds = values.stream()
                     .map(this::adaptAndUpdate)
-                    .map(PersistentEObject::id)
+                    .map(refConverter::convert)
                     .collect(Collectors.toList());
 
             if (index == NO_INDEX) {
-                return store.appendAllReferences(key, referencesToAdd);
+                addAllFunc = store.appendAllReferences(key, referencedIds);
             }
             else {
-                store.addAllReferences(key.withPosition(index), referencesToAdd);
-                return index;
+                addAllFunc = store.addAllReferences(key.withPosition(index), referencedIds).toSingleDefault(index);
             }
         }
+
+        return addAllFunc.blockingGet();
     }
 
     @Override
@@ -695,51 +702,49 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         updateInstanceOf(container);
 
         Action setIfAbsentFunc = () -> store
-                .containerFor(object.id(), SingleFeatureBean.from(container, containerReference))
+                .containerFor(refConverter.convert(object), SingleFeatureBean.from(container, containerReference))
                 .subscribe();
 
-        store.containerOf(object.id())
+        // TODO Use async
+        store.containerOf(refConverter.convert(object))
                 .map(AbstractFeatureBean::owner)
-                .filter(Functions.equalsWith(container.id()))
+                .filter(Functions.equalsWith(refConverter.convert(container)))
                 .doOnComplete(setIfAbsentFunc)
-                .cache()
                 .ignoreElement()
                 .blockingAwait();
-//                .subscribe(); // TODO Use `subscribe()` for async work
     }
 
     @Override
     public void removeContainment(PersistentEObject object) {
         updateInstanceOf(object);
 
-        store.removeContainer(object.id())
-                .blockingAwait();
-//                .subscribe(); // TODO Use `subscribe()` for async work
+        // TODO Use async
+        store.removeContainer(refConverter.convert(object)).blockingAwait();
     }
 
     @Nonnull
     @Override
     public Optional<EClass> resolveInstanceOf(Id id) {
-        Maybe<EClass> ifEmptyFunc = Maybe.error(() -> new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id.toHexString())));
+        Maybe<ClassBean> ifEmptyFunc = Maybe.error(() -> new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id.toHexString())));
 
         return store.metaClassOf(id)
-                .map(ClassBean::get)
                 .switchIfEmpty(ifEmptyFunc)
+                .map(ClassBean::get)
                 .to(CommonQueries::toOptional);
     }
 
     @Override
     public void updateInstanceOf(PersistentEObject object) {
         // If the object is already present in the cache, then the meta-class is defined
-        if (cache().contains(object.id())) {
+        if (cache().contains(refConverter.convert(object))) {
             return;
         }
 
-        store.metaClassFor(object.id(), ClassBean.from(object))
+        // TODO Use async
+        store.metaClassFor(refConverter.convert(object), ClassBean.from(object))
                 .doOnComplete(() -> refresh(object))
                 .onErrorComplete(Functions.isInstanceOf(ClassAlreadyExistsException.class))
                 .blockingAwait();
-//                .subscribe(); // TODO Use `subscribe()` for async work
     }
 
     @Override
@@ -790,6 +795,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      * @param object the object to refresh
      */
     private void refresh(PersistentEObject object) {
-        cache().putIfAbsent(object.id(), object);
+        cache().putIfAbsent(refConverter.convert(object), object);
     }
 }

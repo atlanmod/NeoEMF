@@ -21,22 +21,21 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
-import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -69,34 +68,28 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         Function<Vertex, Optional<V>> mapFunc = v -> Optional.ofNullable(v.getProperty(formatLabel(key)));
 
-        Maybe<V> databaseQuery = asyncGet(key.owner())
+        Maybe<V> query = asyncGet(key.owner())
                 .map(mapFunc)
                 .filter(Optional::isPresent)
                 .map(Optional::get);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
     @Override
-    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Completable valueFor(SingleFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        Function<Vertex, Optional<V>> mapFunc = v -> Optional.ofNullable(v.getProperty(formatLabel(key)));
+        Consumer<Vertex> setFunc = v -> v
+                .setProperty(formatLabel(key), value);
 
-        Action setFunc = () -> getOrCreate(key.owner()).setProperty(formatLabel(key), value);
+        Completable query = asyncGetOrCreate(key.owner())
+                .doOnSuccess(setFunc)
+                .toCompletable();
 
-        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
-
-        Maybe<V> databaseQuery = asyncGetOrCreate(key.owner())
-                .map(mapFunc)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .doOnComplete(setFunc)
-                .doOnSuccess(replaceFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -106,11 +99,11 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         Consumer<Vertex> removeFunc = v -> v.removeProperty(formatLabel(key));
 
-        Completable databaseQuery = asyncGet(key.owner())
+        Completable query = asyncGet(key.owner())
                 .doOnSuccess(removeFunc)
                 .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     //endregion
@@ -125,17 +118,17 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Function<Vertex, Iterable<Vertex>> getFunc = v -> v
                 .getVertices(Direction.OUT, formatLabel(key));
 
-        Maybe<Id> databaseQuery = asyncGet(key.owner())
+        Maybe<Id> query = asyncGet(key.owner())
                 .flattenAsFlowable(getFunc)
                 .singleElement()
                 .map(v -> idConverter.revert(v.getId()));
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
     @Override
-    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
+    public Completable referenceFor(SingleFeatureBean key, Id reference) {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
@@ -150,15 +143,14 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             setFunc.run();
         };
 
-        Maybe<Id> databaseQuery = asyncGetOrCreate(key.owner())
+        Completable query = asyncGetOrCreate(key.owner())
                 .flattenAsFlowable(getFunc)
                 .singleElement()
                 .doOnComplete(setFunc)
-                .doAfterSuccess(replaceFunc)
-                .map(e -> e.getVertex(Direction.IN))
-                .map(v -> idConverter.revert(v.getId()));
+                .doOnSuccess(replaceFunc)
+                .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -170,11 +162,11 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .getEdges(Direction.OUT, formatLabel(key))
                 .forEach(Edge::remove);
 
-        Completable databaseQuery = asyncGet(key.owner())
+        Completable query = asyncGet(key.owner())
                 .doOnSuccess(removeFunc)
                 .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     //endregion
@@ -188,12 +180,12 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         Function<Vertex, Optional<V>> getFunc = v -> Optional.ofNullable(v.getProperty(formatProperty(key, key.position())));
 
-        Maybe<V> databaseQuery = asyncGet(key.owner())
+        Maybe<V> query = asyncGet(key.owner())
                 .map(getFunc)
                 .filter(Optional::isPresent)
                 .map(Optional::get);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -201,37 +193,36 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> Flowable<V> allValuesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Flowable<V> databaseQuery = asyncGet(key.owner())
+        Flowable<V> query = asyncGet(key.owner())
                 .flattenAsFlowable(v -> IntStream.range(0, sizeOf(key, v))
                         .mapToObj(i -> new AbstractMap.SimpleImmutableEntry<>(v, i))
                         .collect(Collectors.toList()))
                 .map(e -> e.getKey().getProperty(formatProperty(key, e.getValue())));
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
-    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+    public <V> Completable valueFor(ManyFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        Function<Vertex, Optional<V>> getFunc = v -> Optional.ofNullable(v.getProperty(formatProperty(key, key.position())));
-
         Consumer<Vertex> replaceFunc = v -> v.setProperty(formatProperty(key, key.position()), value);
 
-        Single<V> databaseQuery = asyncGet(key.owner())
-                .toSingle()
-                .doAfterSuccess(replaceFunc)
-                .map(getFunc)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toSingle();
+        Maybe<Vertex> ifEmptyFunc = Maybe.error(NoSuchElementException::new);
 
-        return dispatcher().submit(databaseQuery);
+        Completable query = asyncGet(key.owner())
+                .filter(v -> key.position() < sizeOf(key.withoutPosition(), v))
+                .switchIfEmpty(ifEmptyFunc)
+                .doOnSuccess(replaceFunc)
+                .ignoreElement();
+
+        return dispatcher().submit(query);
     }
 
+    @Nonnull
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
+    public <V> Completable addValue(ManyFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
@@ -248,18 +239,21 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         vertex.setProperty(formatProperty(key, key.position()), value);
 
         sizeFor(key.withoutPosition(), vertex, size + 1);
+
+        return Completable.complete();
     }
 
+    @Nonnull
     @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
+    public <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
         checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
+        checkNotNull(values, "collection");
 
-        if (collection.isEmpty()) {
-            return;
+        if (values.isEmpty()) {
+            return Completable.complete();
         }
 
-        if (collection.contains(null)) {
+        if (values.stream().anyMatch(Objects::isNull)) {
             throw new NullPointerException();
         }
 
@@ -268,7 +262,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         int size = sizeOf(key.withoutPosition(), vertex);
         checkPositionIndex(key.position(), size);
 
-        int additionCount = collection.size();
+        int additionCount = values.size();
 
         for (int i = size - 1; i >= key.position(); i--) {
             V movedValue = vertex.getProperty(formatProperty(key, i));
@@ -276,27 +270,29 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         }
 
         int i = 0;
-        for (V value : collection) {
+        for (V value : values) {
             vertex.setProperty(formatProperty(key, key.position() + i), value);
             i++;
         }
 
         sizeFor(key.withoutPosition(), vertex, size + additionCount);
+
+        return Completable.complete();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
+    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
         if (!vertex.isPresent()) {
-            return Optional.empty();
+            return Maybe.empty();
         }
 
         int size = sizeOf(key.withoutPosition(), vertex.get());
         if (size == 0) {
-            return Optional.empty();
+            return Maybe.empty();
         }
 
         Optional<V> previousValue = Optional.ofNullable(vertex.get().getProperty(formatProperty(key, key.position())));
@@ -310,36 +306,39 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         sizeFor(key.withoutPosition(), vertex.get(), size - 1);
 
-        return previousValue;
+        return previousValue
+                .map(Maybe::just)
+                .orElseGet(Maybe::empty);
     }
 
+    @Nonnull
     @Override
-    public void removeAllValues(SingleFeatureBean key) {
+    public Completable removeAllValues(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
 
         if (!vertex.isPresent()) {
-            return;
+            return Completable.complete();
         }
 
-        IntStream.range(0, sizeOf(key, vertex.get()))
-                .forEach(i -> vertex.get().removeProperty(formatProperty(key, i)));
+        IntStream.range(0, sizeOf(key, vertex.get())).forEach(i -> vertex.get().removeProperty(formatProperty(key, i)));
 
         sizeFor(key, vertex.get(), 0);
+
+        return Completable.complete();
     }
 
     @Nonnull
-    @Nonnegative
     @Override
     public Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Maybe<Integer> databaseQuery = asyncGet(key.owner())
+        Maybe<Integer> query = asyncGet(key.owner())
                 .map(v -> sizeOf(key, v))
                 .filter(s -> s > 0);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     //endregion
@@ -372,17 +371,17 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public Flowable<Id> allReferencesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Flowable<Id> databaseQuery = asyncGet(key.owner())
+        Flowable<Id> query = asyncGet(key.owner())
                 .flattenAsFlowable(v -> v.getEdges(Direction.OUT, formatLabel(key)))
                 .sorted(Comparator.comparingInt(e -> e.getProperty(PROPERTY_INDEX)))
                 .map(e -> idConverter.revert(e.getVertex(Direction.IN).getId()));
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
     @Override
-    public Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    public Completable referenceFor(ManyFeatureBean key, Id reference) {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
@@ -397,20 +396,21 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .addEdge(formatLabel(key), getOrCreate(reference))
                 .setProperty(PROPERTY_INDEX, key.position());
 
-        Single<Id> databaseFunc = asyncGet(key.owner())
+        Completable databaseFunc = asyncGet(key.owner())
+                .filter(v -> key.position() < sizeOf(key.withoutPosition(), v))
                 .toSingle()
                 .doAfterSuccess(replaceFunc)
                 .flattenAsFlowable(getFunc)
                 .singleOrError()
-                .doAfterSuccess(Edge::remove)
-                .map(e -> e.getVertex(Direction.IN))
-                .map(v -> idConverter.revert(v.getId()));
+                .doOnSuccess(Edge::remove)
+                .toCompletable();
 
         return dispatcher().submit(databaseFunc);
     }
 
+    @Nonnull
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
+    public Completable addReference(ManyFeatureBean key, Id reference) {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
@@ -441,18 +441,21 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         edge.setProperty(PROPERTY_INDEX, key.position());
 
         sizeFor(key.withoutPosition(), vertex, size + 1);
+
+        return Completable.complete();
     }
 
+    @Nonnull
     @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
+    public Completable addAllReferences(ManyFeatureBean key, List<Id> references) {
         checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
+        checkNotNull(references, "collection");
 
-        if (collection.isEmpty()) {
-            return;
+        if (references.isEmpty()) {
+            return Completable.complete();
         }
 
-        if (collection.contains(null)) {
+        if (references.stream().anyMatch(Objects::isNull)) {
             throw new NullPointerException();
         }
 
@@ -461,7 +464,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         int size = sizeOf(key.withoutPosition(), vertex);
         checkPositionIndex(key.position(), size);
 
-        int additionCount = collection.size();
+        int additionCount = references.size();
 
         if (key.position() < size) {
             int interval = size + additionCount - key.position();
@@ -480,7 +483,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         }
 
         int i = 0;
-        for (Id reference : collection) {
+        for (Id reference : references) {
             Vertex referencedVertex = getOrCreate(reference);
 
             Edge edge = vertex.addEdge(formatLabel(key), referencedVertex);
@@ -489,21 +492,23 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         }
 
         sizeFor(key.withoutPosition(), vertex, size + additionCount);
+
+        return Completable.complete();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
+    public Maybe<Id> removeReference(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
         if (!vertex.isPresent()) {
-            return Optional.empty();
+            return Maybe.empty();
         }
 
         int size = sizeOf(key.withoutPosition(), vertex.get());
         if (size == 0) {
-            return Optional.empty();
+            return Maybe.empty();
         }
 
         int interval = size - key.position();
@@ -531,17 +536,20 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         sizeFor(key.withoutPosition(), vertex.get(), size - 1);
 
-        return previousId;
+        return previousId
+                .map(Maybe::just)
+                .orElseGet(Maybe::empty);
     }
 
+    @Nonnull
     @Override
-    public void removeAllReferences(SingleFeatureBean key) {
+    public Completable removeAllReferences(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
         Optional<Vertex> vertex = get(key.owner());
 
         if (!vertex.isPresent()) {
-            return;
+            return Completable.complete();
         }
 
         Iterable<Edge> edges = vertex.get().query()
@@ -552,6 +560,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         edges.forEach(Element::remove);
 
         sizeFor(key, vertex.get(), 0);
+
+        return Completable.complete();
     }
 
     @Nonnull

@@ -58,33 +58,36 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
     @Nonnull
     private final ChronicleMap<SingleFeatureBean, Object> features;
 
+    /**
+     * Constructs a new {@code DefaultInMemoryBackend}.
+     */
     public DefaultInMemoryBackend() {
         final int id = COUNTER.getAndIncrement();
         final String prefix = "default/";
 
         containers = ChronicleMapBuilder.of(Id.class, SingleFeatureBean.class)
                 .name(prefix + id + "/containers")
-                .entries(Sizes.ENTRIES)
-                .averageKeySize(Sizes.ID)
-                .averageValueSize(Sizes.FEATURE)
+                .entries(DataSizes.ENTRIES)
+                .averageKeySize(DataSizes.ID)
+                .averageValueSize(DataSizes.FEATURE)
                 .keyMarshaller(new BeanMarshaller<>(serializers.forId()))
                 .valueMarshaller(new BeanMarshaller<>(serializers.forSingleFeature()))
                 .create();
 
         instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
                 .name(prefix + id + "/instances")
-                .entries(Sizes.ENTRIES)
-                .averageKeySize(Sizes.ID)
-                .averageValueSize(Sizes.CLASS)
+                .entries(DataSizes.ENTRIES)
+                .averageKeySize(DataSizes.ID)
+                .averageValueSize(DataSizes.CLASS)
                 .keyMarshaller(new BeanMarshaller<>(serializers.forId()))
                 .valueMarshaller(new BeanMarshaller<>(serializers.forClass()))
                 .create();
 
         features = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
                 .name(prefix + id + "/features")
-                .entries(Sizes.ENTRIES)
-                .averageKeySize(Sizes.FEATURE)
-                .averageValueSize(Sizes.FEATURE_VALUE)
+                .entries(DataSizes.ENTRIES)
+                .averageKeySize(DataSizes.FEATURE)
+                .averageValueSize(DataSizes.FEATURE_VALUE)
                 .keyMarshaller(new BeanMarshaller<>(serializers.forSingleFeature()))
                 .create();
     }
@@ -93,32 +96,27 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
     @Override
     protected Action blockingClose() {
         return () -> {
-            containers.clear();
             containers.close();
-
-            instances.clear();
             instances.close();
-
-            features.clear();
             features.close();
         };
     }
 
     @Nonnull
     @Override
-    protected Map<Id, SingleFeatureBean> containers() {
+    protected ChronicleMap<Id, SingleFeatureBean> allContainers() {
         return containers;
     }
 
     @Nonnull
     @Override
-    protected Map<Id, ClassBean> instances() {
+    protected ChronicleMap<Id, ClassBean> allInstances() {
         return instances;
     }
 
     @Nonnull
     @Override
-    protected Map<SingleFeatureBean, Object> features() {
+    protected ChronicleMap<SingleFeatureBean, Object> allFeatures() {
         return features;
     }
 }

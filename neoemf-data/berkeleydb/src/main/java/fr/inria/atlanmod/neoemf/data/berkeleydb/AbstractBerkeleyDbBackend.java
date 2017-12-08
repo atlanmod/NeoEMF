@@ -37,14 +37,13 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Single;
 import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
 import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -139,13 +138,9 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public Maybe<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id, "id");
 
-        // Retrieve the container
-        Callable<SingleFeatureBean> getFunc = () -> get(containers, id, serializers.forId(), serializers.forSingleFeature());
+        Maybe<SingleFeatureBean> query = get(containers, id, serializers.forId(), serializers.forSingleFeature());
 
-        // The composed query to execute on the database
-        Maybe<SingleFeatureBean> databaseQuery = Maybe.fromCallable(getFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -154,13 +149,9 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         checkNotNull(id, "id");
         checkNotNull(container, "container");
 
-        // Define the container
-        Action setFunc = () -> put(containers, id, container, serializers.forId(), serializers.forSingleFeature());
+        Completable query = put(containers, id, container, serializers.forId(), serializers.forSingleFeature());
 
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(setFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -168,13 +159,9 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public Completable removeContainer(Id id) {
         checkNotNull(id, "id");
 
-        // Remove the container
-        Action removeFunc = () -> delete(containers, id, serializers.forId());
+        Completable query = delete(containers, id, serializers.forId());
 
-        // The composed query to execute on the database
-        Completable databaseQuery = Completable.fromAction(removeFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -182,13 +169,9 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public Maybe<ClassBean> metaClassOf(Id id) {
         checkNotNull(id, "id");
 
-        // Retrieve the meta-class
-        Callable<ClassBean> getFunc = () -> get(instances, id, serializers.forId(), serializers.forClass());
+        Maybe<ClassBean> query = get(instances, id, serializers.forId(), serializers.forClass());
 
-        // The composed query to execute on the database
-        Maybe<ClassBean> databaseQuery = Maybe.fromCallable(getFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -197,16 +180,12 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         checkNotNull(id, "id");
         checkNotNull(metaClass, "metaClass");
 
-        // Define the meta-class, if it does not already exist
-        Callable<Boolean> setFunc = () -> putIfAbsent(instances, id, metaClass, serializers.forId(), serializers.forClass());
-
-        // The composed query to execute on the database
-        Completable databaseQuery = Maybe.fromCallable(setFunc)
+        Completable query = putIfAbsent(instances, id, metaClass, serializers.forId(), serializers.forClass())
                 .filter(Functions.equalsWith(false))
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .ignoreElement();
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -214,11 +193,10 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         CloseableIterator<Id> iter = new AllInstancesIterator(metaClasses);
 
-        // The composed query to execute on the database
-        Flowable<Id> databaseQuery = Flowable.fromIterable(() -> iter)
+        Flowable<Id> query = Flowable.fromIterable(() -> iter)
                 .doAfterTerminate(iter::close);
 
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -226,28 +204,20 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public <V> Maybe<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Callable<V> getFunc = () -> get(features, key, serializers.forSingleFeature(), serializers.forAny());
+        Maybe<V> query = get(features, key, serializers.forSingleFeature(), serializers.forAny());
 
-        Maybe<V> databaseQuery = Maybe.fromCallable(getFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
     @Override
-    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Completable valueFor(SingleFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        Action setFunc = () -> put(features, key, value, serializers.forSingleFeature(), serializers.forAny());
+        Completable query = put(features, key, value, serializers.forSingleFeature(), serializers.forAny());
 
-        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
-
-        Maybe<V> databaseQuery = this.<V>valueOf(key)
-                .doOnComplete(setFunc)
-                .doOnSuccess(replaceFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -255,11 +225,9 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     public Completable removeValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Action removeFunc = () -> delete(features, key, serializers.forSingleFeature());
+        Completable query = delete(features, key, serializers.forSingleFeature());
 
-        Completable databaseQuery = Completable.fromAction(removeFunc);
-
-        return dispatcher().submit(databaseQuery);
+        return dispatcher().submit(query);
     }
 
     @Nonnull
@@ -281,24 +249,19 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      * @return on {@link Optional} containing the element, or an empty {@link Optional} if the element has not been
      * found
      */
-    @Nullable
-    protected <K, V> V get(Database database, K key, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
-        try {
-            DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
-            DatabaseEntry dbValue = new DatabaseEntry();
+    @Nonnull
+    protected <K, V> Maybe<V> get(Database database, K key, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
+        DatabaseEntry dbValue = new DatabaseEntry();
 
-            V value = null;
+        Callable<OperationStatus> getFunc = () -> database.get(
+                null,
+                new DatabaseEntry(keySerializer.serialize(key)),
+                dbValue,
+                LockMode.DEFAULT);
 
-            if (database.get(null, dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
-                value = valueSerializer.deserialize(dbValue.getData());
-            }
-
-            return value;
-        }
-        catch (IOException e) {
-            handleException(e);
-            return null;
-        }
+        return Single.fromCallable(getFunc)
+                .filter(s -> s == OperationStatus.SUCCESS)
+                .map(r -> valueSerializer.deserialize(dbValue.getData()));
     }
 
     /**
@@ -312,16 +275,14 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      * @param <K>             the type of the key
      * @param <V>             the type of the value
      */
-    protected <K, V> void put(Database database, K key, V value, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
-        try {
-            DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
-            DatabaseEntry dbValue = new DatabaseEntry(valueSerializer.serialize(value));
+    @Nonnull
+    protected <K, V> Completable put(Database database, K key, V value, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
+        Callable<OperationStatus> setFunc = () -> database.put(
+                null,
+                new DatabaseEntry(keySerializer.serialize(key)),
+                new DatabaseEntry(valueSerializer.serialize(value)));
 
-            database.put(null, dbKey, dbValue);
-        }
-        catch (IOException e) {
-            handleException(e);
-        }
+        return Completable.fromCallable(setFunc);
     }
 
     /**
@@ -337,17 +298,16 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      *
      * @return {@code true} if the {@code value} has been saved
      */
-    protected <K, V> boolean putIfAbsent(Database database, K key, V value, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
-        try {
-            DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
-            DatabaseEntry dbValue = new DatabaseEntry(valueSerializer.serialize(value));
+    @Nonnull
+    protected <K, V> Single<Boolean> putIfAbsent(Database database, K key, V value, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
+        Callable<OperationStatus> setFunc = () -> database.putNoOverwrite(
+                null,
+                new DatabaseEntry(keySerializer.serialize(key)),
+                new DatabaseEntry(valueSerializer.serialize(value)));
 
-            return database.putNoOverwrite(null, dbKey, dbValue) != OperationStatus.KEYEXIST;
-        }
-        catch (IOException e) {
-            handleException(e);
-            return false;
-        }
+        return Single.fromCallable(setFunc)
+                .contains(OperationStatus.KEYEXIST)
+                .map(b -> !b);
     }
 
     /**
@@ -358,15 +318,13 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      * @param keySerializer the serializer to serialize the {@code key}
      * @param <K>           the type of the key
      */
-    protected <K> void delete(Database database, K key, Serializer<K> keySerializer) {
-        try {
-            DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
+    @Nonnull
+    protected <K> Completable delete(Database database, K key, Serializer<K> keySerializer) {
+        Callable<OperationStatus> removeFunc = () -> database.delete(
+                null,
+                new DatabaseEntry(keySerializer.serialize(key)));
 
-            database.delete(null, dbKey);
-        }
-        catch (IOException e) {
-            handleException(e);
-        }
+        return Completable.fromCallable(removeFunc);
     }
 
     /**
@@ -385,10 +343,6 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             }
         }
         to.sync();
-    }
-
-    private void handleException(IOException e) {
-        throw new RuntimeException(e);
     }
 
     /**
@@ -479,7 +433,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
                 }
             }
             catch (IOException e) {
-                handleException(e);
+                throw new RuntimeException(e);
             }
         }
 
@@ -502,7 +456,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         }
 
         @Override
-        public void close() throws IOException {
+        public void close() {
             if (isClosed) {
                 return;
             }

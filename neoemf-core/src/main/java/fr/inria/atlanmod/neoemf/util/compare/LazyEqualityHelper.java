@@ -36,7 +36,7 @@ import static java.util.Objects.nonNull;
  * If this class is used with models that are not stored in NeoEMF the comparison is computed in a standard way using
  * {@code ==}.
  * <p>
- * <b>Note:</b> This implementation is slower than its parent because comparisons involving at least one {@link
+ * <b>NOTE:</b> This implementation is slower than its parent because comparisons involving at least one {@link
  * PersistentEObject} are computed using {@link Objects#equals(Object, Object)} which may imply some data query process
  * to compute the object identifier.
  *

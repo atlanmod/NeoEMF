@@ -192,7 +192,7 @@ final class PersistentEObjectAdapter {
         @Override
         public Object intercept(Object object, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
             try {
-                // Note: 'invokeSuper()' calls the method itself, not the super method
+                // NOTE: 'invokeSuper()' calls the method itself, not the super method
                 return methodProxy.invokeSuper(object, args);
             }
             catch (Throwable e) {

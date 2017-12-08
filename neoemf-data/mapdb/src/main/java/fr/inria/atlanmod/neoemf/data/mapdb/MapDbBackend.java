@@ -17,7 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * It wraps an existing MapDB database and provides facilities to create and retrieve elements.
  * <p>
- * <b>Note:</b> Instances of {@code MapDbBackend} are created by {@link MapDbBackendFactory} that provides an usable
+ * <b>NOTE:</b> Instances of {@code MapDbBackend} are created by {@link MapDbBackendFactory} that provides an usable
  * database that can be manipulated by this wrapper.
  *
  * @see MapDbBackendFactory

@@ -13,13 +13,11 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Stream;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
@@ -37,7 +35,7 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @param key the key identifying the multi-valued attribute
      *
-     * @return the deferred computation to execute, that may contains the value
+     * @return the deferred computation that may contains the value
      */
     @Nonnull
     <V> Maybe<V> valueOf(ManyFeatureBean key);
@@ -47,7 +45,7 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @param key the key identifying the multi-valued attribute
      *
-     * @return the deferred computation to execute, that contains all ordered values
+     * @return the deferred computation that contains all ordered values
      */
     @Nonnull
     <V> Flowable<V> allValuesOf(SingleFeatureBean key);
@@ -59,14 +57,13 @@ public interface ManyValueMapper extends ValueMapper {
      * @param value the value to set
      * @param <V>   the type of value
      *
-     * @return the deferred computation to execute, that may contains the previous value which has been replaced, or a
-     * {@link NoSuchElementException} if the {@code key} is not defined
+     * @return the deferred computation that may contains a {@link NoSuchElementException} if the {@code key} is not defined
      *
      * @see #addValue(ManyFeatureBean, Object)
      * @see #appendValue(SingleFeatureBean, Object)
      */
     @Nonnull
-    <V> Single<V> valueFor(ManyFeatureBean key, V value);
+    <V> Completable valueFor(ManyFeatureBean key, V value);
 
     /**
      * Adds the {@code value} to the specified {@code key} at a defined position.
@@ -75,22 +72,22 @@ public interface ManyValueMapper extends ValueMapper {
      * @param value the value to add
      * @param <V>   the type of value
      *
-     * @throws NullPointerException      if any parameter is {@code null}
-     * @throws IndexOutOfBoundsException if {@code key#position() > size}
+     * @return the deferred computation
      */
-    <V> void addValue(ManyFeatureBean key, V value);
+    @Nonnull
+    <V> Completable addValue(ManyFeatureBean key, V value);
 
     /**
      * Adds all the {@code collection} to the specified {@code key} from the position of the {@code key}.
      *
-     * @param key        the key identifying the multi-valued attribute
-     * @param collection the values to add
-     * @param <V>        the type of value
+     * @param <V>    the type of value
+     * @param key    the key identifying the multi-valued attribute
+     * @param values the values to add
      *
-     * @throws NullPointerException      if any parameter is {@code null}
-     * @throws IndexOutOfBoundsException if {@code key#position() > size}
+     * @return the deferred computation
      */
-    <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection);
+    @Nonnull
+    <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values);
 
     /**
      * Adds the {@code value} to the specified {@code key} at the last position.
@@ -99,45 +96,39 @@ public interface ManyValueMapper extends ValueMapper {
      * @param value the value to add
      * @param <V>   the type of value
      *
-     * @return the position to which the value was added
+     * @return the deferred computation that contains the position to which the value was added
      *
-     * @throws NullPointerException if any parameter is {@code null}
      * @see #addValue(ManyFeatureBean, Object)
      */
-    @Nonnegative
-    default <V> int appendValue(SingleFeatureBean key, V value) {
+    @Nonnull
+    default <V> Single<Integer> appendValue(SingleFeatureBean key, V value) {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        int position = sizeOfValue(key).blockingGet(0);
-
-        addValue(key.withPosition(position), value);
-
+        Single<Integer> position = sizeOfValue(key).toSingle(0);
+        addValue(key.withPosition(position.blockingGet()), value).blockingAwait();
         return position;
     }
 
     /**
      * Adds all the {@code collection} to the specified {@code key} from the last position.
      *
-     * @param key        the key identifying the multi-valued attribute
-     * @param collection the values to add
-     * @param <V>        the type of collection
+     * @param <V>    the type of collection
+     * @param key    the key identifying the multi-valued attribute
+     * @param values the values to add
      *
-     * @return the position to which the first value was added
+     * @return the deferred computation that contains the position to which the first value was added
      *
-     * @throws NullPointerException if any parameter is {@code null}
      * @see #addValue(ManyFeatureBean, Object)
      * @see #appendValue(SingleFeatureBean, Object)
      */
-    @Nonnegative
-    default <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
+    @Nonnull
+    default <V> Single<Integer> appendAllValues(SingleFeatureBean key, List<? extends V> values) {
         checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
+        checkNotNull(values, "collection");
 
-        int firstPosition = sizeOfValue(key).blockingGet(0);
-
-        addAllValues(key.withPosition(firstPosition), collection);
-
+        Single<Integer> firstPosition = sizeOfValue(key).toSingle(0);
+        addAllValues(key.withPosition(firstPosition.blockingGet()), values).blockingAwait();
         return firstPosition;
     }
 
@@ -147,31 +138,28 @@ public interface ManyValueMapper extends ValueMapper {
      * @param key the key identifying the multi-valued attribute
      * @param <V> the type of value
      *
-     * @return an {@link Optional} containing the removed value, or {@link Optional#empty()} if the key has no value
-     * before
-     *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @return the deferred computation that may contains the previous value
      */
     @Nonnull
-    <V> Optional<V> removeValue(ManyFeatureBean key);
+    <V> Maybe<V> removeValue(ManyFeatureBean key);
 
     /**
      * Removes all values of the specified {@code key}.
      *
      * @param key the key identifying the multi-valued attribute
      *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @return the deferred computation
      */
-    void removeAllValues(SingleFeatureBean key);
+    @Nonnull
+    Completable removeAllValues(SingleFeatureBean key);
 
     /**
      * Returns the number of value of the specified {@code key}.
      *
      * @param key the key identifying the multi-valued attribute
      *
-     * @return the deferred computation to execute, that may contains the size
+     * @return the deferred computation that may contains the size
      */
     @Nonnull
-    @Nonnegative
     Maybe<Integer> sizeOfValue(SingleFeatureBean key);
 }

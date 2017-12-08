@@ -14,10 +14,8 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -67,10 +65,11 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
         next.close();
     }
 
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void save() {
-        next.save();
+    public Completable save() {
+        return next.save();
     }
 
     @Override
@@ -95,6 +94,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
 
     @Nonnull
     @Override
+    @OverridingMethodsMustInvokeSuper
     public Completable removeContainer(Id id) {
         return next.removeContainer(id);
     }
@@ -108,6 +108,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
 
     @Nonnull
     @Override
+    @OverridingMethodsMustInvokeSuper
     public Completable metaClassFor(Id id, ClassBean metaClass) {
         return next.metaClassFor(id, metaClass);
     }
@@ -136,7 +137,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Maybe<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Completable valueFor(SingleFeatureBean key, V value) {
         return next.valueFor(key, value);
     }
 
@@ -157,7 +158,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Maybe<Id> referenceFor(SingleFeatureBean key, Id reference) {
+    public Completable referenceFor(SingleFeatureBean key, Id reference) {
         return next.referenceFor(key, reference);
     }
 
@@ -185,50 +186,53 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Single<V> valueFor(ManyFeatureBean key, V value) {
+    public <V> Completable valueFor(ManyFeatureBean key, V value) {
         return next.valueFor(key, value);
     }
 
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        next.addValue(key, value);
+    public <V> Completable addValue(ManyFeatureBean key, V value) {
+        return next.addValue(key, value);
     }
 
-    @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        next.addAllValues(key, collection);
-    }
-
-    @Nonnegative
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> int appendValue(SingleFeatureBean key, V value) {
+    public <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
+        return next.addAllValues(key, values);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <V> Single<Integer> appendValue(SingleFeatureBean key, V value) {
         return next.appendValue(key, value);
     }
 
-    @Nonnegative
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        return next.appendAllValues(key, collection);
+    public <V> Single<Integer> appendAllValues(SingleFeatureBean key, List<? extends V> values) {
+        return next.appendAllValues(key, values);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
+    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
         return next.removeValue(key);
     }
 
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void removeAllValues(SingleFeatureBean key) {
-        next.removeAllValues(key);
+    public Completable removeAllValues(SingleFeatureBean key) {
+        return next.removeAllValues(key);
     }
 
     @Nonnull
-    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public Maybe<Integer> sizeOfValue(SingleFeatureBean key) {
@@ -252,50 +256,53 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Single<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    public Completable referenceFor(ManyFeatureBean key, Id reference) {
         return next.referenceFor(key, reference);
     }
 
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void addReference(ManyFeatureBean key, Id reference) {
-        next.addReference(key, reference);
+    public Completable addReference(ManyFeatureBean key, Id reference) {
+        return next.addReference(key, reference);
     }
 
-    @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        next.addAllReferences(key, collection);
-    }
-
-    @Nonnegative
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public int appendReference(SingleFeatureBean key, Id reference) {
+    public Completable addAllReferences(ManyFeatureBean key, List<Id> references) {
+        return next.addAllReferences(key, references);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Single<Integer> appendReference(SingleFeatureBean key, Id reference) {
         return next.appendReference(key, reference);
     }
 
-    @Nonnegative
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        return next.appendAllReferences(key, collection);
+    public Single<Integer> appendAllReferences(SingleFeatureBean key, List<Id> references) {
+        return next.appendAllReferences(key, references);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Id> removeReference(ManyFeatureBean key) {
+    public Maybe<Id> removeReference(ManyFeatureBean key) {
         return next.removeReference(key);
     }
 
+    @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void removeAllReferences(SingleFeatureBean key) {
-        next.removeAllReferences(key);
+    public Completable removeAllReferences(SingleFeatureBean key) {
+        return next.removeAllReferences(key);
     }
 
     @Nonnull
-    @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
     public Maybe<Integer> sizeOfReference(SingleFeatureBean key) {
