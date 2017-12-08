@@ -389,6 +389,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         await(m.set(sfBase.withPosition(0), value0)).assertError(NoSuchElementException.class);
+
         await(m.add(sfBase.withPosition(0), value0)).assertComplete();
 
         await(m.set(sfBase.withPosition(1), value1)).assertError(NoSuchElementException.class);
@@ -557,12 +558,13 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         await(m.append(sfBase, value1)).assertComplete();
 
         await(m.addAll(sfBase.withPosition(1), Arrays.asList(value2, value3))).assertComplete();
-        await(m.sizeOf(sfBase)).assertValue(4);
 
         await(m.get(sfBase.withPosition(0))).assertValue(value0);
         await(m.get(sfBase.withPosition(1))).assertValue(value2);
         await(m.get(sfBase.withPosition(2))).assertValue(value3);
         await(m.get(sfBase.withPosition(3))).assertValue(value1);
+
+        await(m.sizeOf(sfBase)).assertValue(4);
     }
 
     /**
@@ -577,11 +579,12 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         await(m.append(sfBase, value0)).assertComplete();
 
         await(m.addAll(sfBase.withPosition(1), Arrays.asList(value1, value2))).assertComplete();
-        await(m.sizeOf(sfBase)).assertValue(3);
 
         await(m.get(sfBase.withPosition(0))).assertValue(value0);
         await(m.get(sfBase.withPosition(1))).assertValue(value1);
         await(m.get(sfBase.withPosition(2))).assertValue(value2);
+
+        await(m.sizeOf(sfBase)).assertValue(3);
     }
 
     /**
@@ -593,6 +596,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
         await(m.addAll(mfBase, Collections.emptyList())).assertComplete();
+
         await(m.sizeOf(mfBase.withoutPosition())).assertNoValues();
     }
 
@@ -654,11 +658,12 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         await(m.get(sfBase.withPosition(0))).assertValue(value0);
 
         await(m.appendAll(sfBase, Arrays.asList(value1, value2))).assertValue(1);
-        await(m.sizeOf(sfBase)).assertValue(3);
 
         await(m.get(sfBase.withPosition(0))).assertValue(value0);
         await(m.get(sfBase.withPosition(1))).assertValue(value1);
         await(m.get(sfBase.withPosition(2))).assertValue(value2);
+
+        await(m.sizeOf(sfBase)).assertValue(3);
     }
 
     /**
@@ -731,11 +736,12 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
         await(m.remove(sfBase.withPosition(0))).assertValue(true);
-        await(m.sizeOf(sfBase)).assertValue(2);
 
         await(m.get(sfBase.withPosition(0))).assertValue(value1);
         await(m.get(sfBase.withPosition(1))).assertValue(value2);
         await(m.get(sfBase.withPosition(2))).assertNoValues();
+
+        await(m.sizeOf(sfBase)).assertValue(2);
     }
 
     /**
@@ -749,11 +755,12 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
         await(m.remove(sfBase.withPosition(1))).assertValue(true);
-        await(m.sizeOf(sfBase)).assertValue(2);
 
         await(m.get(sfBase.withPosition(0))).assertValue(value0);
         await(m.get(sfBase.withPosition(1))).assertValue(value2);
         await(m.get(sfBase.withPosition(2))).assertNoValues();
+
+        await(m.sizeOf(sfBase)).assertValue(2);
     }
 
     /**
@@ -767,11 +774,12 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
         await(m.remove(sfBase.withPosition(2))).assertValue(true);
-        await(m.sizeOf(sfBase)).assertValue(2);
 
         await(m.get(sfBase.withPosition(0))).assertValue(value0);
         await(m.get(sfBase.withPosition(1))).assertValue(value1);
         await(m.get(sfBase.withPosition(2))).assertNoValues();
+
+        await(m.sizeOf(sfBase)).assertValue(2);
     }
 
     /**
@@ -796,11 +804,12 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
         await(m.removeAll(sfBase)).assertComplete();
-        await(m.sizeOf(sfBase)).assertNoValues();
 
         await(m.get(sfBase.withPosition(0))).assertNoValues();
         await(m.get(sfBase.withPosition(1))).assertNoValues();
         await(m.get(sfBase.withPosition(2))).assertNoValues();
+
+        await(m.sizeOf(sfBase)).assertNoValues();
     }
 
     /**
@@ -842,6 +851,9 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
     //endregion
 
+    /**
+     * An {@link ArgumentsProvider} that with values defined by {@link RedirectionType type}.
+     */
     @ParametersAreNonnullByDefault
     public static final class ParametersProvider implements ArgumentsProvider {
 
