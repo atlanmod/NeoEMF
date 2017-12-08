@@ -459,9 +459,12 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     public void testAdd_Many_OverSize(RedirectionType type, Object value0) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        assertThat(catchThrowable(() ->
-                m.add(sfBase.withPosition(2), value0)
-        )).isInstanceOf(IndexOutOfBoundsException.class);
+        try {
+            await(m.add(sfBase.withPosition(2), value0)).assertError(IndexOutOfBoundsException.class);
+        }
+        catch (IndexOutOfBoundsException e) {
+            // Expected
+        }
     }
 
     /**
@@ -533,9 +536,12 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     public void testAddAll_Many_WithOffset(RedirectionType type, Object value0, Object value1) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        assertThat(catchThrowable(() ->
-                m.addAll(sfBase.withPosition(1), Arrays.asList(value0, value1))
-        )).isInstanceOf(IndexOutOfBoundsException.class);
+        try {
+            await(m.addAll(sfBase.withPosition(1), Arrays.asList(value0, value1))).assertError(IndexOutOfBoundsException.class);
+        }
+        catch (IndexOutOfBoundsException expected) {
+            // Expected
+        }
     }
 
     /**
@@ -707,10 +713,10 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
         await(m.appendAll(sfBase, Arrays.asList(value0, value1))).assertComplete();
 
-        await(m.remove(sfBase.withPosition(0))).assertValue(value0);
+        await(m.remove(sfBase.withPosition(0))).assertValue(true);
         await(m.sizeOf(sfBase)).assertValue(1);
 
-        await(m.remove(sfBase.withPosition(0))).assertValue(value1);
+        await(m.remove(sfBase.withPosition(0))).assertValue(true);
         await(m.sizeOf(sfBase)).assertNoValues();
     }
 
@@ -724,7 +730,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
         await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
-        await(m.remove(sfBase.withPosition(0))).assertValue(value0);
+        await(m.remove(sfBase.withPosition(0))).assertValue(true);
         await(m.sizeOf(sfBase)).assertValue(2);
 
         await(m.get(sfBase.withPosition(0))).assertValue(value1);
@@ -742,7 +748,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
         await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
-        await(m.remove(sfBase.withPosition(1))).assertValue(value1);
+        await(m.remove(sfBase.withPosition(1))).assertValue(true);
         await(m.sizeOf(sfBase)).assertValue(2);
 
         await(m.get(sfBase.withPosition(0))).assertValue(value0);
@@ -760,7 +766,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
         await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
 
-        await(m.remove(sfBase.withPosition(2))).assertValue(value2);
+        await(m.remove(sfBase.withPosition(2))).assertValue(true);
         await(m.sizeOf(sfBase)).assertValue(2);
 
         await(m.get(sfBase.withPosition(0))).assertValue(value0);
@@ -776,7 +782,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     public void testRemove_Many_NotDefined(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
 
-        await(m.remove(mfBase)).assertNoErrors().assertNoValues();
+        await(m.remove(mfBase)).assertNoErrors().assertValue(false);
     }
 
     /**
@@ -819,7 +825,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         await(m.appendAll(sfBase, Arrays.asList(value0, value1, value2))).assertComplete();
         await(m.sizeOf(sfBase)).assertValue(3);
 
-        await(m.remove(sfBase.withPosition(1))).assertValue(value1);
+        await(m.remove(sfBase.withPosition(1))).assertValue(true);
         await(m.sizeOf(sfBase)).assertValue(2);
     }
 

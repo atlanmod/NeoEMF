@@ -100,9 +100,10 @@ public interface ManyReferenceMapper extends ReferenceMapper {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
-        Single<Integer> position = sizeOfReference(key).toSingle(0);
-        addReference(key.withPosition(position.blockingGet()), reference).blockingAwait();
-        return position;
+        return sizeOfReference(key)
+                .toSingle(0)
+                .flatMap(s -> addReference(key.withPosition(s), reference).toSingleDefault(s))
+                .cache();
     }
 
     /**
@@ -121,9 +122,14 @@ public interface ManyReferenceMapper extends ReferenceMapper {
         checkNotNull(key, "key");
         checkNotNull(references, "collection");
 
-        Single<Integer> firstPosition = sizeOfReference(key).toSingle(0);
-        addAllReferences(key.withPosition(firstPosition.blockingGet()), references).blockingAwait();
-        return firstPosition;
+        if (references.contains(null)) {
+            throw new NullPointerException();
+        }
+
+        return sizeOfReference(key)
+                .toSingle(0)
+                .flatMap(s -> addAllReferences(key.withPosition(s), references).toSingleDefault(s))
+                .cache();
     }
 
     /**
@@ -131,10 +137,10 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return the deferred computation that may contains the previous reference
+     * @return the deferred computation that contains {@code true} if a reference has been removed
      */
     @Nonnull
-    Maybe<Id> removeReference(ManyFeatureBean key);
+    Single<Boolean> removeReference(ManyFeatureBean key);
 
     /**
      * Removes all references of the specified {@code key}.

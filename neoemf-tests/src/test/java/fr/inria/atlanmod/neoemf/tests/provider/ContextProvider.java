@@ -45,7 +45,7 @@ public final class ContextProvider {
     public static Stream<Context> allContexts() {
         return Stream.of(
                 BlueprintsContext.getDefault(),
-//                BlueprintsNeo4jContext.getDefault(),
+                BlueprintsNeo4jContext.getDefault(),
                 MapDbContext.getWithIndices(),
                 MapDbContext.getWithArrays(),
                 MapDbContext.getWithLists(),

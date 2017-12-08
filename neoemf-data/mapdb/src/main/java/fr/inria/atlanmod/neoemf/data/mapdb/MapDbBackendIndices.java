@@ -67,6 +67,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
         return dispatcher().submit(query);
     }
 
+    @Nonnull
     @Override
     public <V> Completable innerValueFor(ManyFeatureBean key, @Nullable V value) {
         checkNotNull(key, "key");

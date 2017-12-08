@@ -105,9 +105,10 @@ public interface ManyValueMapper extends ValueMapper {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        Single<Integer> position = sizeOfValue(key).toSingle(0);
-        addValue(key.withPosition(position.blockingGet()), value).blockingAwait();
-        return position;
+        return sizeOfValue(key)
+                .toSingle(0)
+                .flatMap(s -> addValue(key.withPosition(s), value).toSingleDefault(s))
+                .cache();
     }
 
     /**
@@ -127,21 +128,25 @@ public interface ManyValueMapper extends ValueMapper {
         checkNotNull(key, "key");
         checkNotNull(values, "collection");
 
-        Single<Integer> firstPosition = sizeOfValue(key).toSingle(0);
-        addAllValues(key.withPosition(firstPosition.blockingGet()), values).blockingAwait();
-        return firstPosition;
+        if (values.contains(null)) {
+            throw new NullPointerException();
+        }
+
+        return sizeOfValue(key)
+                .toSingle(0)
+                .flatMap(s -> addAllValues(key.withPosition(s), values).toSingleDefault(s))
+                .cache();
     }
 
     /**
      * Removes the value of the specified {@code key} at a defined position.
      *
      * @param key the key identifying the multi-valued attribute
-     * @param <V> the type of value
      *
-     * @return the deferred computation that may contains the previous value
+     * @return the deferred computation that contains {@code true} if a value has been removed
      */
     @Nonnull
-    <V> Maybe<V> removeValue(ManyFeatureBean key);
+    Single<Boolean> removeValue(ManyFeatureBean key);
 
     /**
      * Removes all values of the specified {@code key}.

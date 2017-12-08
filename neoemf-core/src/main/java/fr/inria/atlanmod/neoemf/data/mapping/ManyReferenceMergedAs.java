@@ -12,12 +12,9 @@ import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
-import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -25,12 +22,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.functions.Consumer;
+import io.reactivex.Single;
 import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
-import static java.util.Objects.isNull;
 
 /**
  * A {@link ManyReferenceMapper} that provides a default behavior to use {@link M} instead of a set of {@link Id} for
@@ -74,17 +70,14 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        Consumer<List<Id>> replaceFunc = rs -> {
-            rs.set(key.position(), reference);
-            valueFor(key.withoutPosition(), converter.convert(rs)).subscribe();
-        };
-
         return this.<M>valueOf(key.withoutPosition())
                 .map(converter::revert)
                 .filter(rs -> key.position() < rs.size())
                 .toSingle()
-                .doOnSuccess(replaceFunc)
-                .toCompletable()
+                .flatMapCompletable(rs -> {
+                    rs.set(key.position(), reference);
+                    return valueFor(key.withoutPosition(), converter.convert(rs));
+                })
                 .cache();
     }
 
@@ -96,16 +89,18 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        List<Id> rs = this.<M>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
+        return this.<M>valueOf(key.withoutPosition())
                 .map(converter::revert)
-                .orElseGet(ArrayList::new);
-
-        checkPositionIndex(key.position(), rs.size());
-
-        rs.add(key.position(), reference);
-
-        return valueFor(key.withoutPosition(), converter.convert(rs));
+                .filter(rs -> {
+                    checkPositionIndex(key.position(), rs.size());
+                    return true;
+                })
+                .switchIfEmpty(Maybe.fromCallable(ArrayList::new))
+                .flatMapCompletable(rs -> {
+                    rs.add(key.position(), reference);
+                    return valueFor(key.withoutPosition(), converter.convert(rs));
+                })
+                .cache();
     }
 
     @Nonnull
@@ -118,56 +113,49 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
             return Completable.complete();
         }
 
-        if (references.stream().anyMatch(Objects::isNull)) {
+        if (references.contains(null)) {
             throw new NullPointerException();
         }
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        List<Id> rs = this.<M>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
+        return this.<M>valueOf(key.withoutPosition())
                 .map(converter::revert)
-                .orElseGet(ArrayList::new);
-
-        checkPositionIndex(key.position(), rs.size());
-
-        rs.addAll(key.position(), references);
-
-        return valueFor(key.withoutPosition(), converter.convert(rs));
+                .filter(rs -> {
+                    checkPositionIndex(key.position(), rs.size());
+                    return true;
+                })
+                .switchIfEmpty(Maybe.fromCallable(ArrayList::new))
+                .flatMapCompletable(rs -> {
+                    rs.addAll(key.position(), references);
+                    return valueFor(key.withoutPosition(), converter.convert(rs));
+                })
+                .cache();
     }
 
     @Nonnull
     @Override
-    default Maybe<Id> removeReference(ManyFeatureBean key) {
+    default Single<Boolean> removeReference(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        List<Id> rs = this.<M>valueOf(key.withoutPosition())
-                .to(CommonQueries::toOptional)
+        return this.<M>valueOf(key.withoutPosition())
                 .map(converter::revert)
-                .orElse(null);
-
-        if (isNull(rs)) {
-            return Maybe.empty();
-        }
-
-        Optional<Id> previousReference = Optional.empty();
-
-        if (key.position() < rs.size()) {
-            previousReference = Optional.of(rs.remove(key.position()));
-
-            if (rs.isEmpty()) {
-                removeAllReferences(key.withoutPosition()).blockingAwait();
-            }
-            else {
-                valueFor(key.withoutPosition(), converter.convert(rs)).blockingAwait();
-            }
-        }
-
-        return previousReference
-                .map(Maybe::just)
-                .orElseGet(Maybe::empty);
+                .filter(rs -> key.position() < rs.size())
+                .flatMap(rs -> {
+                    Completable completable;
+                    if (rs.size() == 1) {
+                        completable = removeAllReferences(key.withoutPosition());
+                    }
+                    else {
+                        rs.remove(key.position());
+                        completable = valueFor(key.withoutPosition(), converter.convert(rs));
+                    }
+                    return completable.toSingleDefault(true).toMaybe();
+                })
+                .toSingle(false)
+                .cache();
     }
 
     @Nonnull

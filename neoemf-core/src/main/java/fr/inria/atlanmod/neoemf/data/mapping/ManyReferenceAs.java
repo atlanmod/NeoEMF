@@ -104,11 +104,8 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
 
     @Nonnull
     @Override
-    default Maybe<Id> removeReference(ManyFeatureBean key) {
-        Converter<Id, M> converter = manyReferenceConverter();
-
-        return this.<M>removeValue(key)
-                .map(converter::revert);
+    default Single<Boolean> removeReference(ManyFeatureBean key) {
+        return this.removeValue(key);
     }
 
     @Nonnull

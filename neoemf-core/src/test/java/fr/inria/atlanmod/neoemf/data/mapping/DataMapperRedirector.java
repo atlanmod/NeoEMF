@@ -210,12 +210,12 @@ class DataMapperRedirector {
      * @return a test observer on the result
      */
     @Nonnull
-    public <V> Maybe<V> remove(ManyFeatureBean key) {
+    public Single<Boolean> remove(ManyFeatureBean key) {
         if (type == RedirectionType.ATTRIBUTE) {
             return delegate.removeValue(key);
         }
         else {
-            return (Maybe<V>) delegate.removeReference(key);
+            return delegate.removeReference(key);
         }
     }
 

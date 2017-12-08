@@ -83,6 +83,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
         return dispatcher().submit(query);
     }
 
+    @Nonnull
     @Override
     public <V> Completable innerValueFor(ManyFeatureBean key, @Nullable V value) {
         checkNotNull(key, "key");

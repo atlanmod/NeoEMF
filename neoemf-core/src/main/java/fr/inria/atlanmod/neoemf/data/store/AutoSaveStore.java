@@ -24,7 +24,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
-import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.internal.functions.Functions;
 
@@ -182,9 +181,13 @@ public class AutoSaveStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
-        return super.<V>removeValue(key)
-                .doOnSuccess(Functions.actionConsumer(() -> incrementAndSave(1)))
+    public Single<Boolean> removeValue(ManyFeatureBean key) {
+        return super.removeValue(key)
+                .doOnSuccess(removed -> {
+                    if (removed) {
+                        incrementAndSave(1);
+                    }
+                })
                 .cache();
     }
 
@@ -243,9 +246,13 @@ public class AutoSaveStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Maybe<Id> removeReference(ManyFeatureBean key) {
+    public Single<Boolean> removeReference(ManyFeatureBean key) {
         return super.removeReference(key)
-                .doOnSuccess(Functions.actionConsumer(() -> incrementAndSave(1)))
+                .doOnSuccess(removed -> {
+                    if (removed) {
+                        incrementAndSave(1);
+                    }
+                })
                 .cache();
     }
 

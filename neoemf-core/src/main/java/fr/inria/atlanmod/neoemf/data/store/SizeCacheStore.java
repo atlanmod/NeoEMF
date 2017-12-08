@@ -26,7 +26,6 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
-import io.reactivex.internal.functions.Functions;
 
 /**
  * A {@link Store} wrapper that caches the size data.
@@ -119,15 +118,19 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Intege
 
     @Nonnull
     @Override
-    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
+    public Single<Boolean> removeValue(ManyFeatureBean key) {
         final Optional<Integer> size = sizeOfValue(key.withoutPosition())
                 .filter(s -> key.position() < s)
                 .to(CommonQueries::toOptional);
 
         Action setFunc = () -> size.ifPresent(s -> cache.put(key.withoutPosition(), s - 1));
 
-        return super.<V>removeValue(key)
-                .doOnSuccess(Functions.actionConsumer(setFunc))
+        return super.removeValue(key)
+                .doOnSuccess(removed -> {
+                    if (removed) {
+                        setFunc.run();
+                    }
+                })
                 .cache();
     }
 
@@ -211,7 +214,7 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Intege
 
     @Nonnull
     @Override
-    public Maybe<Id> removeReference(ManyFeatureBean key) {
+    public Single<Boolean> removeReference(ManyFeatureBean key) {
         final Optional<Integer> size = sizeOfReference(key.withoutPosition())
                 .filter(s -> key.position() < s)
                 .to(CommonQueries::toOptional);
@@ -219,7 +222,11 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Intege
         Action setFunc = () -> size.ifPresent(s -> cache.put(key.withoutPosition(), s - 1));
 
         return super.removeReference(key)
-                .doOnSuccess(Functions.actionConsumer(setFunc))
+                .doOnSuccess(removed -> {
+                    if (removed) {
+                        setFunc.run();
+                    }
+                })
                 .cache();
     }
 

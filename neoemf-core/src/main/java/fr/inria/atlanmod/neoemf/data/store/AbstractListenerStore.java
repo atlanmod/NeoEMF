@@ -251,11 +251,10 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
+    public Single<Boolean> removeValue(ManyFeatureBean key) {
         CallInfoBuilder callInfo = CallInfo.forMethod("removeValue").withKey(key);
 
-        return super.<V>removeValue(key)
-                .doOnComplete(() -> onSuccess(callInfo))
+        return super.removeValue(key)
                 .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
                 .doOnError(e -> onFailure(callInfo.withThrownException(e)))
                 .cache();
@@ -367,11 +366,10 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public Maybe<Id> removeReference(ManyFeatureBean key) {
+    public Single<Boolean> removeReference(ManyFeatureBean key) {
         CallInfoBuilder callInfo = CallInfo.forMethod("removeReference").withKey(key);
 
         return super.removeReference(key)
-                .doOnComplete(() -> onSuccess(callInfo))
                 .doOnSuccess(r -> onSuccess(callInfo.withResult(r)))
                 .doOnError(e -> onFailure(callInfo.withThrownException(e)))
                 .cache();

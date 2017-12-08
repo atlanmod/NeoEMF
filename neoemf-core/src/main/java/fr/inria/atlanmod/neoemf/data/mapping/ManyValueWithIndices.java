@@ -14,9 +14,8 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.query.CommonQueries;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.function.IntFunction;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnegative;
@@ -27,9 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.internal.functions.Functions;
+import io.reactivex.Single;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -65,14 +62,9 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        Action setFunc = () -> innerValueFor(key, value).subscribe();
-
-        Consumer<V> replaceFunc = Functions.actionConsumer(setFunc);
-
         return this.<V>valueOf(key)
                 .toSingle()
-                .doOnSuccess(replaceFunc)
-                .toCompletable()
+                .flatMapCompletable(v -> innerValueFor(key, value))
                 .cache();
     }
 
@@ -82,16 +74,17 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        int size = sizeOfValue(key.withoutPosition()).toSingle(0).blockingGet();
-        checkPositionIndex(key.position(), size);
-
-        for (int i = size - 1; i >= key.position(); i--) {
-            innerValueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).toSingle().blockingGet()).blockingAwait();
-        }
-
-        sizeForValue(key.withoutPosition(), size + 1).blockingAwait();
-
-        return innerValueFor(key, value);
+        return sizeOfValue(key.withoutPosition())
+                .toSingle(0)
+                .filter(s -> {
+                    checkPositionIndex(key.position(), s);
+                    return true;
+                })
+                .flatMap(s -> sizeForValue(key.withoutPosition(), s + 1).toSingleDefault(s).toMaybe())
+                .flattenAsFlowable(s -> IntStream.range(key.position(), s).map(i -> key.position() - i + s - 1).boxed().collect(Collectors.toList()))
+                .flatMapCompletable(i -> valueOf(key.withPosition(i)).flatMapCompletable(v -> innerValueFor(key.withPosition(i + 1), v)), false, 1)
+                .concatWith(innerValueFor(key, value))
+                .cache();
     }
 
     @Nonnull
@@ -100,48 +93,40 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkNotNull(key, "key");
         checkNotNull(values, "collection");
 
-        if (values.stream().anyMatch(Objects::isNull)) {
+        if (values.contains(null)) {
             throw new NullPointerException();
         }
 
-        IntStream.range(0, values.size())
-                .forEach(i -> addValue(key.withPosition(key.position() + i), values.get(i)).blockingAwait());
-
-        return Completable.complete();
+        return Flowable.range(0, values.size())
+                .flatMapCompletable(i -> addValue(key.withPosition(key.position() + i), values.get(i)), false, 1)
+                .cache();
     }
 
     @Nonnull
     @Override
-    default <V> Maybe<V> removeValue(ManyFeatureBean key) {
+    default Single<Boolean> removeValue(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        int size = sizeOfValue(key.withoutPosition()).toSingle(0).blockingGet();
-        if (size == 0) {
-            return Maybe.empty();
-        }
-
-        Optional<V> previousValue = this.<V>valueOf(key).to(CommonQueries::toOptional);
-
-        for (int i = key.position(); i < size - 1; i++) {
-            innerValueFor(key.withPosition(i), valueOf(key.withPosition(i + 1)).toSingle().blockingGet()).blockingAwait();
-        }
-
-        innerValueFor(key.withPosition(size - 1), null).blockingAwait();
-
-        sizeForValue(key.withoutPosition(), size - 1).blockingAwait();
-
-        return previousValue
-                .map(Maybe::just)
-                .orElseGet(Maybe::empty);
+        return sizeOfValue(key.withoutPosition())
+                .flatMap(s -> sizeForValue(key.withoutPosition(), s - 1).toSingleDefault(s).toMaybe())
+                .flatMap(s -> Flowable.range(key.position(), s - key.position() - 1)
+                        .flatMapCompletable(i -> valueOf(key.withPosition(i + 1))
+                                .toSingle()
+                                .flatMapCompletable(cv -> innerValueFor(key.withPosition(i), cv)), false, 1)
+                        .concatWith(innerValueFor(key.withPosition(s - 1), null))
+                        .toSingleDefault(true).toMaybe())
+                .toSingle(false)
+                .cache();
     }
 
     @Nonnull
     @Override
     default Completable removeAllValues(SingleFeatureBean key) {
-        IntStream.range(0, sizeOfValue(key).toSingle(0).blockingGet())
-                .forEach(i -> innerValueFor(key.withPosition(i), null).blockingAwait());
-
-        return removeValue(key);
+        return sizeOfValue(key)
+                .flattenAsFlowable(s -> IntStream.range(0, s).boxed().collect(Collectors.toList()))
+                .flatMapCompletable(i -> innerValueFor(key.withPosition(i), null), false, 1)
+                .concatWith(removeValue(key))
+                .cache();
     }
 
     @Nonnull
@@ -160,9 +145,9 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      * @param key  the key identifying the multi-valued attribute
      * @param size the number of values
      *
-     * @throws NullPointerException     if the {@code key} is {@code null}
-     * @throws IllegalArgumentException if {@code size < 0}
+     * @return the deffered computation
      */
+    @Nonnull
     default Completable sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
         checkNotNull(key, "key");
         checkArgument(size >= 0, "size (%d) must not be negative");
@@ -182,7 +167,8 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      * @param value the value to set
      * @param <V>   the type of value
      *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @return the deffered computation
      */
+    @Nonnull
     <V> Completable innerValueFor(ManyFeatureBean key, @Nullable V value);
 }

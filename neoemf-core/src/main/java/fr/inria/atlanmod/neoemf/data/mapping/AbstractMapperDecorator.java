@@ -221,7 +221,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
+    public Single<Boolean> removeValue(ManyFeatureBean key) {
         return next.removeValue(key);
     }
 
@@ -291,7 +291,7 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Maybe<Id> removeReference(ManyFeatureBean key) {
+    public Single<Boolean> removeReference(ManyFeatureBean key) {
         return next.removeReference(key);
     }
 

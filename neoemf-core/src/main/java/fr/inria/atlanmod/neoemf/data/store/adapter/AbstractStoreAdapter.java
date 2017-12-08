@@ -507,19 +507,34 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         ManyFeatureBean key = ManyFeatureBean.from(adaptAndRefresh(internalObject), feature, index);
 
+        Object previous;
+        Single<Boolean> removedFunc = Single.just(false);
+
         // TODO Use `get` then asynchronously remove
         if (EObjects.isAttribute(feature)) {
-            return store.removeValue(key)
+            previous = store.valueOf(key)
                     .to(CommonQueries::toOptional)
                     .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .orElse(null);
+
+            if (nonNull(previous)) {
+                removedFunc = store.removeValue(key);
+            }
         }
         else {
-            return store.removeReference(key)
+            previous = store.referenceOf(key)
                     .to(CommonQueries::toOptional)
                     .map(refConverter::revert)
                     .orElse(null);
+
+            if (nonNull(previous)) {
+                removedFunc = store.removeReference(key);
+            }
         }
+
+        removedFunc.toCompletable().blockingAwait();
+
+        return previous;
     }
 
     @Override

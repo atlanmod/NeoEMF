@@ -53,6 +53,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.internal.functions.Functions;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -290,7 +291,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
         metaClassSet.forEach(m -> to.metaClassIndex.put(
                 PROPERTY_CLASS_NAME, m.name(),
-                get(generateClassId(m)).<IllegalStateException>orElseThrow(IllegalStateException::new)));
+                blockingGet(generateClassId(m)).<IllegalStateException>orElseThrow(IllegalStateException::new)));
     }
 
     @Nonnull
@@ -305,7 +306,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 idConverter.revert(e.getVertex(Direction.IN).getId()),
                 e.getProperty(PROPERTY_FEATURE_NAME));
 
-        Maybe<SingleFeatureBean> query = asyncGet(id)
+        Maybe<SingleFeatureBean> query = get(id)
                 .flattenAsFlowable(getFunc)
                 .singleElement()
                 .map(mapFunc);
@@ -324,10 +325,10 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .forEach(Edge::remove);
 
         Consumer<Vertex> setFunc = v -> v
-                .addEdge(EDGE_CONTAINER, getOrCreate(container.owner()))
+                .addEdge(EDGE_CONTAINER, blockingGetOrCreate(container.owner()))
                 .setProperty(PROPERTY_FEATURE_NAME, container.id());
 
-        Completable query = asyncGetOrCreate(id)
+        Completable query = getOrCreate(id)
                 .doOnSuccess(removeFunc)
                 .doOnSuccess(setFunc)
                 .toCompletable();
@@ -344,7 +345,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .getEdges(Direction.OUT, EDGE_CONTAINER)
                 .forEach(Edge::remove);
 
-        Completable query = asyncGet(id)
+        Completable query = get(id)
                 .doOnSuccess(removeFunc)
                 .ignoreElement();
 
@@ -363,7 +364,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 v.getProperty(PROPERTY_CLASS_NAME),
                 v.getProperty(PROPERTY_CLASS_URI));
 
-        Maybe<ClassBean> query = asyncGet(id)
+        Maybe<ClassBean> query = get(id)
                 .flattenAsFlowable(getFunc)
                 .singleElement()
                 .map(mapFunc);
@@ -397,9 +398,9 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .switchIfEmpty(setInIndexFunc);
 
         Maybe<Vertex> setFunc = getFromIndexFunc
-                .doOnSuccess(v -> getOrCreate(id).addEdge(EDGE_INSTANCE_OF, v));
+                .doOnSuccess(v -> blockingGetOrCreate(id).addEdge(EDGE_INSTANCE_OF, v));
 
-        Completable query = asyncGetOrCreate(id)
+        Completable query = getOrCreate(id)
                 .flattenAsFlowable(getFromVertexFunc)
                 .singleElement()
                 .doOnSuccess(CommonQueries.classAlreadyExists())
@@ -421,6 +422,12 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         return dispatcher().submit(query);
     }
 
+
+    @Nonnull
+    protected Optional<Vertex> blockingGet(Id id) {
+        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(idConverter.convert(i))));
+    }
+
     /**
      * Retrieves the {@link Vertex} corresponding to the provided {@code id}.
      *
@@ -429,13 +436,13 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * @return an {@link Optional} containing the {@link Vertex}, or {@link Optional#empty()} if it doesn't exist
      */
     @Nonnull
-    protected Optional<Vertex> get(Id id) {
-        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(idConverter.convert(i))));
-    }
+    protected Maybe<Vertex> get(Id id) {
+        java.util.function.Function<Id, Vertex> nativeFunc = i -> {
+            Object vertexId = idConverter.convert(i);
+            return graph.getVertex(vertexId);
+        };
 
-    @Nonnull
-    protected Maybe<Vertex> asyncGet(Id id) {
-        return Maybe.fromCallable(() -> get(id).orElse(null));
+        return Maybe.fromCallable(() -> verticesCache.get(id, nativeFunc));
     }
 
     /**
@@ -447,7 +454,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * @return the deferred computation to execute, that may contains the vertex
      */
     @Nonnull
-    protected Vertex getOrCreate(Id id) {
+    protected Vertex blockingGetOrCreate(Id id) {
         return verticesCache.get(id, i ->
                 Optional.ofNullable(graph.getVertex(idConverter.convert(i)))
                         .orElseGet(() -> graph.addVertex(idConverter.convert(i))));
@@ -462,8 +469,17 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * @return the deferred computation to execute, that contains the container
      */
     @Nonnull
-    protected Single<Vertex> asyncGetOrCreate(Id id) {
-        return Single.fromCallable(() -> getOrCreate(id));
+    protected Single<Vertex> getOrCreate(Id id) {
+        java.util.function.Function<Id, Vertex> nativeFunc = i -> {
+            Object vertexId = idConverter.convert(i);
+            Vertex v = graph.getVertex(vertexId);
+            if (isNull(v)) {
+                v = graph.addVertex(vertexId);
+            }
+            return v;
+        };
+
+        return Single.fromCallable(() -> verticesCache.get(id, nativeFunc));
     }
 
     /**

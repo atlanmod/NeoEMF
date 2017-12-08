@@ -187,8 +187,8 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
-        return Maybe.error(e::get);
+    public Single<Boolean> removeValue(ManyFeatureBean key) {
+        return Single.error(e::get);
     }
 
     @Nonnull
@@ -247,8 +247,8 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public Maybe<Id> removeReference(ManyFeatureBean key) {
-        return Maybe.error(e::get);
+    public Single<Boolean> removeReference(ManyFeatureBean key) {
+        return Single.error(e::get);
     }
 
     @Nonnull

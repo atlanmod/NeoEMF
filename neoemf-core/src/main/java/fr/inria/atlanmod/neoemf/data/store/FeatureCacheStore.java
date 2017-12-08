@@ -30,7 +30,6 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
-import io.reactivex.internal.functions.Functions;
 
 /**
  * A {@link Store} wrapper that caches {@link EStructuralFeature}.
@@ -222,7 +221,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
 
     @Nonnull
     @Override
-    public <V> Maybe<V> removeValue(ManyFeatureBean key) {
+    public Single<Boolean> removeValue(ManyFeatureBean key) {
         final int defaultSize = key.position();
 
         final int size = sizeOfValue(key.withoutPosition())
@@ -233,8 +232,12 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
                 .mapToObj(key::withPosition)
                 .forEach(cache::invalidate);
 
-        return super.<V>removeValue(key)
-                .doOnSuccess(Functions.actionConsumer(removeFunc))
+        return super.removeValue(key)
+                .doOnSuccess(removed -> {
+                    if (removed) {
+                        removeFunc.run();
+                    }
+                })
                 .cache();
     }
 
@@ -359,7 +362,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
 
     @Nonnull
     @Override
-    public Maybe<Id> removeReference(ManyFeatureBean key) {
+    public Single<Boolean> removeReference(ManyFeatureBean key) {
         final int defaultSize = key.position();
 
         final int size = sizeOfReference(key.withoutPosition())
@@ -371,7 +374,11 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
                 .forEach(cache::invalidate);
 
         return super.removeReference(key)
-                .doOnSuccess(Functions.actionConsumer(removeFunc))
+                .doOnSuccess(removed -> {
+                    if (removed) {
+                        removeFunc.run();
+                    }
+                })
                 .cache();
     }
 

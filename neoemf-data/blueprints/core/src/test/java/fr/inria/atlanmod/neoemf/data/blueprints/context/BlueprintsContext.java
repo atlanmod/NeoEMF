@@ -51,14 +51,14 @@ public abstract class BlueprintsContext extends AbstractContext {
 
         @Nonnull
         @Override
-        public Config config() {
-            return BlueprintsTinkerConfig.newConfig();
+        public String name() {
+            return super.name() + "#Tinker";
         }
 
         @Nonnull
         @Override
-        public String name() {
-            return super.name() + "#Tinker";
+        public Config config() {
+            return BlueprintsTinkerConfig.newConfig();
         }
     }
 }
