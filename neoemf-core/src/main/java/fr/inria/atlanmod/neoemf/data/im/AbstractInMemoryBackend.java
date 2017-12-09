@@ -138,7 +138,7 @@ abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemo
 
         Maybe<SingleFeatureBean> query = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -151,7 +151,7 @@ abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemo
 
         Completable query = Completable.fromAction(setFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -163,7 +163,7 @@ abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemo
 
         Completable query = Completable.fromAction(removeFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -175,7 +175,7 @@ abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemo
 
         Maybe<ClassBean> query = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -190,7 +190,7 @@ abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemo
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .ignoreElement();
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -201,7 +201,7 @@ abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemo
                 .filter(e -> metaClasses.contains(e.getValue()))
                 .map(Map.Entry::getKey);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchFlowable());
     }
 
     @Nonnull
@@ -213,7 +213,7 @@ abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemo
 
         Maybe<V> query = Maybe.fromCallable(getFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -226,7 +226,7 @@ abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemo
 
         Completable query = Completable.fromAction(setFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -238,7 +238,7 @@ abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemo
 
         Completable query = Completable.fromAction(removeFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull

@@ -12,12 +12,15 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import io.reactivex.Completable;
+import io.reactivex.CompletableTransformer;
 import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import io.reactivex.Maybe;
+import io.reactivex.MaybeTransformer;
 import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
 import io.reactivex.Single;
-
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import io.reactivex.SingleTransformer;
 
 /**
  * An abstract {@link QueryDispatcher}.
@@ -26,92 +29,71 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 public abstract class AbstractQueryDispatcher implements QueryDispatcher {
 
     @Nonnull
-    @Override
-    public final Completable submit(Completable query) {
-        checkNotNull(query, "query");
-
-        return map(query).cache();
+    public final CompletableTransformer dispatchCompletable() {
+        return q -> scheduleCompletable().apply(q.cache());
     }
 
     @Nonnull
     @Override
-    public final <T> Maybe<T> submit(Maybe<T> query) {
-        checkNotNull(query, "query");
-
-        return map(query).cache();
+    public final <T> MaybeTransformer<T, T> dispatchMaybe() {
+        return q -> this.<T>scheduleMaybe().apply(q.cache());
     }
 
     @Nonnull
     @Override
-    public final <T> Single<T> submit(Single<T> query) {
-        checkNotNull(query, "query");
-
-        return map(query).cache();
+    public final <T> SingleTransformer<T, T> dispatchSingle() {
+        return q -> this.<T>scheduleSingle().apply(q.cache());
     }
 
     @Nonnull
     @Override
-    public final <T> Observable<T> submit(Observable<T> query) {
-        checkNotNull(query, "query");
-
-        return map(query).cache();
+    public final <T> ObservableTransformer<T, T> dispatchObservable() {
+        return q -> this.<T>scheduleObservable().apply(q.cache());
     }
 
     @Nonnull
     @Override
-    public final <T> Flowable<T> submit(Flowable<T> query) {
-        checkNotNull(query, "query");
-
-        return map(query).cache();
+    public final <T> FlowableTransformer<T, T> dispatchFlowable() {
+        return q -> this.<T>scheduleFlowable().apply(q.cache());
     }
 
     /**
-     * Maps a {@link Completable} instance.
+     * Schedules a {@link Completable} instance.
      *
-     * @param query the query to map
-     *
-     * @return the mapped query
+     * @return the scheduled completable
      */
     @Nonnull
-    protected abstract Completable map(Completable query);
+    protected abstract CompletableTransformer scheduleCompletable();
 
     /**
-     * Maps a {@link Maybe} instance.
+     * Schedules a {@link Maybe} instance.
      *
-     * @param query the query to map
-     *
-     * @return the mapped query
+     * @return the scheduled maybe
      */
     @Nonnull
-    protected abstract <T> Maybe<T> map(Maybe<T> query);
+    protected abstract <T> MaybeTransformer<T, T> scheduleMaybe();
 
     /**
-     * Maps a {@link Single} instance.
+     * Schedules a {@link Single} instance.
      *
-     * @param query the query to map
-     *
-     * @return the mapped query
+     * @return the scheduled single
      */
     @Nonnull
-    protected abstract <T> Single<T> map(Single<T> query);
+    protected abstract <T> SingleTransformer<T, T> scheduleSingle();
 
     /**
-     * Maps an {@link Observable} instance.
+     * Schedules an {@link Observable} instance.
      *
-     * @param query the query to map
-     *
-     * @return the mapped query
+     * @return the scheduled observable
      */
     @Nonnull
-    protected abstract <T> Observable<T> map(Observable<T> query);
+    protected abstract <T> ObservableTransformer<T, T> scheduleObservable();
 
     /**
-     * Maps a {@link Flowable} instance.
+     * Schedules a {@link Flowable} instance.
      *
-     * @param query the query to map
-     *
-     * @return the mapped query
+     * @return the scheduled flowable
      */
     @Nonnull
-    protected abstract <T> Flowable<T> map(Flowable<T> query);
+    protected abstract <T> FlowableTransformer<T, T> scheduleFlowable();
 }

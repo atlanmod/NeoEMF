@@ -80,7 +80,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
 
         Maybe<V> query = get(manyFeatures, key, serializers.forManyFeature(), serializers.forAny());
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -92,6 +92,6 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
                 ? put(manyFeatures, key, value, serializers.forManyFeature(), serializers.forAny())
                 : delete(manyFeatures, key, serializers.forManyFeature());
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 }

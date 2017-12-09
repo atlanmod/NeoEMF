@@ -147,7 +147,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .filter(r -> r.containsNonEmptyColumn(FAMILY_CONTAINMENT, QUALIFIER_CONTAINER))
                 .map(mapFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -164,7 +164,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .doOnSuccess(table::put)
                 .ignoreElement();
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -180,7 +180,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .doOnSuccess(table::delete)
                 .ignoreElement();
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -203,7 +203,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .filter(r -> r.containsNonEmptyColumn(FAMILY_TYPE, QUALIFIER_CLASS_NAME))
                 .map(mapFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -230,7 +230,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .switchIfEmpty(setIfAbsent.toMaybe())
                 .ignoreElement();
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -260,7 +260,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .filter(r -> r.containsNonEmptyColumn(FAMILY_PROPERTY, toQualifier.apply(key.id())))
                 .map(mapFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -276,7 +276,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
         Completable query = Completable.fromAction(() -> table.put(createPut.call()));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -293,6 +293,6 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
                 .doOnSuccess(table::delete)
                 .ignoreElement();
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 }

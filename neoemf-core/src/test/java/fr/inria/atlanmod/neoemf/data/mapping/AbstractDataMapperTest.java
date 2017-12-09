@@ -213,7 +213,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
         submit(mapper.removeContainer(idBase));
         await(mapper.containerOf(idBase)).assertComplete().assertNoValues();
 
-        await(mapper.removeContainer(idBase));
+        await(mapper.removeContainer(idBase)).assertNoErrors();
     }
 
     //endregion

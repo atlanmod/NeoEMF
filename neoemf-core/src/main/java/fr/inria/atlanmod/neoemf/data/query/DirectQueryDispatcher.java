@@ -11,11 +11,11 @@ package fr.inria.atlanmod.neoemf.data.query;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.Observable;
-import io.reactivex.Single;
+import io.reactivex.CompletableTransformer;
+import io.reactivex.FlowableTransformer;
+import io.reactivex.MaybeTransformer;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.SingleTransformer;
 
 /**
  * A {@link QueryDispatcher} that directly executes queries, on the current {@link Thread}.
@@ -24,33 +24,32 @@ import io.reactivex.Single;
 public final class DirectQueryDispatcher extends AbstractQueryDispatcher {
 
     @Nonnull
-    @Override
-    protected Completable map(Completable query) {
-        return query;
+    protected CompletableTransformer scheduleCompletable() {
+        return q -> q;
     }
 
     @Nonnull
     @Override
-    protected <T> Maybe<T> map(Maybe<T> query) {
-        return query;
+    protected <T> MaybeTransformer<T, T> scheduleMaybe() {
+        return q -> q;
     }
 
     @Nonnull
     @Override
-    protected <T> Single<T> map(Single<T> query) {
-        return query;
+    protected <T> SingleTransformer<T, T> scheduleSingle() {
+        return q -> q;
     }
 
     @Nonnull
     @Override
-    protected <T> Observable<T> map(Observable<T> query) {
-        return query;
+    protected <T> ObservableTransformer<T, T> scheduleObservable() {
+        return q -> q;
     }
 
     @Nonnull
     @Override
-    protected <T> Flowable<T> map(Flowable<T> query) {
-        return query;
+    protected <T> FlowableTransformer<T, T> scheduleFlowable() {
+        return q -> q;
     }
 
     @Override

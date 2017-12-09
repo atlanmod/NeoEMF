@@ -154,7 +154,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
         Maybe<SingleFeatureBean> query = get(containers, id);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -165,7 +165,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
         Completable query = put(containers, id, container);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -175,7 +175,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
         Completable query = delete(containers, id);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -185,7 +185,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
         Maybe<ClassBean> query = get(instances, id);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -199,7 +199,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .ignoreElement();
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -210,7 +210,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
                 .filter(e -> metaClasses.contains(e.getValue()))
                 .map(Map.Entry::getKey);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchFlowable());
     }
 
     @Nonnull
@@ -220,7 +220,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
         Maybe<V> query = get(singleFeatures, key);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -231,7 +231,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
         Completable query = put(singleFeatures, key, value);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -241,7 +241,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
         Completable query = delete(singleFeatures, key);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull

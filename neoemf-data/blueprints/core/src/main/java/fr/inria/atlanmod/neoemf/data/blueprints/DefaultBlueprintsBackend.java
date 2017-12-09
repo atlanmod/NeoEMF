@@ -32,6 +32,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 
@@ -66,7 +67,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .filter(Optional::isPresent)
                 .map(Optional::get);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -78,7 +79,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Completable query = getOrCreate(key.owner())
                 .flatMapCompletable(v -> Completable.fromAction(() -> v.setProperty(formatLabel(key), value)));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -89,7 +90,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Completable query = get(key.owner())
                 .flatMapCompletable(v -> Completable.fromAction(() -> v.removeProperty(formatLabel(key))));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     //endregion
@@ -106,7 +107,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .singleElement()
                 .map(v -> idConverter.revert(v.getId()));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -123,7 +124,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     v.addEdge(formatLabel(key), blockingGetOrCreate(reference));
                 }));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -134,7 +135,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Completable query = get(key.owner())
                 .flatMapCompletable(v -> Completable.fromAction(() -> v.getEdges(Direction.OUT, formatLabel(key)).forEach(Edge::remove)));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     //endregion
@@ -151,7 +152,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .filter(Optional::isPresent)
                 .map(Optional::get);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -165,7 +166,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                         .collect(Collectors.toList()))
                 .map(e -> e.getKey().getProperty(formatProperty(key, e.getValue())));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchFlowable());
     }
 
     @Nonnull
@@ -178,7 +179,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .toSingle()
                 .flatMapCompletable(v -> Completable.fromAction(() -> v.setProperty(formatProperty(key, key.position()), value)));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -200,22 +201,20 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     sizeFor(key.withoutPosition(), v, size + 1);
                 }));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
     @Override
     public <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
         checkNotNull(key, "key");
-        checkNotNull(values, "collection");
+        checkNotNull(values, "values");
 
         if (values.isEmpty()) {
             return Completable.complete();
         }
 
-        if (values.contains(null)) {
-            throw new NullPointerException();
-        }
+        checkNotContainsNull(values);
 
         Completable query = getOrCreate(key.owner())
                 .flatMapCompletable(v -> Completable.fromAction(() -> {
@@ -235,7 +234,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     sizeFor(key.withoutPosition(), v, size + additionCount);
                 }));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -261,7 +260,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 })
                 .toSingle(false);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchSingle());
     }
 
     @Nonnull
@@ -275,7 +274,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     sizeFor(key, v, 0);
                 }));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -287,7 +286,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .map(v -> sizeOf(key, v))
                 .filter(s -> s > 0);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     //endregion
@@ -299,14 +298,14 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public Maybe<Id> referenceOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        Maybe<Id> databaseFunc = get(key.owner())
+        Maybe<Id> query = get(key.owner())
                 .flattenAsFlowable(v -> v.query().direction(Direction.OUT).labels(formatLabel(key))
                         .has(PROPERTY_INDEX, key.position())
                         .vertices())
                 .singleElement()
                 .map(v -> idConverter.revert(v.getId()));
 
-        return dispatcher().submit(databaseFunc);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -319,7 +318,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .sorted(Comparator.comparingInt(e -> e.getProperty(PROPERTY_INDEX)))
                 .map(e -> idConverter.revert(e.getVertex(Direction.IN).getId()));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchFlowable());
     }
 
     @Nonnull
@@ -328,7 +327,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
-        Completable databaseFunc = get(key.owner())
+        Completable query = get(key.owner())
                 .filter(v -> key.position() < sizeOf(key.withoutPosition(), v))
                 .toSingle()
                 .flatMapCompletable(v -> Completable.fromAction(() -> {
@@ -340,7 +339,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     v.addEdge(formatLabel(key), blockingGetOrCreate(reference)).setProperty(PROPERTY_INDEX, key.position());
                 }));
 
-        return dispatcher().submit(databaseFunc);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -366,7 +365,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     sizeFor(key.withoutPosition(), vp, size + 1);
                 }));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -379,9 +378,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             return Completable.complete();
         }
 
-        if (references.contains(null)) {
-            throw new NullPointerException();
-        }
+        checkNotContainsNull(references);
 
         Completable query = getOrCreate(key.owner())
                 .flatMapCompletable(v -> Completable.fromAction(() -> {
@@ -405,7 +402,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     sizeFor(key.withoutPosition(), v, size + additionCount);
                 }));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -414,7 +411,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
 
         Single<Boolean> query = get(key.owner())
-                .flatMap(v -> Maybe.fromCallable(() -> {
+                .map(v -> {
                     final int size = sizeOf(key.withoutPosition(), v);
                     if (size == 0) {
                         return false;
@@ -437,10 +434,10 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     sizeFor(key.withoutPosition(), v, size - 1);
 
                     return true;
-                }))
+                })
                 .toSingle(false);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchSingle());
     }
 
     @Nonnull
@@ -454,7 +451,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     sizeFor(key, v, 0);
                 }));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull

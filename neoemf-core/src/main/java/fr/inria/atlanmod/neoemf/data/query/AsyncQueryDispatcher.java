@@ -24,12 +24,12 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.Observable;
+import io.reactivex.CompletableTransformer;
+import io.reactivex.FlowableTransformer;
+import io.reactivex.MaybeTransformer;
+import io.reactivex.ObservableTransformer;
 import io.reactivex.Scheduler;
-import io.reactivex.Single;
+import io.reactivex.SingleTransformer;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -83,48 +83,37 @@ public class AsyncQueryDispatcher extends AbstractQueryDispatcher {
     }
 
     @Nonnull
-    @Override
-    protected Completable map(Completable query) {
-        return query
-                .observeOn(scheduler.get())
-                .subscribeOn(scheduler.get())
-                .unsubscribeOn(scheduler.get());
+    protected CompletableTransformer scheduleCompletable() {
+        Scheduler s = scheduler.get();
+        return q -> q.observeOn(s).subscribeOn(s);
     }
 
     @Nonnull
     @Override
-    protected <T> Maybe<T> map(Maybe<T> query) {
-        return query
-                .observeOn(scheduler.get())
-                .subscribeOn(scheduler.get())
-                .unsubscribeOn(scheduler.get());
+    protected <T> MaybeTransformer<T, T> scheduleMaybe() {
+        Scheduler s = scheduler.get();
+        return q -> q.observeOn(s).subscribeOn(s);
     }
 
     @Nonnull
     @Override
-    protected <T> Single<T> map(Single<T> query) {
-        return query
-                .observeOn(scheduler.get())
-                .subscribeOn(scheduler.get())
-                .unsubscribeOn(scheduler.get());
+    protected <T> SingleTransformer<T, T> scheduleSingle() {
+        Scheduler s = scheduler.get();
+        return q -> q.observeOn(s).subscribeOn(s);
     }
 
     @Nonnull
     @Override
-    protected <T> Observable<T> map(Observable<T> query) {
-        return query
-                .observeOn(scheduler.get())
-                .subscribeOn(scheduler.get())
-                .unsubscribeOn(scheduler.get());
+    protected <T> ObservableTransformer<T, T> scheduleObservable() {
+        Scheduler s = scheduler.get();
+        return q -> q.observeOn(s).subscribeOn(s);
     }
 
     @Nonnull
     @Override
-    protected <T> Flowable<T> map(Flowable<T> query) {
-        return query
-                .observeOn(scheduler.get())
-                .subscribeOn(scheduler.get())
-                .unsubscribeOn(scheduler.get());
+    protected <T> FlowableTransformer<T, T> scheduleFlowable() {
+        Scheduler s = scheduler.get();
+        return q -> q.observeOn(s).subscribeOn(s);
     }
 
     @Override

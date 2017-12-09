@@ -23,6 +23,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -121,10 +122,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
     default Single<Integer> appendAllReferences(SingleFeatureBean key, List<Id> references) {
         checkNotNull(key, "key");
         checkNotNull(references, "collection");
-
-        if (references.contains(null)) {
-            throw new NullPointerException();
-        }
+        checkNotContainsNull(references);
 
         return sizeOfReference(key)
                 .toSingle(0)

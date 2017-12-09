@@ -96,7 +96,8 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     @Override
     public final Completable save() {
         if (!isClosed) {
-            return dispatcher.submit(Completable.fromAction(blockingSave()))
+            return Completable.fromAction(blockingSave())
+                    .compose(dispatcher.dispatchCompletable())
                     .doOnSubscribe(d -> Log.debug("{0} is saving...", this))
                     .doOnComplete(() -> Log.debug("{0} has been saved", this))
                     .doOnError(e -> Log.debug(e, "{0} failed to save", this))

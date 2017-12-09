@@ -64,7 +64,7 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
 
         Maybe<V> query = get(manyFeatures, key);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -76,6 +76,6 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
                 ? put(manyFeatures, key, value)
                 : delete(manyFeatures, key);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 }

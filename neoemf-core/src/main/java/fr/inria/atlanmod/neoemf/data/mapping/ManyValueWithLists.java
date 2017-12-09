@@ -23,6 +23,7 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.internal.functions.Functions;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 
@@ -94,15 +95,13 @@ public interface ManyValueWithLists extends ManyValueMapper {
     @Override
     default <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
         checkNotNull(key, "key");
-        checkNotNull(values, "collection");
+        checkNotNull(values, "values");
 
         if (values.isEmpty()) {
             return Completable.complete();
         }
 
-        if (values.contains(null)) {
-            throw new NullPointerException();
-        }
+        checkNotContainsNull(values);
 
         return this.<List<V>>valueOf(key.withoutPosition())
                 .filter(vs -> {
@@ -124,7 +123,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
         return this.<List<Object>>valueOf(key.withoutPosition())
                 .filter(vs -> key.position() < vs.size())
-                .flatMap(vs -> {
+                .concatMap(vs -> {
                     Completable completable;
                     if (vs.size() == 1) {
                         completable = removeAllValues(key.withoutPosition());

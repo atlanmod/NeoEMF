@@ -140,7 +140,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
         Maybe<SingleFeatureBean> query = get(containers, id, serializers.forId(), serializers.forSingleFeature());
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -151,7 +151,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
         Completable query = put(containers, id, container, serializers.forId(), serializers.forSingleFeature());
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -161,7 +161,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
         Completable query = delete(containers, id, serializers.forId());
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -171,7 +171,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
         Maybe<ClassBean> query = get(instances, id, serializers.forId(), serializers.forClass());
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -185,7 +185,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
                 .doOnSuccess(CommonQueries.classAlreadyExists())
                 .ignoreElement();
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -196,7 +196,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         Flowable<Id> query = Flowable.fromIterable(() -> iter)
                 .doAfterTerminate(iter::close);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchFlowable());
     }
 
     @Nonnull
@@ -206,7 +206,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
         Maybe<V> query = get(features, key, serializers.forSingleFeature(), serializers.forAny());
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -217,7 +217,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
         Completable query = put(features, key, value, serializers.forSingleFeature(), serializers.forAny());
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -227,7 +227,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
         Completable query = delete(features, key, serializers.forSingleFeature());
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull

@@ -22,6 +22,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -126,11 +127,8 @@ public interface ManyValueMapper extends ValueMapper {
     @Nonnull
     default <V> Single<Integer> appendAllValues(SingleFeatureBean key, List<? extends V> values) {
         checkNotNull(key, "key");
-        checkNotNull(values, "collection");
-
-        if (values.contains(null)) {
-            throw new NullPointerException();
-        }
+        checkNotNull(values, "values");
+        checkNotContainsNull(values);
 
         return sizeOfValue(key)
                 .toSingle(0)

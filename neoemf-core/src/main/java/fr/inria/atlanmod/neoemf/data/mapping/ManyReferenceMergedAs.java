@@ -25,6 +25,7 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.internal.functions.Functions;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 
@@ -107,15 +108,13 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
     @Override
     default Completable addAllReferences(ManyFeatureBean key, List<Id> references) {
         checkNotNull(key, "key");
-        checkNotNull(references, "collection");
+        checkNotNull(references, "references");
 
         if (references.isEmpty()) {
             return Completable.complete();
         }
 
-        if (references.contains(null)) {
-            throw new NullPointerException();
-        }
+        checkNotContainsNull(references);
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
@@ -143,7 +142,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
         return this.<M>valueOf(key.withoutPosition())
                 .map(converter::revert)
                 .filter(rs -> key.position() < rs.size())
-                .flatMap(rs -> {
+                .concatMap(rs -> {
                     Completable completable;
                     if (rs.size() == 1) {
                         completable = removeAllReferences(key.withoutPosition());

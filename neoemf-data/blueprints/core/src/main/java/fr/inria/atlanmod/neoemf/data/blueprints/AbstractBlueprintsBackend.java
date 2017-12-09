@@ -311,7 +311,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .singleElement()
                 .map(mapFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -333,7 +333,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .doOnSuccess(setFunc)
                 .toCompletable();
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -349,7 +349,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .doOnSuccess(removeFunc)
                 .ignoreElement();
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -369,7 +369,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .singleElement()
                 .map(mapFunc);
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchMaybe());
     }
 
     @Nonnull
@@ -407,7 +407,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .switchIfEmpty(setFunc)
                 .ignoreElement();
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchCompletable());
     }
 
     @Nonnull
@@ -419,7 +419,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .flatMapIterable(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .map(v -> idConverter.revert(v.getId()));
 
-        return dispatcher().submit(query);
+        return query.compose(dispatcher().dispatchFlowable());
     }
 
 
@@ -575,7 +575,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                     }
                 };
 
-                dispatcher().submit(Completable.fromAction(removeFunc)).subscribe();
+                Completable.fromAction(removeFunc).compose(dispatcher().dispatchCompletable()).subscribe();
             }
         }
     }

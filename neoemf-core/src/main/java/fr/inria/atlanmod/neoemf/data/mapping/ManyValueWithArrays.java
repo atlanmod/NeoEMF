@@ -23,6 +23,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 
@@ -97,9 +98,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
             return Completable.complete();
         }
 
-        if (values.contains(null)) {
-            throw new NullPointerException();
-        }
+        checkNotContainsNull(values);
 
         return this.<V[]>valueOf(key.withoutPosition())
                 .filter(vs -> {
@@ -121,7 +120,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
         return this.<Object[]>valueOf(key.withoutPosition())
                 .filter(vs -> key.position() < vs.length)
-                .flatMap(vs -> {
+                .concatMap(vs -> {
                     Completable completable;
                     if (vs.length == 1) {
                         completable = removeAllValues(key.withoutPosition());

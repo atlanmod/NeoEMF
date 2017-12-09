@@ -29,6 +29,7 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 
@@ -80,7 +81,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
                     checkPositionIndex(key.position(), s);
                     return true;
                 })
-                .flatMap(s -> sizeForValue(key.withoutPosition(), s + 1).toSingleDefault(s).toMaybe())
+                .concatMap(s -> sizeForValue(key.withoutPosition(), s + 1).toSingleDefault(s).toMaybe())
                 .flattenAsFlowable(s -> IntStream.range(key.position(), s).map(i -> key.position() - i + s - 1).boxed().collect(Collectors.toList()))
                 .flatMapCompletable(i -> valueOf(key.withPosition(i)).flatMapCompletable(v -> innerValueFor(key.withPosition(i + 1), v)), false, 1)
                 .concatWith(innerValueFor(key, value))
@@ -91,11 +92,8 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Override
     default <V> Completable addAllValues(ManyFeatureBean key, List<? extends V> values) {
         checkNotNull(key, "key");
-        checkNotNull(values, "collection");
-
-        if (values.contains(null)) {
-            throw new NullPointerException();
-        }
+        checkNotNull(values, "values");
+        checkNotContainsNull(values);
 
         return Flowable.range(0, values.size())
                 .flatMapCompletable(i -> addValue(key.withPosition(key.position() + i), values.get(i)), false, 1)
@@ -108,8 +106,8 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkNotNull(key, "key");
 
         return sizeOfValue(key.withoutPosition())
-                .flatMap(s -> sizeForValue(key.withoutPosition(), s - 1).toSingleDefault(s).toMaybe())
-                .flatMap(s -> Flowable.range(key.position(), s - key.position() - 1)
+                .concatMap(s -> sizeForValue(key.withoutPosition(), s - 1).toSingleDefault(s).toMaybe())
+                .concatMap(s -> Flowable.range(key.position(), s - key.position() - 1)
                         .flatMapCompletable(i -> valueOf(key.withPosition(i + 1))
                                 .toSingle()
                                 .flatMapCompletable(cv -> innerValueFor(key.withPosition(i), cv)), false, 1)

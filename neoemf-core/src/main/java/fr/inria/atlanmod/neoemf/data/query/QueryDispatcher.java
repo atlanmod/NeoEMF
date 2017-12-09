@@ -15,11 +15,11 @@ import java.io.Closeable;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.Observable;
-import io.reactivex.Single;
+import io.reactivex.CompletableTransformer;
+import io.reactivex.FlowableTransformer;
+import io.reactivex.MaybeTransformer;
+import io.reactivex.ObservableTransformer;
+import io.reactivex.SingleTransformer;
 
 /**
  * An object that dispatches and executes queries on a {@link Backend} instance.
@@ -32,53 +32,48 @@ public interface QueryDispatcher extends Closeable {
     /**
      * Asynchronously executes the given {@code query}, using the {@code backend}.
      *
-     * @param query the query to execute on the database
-     *
      * @return the deferred computation
      */
     @Nonnull
-    Completable submit(Completable query);
+    CompletableTransformer dispatchCompletable();
 
     /**
      * Asynchronously executes the given {@code query}, using the {@code backend}.
      *
-     * @param query the query to execute on the database
-     * @param <T>   the type of the expected result
+     * @param <T> the type of the expected result
      *
      * @return the deferred computation with a result
      */
     @Nonnull
-    <T> Maybe<T> submit(Maybe<T> query);
+    <T> MaybeTransformer<T, T> dispatchMaybe();
 
     /**
      * Asynchronously executes the given {@code query}, using the {@code backend}.
      *
-     * @param query the query to execute on the database
+     * @param <T> the type of the expected result
      *
      * @return the deferred computation with a result
      */
     @Nonnull
-    <T> Single<T> submit(Single<T> query);
+    <T> SingleTransformer<T, T> dispatchSingle();
 
     /**
      * Asynchronously executes the given {@code query}, using the {@code backend}.
      *
-     * @param query the query to execute on the database
-     * @param <T>   the type of the expected result
+     * @param <T> the type of the expected result
      *
      * @return the deferred computation with results
      */
     @Nonnull
-    <T> Observable<T> submit(Observable<T> query);
+    <T> ObservableTransformer<T, T> dispatchObservable();
 
     /**
      * Asynchronously executes the given {@code query}, using the {@code backend}.
      *
-     * @param query the query to execute on the database
-     * @param <T>   the type of the expected result
+     * @param <T> the type of the expected result
      *
      * @return the deferred computation with results
      */
     @Nonnull
-    <T> Flowable<T> submit(Flowable<T> query);
+    <T> FlowableTransformer<T, T> dispatchFlowable();
 }
