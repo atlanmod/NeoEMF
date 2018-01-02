@@ -42,6 +42,7 @@ public final class ContextProvider {
      * @return a stream
      */
     @Nonnull
+    // FIXME HBase doesn't properly support asynchronous tasks
     public static Stream<Context> allContexts() {
         return Stream.of(
                 BlueprintsContext.getDefault(),
@@ -51,8 +52,8 @@ public final class ContextProvider {
                 MapDbContext.getWithLists(),
                 BerkeleyDbContext.getWithIndices(),
                 BerkeleyDbContext.getWithArrays(),
-                BerkeleyDbContext.getWithLists(),
-                HBaseContext.getDefault()
+                BerkeleyDbContext.getWithLists()//,
+//                HBaseContext.getDefault()
         ).map(Context::init).filter(Context::isInitialized);
     }
 
