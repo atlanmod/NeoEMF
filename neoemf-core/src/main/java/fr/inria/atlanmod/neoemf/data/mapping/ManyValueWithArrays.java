@@ -62,6 +62,10 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         V[] values = this.<V[]>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
+        if (key.position() >= values.length) {
+            throw new NoSuchElementException();
+        }
+
         Optional<V> previousValue = Optional.of(values[key.position()]);
 
         values[key.position()] = value;

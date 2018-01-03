@@ -61,6 +61,10 @@ public interface ManyValueWithLists extends ManyValueMapper {
         List<V> values = this.<List<V>>valueOf(key.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
+        if (key.position() >= values.size()) {
+            throw new NoSuchElementException();
+        }
+
         Optional<V> previousValue = Optional.of(values.set(key.position(), value));
 
         valueFor(key.withoutPosition(), values);

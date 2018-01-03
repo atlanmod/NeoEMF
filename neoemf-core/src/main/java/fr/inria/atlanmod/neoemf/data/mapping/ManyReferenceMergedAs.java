@@ -72,6 +72,10 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
                 .map(converter::revert)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
+        if (key.position() >= ids.size()) {
+            throw new NoSuchElementException();
+        }
+
         Optional<Id> previousId = Optional.of(ids.get(key.position()));
 
         ids.set(key.position(), reference);

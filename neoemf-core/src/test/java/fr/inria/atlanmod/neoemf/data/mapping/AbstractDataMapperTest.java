@@ -391,10 +391,9 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
         m.add(sfBase.withPosition(0), value0);
 
-        // FIXME Must always throws a NoSuchElementException (IndexOutOfBoundsException with generic mappers)
         assertThat(catchThrowable(() ->
                 assertThat(m.set(sfBase.withPosition(1), value1)).isNotPresent()
-        )).isNotNull();
+        )).isInstanceOf(NoSuchElementException.class);
     }
 
     /**
