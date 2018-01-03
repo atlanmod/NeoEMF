@@ -46,6 +46,9 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
  * An abstract test-case about {@link DataMapper} and its implementations.
+ * <p>
+ * Because the behavior of attributes and references must be identical, these test-cases use {@link DataMapperRedirector}s
+ * that redirect every calls according to a {@link RedirectionType} given as parameter by the {@link ArgumentsProvider}.
  */
 @Timeout(timeout = 2)
 @ParametersAreNonnullByDefault
@@ -278,7 +281,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
     //endregion
 
-    //region Single-value attributes
+    //region Single-value features
 
     /**
      * Checks the behavior of {@link ValueMapper#valueOf(SingleFeatureBean)} and {@link
@@ -348,7 +351,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
     //endregion
 
-    //region Multi-valued attributes
+    //region Multi-valued features
 
     /**
      * Checks the behavior of {@link ManyValueMapper#valueOf(ManyFeatureBean)} and {@link

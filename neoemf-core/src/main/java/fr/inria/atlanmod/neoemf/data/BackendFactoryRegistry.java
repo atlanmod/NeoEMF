@@ -17,7 +17,6 @@ import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -165,10 +164,7 @@ public final class BackendFactoryRegistry {
     public void registerAll() {
         Log.debug("Registering all factories...");
 
-        Bindings.typesAnnotatedWith(FactoryBinding.class, UriBuilder.class)
-                .stream()
-                .map(t -> t.getAnnotation(FactoryBinding.class).value())
-                .forEach(t -> register(Bindings.schemeOf(t), Bindings.newInstance(t)));
+        Bindings.allFactories().forEach(b -> register(Bindings.schemeOf(b), b));
 
         initialized = true;
     }

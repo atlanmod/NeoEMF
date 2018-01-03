@@ -9,11 +9,10 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
+import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -24,15 +23,11 @@ import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Table;
-import org.eclipse.emf.common.util.URI;
 
-import java.util.stream.Collectors;
+import java.net.URL;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
-import static java.util.Objects.isNull;
 
 /**
  * A {@link BackendFactory} that creates {@link HBaseBackend} instances.
@@ -42,7 +37,7 @@ import static java.util.Objects.isNull;
  * HBase resource right after their creation, ensuring the resource is using a persistent back-end.
  */
 @ParametersAreNonnullByDefault
-public class HBaseBackendFactory extends AbstractBackendFactory {
+public class HBaseBackendFactory extends AbstractBackendFactory<HBaseConfig> {
 
     /**
      * The literal description of the factory.
@@ -77,49 +72,30 @@ public class HBaseBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
-        HBaseBackend backend;
+    protected Backend createRemoteBackend(URL url, HBaseConfig config) throws Exception {
+        Configuration configuration = HBaseConfiguration.create();
+        configuration.set("hbase.zookeeper.quorum", url.getHost());
+        configuration.set("hbase.zookeeper.property.clientPort", String.valueOf(url.getPort() == -1 ? 2181 : url.getPort()));
 
-        checkArgument(uri.isHierarchical(), "%s only supports hierarchical URIs", getClass().getSimpleName());
+        Connection connection = ConnectionFactory.createConnection(configuration);
+        Admin admin = connection.getAdmin();
 
-        try {
-            // No file-based configuration
-            String mapping = baseConfig.getMapping();
-            boolean isReadOnly = baseConfig.isReadOnly();
+        TableName tableName = TableName.valueOf(url.getFile());
 
-            Configuration configuration = HBaseConfiguration.create();
-            configuration.set("hbase.zookeeper.quorum", uri.host());
-            configuration.set("hbase.zookeeper.property.clientPort", isNull(uri.port()) ? "2181" : uri.port());
-
-            Connection connection = ConnectionFactory.createConnection(configuration);
-            Admin admin = connection.getAdmin();
-
-            String path = uri.segmentsList().stream()
-                    .map(s -> s.replaceAll("-", "_"))
-                    .collect(Collectors.joining("_"));
-
-            TableName tableName = TableName.valueOf(path);
-
-            if (!admin.tableExists(tableName) && !isReadOnly) {
-                HTableDescriptor desc = new HTableDescriptor(tableName);
-                HColumnDescriptor propertyFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_PROPERTY);
-                HColumnDescriptor typeFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_TYPE);
-                HColumnDescriptor containmentFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_CONTAINMENT);
-                desc.addFamily(propertyFamily);
-                desc.addFamily(typeFamily);
-                desc.addFamily(containmentFamily);
-                admin.createTable(desc);
-            }
-
-            Table table = connection.getTable(tableName);
-
-            backend = createMapper(mapping, table);
-        }
-        catch (Exception e) {
-            throw new InvalidBackendException("Unable to open the HBase database", e);
+        if (!admin.tableExists(tableName) && !config.isReadOnly()) {
+            HTableDescriptor desc = new HTableDescriptor(tableName);
+            HColumnDescriptor propertyFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_PROPERTY);
+            HColumnDescriptor typeFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_TYPE);
+            HColumnDescriptor containmentFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_CONTAINMENT);
+            desc.addFamily(propertyFamily);
+            desc.addFamily(typeFamily);
+            desc.addFamily(containmentFamily);
+            admin.createTable(desc);
         }
 
-        return backend;
+        Table table = connection.getTable(tableName);
+
+        return createMapper(config.getMapping(), table);
     }
 
     /**

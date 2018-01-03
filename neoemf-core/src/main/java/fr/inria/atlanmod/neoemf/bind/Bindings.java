@@ -108,7 +108,7 @@ public final class Bindings {
      * @see Reflections#getTypesAnnotatedWith(Class)
      */
     @Nonnull
-    public static Set<Class<?>> typesAnnotatedWith(Class<? extends Annotation> annotation) {
+    private static Set<Class<?>> typesAnnotatedWith(Class<? extends Annotation> annotation) {
         Configuration conf = createConfiguration().setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
         return new Reflections(conf).getTypesAnnotatedWith(annotation);
     }
@@ -125,7 +125,7 @@ public final class Bindings {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    public static <T> Set<Class<? extends T>> typesAnnotatedWith(Class<? extends Annotation> annotation, Class<? extends T> type) {
+    private static <T> Set<Class<? extends T>> typesAnnotatedWith(Class<? extends Annotation> annotation, Class<? extends T> type) {
         return typesAnnotatedWith(annotation).stream()
                 .filter(type::isAssignableFrom)
                 .map(c -> (Class<? extends T>) c)
@@ -159,7 +159,7 @@ public final class Bindings {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    public static <T> T newInstance(Class<T> type) {
+    private static <T> T newInstance(Class<T> type) {
         Optional<String> methodName;
 
         if (type.isAnnotationPresent(Singleton.class)) {
@@ -203,7 +203,21 @@ public final class Bindings {
      */
     @Nonnull
     public static String schemeOf(Class<?> type) {
-        return UriBuilder.PREFIX + nameOf(type).toLowerCase();
+        return UriBuilder.createScheme(nameOf(type));
+    }
+
+    /**
+     * Retrieves the {@link URI} scheme for the specified {@code factory}.
+     *
+     * @param factory the factory
+     *
+     * @return the {@link URI} scheme
+     *
+     * @throws BindingException if no scheme is defined for this {@code type}
+     */
+    @Nonnull
+    public static String schemeOf(BackendFactory factory) {
+        return UriBuilder.createScheme(factory.name());
     }
 
     /**
@@ -255,6 +269,20 @@ public final class Bindings {
 
         throw new BindingException(
                 String.format("%s is not annotated with %s: Unable to retrieve the associated factory", type.getName(), FactoryBinding.class.getName()));
+    }
+
+    /**
+     * Returns all {@link BackendFactory} instances that are visible in the classpath.
+     *
+     * @return a set of initialized factories
+     */
+    @Nonnull
+    public static Set<BackendFactory> allFactories() {
+        return Bindings.typesAnnotatedWith(FactoryBinding.class, UriBuilder.class)
+                .stream()
+                .map(t -> t.getAnnotation(FactoryBinding.class).value())
+                .map(Bindings::newInstance)
+                .collect(Collectors.toSet());
     }
 
     /**

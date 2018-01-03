@@ -30,9 +30,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface UriBuilder {
 
     /**
-     * The prefix used for all {@link URI}s.
+     * Creates a {@link URI} scheme from the specified {@code baseName}.
+     *
+     * @param baseName the base name of the scheme
+     *
+     * @return the {@link URI} scheme
      */
-    String PREFIX = "neo-";
+    @Nonnull
+    static String createScheme(String baseName) {
+        return String.format("neo-%s", baseName.toLowerCase());
+    }
 
     /**
      * Retrieves the instance of {@code UriBuilder} that is associated to a {@link fr.inria.atlanmod.neoemf.data.BackendFactory}

@@ -54,15 +54,14 @@ public interface BackendFactory {
     }
 
     /**
-     * Creates a persistent {@link Backend} located by the {@code uri}.
+     * Creates a new {@link Backend} located by the {@code uri}.
      *
      * @param uri        the {@link URI} where to store the back-end
      * @param baseConfig the base configuration that defines the behaviour of the back-end
      *
      * @return a new back-end
      *
-     * @throws InvalidBackendException if there is at least one invalid value in {@code baseConfig}, or if an option is
-     *                                 missing
+     * @throws InvalidBackendException if an error occurs during the back-end initialization
      */
     @Nonnull
     Backend createBackend(URI uri, ImmutableConfig baseConfig);

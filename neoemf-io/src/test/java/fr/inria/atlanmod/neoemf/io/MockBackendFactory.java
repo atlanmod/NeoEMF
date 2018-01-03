@@ -32,7 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * BackendFactory)}, before any call to {@link BackendFactory#createBackend(URI, ImmutableConfig)}.
  */
 @ParametersAreNonnullByDefault
-public final class MockBackendFactory extends AbstractBackendFactory {
+public final class MockBackendFactory extends AbstractBackendFactory<MockBackendFactory.MockConfig> {
 
     private static final String NAME = "mock";
 
