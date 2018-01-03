@@ -13,6 +13,7 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -23,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link BackendFactory} that create {@link DefaultInMemoryBackend} instances.
  */
 @ParametersAreNonnullByDefault
-public class InMemoryBackendFactory extends AbstractBackendFactory {
+public class InMemoryBackendFactory extends AbstractBackendFactory<InMemoryConfig> {
 
     /**
      * The literal description of the factory.

@@ -13,30 +13,22 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.neoemf.config.Config;
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
-
-import org.eclipse.emf.common.util.URI;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 
 /**
  * A {@link BackendFactory} that creates {@link BerkeleyDbBackend} instances.
  */
 @ParametersAreNonnullByDefault
-public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
+public class BerkeleyDbBackendFactory extends AbstractBackendFactory<BerkeleyDbConfig> {
 
     /**
      * The literal description of the factory.
@@ -66,47 +58,26 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
-        BerkeleyDbBackend backend;
-
-        checkArgument(uri.isFile(), "%s only supports file-based URIs", getClass().getSimpleName());
-
-        try {
-            Path baseDirectory = Paths.get(uri.toFileString());
-
-            // Merge and check conflicts between the two configurations
-            ImmutableConfig mergedConfig = Config.load(baseDirectory)
-                    .orElseGet(BerkeleyDbConfig::newConfig)
-                    .merge(baseConfig);
-
-            String mapping = mergedConfig.getMapping();
-            boolean isReadOnly = mergedConfig.isReadOnly();
-
-            if (Files.notExists(baseDirectory)) {
-                Files.createDirectories(baseDirectory);
-            }
-
-            EnvironmentConfig environmentConfig = new EnvironmentConfig()
-                    .setAllowCreate(!isReadOnly)
-                    .setReadOnly(isReadOnly);
-
-            Environment environment = new Environment(baseDirectory.toFile(), environmentConfig);
-
-            DatabaseConfig databaseConfig = new DatabaseConfig()
-                    .setAllowCreate(!isReadOnly)
-                    .setReadOnly(isReadOnly)
-                    .setSortedDuplicates(false)
-                    .setDeferredWrite(true);
-
-            backend = createMapper(mapping, environment, databaseConfig);
-
-            mergedConfig.save(baseDirectory);
-        }
-        catch (Exception e) {
-            throw new InvalidBackendException("Unable to open the BerkeleyDB database", e);
+    protected Backend createLocalBackend(Path directory, BerkeleyDbConfig config) throws Exception {
+        if (!directory.toFile().exists()) {
+            Files.createDirectories(directory);
         }
 
-        return backend;
+        final boolean isReadOnly = config.isReadOnly();
+
+        EnvironmentConfig environmentConfig = new EnvironmentConfig()
+                .setAllowCreate(!isReadOnly)
+                .setReadOnly(isReadOnly);
+
+        Environment environment = new Environment(directory.toFile(), environmentConfig);
+
+        DatabaseConfig databaseConfig = new DatabaseConfig()
+                .setAllowCreate(!isReadOnly)
+                .setReadOnly(isReadOnly)
+                .setSortedDuplicates(false)
+                .setDeferredWrite(true);
+
+        return createMapper(config.getMapping(), environment, databaseConfig);
     }
 
     /**

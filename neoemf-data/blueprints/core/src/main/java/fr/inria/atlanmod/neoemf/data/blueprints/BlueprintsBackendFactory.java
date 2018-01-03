@@ -14,29 +14,21 @@ import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph;
 
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.neoemf.config.Config;
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BaseBlueprintsConfig;
 
-import org.eclipse.emf.common.util.URI;
-
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 
 /**
  * A {@link BackendFactory} that creates {@link BlueprintsBackend} instances.
  */
 @ParametersAreNonnullByDefault
-public class BlueprintsBackendFactory extends AbstractBackendFactory {
+public class BlueprintsBackendFactory extends AbstractBackendFactory<BaseBlueprintsConfig<?>> {
 
     /**
      * The literal description of the factory.
@@ -66,41 +58,19 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
-        BlueprintsBackend backend;
+    protected Backend createLocalBackend(Path directory, BaseBlueprintsConfig<?> config) {
+        config.setDirectory(directory);
 
-        checkArgument(uri.isFile(), "%s only supports file-based URIs", getClass().getSimpleName());
-
-        try {
-            Path baseDirectory = Paths.get(uri.toFileString());
-
-            // Merge and check conflicts between the two configurations
-            ImmutableConfig mergedConfig = Config.<BaseBlueprintsConfig<?>>load(baseDirectory)
-                    .orElseGet(BaseBlueprintsConfig::newConfig)
-                    .merge(baseConfig)
-                    .setDirectory(baseDirectory);
-
-            String mapping = mergedConfig.getMapping();
-            boolean isReadOnly = mergedConfig.isReadOnly();
-
-            Graph graph = GraphFactory.open(mergedConfig.getOptions(s -> s.startsWith(BaseBlueprintsConfig.BLUEPRINTS_PREFIX)));
-            if (!graph.getFeatures().supportsKeyIndices) {
-                throw new InvalidBackendException(String.format("%s does not support key indices", graph.getClass().getSimpleName()));
-            }
-
-            if (isReadOnly) {
-                graph = new ReadOnlyKeyIndexableGraph<>(KeyIndexableGraph.class.cast(graph));
-            }
-
-            backend = createMapper(mapping, graph);
-
-            mergedConfig.save(baseDirectory);
-        }
-        catch (Exception e) {
-            throw new InvalidBackendException("Unable to open the Blueprints database", e);
+        Graph graph = GraphFactory.open(config.getOptions(s -> s.startsWith(BaseBlueprintsConfig.BLUEPRINTS_PREFIX)));
+        if (!graph.getFeatures().supportsKeyIndices) {
+            throw new IllegalArgumentException(String.format("%s does not support key indices", graph.getClass().getSimpleName()));
         }
 
-        return backend;
+        if (config.isReadOnly()) {
+            graph = new ReadOnlyKeyIndexableGraph<>(KeyIndexableGraph.class.cast(graph));
+        }
+
+        return createMapper(config.getMapping(), graph);
     }
 
     /**

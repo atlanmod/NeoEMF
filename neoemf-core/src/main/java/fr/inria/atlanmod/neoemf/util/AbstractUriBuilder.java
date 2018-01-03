@@ -51,7 +51,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
      * Constructs a new default {@code AbstractUriBuilder}.
      */
     protected AbstractUriBuilder() {
-        scheme = LazyObject.with(() -> Bindings.schemeOf(getClass()));
+        this.scheme = LazyObject.with(() -> Bindings.schemeOf(getClass()));
     }
 
     /**
@@ -72,7 +72,6 @@ public abstract class AbstractUriBuilder implements UriBuilder {
      */
     @Nonnull
     @VisibleForTesting
-    @SuppressWarnings("JavaDoc")
     public static UriBuilder builder(String scheme) {
         return new AbstractUriBuilder(scheme) {
 

@@ -37,13 +37,6 @@
             <artifactId>commons-core</artifactId>
         </dependency>
 
-        <!-- EMF -->
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-        </dependency>
-
         <!-- Test -->
 
         <dependency>
@@ -59,6 +52,12 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.common</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

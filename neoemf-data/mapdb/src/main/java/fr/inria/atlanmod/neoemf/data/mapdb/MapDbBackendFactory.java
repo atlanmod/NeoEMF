@@ -10,25 +10,18 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.config.Config;
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
-import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 
-import org.eclipse.emf.common.util.URI;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 
 /**
  * A {@link BackendFactory} that creates {@link MapDbBackend} instances.
@@ -64,45 +57,22 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
-        MapDbBackend backend;
-
-        checkArgument(uri.isFile(), "%s only supports file-based URIs", getClass().getSimpleName());
-
-        try {
-            Path baseDirectory = Paths.get(uri.toFileString());
-
-            // Merge and check conflicts between the two configurations
-            ImmutableConfig mergedConfig = Config.load(baseDirectory)
-                    .orElseGet(MapDbConfig::newConfig)
-                    .merge(baseConfig);
-
-            String mapping = mergedConfig.getMapping();
-            boolean isReadOnly = mergedConfig.isReadOnly();
-
-            if (Files.notExists(baseDirectory)) {
-                Files.createDirectories(baseDirectory);
-            }
-
-            DBMaker.Maker dbBuilder = DBMaker
-                    .fileDB(baseDirectory.resolve("data").toFile())
-                    .fileMmapEnableIfSupported();
-
-            if (isReadOnly) {
-                dbBuilder.readOnly();
-            }
-
-            DB db = dbBuilder.make();
-
-            backend = createMapper(mapping, db);
-
-            mergedConfig.save(baseDirectory);
-        }
-        catch (Exception e) {
-            throw new InvalidBackendException("Unable to open the MapDB database", e);
+    protected Backend createLocalBackend(Path directory, Config config) throws Exception {
+        if (!directory.toFile().exists()) {
+            Files.createDirectories(directory);
         }
 
-        return backend;
+        DBMaker.Maker dbBuilder = DBMaker
+                .fileDB(directory.resolve("data").toFile())
+                .fileMmapEnableIfSupported();
+
+        if (config.isReadOnly()) {
+            dbBuilder.readOnly();
+        }
+
+        DB db = dbBuilder.make();
+
+        return createMapper(config.getMapping(), db);
     }
 
     /**
