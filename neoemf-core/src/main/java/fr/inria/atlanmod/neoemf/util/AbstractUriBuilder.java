@@ -18,11 +18,9 @@ import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
-import java.util.List;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
@@ -34,12 +32,6 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 @Builder("builder")
 @ParametersAreNonnullByDefault
 public abstract class AbstractUriBuilder implements UriBuilder {
-
-    /**
-     * The {@link URI} scheme corresponding to a file.
-     */
-    @Nonnull
-    private static final String FILE_SCHEME = "file";
 
     /**
      * The scheme to identify the {@link BackendFactory} to use.
@@ -124,10 +116,10 @@ public abstract class AbstractUriBuilder implements UriBuilder {
             checkArgument(BackendFactoryRegistry.getInstance().isRegistered(uri.scheme()),
                     "Unregistered scheme (%s)", uri.scheme());
 
-            return new FileUri(uri);
+            return new FileBasedUri(uri);
         }
 
-        if (Objects.equals(FILE_SCHEME, uri.scheme())) {
+        if (Objects.equals(FileBasedUri.SCHEME, uri.scheme())) {
             return fromFile(new File(uri.toFileString()));
         }
 
@@ -147,7 +139,9 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     public URI fromFile(File file) {
         checkNotNull(file, "file");
 
-        return fromFile(URI.createFileURI(file.getAbsolutePath()));
+        final URI baseUri = URI.createFileURI(file.getAbsolutePath());
+
+        return fromFile(baseUri);
     }
 
     @Nonnull
@@ -187,328 +181,15 @@ public abstract class AbstractUriBuilder implements UriBuilder {
      */
     @Nonnull
     private URI fromFile(URI uri) {
-        checkArgument(uri.isFile(), "Expecting a file-based URI: {0}", uri.toString());
+        checkArgument(uri.isFile(), "Expecting a file-based URI but was '%s'", uri.toString());
 
-        return fromUri(URI.createHierarchicalURI(scheme(),
+        final URI baseUri = URI.createHierarchicalURI(scheme(),
                 uri.authority(),
                 uri.device(),
                 uri.segments(),
                 uri.query(),
-                uri.fragment()));
-    }
+                uri.fragment());
 
-    /**
-     * A {@link URI} wrapper that creates specific resource {@link URI}s from a {@link File} descriptor or an existing
-     * {@link URI}. All methods are delegated to the internal {@link URI}.
-     */
-    @ParametersAreNonnullByDefault
-    private static class FileUri extends URI {
-
-        /**
-         * The base {@link URI}.
-         */
-        @Nonnull
-        private final URI baseUri;
-
-        /**
-         * Constructs a new {@code FileUri} from the given {@code baseUri}.
-         *
-         * @param baseUri the base {@link URI}
-         */
-        private FileUri(URI baseUri) {
-            super(baseUri.hashCode());
-            this.baseUri = baseUri;
-        }
-
-        @Override
-        public boolean isRelative() {
-            return baseUri.isRelative();
-        }
-
-        @Override
-        public boolean isHierarchical() {
-            return baseUri.isHierarchical();
-        }
-
-        @Override
-        public boolean hasAuthority() {
-            return baseUri.hasAuthority();
-        }
-
-        @Override
-        public boolean hasOpaquePart() {
-            return baseUri.hasOpaquePart();
-        }
-
-        @Override
-        public boolean hasDevice() {
-            return baseUri.hasDevice();
-        }
-
-        @Override
-        public boolean hasPath() {
-            return baseUri.hasPath();
-        }
-
-        @Override
-        public boolean hasAbsolutePath() {
-            return baseUri.hasAbsolutePath();
-        }
-
-        @Override
-        public boolean hasRelativePath() {
-            return baseUri.hasRelativePath();
-        }
-
-        @Override
-        public boolean hasEmptyPath() {
-            return baseUri.hasEmptyPath();
-        }
-
-        @Override
-        public boolean hasQuery() {
-            return baseUri.hasQuery();
-        }
-
-        @Override
-        public boolean hasFragment() {
-            return baseUri.hasFragment();
-        }
-
-        @Override
-        public boolean isCurrentDocumentReference() {
-            return baseUri.isCurrentDocumentReference();
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return baseUri.isEmpty();
-        }
-
-        @Override
-        public boolean isFile() {
-            return true;
-        }
-
-        @Override
-        public boolean isPlatform() {
-            return baseUri.isPlatform();
-        }
-
-        @Override
-        public boolean isPlatformResource() {
-            return baseUri.isPlatformResource();
-        }
-
-        @Override
-        public boolean isPlatformPlugin() {
-            return baseUri.isPlatformPlugin();
-        }
-
-        @Override
-        public boolean isArchive() {
-            return baseUri.isArchive();
-        }
-
-        @Override
-        public int hashCode() {
-            return baseUri.hashCode();
-        }
-
-        @Override
-        public String scheme() {
-            return baseUri.scheme();
-        }
-
-        @Override
-        public String opaquePart() {
-            return baseUri.opaquePart();
-        }
-
-        @Override
-        public String authority() {
-            return baseUri.authority();
-        }
-
-        @Override
-        public String userInfo() {
-            return baseUri.userInfo();
-        }
-
-        @Override
-        public String host() {
-            return baseUri.host();
-        }
-
-        @Override
-        public String port() {
-            return baseUri.port();
-        }
-
-        @Override
-        public String device() {
-            return baseUri.device();
-        }
-
-        @Override
-        public String[] segments() {
-            return baseUri.segments();
-        }
-
-        @Override
-        public List<String> segmentsList() {
-            return baseUri.segmentsList();
-        }
-
-        @Override
-        public int segmentCount() {
-            return baseUri.segmentCount();
-        }
-
-        @Override
-        public String segment(int i) {
-            return baseUri.segment(i);
-        }
-
-        @Override
-        public String lastSegment() {
-            return baseUri.lastSegment();
-        }
-
-        @Override
-        public String path() {
-            return baseUri.path();
-        }
-
-        @Override
-        public String devicePath() {
-            return baseUri.devicePath();
-        }
-
-        @Override
-        public String query() {
-            return baseUri.query();
-        }
-
-        @Override
-        public URI appendQuery(String query) {
-            return baseUri.appendQuery(query);
-        }
-
-        @Override
-        public URI trimQuery() {
-            return baseUri.trimQuery();
-        }
-
-        @Override
-        public String fragment() {
-            return baseUri.fragment();
-        }
-
-        @Override
-        public URI appendFragment(String fragment) {
-            return baseUri.appendFragment(fragment);
-        }
-
-        @Override
-        public URI trimFragment() {
-            return baseUri.trimFragment();
-        }
-
-        @Override
-        public URI resolve(URI base) {
-            return baseUri.resolve(base);
-        }
-
-        @Override
-        public URI resolve(URI base, boolean preserveRootParents) {
-            return baseUri.resolve(base, preserveRootParents);
-        }
-
-        @Override
-        public URI deresolve(URI base) {
-            return baseUri.deresolve(base);
-        }
-
-        @Override
-        public URI deresolve(URI base, boolean preserveRootParents, boolean anyRelPath, boolean shorterRelPath) {
-            return baseUri.deresolve(base, preserveRootParents, anyRelPath, shorterRelPath);
-        }
-
-        @Override
-        public String toFileString() {
-            return URI.createHierarchicalURI(
-                    FILE_SCHEME,
-                    baseUri.authority(),
-                    baseUri.device(),
-                    baseUri.segments(),
-                    baseUri.query(),
-                    baseUri.fragment()
-            ).toFileString();
-        }
-
-        @Override
-        public String toPlatformString(boolean decode) {
-            return baseUri.toPlatformString(decode);
-        }
-
-        @Override
-        public URI appendSegment(String segment) {
-            return baseUri.appendSegment(segment);
-        }
-
-        @Override
-        public URI appendSegments(String[] segments) {
-            return baseUri.appendSegments(segments);
-        }
-
-        @Override
-        public URI trimSegments(int i) {
-            return baseUri.trimSegments(i);
-        }
-
-        @Override
-        public boolean hasTrailingPathSeparator() {
-            return baseUri.hasTrailingPathSeparator();
-        }
-
-        @Override
-        public String fileExtension() {
-            return baseUri.fileExtension();
-        }
-
-        @Override
-        public URI appendFileExtension(String fileExtension) {
-            return baseUri.appendFileExtension(fileExtension);
-        }
-
-        @Override
-        public URI trimFileExtension() {
-            return baseUri.trimFileExtension();
-        }
-
-        @Override
-        public boolean isPrefix() {
-            return baseUri.isPrefix();
-        }
-
-        @Override
-        public URI replacePrefix(URI oldPrefix, URI newPrefix) {
-            return baseUri.replacePrefix(oldPrefix, newPrefix);
-        }
-
-        @Override
-        public boolean equals(@Nullable Object o) {
-            if (URI.class.isInstance(o)) {
-                return Objects.equals(this.toString(), o.toString());
-            }
-
-            return super.equals(o);
-        }
-
-        @Override
-        public String toString() {
-            return baseUri.toString();
-        }
+        return fromUri(baseUri);
     }
 }
