@@ -18,13 +18,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A builder of {@link URI} used to register {@link fr.inria.atlanmod.neoemf.data.BackendFactory} in the {@link
- * fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry} and configure the {@code protocol to factory} map of an
- * existing {@link org.eclipse.emf.ecore.resource.ResourceSet} with a {@link fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory}.
- *
- * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
- * @see org.eclipse.emf.ecore.resource.ResourceSet#getResourceFactoryRegistry()
- * @see org.eclipse.emf.ecore.resource.Resource.Factory.Registry#getProtocolToFactoryMap()
+ * A builder of {@link URI}s. Created {@link URI}s are used to locate a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}
+ * and select the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} to use for persistence.
  */
 @ParametersAreNonnullByDefault
 public interface UriBuilder {
