@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.commons.collect.MoreIterables;
+import fr.inria.atlanmod.commons.collect.SizedIterator;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
@@ -43,32 +44,8 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Nonnull
     @Override
     default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        final Iterator<V> iter = new Iterator<V>() {
-
-            /**
-             * The size of the iterator.
-             */
-            final int size = sizeOfValue(key).orElse(0);
-
-            /**
-             * The current position.
-             */
-            int currentIndex = 0;
-
-            @Override
-            public boolean hasNext() {
-                return currentIndex < size;
-            }
-
-            @Override
-            public V next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
-
-                return ManyValueWithIndices.this.<V>valueOf(key.withPosition(currentIndex++)).orElse(null);
-            }
-        };
+        final int size = sizeOfValue(key).orElse(0);
+        final Iterator<V> iter = new SizedIterator<>(size, i -> this.<V>valueOf(key.withPosition(i)).orElse(null));
 
         return MoreIterables.stream(() -> iter);
     }

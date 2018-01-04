@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -48,16 +49,6 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  */
 @ParametersAreNonnullByDefault
 abstract class AbstractBlueprintsBackend extends AbstractBackend implements BlueprintsBackend {
-
-    /**
-     * The {@link Converter} to use a long representation instead of {@link Id}.
-     * <p>
-     * This converter is specific to Blueprints which returns each identifier as an {@link Object}.
-     */
-    @Nonnull
-    protected static final Converter<Id, Object> AS_LONG_OBJECT = Converter.from(
-            IdConverters.withLong()::convert,
-            o -> IdConverters.withLong().revert(Long.class.cast(o)));
 
     /**
      * The property key used to define the index of an edge.
@@ -82,17 +73,27 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     /**
      * The property key used to define the name of the the opposite containing feature in container {@link Edge}s.
      */
-    private static final String PROPERTY_FEATURE_NAME = "_cn";
+    private static final String PROPERTY_CONTAINER_NAME = "_cn";
 
     /**
      * The property key used to define the name of meta-class {@link Vertex}s.
      */
-    private static final String PROPERTY_CLASS_NAME = "_in";
+    private static final String PROPERTY_INSTANCE_NAME = "_in";
 
     /**
      * The property key used to define the URI of meta-class {@link Vertex}s.
      */
-    private static final String PROPERTY_CLASS_URI = "_iu";
+    private static final String PROPERTY_INSTANCE_URI = "_iu";
+
+    /**
+     * The {@link Converter} to use a long representation instead of {@link Id}.
+     * <p>
+     * This converter is specific to Blueprints which returns each identifier as an {@link Object}.
+     */
+    @Nonnull
+    protected final Converter<Id, Object> idConverter = Converter.from(
+            IdConverters.withLong()::convert,
+            o -> IdConverters.withLong().revert(Long.class.cast(o)));
 
     /**
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by the associated object {@link Id}.
@@ -220,6 +221,35 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .orElseGet(() -> graph.createIndex(name, Vertex.class));
     }
 
+    /**
+     * Returns the size of the {@code key} for the given {@code vertex}.
+     *
+     * @param key    the key identifying the multi-valued feature
+     * @param vertex the related vertex; {@code vertex.id == key.id}
+     *
+     * @return the size
+     */
+    @Nonnegative
+    protected int sizeOf(SingleFeatureBean key, Vertex vertex) {
+        return Optional.<Integer>ofNullable(vertex.getProperty(formatProperty(key, PROPERTY_SIZE))).orElse(0);
+    }
+
+    /**
+     * Defines the {@code size} of the {@code key} for the given {@code vertex}.
+     *
+     * @param key    the key identifying the multi-valued feature
+     * @param vertex the related vertex; {@code vertex.id == key.id}
+     * @param size   the new size
+     */
+    protected void sizeFor(SingleFeatureBean key, Vertex vertex, @Nonnegative int size) {
+        if (size > 0) {
+            vertex.setProperty(formatProperty(key, PROPERTY_SIZE), size);
+        }
+        else {
+            vertex.removeProperty(formatProperty(key, PROPERTY_SIZE));
+        }
+    }
+
     @Override
     public void save() {
         if (graph.getFeatures().supportsTransactions) {
@@ -244,7 +274,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         metaClassSet.forEach(m -> {
             Id id = generateClassId(m);
             Vertex vertex = get(id).<IllegalStateException>orElseThrow(IllegalStateException::new);
-            to.metaClassIndex.put(PROPERTY_CLASS_NAME, m.name(), vertex);
+            to.metaClassIndex.put(PROPERTY_INSTANCE_NAME, m.name(), vertex);
         });
     }
 
@@ -253,22 +283,17 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     public Optional<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id, "id");
 
-        Optional<Vertex> containmentVertex = get(id);
-
-        if (!containmentVertex.isPresent()) {
+        Optional<Vertex> optContainmentVertex = get(id);
+        if (!optContainmentVertex.isPresent()) {
             return Optional.empty();
         }
 
-        Iterable<Edge> edges = containmentVertex.get().query()
-                .labels(EDGE_CONTAINER)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
+        final Vertex containmentVertex = optContainmentVertex.get();
 
-        return MoreIterables.onlyElement(edges)
+        return MoreIterables.onlyElement(containmentVertex.getEdges(Direction.OUT, EDGE_CONTAINER))
                 .map(e -> SingleFeatureBean.of(
-                        AS_LONG_OBJECT.revert(e.getVertex(Direction.IN).getId()),
-                        e.getProperty(PROPERTY_FEATURE_NAME)));
+                        idConverter.revert(e.getVertex(Direction.IN).getId()),
+                        e.getProperty(PROPERTY_CONTAINER_NAME)));
     }
 
     @Override
@@ -277,37 +302,23 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         checkNotNull(container, "container");
 
         Vertex containmentVertex = getOrCreate(id);
-        Vertex containerVertex = getOrCreate(container.owner());
 
-        Iterable<Edge> containmentEdges = containmentVertex.query()
-                .labels(EDGE_CONTAINER)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
-
-        containmentEdges.forEach(Edge::remove);
-
-        Edge edge = containmentVertex.addEdge(EDGE_CONTAINER, containerVertex);
-        edge.setProperty(PROPERTY_FEATURE_NAME, container.id());
+        containmentVertex.getEdges(Direction.OUT, EDGE_CONTAINER).forEach(Edge::remove);
+        containmentVertex.addEdge(EDGE_CONTAINER, getOrCreate(container.owner())).setProperty(PROPERTY_CONTAINER_NAME, container.id());
     }
 
     @Override
     public void removeContainer(Id id) {
         checkNotNull(id, "id");
 
-        Optional<Vertex> containmentVertex = get(id);
-
-        if (!containmentVertex.isPresent()) {
+        Optional<Vertex> optContainmentVertex = get(id);
+        if (!optContainmentVertex.isPresent()) {
             return;
         }
 
-        Iterable<Edge> containmentEdges = containmentVertex.get().query()
-                .labels(EDGE_CONTAINER)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
+        final Vertex containmentVertex = optContainmentVertex.get();
 
-        containmentEdges.forEach(Edge::remove);
+        containmentVertex.getEdges(Direction.OUT, EDGE_CONTAINER).forEach(Edge::remove);
     }
 
     @Nonnull
@@ -315,22 +326,17 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     public Optional<ClassBean> metaClassOf(Id id) {
         checkNotNull(id, "id");
 
-        Optional<Vertex> vertex = get(id);
-
-        if (!vertex.isPresent()) {
+        Optional<Vertex> optVertex = get(id);
+        if (!optVertex.isPresent()) {
             return Optional.empty();
         }
 
-        Iterable<Vertex> metaClassVertices = vertex.get().query()
-                .labels(EDGE_INSTANCE_OF)
-                .direction(Direction.OUT)
-                .limit(1)
-                .vertices();
+        final Vertex vertex = optVertex.get();
 
-        return MoreIterables.onlyElement(metaClassVertices)
+        return MoreIterables.onlyElement(vertex.getVertices(Direction.OUT, EDGE_INSTANCE_OF))
                 .map(v -> ClassBean.of(
-                        v.getProperty(PROPERTY_CLASS_NAME),
-                        v.getProperty(PROPERTY_CLASS_URI)));
+                        v.getProperty(PROPERTY_INSTANCE_NAME),
+                        v.getProperty(PROPERTY_INSTANCE_URI)));
     }
 
     @Override
@@ -341,25 +347,19 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         Vertex vertex = getOrCreate(id);
 
         // Check the presence of a meta-class
-        Iterable<Edge> instanceEdges = vertex.query()
-                .labels(EDGE_INSTANCE_OF)
-                .direction(Direction.OUT)
-                .limit(1)
-                .edges();
-
-        if (MoreIterables.onlyElement(instanceEdges).isPresent()) {
+        if (MoreIterables.onlyElement(vertex.getEdges(Direction.OUT, EDGE_INSTANCE_OF)).isPresent()) {
             return false;
         }
 
         // Retrieve or create the meta-class and store it in the index
-        Iterable<Vertex> instanceVertices = metaClassIndex.get(PROPERTY_CLASS_NAME, metaClass.name());
+        Iterable<Vertex> instanceVertices = metaClassIndex.get(PROPERTY_INSTANCE_NAME, metaClass.name());
 
         Vertex metaClassVertex = MoreIterables.onlyElement(instanceVertices).orElseGet(() -> {
-            Vertex mcv = graph.addVertex(AS_LONG_OBJECT.convert(generateClassId(metaClass)));
-            mcv.setProperty(PROPERTY_CLASS_NAME, metaClass.name());
-            mcv.setProperty(PROPERTY_CLASS_URI, metaClass.uri());
+            Vertex mcv = graph.addVertex(idConverter.convert(generateClassId(metaClass)));
+            mcv.setProperty(PROPERTY_INSTANCE_NAME, metaClass.name());
+            mcv.setProperty(PROPERTY_INSTANCE_URI, metaClass.uri());
 
-            metaClassIndex.put(PROPERTY_CLASS_NAME, metaClass.name(), mcv);
+            metaClassIndex.put(PROPERTY_INSTANCE_NAME, metaClass.name(), mcv);
             metaClassSet.add(metaClass);
 
             return mcv;
@@ -375,11 +375,11 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     @Override
     public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         return metaClasses.stream()
-                .map(mc -> metaClassIndex.get(PROPERTY_CLASS_NAME, mc.name()))
+                .map(mc -> metaClassIndex.get(PROPERTY_INSTANCE_NAME, mc.name()))
                 .flatMap(MoreIterables::stream)
                 .map(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .flatMap(MoreIterables::stream)
-                .map(v -> AS_LONG_OBJECT.revert(v.getId()))
+                .map(v -> idConverter.revert(v.getId()))
                 .collect(Collectors.toSet());
     }
 
@@ -405,7 +405,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      */
     @Nonnull
     protected Optional<Vertex> get(Id id) {
-        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(AS_LONG_OBJECT.convert(i))));
+        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(idConverter.convert(i))));
     }
 
     /**
@@ -419,8 +419,8 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     @Nonnull
     protected Vertex getOrCreate(Id id) {
         return verticesCache.get(id, i ->
-                Optional.ofNullable(graph.getVertex(AS_LONG_OBJECT.convert(i)))
-                        .orElseGet(() -> graph.addVertex(AS_LONG_OBJECT.convert(i))));
+                Optional.ofNullable(graph.getVertex(idConverter.convert(i)))
+                        .orElseGet(() -> graph.addVertex(idConverter.convert(i))));
     }
 
     /**
@@ -502,12 +502,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 Vertex referencedVertex = getVertex(Direction.IN);
                 super.remove();
 
-                Iterable<Edge> edges = referencedVertex.query()
-                        .direction(Direction.IN)
-                        .limit(1)
-                        .edges();
-
-                if (MoreIterables.isEmpty(edges)) {
+                if (MoreIterables.isEmpty(referencedVertex.getEdges(Direction.IN))) {
                     // If the Vertex has no more incoming edges remove it from the DB
                     referencedVertex.remove();
                 }

@@ -24,6 +24,8 @@ import java.nio.file.Path;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+
 /**
  * A {@link BackendFactory} that creates {@link BlueprintsBackend} instances.
  */
@@ -62,9 +64,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory<BaseBluepri
         config.setDirectory(directory);
 
         Graph graph = GraphFactory.open(config.getOptions(s -> s.startsWith(BaseBlueprintsConfig.BLUEPRINTS_PREFIX)));
-        if (!graph.getFeatures().supportsKeyIndices) {
-            throw new IllegalArgumentException(String.format("%s does not support key indices", graph.getClass().getSimpleName()));
-        }
+        checkArgument(graph.getFeatures().supportsKeyIndices, "%s does not support key indices", graph.getClass().getSimpleName());
 
         if (config.isReadOnly()) {
             graph = new ReadOnlyKeyIndexableGraph<>(KeyIndexableGraph.class.cast(graph));
