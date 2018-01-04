@@ -85,17 +85,17 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     /**
      * The property key used to define the name of the the opposite containing feature in container {@link Edge}s.
      */
-    private static final String PROPERTY_FEATURE_NAME = "_cn";
+    private static final String PROPERTY_CONTAINER_NAME = "_cn";
 
     /**
      * The property key used to define the name of meta-class {@link Vertex}s.
      */
-    private static final String PROPERTY_CLASS_NAME = "_in";
+    private static final String PROPERTY_INSTANCE_NAME = "_in";
 
     /**
      * The property key used to define the URI of meta-class {@link Vertex}s.
      */
-    private static final String PROPERTY_CLASS_URI = "_iu";
+    private static final String PROPERTY_INSTANCE_URI = "_iu";
 
     /**
      * The {@link Converter} to use a long representation instead of {@link Id}.
@@ -290,7 +290,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         GraphHelper.copyGraph(graph, to.graph);
 
         metaClassSet.forEach(m -> to.metaClassIndex.put(
-                PROPERTY_CLASS_NAME, m.name(),
+                PROPERTY_INSTANCE_NAME, m.name(),
                 blockingGet(generateClassId(m)).<IllegalStateException>orElseThrow(IllegalStateException::new)));
     }
 
@@ -304,7 +304,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
         Function<Edge, SingleFeatureBean> mapFunc = e -> SingleFeatureBean.of(
                 idConverter.revert(e.getVertex(Direction.IN).getId()),
-                e.getProperty(PROPERTY_FEATURE_NAME));
+                e.getProperty(PROPERTY_CONTAINER_NAME));
 
         Maybe<SingleFeatureBean> query = get(id)
                 .flattenAsFlowable(getFunc)
@@ -326,7 +326,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
         Consumer<Vertex> setFunc = v -> v
                 .addEdge(EDGE_CONTAINER, blockingGetOrCreate(container.owner()))
-                .setProperty(PROPERTY_FEATURE_NAME, container.id());
+                .setProperty(PROPERTY_CONTAINER_NAME, container.id());
 
         Completable query = getOrCreate(id)
                 .doOnSuccess(removeFunc)
@@ -361,8 +361,8 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .getVertices(Direction.OUT, EDGE_INSTANCE_OF);
 
         Function<Vertex, ClassBean> mapFunc = v -> ClassBean.of(
-                v.getProperty(PROPERTY_CLASS_NAME),
-                v.getProperty(PROPERTY_CLASS_URI));
+                v.getProperty(PROPERTY_INSTANCE_NAME),
+                v.getProperty(PROPERTY_INSTANCE_URI));
 
         Maybe<ClassBean> query = get(id)
                 .flattenAsFlowable(getFunc)
@@ -383,16 +383,16 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
         Callable<Vertex> createFunc = () -> {
             Vertex mcv = graph.addVertex(idConverter.convert(generateClassId(metaClass)));
-            mcv.setProperty(PROPERTY_CLASS_NAME, metaClass.name());
-            mcv.setProperty(PROPERTY_CLASS_URI, metaClass.uri());
+            mcv.setProperty(PROPERTY_INSTANCE_NAME, metaClass.name());
+            mcv.setProperty(PROPERTY_INSTANCE_URI, metaClass.uri());
             return mcv;
         };
 
         Maybe<Vertex> setInIndexFunc = Maybe.fromCallable(createFunc)
-                .doOnSuccess(v -> metaClassIndex.put(PROPERTY_CLASS_NAME, metaClass.name(), v))
+                .doOnSuccess(v -> metaClassIndex.put(PROPERTY_INSTANCE_NAME, metaClass.name(), v))
                 .doOnSuccess(v -> metaClassSet.add(metaClass));
 
-        Maybe<Vertex> getFromIndexFunc = Maybe.fromCallable(() -> metaClassIndex.get(PROPERTY_CLASS_NAME, metaClass.name()))
+        Maybe<Vertex> getFromIndexFunc = Maybe.fromCallable(() -> metaClassIndex.get(PROPERTY_INSTANCE_NAME, metaClass.name()))
                 .flattenAsFlowable(Functions.identity())
                 .singleElement()
                 .switchIfEmpty(setInIndexFunc);
@@ -415,7 +415,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     public Flowable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         Flowable<Id> query = Maybe.fromCallable(() -> metaClasses)
                 .flattenAsFlowable(Functions.identity())
-                .flatMapIterable(mc -> metaClassIndex.get(PROPERTY_CLASS_NAME, mc.name()))
+                .flatMapIterable(mc -> metaClassIndex.get(PROPERTY_INSTANCE_NAME, mc.name()))
                 .flatMapIterable(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .map(v -> idConverter.revert(v.getId()));
 
