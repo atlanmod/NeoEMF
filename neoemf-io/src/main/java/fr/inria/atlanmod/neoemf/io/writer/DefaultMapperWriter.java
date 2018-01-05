@@ -25,6 +25,8 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import io.reactivex.Completable;
+
 /**
  * A {@link Writer} that persists data into a {@link DataMapper}.
  */
@@ -67,14 +69,12 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
     public void onAttribute(BasicAttribute attribute, List<Object> values) {
         SingleFeatureBean key = SingleFeatureBean.of(attribute.owner(), attribute.id());
 
-        if (!attribute.isMany()) {
-            // TODO Use async
-            target.valueFor(key, values.get(0)).blockingAwait();
-        }
-        else {
-            // TODO Use async
-            target.appendAllValues(key, values).toCompletable().blockingAwait();
-        }
+        Completable addFunc = !attribute.isMany()
+                ? target.valueFor(key, values.get(0))
+                : target.appendAllValues(key, values).toCompletable();
+
+        // TODO Use async
+        addFunc.blockingAwait();
     }
 
     @Override
@@ -84,17 +84,15 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
         // Update the containment reference if needed
         if (reference.isContainment()) {
             // TODO Use async
-            values.forEach(i -> target.containerFor(i, key).blockingAwait());
+            values.forEach(id -> target.containerFor(id, key).blockingAwait());
         }
 
-        if (!reference.isMany()) {
-            // TODO Use async
-            target.referenceFor(key, values.get(0)).blockingAwait();
-        }
-        else {
-            // TODO Use async
-            target.appendAllReferences(key, values).toCompletable().blockingAwait();
-        }
+        Completable addFunc = !reference.isMany()
+                ? target.referenceFor(key, values.get(0))
+                : target.appendAllReferences(key, values).toCompletable();
+
+        // TODO Use async
+        addFunc.blockingAwait();
     }
 
     /**

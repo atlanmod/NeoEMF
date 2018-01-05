@@ -307,7 +307,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                     .orElse(null);
         }
 
-        // TODO Use async
+        // TODO Use async: Be careful of caching stores consistency (called only after a success)
         setFunc.blockingAwait();
 
         return previous;
@@ -357,7 +357,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                     : store.removeAllReferences(key);
         }
 
-        // TODO Use async
+        // TODO Use async: Be careful of caching stores consistency (called only after a success)
         removeFunc.blockingAwait();
     }
 
@@ -418,7 +418,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         AtomicInteger currentIndex = new AtomicInteger();
 
-        // TODO Use async
+        // TODO Use async: Be careful of caching stores consistency (called only after a success)
         for (Object o : flowable.blockingIterable()) {
             if (comparison.equals(o)) {
                 return currentIndex.get();
@@ -427,6 +427,19 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         }
 
         return NO_INDEX;
+
+//        AtomicInteger firstIndex = new AtomicInteger(NO_INDEX);
+//
+//        flowable.forEachWhile(o -> {
+//            if (comparison.equals(o)) {
+//                firstIndex.set(currentIndex.get());
+//                return true;
+//            }
+//            currentIndex.incrementAndGet();
+//            return false;
+//        });
+//
+//        return firstIndex.get();
     }
 
     @Override
@@ -455,13 +468,20 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         AtomicInteger currentIndex = new AtomicInteger();
         AtomicInteger lastIndex = new AtomicInteger(NO_INDEX);
 
-        // TODO Use async
+        // TODO Use async: Be careful of caching stores consistency (called only after a success)
         for (Object o : flowable.blockingIterable()) {
             if (comparison.equals(o)) {
                 lastIndex.set(currentIndex.get());
             }
             currentIndex.incrementAndGet();
         }
+
+//        flowable.forEach(o -> {
+//            if (comparison.equals(o)) {
+//                lastIndex.set(currentIndex.get());
+//            }
+//            currentIndex.incrementAndGet();
+//        });
 
         return lastIndex.get();
     }
@@ -494,7 +514,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                     : store.addReference(key.withPosition(index), referencedId);
         }
 
-        // TODO Use async
+        // TODO Use async: Be careful of caching stores consistency (called only after a success)
         addFunc.blockingAwait();
     }
 
@@ -510,7 +530,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         Object previous;
         Single<Boolean> removedFunc = Single.just(false);
 
-        // TODO Use `get` then asynchronously remove
         if (EObjects.isAttribute(feature)) {
             previous = store.valueOf(key)
                     .to(CommonQueries::toOptional)
@@ -532,6 +551,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             }
         }
 
+        // TODO Use async: Be careful of caching stores consistency (called only after a success)
         removedFunc.toCompletable().blockingAwait();
 
         return previous;
@@ -562,7 +582,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                 ? store.removeAllValues(key)
                 : store.removeAllReferences(key);
 
-        // TODO Use async
+        // TODO Use async: Be careful of caching stores consistency (called only after a success)
         clearFunc.blockingAwait();
     }
 
@@ -659,7 +679,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkParameters(internalObject, feature, values);
         checkIsMany("setAll", feature);
 
-        // TODO Use async
         unset(internalObject, feature);
         addAll(internalObject, feature, NO_INDEX, values);
     }
@@ -716,15 +735,13 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         updateInstanceOf(object);
         updateInstanceOf(container);
 
-        Action setIfAbsentFunc = () -> store
-                .containerFor(refConverter.convert(object), SingleFeatureBean.from(container, containerReference))
-                .subscribe();
+        Completable setIfEmptyFunc = store.containerFor(refConverter.convert(object), SingleFeatureBean.from(container, containerReference));
 
-        // TODO Use async
+        // TODO Use async: Be careful of caching stores consistency (called only after a success)
         store.containerOf(refConverter.convert(object))
                 .map(AbstractFeatureBean::owner)
                 .filter(Functions.equalsWith(refConverter.convert(container)))
-                .doOnComplete(setIfAbsentFunc)
+                .switchIfEmpty(setIfEmptyFunc.toMaybe())
                 .ignoreElement()
                 .blockingAwait();
     }
@@ -733,7 +750,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     public void removeContainment(PersistentEObject object) {
         updateInstanceOf(object);
 
-        // TODO Use async
+        // TODO Use async: Be careful of caching stores consistency (called only after a success)
         store.removeContainer(refConverter.convert(object)).blockingAwait();
     }
 
@@ -755,7 +772,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             return;
         }
 
-        // TODO Use async
+        // TODO Use async: Be careful of caching stores consistency (called only after a success)
         store.metaClassFor(refConverter.convert(object), ClassBean.from(object))
                 .doOnComplete(() -> refresh(object))
                 .onErrorComplete(Functions.isInstanceOf(ClassAlreadyExistsException.class))
