@@ -86,6 +86,13 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     private static final String PROPERTY_INSTANCE_URI = "_iu";
 
     /**
+     * The delimiter used to separate the property name and its value in a composed property.
+     *
+     * @see #formatProperty(FeatureBean, Object)
+     */
+    private static final String DELIMITER = "_";
+
+    /**
      * The {@link Converter} to use a long representation instead of {@link Id}.
      * <p>
      * This converter is specific to Blueprints which returns each identifier as an {@link Object}.
@@ -190,7 +197,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      */
     @Nonnull
     protected String formatProperty(FeatureBean feature, Object suffix) {
-        return formatLabel(feature) + ':' + String.valueOf(suffix);
+        return formatLabel(feature) + DELIMITER + String.valueOf(suffix);
     }
 
     /**
@@ -204,7 +211,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     protected String formatLabel(FeatureBean feature) {
         return requireUniqueLabels
                 // TODO Can cause a massive overhead (metaClassNameOf)
-                ? metaClassNameOf(feature.owner()) + ':' + Integer.toString(feature.id())
+                ? metaClassNameOf(feature.owner()) + DELIMITER + Integer.toString(feature.id())
                 : Integer.toString(feature.id());
     }
 
@@ -393,7 +400,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     @Nonnull
     private String metaClassNameOf(Id id) {
         // If the meta-class is not defined, the identifier represents the 'ROOT' element
-        return metaClassOf(id).map(ClassBean::name).orElse(":");
+        return metaClassOf(id).map(ClassBean::name).orElse(DELIMITER);
     }
 
     /**
