@@ -9,10 +9,10 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
@@ -27,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link BackendFactory} that creates {@link MapDbBackend} instances.
  */
 @ParametersAreNonnullByDefault
-public class MapDbBackendFactory extends AbstractBackendFactory {
+public class MapDbBackendFactory extends AbstractBackendFactory<MapDbConfig> {
 
     /**
      * The literal description of the factory.
@@ -57,7 +57,7 @@ public class MapDbBackendFactory extends AbstractBackendFactory {
 
     @Nonnull
     @Override
-    protected Backend createLocalBackend(Path directory, Config config) throws Exception {
+    protected Backend createLocalBackend(Path directory, MapDbConfig config) throws Exception {
         if (!directory.toFile().exists()) {
             Files.createDirectories(directory);
         }

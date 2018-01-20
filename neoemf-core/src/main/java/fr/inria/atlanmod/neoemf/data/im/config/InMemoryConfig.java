@@ -12,7 +12,6 @@ import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 import javax.annotation.Nonnull;
@@ -46,7 +45,7 @@ public class InMemoryConfig extends BaseConfig<InMemoryConfig> {
     }
 
     @Override
-    public void save(Path directory) throws IOException {
+    public void save(Path directory) {
         throw new UnsupportedOperationException("An in-memory backend cannot be stored locally");
     }
 }

@@ -148,7 +148,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     @Override
-    public void save(ImmutableConfig config) throws IOException {
+    public void save(ImmutableConfig config) {
         if (!isLoaded || !eStore.store().backend().isPersistent()) {
             mergeStore(config);
             Optional.ofNullable(setLoaded(true)).ifPresent(this::eNotify);
