@@ -13,10 +13,10 @@ import java.io.Closeable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An object that manages the data and provides lifecycle control.
+ * An object that can save its current state.
  */
 @ParametersAreNonnullByDefault
-public interface DataManager extends Closeable {
+public interface Savable extends Closeable {
 
     /**
      * Cleanly closes this manager, clear all data in-memory and releases any system resources associated with it. All

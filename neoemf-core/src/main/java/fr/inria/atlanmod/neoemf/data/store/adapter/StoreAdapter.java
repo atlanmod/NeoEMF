@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.store.adapter;
 import fr.inria.atlanmod.commons.Copiable;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.DataManager;
+import fr.inria.atlanmod.neoemf.data.Savable;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
@@ -36,10 +36,10 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public interface StoreAdapter extends DataManager, Copiable<StoreAdapter>, InternalEObject.EStore {
+public interface StoreAdapter extends Savable, Copiable<StoreAdapter>, InternalEObject.EStore {
 
     /**
-     * Returns the adapted store.
+     * Returns the adapted store chain.
      *
      * @return the store
      */
@@ -72,6 +72,8 @@ public interface StoreAdapter extends DataManager, Copiable<StoreAdapter>, Inter
      */
     @Nonnull
     PersistentEObject resolve(Id id);
+
+    // region EStore methods
 
     @Nullable
     @Override
@@ -137,6 +139,10 @@ public interface StoreAdapter extends DataManager, Copiable<StoreAdapter>, Inter
     default PersistentEObject create(EClass eClass) {
         throw new IllegalStateException("EStore#create() should not be called");
     }
+
+    // endregion
+
+    // region EStore methods (extension)
 
     /**
      * Returns all values in the {@link org.eclipse.emf.ecore.EObject#eGet(EStructuralFeature, boolean) content} of the
@@ -224,4 +230,6 @@ public interface StoreAdapter extends DataManager, Copiable<StoreAdapter>, Inter
      * @param object the object to store the instance-of information from
      */
     void updateInstanceOf(PersistentEObject object);
+
+    // endregion
 }

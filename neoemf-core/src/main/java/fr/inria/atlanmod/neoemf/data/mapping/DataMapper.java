@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.commons.Copiable;
-import fr.inria.atlanmod.neoemf.data.DataManager;
+import fr.inria.atlanmod.neoemf.data.Savable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -24,5 +24,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see ManyReferenceMapper
  */
 @ParametersAreNonnullByDefault
-public interface DataMapper extends DataManager, Copiable<DataMapper>, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
+public interface DataMapper extends Savable, Copiable<DataMapper>, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
 }
