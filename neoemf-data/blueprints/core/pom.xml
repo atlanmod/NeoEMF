@@ -14,7 +14,7 @@
 
     <name>NeoEMF Data Blueprints Core</name>
     <description>
-        Generic Blueprints implementation of the core component.
+        Blueprints extension of the core component.
         It can be extended with Blueprints connectors to handle several graph databases.
     </description>
 

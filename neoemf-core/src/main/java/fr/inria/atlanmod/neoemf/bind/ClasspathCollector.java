@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.bind;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
@@ -57,7 +58,7 @@ public class ClasspathCollector implements URLCollector {
                     return url.toURI();
                 }
                 catch (URISyntaxException e) {
-                    throw new IllegalStateException(e);
+                    throw Throwables.wrap(e, IllegalStateException.class);
                 }
             },
             uri -> {
@@ -65,7 +66,7 @@ public class ClasspathCollector implements URLCollector {
                     return uri.toURL();
                 }
                 catch (MalformedURLException e) {
-                    throw new IllegalStateException(e);
+                    throw Throwables.wrap(e, IllegalStateException.class);
                 }
             });
 

@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Beta;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -194,6 +195,6 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
     protected abstract void writeEndDocument() throws IOException;
 
     private void handleException(IOException e) {
-        throw new RuntimeException(e);
+        throw Throwables.wrap(e, RuntimeException.class);
     }
 }

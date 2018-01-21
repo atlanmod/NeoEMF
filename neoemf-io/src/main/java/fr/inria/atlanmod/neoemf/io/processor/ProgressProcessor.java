@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.io.Handler;
 
@@ -71,7 +72,7 @@ public class ProgressProcessor extends AbstractProcessor<Handler> {
             this.totalSize = stream.available();
         }
         catch (IOException e) {
-            throw new IllegalArgumentException(e);
+            throw Throwables.wrap(e, IllegalArgumentException.class);
         }
     }
 

@@ -13,7 +13,7 @@
     <packaging>bundle</packaging>
 
     <name>NeoEMF Data Blueprints Neo4j</name>
-    <description>Blueprints extension using Neo4j.</description>
+    <description>Blueprints extension of the core component, using Neo4j2.</description>
 
     <licenses>
         <license>

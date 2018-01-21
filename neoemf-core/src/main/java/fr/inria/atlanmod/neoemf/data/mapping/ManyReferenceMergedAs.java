@@ -23,6 +23,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
@@ -107,13 +108,10 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
     default void addAllReferences(ManyFeatureBean key, List<Id> collection) {
         checkNotNull(key, "key");
         checkNotNull(collection, "collection");
+        checkNotContainsNull(collection);
 
         if (collection.isEmpty()) {
             return;
-        }
-
-        if (collection.contains(null)) {
-            throw new NullPointerException();
         }
 
         Converter<List<Id>, M> converter = manyReferenceMerger();

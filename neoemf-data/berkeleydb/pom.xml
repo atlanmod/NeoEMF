@@ -13,7 +13,7 @@
     <packaging>bundle</packaging>
 
     <name>NeoEMF Data BerkeleyDB</name>
-    <description>BerkeleyDB implementation of the core component.</description>
+    <description>BerkeleyDB extension of the core component.</description>
 
     <properties>
         <berkeleydb.version>5.0.73</berkeleydb.version>

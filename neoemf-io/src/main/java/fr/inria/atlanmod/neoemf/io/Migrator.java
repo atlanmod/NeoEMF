@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
@@ -346,7 +347,7 @@ public final class Migrator<T> {
             reader = readerClass.getConstructor(Handler.class).newInstance(processor);
         }
         catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw new IllegalStateException(e); // Should never happen
+            throw Throwables.wrap(e, IllegalStateException.class); // Should never happen
         }
 
         reader.read(source);

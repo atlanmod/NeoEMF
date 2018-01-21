@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.config;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Builder;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
@@ -391,7 +392,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
             mappingClass = (Class<? extends DataMapper>) Class.forName(mappingType);
         }
         catch (ClassNotFoundException e) {
-            throw new InvalidConfigException(e);
+            throw Throwables.wrap(e, InvalidConfigException.class);
         }
         catch (ClassCastException e) {
             throw new InvalidConfigException(
@@ -415,7 +416,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     private <T> void checkConflict(String key, T newValue) {
         Optional<T> actualValue = getOption(key);
         if (actualValue.isPresent() && !Objects.equals(newValue, actualValue.get())) {
-            throw new InvalidConfigException(String.format("Values are different for %s: actual = \"%s\", new = \"%s\"", key, actualValue.get(), newValue));
+            throw new InvalidConfigException(String.format("Values are different for '%s': actual = \"%s\", new = \"%s\"", key, actualValue.get(), newValue));
         }
     }
 }

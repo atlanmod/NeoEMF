@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import com.ctc.wstx.api.WstxInputProperties;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.XPathResolver;
@@ -52,7 +53,7 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
             read((XMLStreamReader2) factory.createXMLStreamReader(in, XmiConstants.ENCODING));
         }
         catch (Exception e) {
-            throw new IOException(e);
+            throw Throwables.wrap(e, IOException.class);
         }
     }
 

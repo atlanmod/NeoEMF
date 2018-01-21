@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 
@@ -87,10 +88,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
         checkNotNull(key, "key");
         checkNotNull(collection, "collection");
-
-        if (collection.contains(null)) {
-            throw new NullPointerException();
-        }
+        checkNotContainsNull(collection);
 
         int firstPosition = key.position();
 

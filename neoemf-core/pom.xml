@@ -14,9 +14,8 @@
 
     <name>NeoEMF Core</name>
     <description>
-        NeoEMF core components. Specialize the standard EMF classes and provide abstract classes for dedicated backend
-        extensions. (The core component can not be used in a standalone context, it needs at least one persistence
-        solution to work properly).
+        NeoEMF core component. Specialize the standard EMF classes and provide abstract classes for dedicated backend
+        extensions.
     </description>
 
     <properties>

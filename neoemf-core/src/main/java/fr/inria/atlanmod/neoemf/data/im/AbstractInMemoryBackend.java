@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.im;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
@@ -272,7 +273,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
                 return delegate.deserialize(in.inputStream());
             }
             catch (IOException e) {
-                throw new IllegalStateException(e); // Should never happen
+                throw Throwables.wrap(e, IllegalStateException.class); // Should never happen
             }
         }
 
@@ -282,7 +283,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
                 delegate.serialize(value, out.outputStream());
             }
             catch (IOException e) {
-                throw new IllegalStateException(e); // Should never happen
+                throw Throwables.wrap(e, IllegalStateException.class); // Should never happen
             }
         }
     }

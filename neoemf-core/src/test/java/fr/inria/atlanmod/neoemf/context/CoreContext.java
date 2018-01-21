@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import java.io.File;
-import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -64,7 +63,8 @@ public abstract class CoreContext extends AbstractContext {
      */
     @Nonnull
     @Override
-    public PersistentResource loadResource(File file) throws IOException {
-        throw new UnsupportedOperationException();
+    public PersistentResource loadResource(File file) {
+        throw new UnsupportedOperationException(
+                String.format("%s cannot load an existing resource", getClass().getSimpleName()));
     }
 }

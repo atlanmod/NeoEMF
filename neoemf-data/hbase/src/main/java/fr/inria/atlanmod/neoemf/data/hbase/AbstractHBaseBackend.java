@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.commons.primitive.Bytes;
@@ -303,6 +304,6 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     }
 
     private void handleException(IOException e) {
-        throw new RuntimeException(e);
+        throw Throwables.wrap(e, RuntimeException.class);
     }
 }

@@ -32,6 +32,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 
@@ -213,13 +214,10 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
         checkNotNull(key, "key");
         checkNotNull(collection, "collection");
+        checkNotContainsNull(collection);
 
         if (collection.isEmpty()) {
             return;
-        }
-
-        if (collection.contains(null)) {
-            throw new NullPointerException();
         }
 
         Vertex vertex = getOrCreate(key.owner());
@@ -403,13 +401,10 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
         checkNotNull(key, "key");
         checkNotNull(collection, "collection");
+        checkNotContainsNull(collection);
 
         if (collection.isEmpty()) {
             return;
-        }
-
-        if (collection.contains(null)) {
-            throw new NullPointerException();
         }
 
         Vertex vertex = getOrCreate(key.owner());

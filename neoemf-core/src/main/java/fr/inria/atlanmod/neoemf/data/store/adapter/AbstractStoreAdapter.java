@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.commons.collect.MoreStreams;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -644,7 +645,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Override
     // TODO Implement this method
     public void removeAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        throw Throwables.notImplementedYet("removeAll");
     }
 
     @Override

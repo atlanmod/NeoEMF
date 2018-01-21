@@ -13,7 +13,7 @@
     <packaging>bundle</packaging>
 
     <name>NeoEMF Data HBase</name>
-    <description>HBase implementation of the core component.</description>
+    <description>HBase extension of the core component.</description>
 
     <properties>
         <!-- Think to update dependencies of "tests" -->

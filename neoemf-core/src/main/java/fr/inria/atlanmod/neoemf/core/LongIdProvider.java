@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.hash.Hasher;
@@ -62,7 +63,7 @@ final class LongIdProvider implements IdProvider {
             return fromLong(Long.parseUnsignedLong(hexValue, 16));
         }
         catch (NumberFormatException e) {
-            throw new IllegalArgumentException(e);
+            throw Throwables.wrap(e, IllegalArgumentException.class);
         }
     }
 

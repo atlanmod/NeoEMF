@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.Handler;
@@ -88,7 +89,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
             run(in);
         }
         catch (Exception e) {
-            throw new IOException(e);
+            throw Throwables.wrap(e, IOException.class);
         }
         finally {
             BasicNamespace.Registry.getInstance().clean();

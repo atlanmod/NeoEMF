@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.commons.AbstractTest;
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
@@ -63,7 +64,7 @@ class StoreFactoryTest extends AbstractTest {
             return out.cast(storeField.get(object));
         }
         catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new IllegalStateException(e); // Should never happen
+            throw Throwables.wrap(e, IllegalStateException.class); // Should never happen
         }
     }
 

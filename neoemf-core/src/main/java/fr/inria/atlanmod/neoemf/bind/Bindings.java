@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.bind;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Builder;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
@@ -183,7 +184,7 @@ public final class Bindings {
                     : type.newInstance();
         }
         catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-            throw new BindingException(e);
+            throw Throwables.wrap(e, BindingException.class);
         }
     }
 
@@ -263,12 +264,10 @@ public final class Bindings {
             factoryType = type.getAnnotation(FactoryBinding.class).value();
         }
 
-        if (nonNull(factoryType)) {
-            return newInstance(factoryType);
-        }
-
-        throw new BindingException(
-                String.format("%s is not annotated with %s: Unable to retrieve the associated factory", type.getName(), FactoryBinding.class.getName()));
+        return Optional.ofNullable(factoryType)
+                .map(Bindings::newInstance)
+                .orElseThrow(() -> new BindingException(
+                        String.format("%s is not annotated with %s: Unable to retrieve the associated factory", type.getName(), FactoryBinding.class.getName())));
     }
 
     /**
@@ -281,6 +280,7 @@ public final class Bindings {
         return Bindings.typesAnnotatedWith(FactoryBinding.class, UriBuilder.class)
                 .stream()
                 .map(t -> t.getAnnotation(FactoryBinding.class).value())
+                .distinct()
                 .map(Bindings::newInstance)
                 .collect(Collectors.toSet());
     }
@@ -303,16 +303,14 @@ public final class Bindings {
      */
     @Nonnull
     public static <T> T findBy(Class<? extends T> type, String value, Function<Class<? extends BackendFactory>, String> valueMapping) {
-        for (Class<? extends T> t : typesAnnotatedWith(FactoryBinding.class, type)) {
-            FactoryBinding annotation = t.getDeclaredAnnotation(FactoryBinding.class);
-
-            // Annotation can be `null` for types that inherit from an annotated type
-            if (nonNull(annotation) && Objects.equals(value, valueMapping.apply(annotation.value()))) {
-                return newInstance(t);
-            }
-        }
-
-        throw new BindingException(
-                String.format("Unable to find a %s instance for value \"%s\"", type.getName(), value));
+        return typesAnnotatedWith(FactoryBinding.class, type).stream()
+                .filter(t -> {
+                    FactoryBinding a = t.getDeclaredAnnotation(FactoryBinding.class);
+                    return nonNull(a) && Objects.equals(value, valueMapping.apply(a.value()));
+                })
+                .findFirst()
+                .map(Bindings::newInstance)
+                .orElseThrow(() -> new BindingException(
+                        String.format("Unable to find a %s instance for value \"%s\"", type.getName(), value)));
     }
 }

@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.function.Copier;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
@@ -30,7 +31,7 @@ public final class DirectDataCopier implements Copier<DataMapper> {
                     .migrate();
         }
         catch (IOException e) {
-            throw new IllegalStateException(e); // Should never happen with DataMappers
+            throw Throwables.wrap(e, IllegalStateException.class); // Should never happen
         }
     }
 }

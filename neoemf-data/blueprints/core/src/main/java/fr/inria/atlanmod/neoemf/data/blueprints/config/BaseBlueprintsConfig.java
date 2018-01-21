@@ -68,7 +68,7 @@ public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends Bas
     }
 
     /**
-     * Defines the given Graph implementation in this configuration.
+     * Defines the given graph implementation in this configuration.
      *
      * @param type the fully qualified name of the class of the Blueprints graph
      *
@@ -132,6 +132,6 @@ public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends Bas
     @Override
     protected Predicate<String> isReadOnlyKey() {
         return super.isReadOnlyKey()
-                .or(s -> s.equals(BLUEPRINTS_GRAPH));
+                .or(BLUEPRINTS_GRAPH::equals);
     }
 }

@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.config.ConfigType;
@@ -85,7 +86,7 @@ public final class StoreFactory extends AbstractMapperFactory {
             }
         }
         catch (Exception e) {
-            throw new InvalidStoreException(e);
+            throw Throwables.wrap(e, InvalidStoreException.class);
         }
 
         return currentStore;

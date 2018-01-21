@@ -22,6 +22,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
@@ -94,13 +95,10 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
         checkNotNull(key, "key");
         checkNotNull(collection, "collection");
+        checkNotContainsNull(collection);
 
         if (collection.isEmpty()) {
             return;
-        }
-
-        if (collection.contains(null)) {
-            throw new NullPointerException();
         }
 
         V[] values = this.<V[]>valueOf(key.withoutPosition())

@@ -16,6 +16,7 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -331,6 +332,6 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     }
 
     private void handleException(IOException e) {
-        throw new RuntimeException(e);
+        throw Throwables.wrap(e, RuntimeException.class);
     }
 }

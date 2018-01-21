@@ -13,9 +13,7 @@
     <packaging>pom</packaging>
 
     <name>NeoEMF Data Blueprints</name>
-    <description>
-        Parent project for database implementations of the core component.
-    </description>
+    <description>Parent project for Blueprints-based extensions of the core component.</description>
 
     <modules>
         <module>core</module>
