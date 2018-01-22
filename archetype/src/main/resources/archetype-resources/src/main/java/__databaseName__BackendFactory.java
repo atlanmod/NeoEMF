@@ -30,7 +30,7 @@ public class ${databaseName}BackendFactory extends AbstractBackendFactory<${data
     /**
      * The literal description of the factory.
      */
-    private static final String NAME = "${databaseNameLower}";
+    private static final String NAME = "${databaseName.toLowerCase()}";
 
     /**
      * Constructs a new {@code ${databaseName}BackendFactory}.
