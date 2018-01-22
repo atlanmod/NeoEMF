@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.config;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
@@ -62,12 +63,7 @@ final class DefaultStoreTypes {
      */
     static final ConfigType<Store> READONLY = new ConfigType<>("fr.inria.atlanmod.neoemf.data.store.ReadOnlyStore", 100);
 
-    /**
-     * This class should not be instantiated.
-     *
-     * @throws IllegalStateException every time
-     */
     private DefaultStoreTypes() {
-        throw new IllegalStateException("This class should not be instantiated");
+        throw Throwables.notInstantiableClass(getClass());
     }
 }

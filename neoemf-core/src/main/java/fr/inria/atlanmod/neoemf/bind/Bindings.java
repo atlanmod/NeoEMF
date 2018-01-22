@@ -64,13 +64,8 @@ public final class Bindings {
         ClasspathCollector.getInstance().register(new SimpleCollector(ClasspathHelper::forManifest));
     }
 
-    /**
-     * This class should not be instantiated.
-     *
-     * @throws IllegalStateException every time
-     */
     private Bindings() {
-        throw new IllegalStateException("This class should not be instantiated");
+        throw Throwables.notInstantiableClass(getClass());
     }
 
     /**

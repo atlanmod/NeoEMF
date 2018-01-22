@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -31,13 +32,8 @@ import static java.util.Objects.nonNull;
 @ParametersAreNonnullByDefault
 public final class EObjects {
 
-    /**
-     * This class should not be instantiated.
-     *
-     * @throws IllegalStateException every time
-     */
     private EObjects() {
-        throw new IllegalStateException("This class should not be instantiated");
+        throw Throwables.notInstantiableClass(getClass());
     }
 
     /**

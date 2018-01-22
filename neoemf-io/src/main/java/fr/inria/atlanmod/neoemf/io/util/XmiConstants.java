@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.util;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.primitive.Strings;
 
@@ -92,13 +93,8 @@ public final class XmiConstants {
      */
     public static final String XMI_VERSION = "2.0";
 
-    /**
-     * This class should not be instantiated.
-     *
-     * @throws IllegalStateException every time
-     */
     private XmiConstants() {
-        throw new IllegalStateException("This class should not be instantiated");
+        throw Throwables.notInstantiableClass(getClass());
     }
 
     /**

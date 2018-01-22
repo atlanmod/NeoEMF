@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.util;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 
@@ -42,9 +43,8 @@ public final class ResourceManager {
         Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
     }
 
-    @SuppressWarnings("JavaDoc")
     private ResourceManager() {
-        throw new IllegalStateException("This class should not be instantiated");
+        throw Throwables.notInstantiableClass(getClass());
     }
 
     /**

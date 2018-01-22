@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.util;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -39,12 +40,7 @@ public final class XPathConstants {
      */
     public static final String INDEX_SEPARATOR = ".";
 
-    /**
-     * This class should not be instantiated.
-     *
-     * @throws IllegalStateException every time
-     */
     private XPathConstants() {
-        throw new IllegalStateException("This class should not be instantiated");
+        throw Throwables.notInstantiableClass(getClass());
     }
 }

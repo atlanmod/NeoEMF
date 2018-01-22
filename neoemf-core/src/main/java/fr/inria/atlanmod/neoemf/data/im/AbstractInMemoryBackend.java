@@ -232,13 +232,8 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
          */
         protected static final long FEATURE_VALUE = (long) Math.pow(2, 12);
 
-        /**
-         * This class should not be instantiated.
-         *
-         * @throws IllegalStateException every time
-         */
         private Sizes() {
-            throw new IllegalStateException("This class should not be instantiated");
+            throw Throwables.notInstantiableClass(getClass());
         }
     }
 

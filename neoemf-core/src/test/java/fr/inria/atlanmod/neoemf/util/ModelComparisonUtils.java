@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.util.compare.LazyMatchEngineFactory;
@@ -35,9 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ParametersAreNonnullByDefault
 public final class ModelComparisonUtils {
 
-    @SuppressWarnings("JavaDoc")
     private ModelComparisonUtils() {
-        throw new IllegalStateException("This class should not be instantiated");
+        throw Throwables.notInstantiableClass(getClass());
     }
 
     /**

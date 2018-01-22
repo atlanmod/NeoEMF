@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.function.Converter;
 
@@ -37,13 +38,8 @@ public final class IdConverters {
             Id::toHexString,
             Id.getProvider()::fromHexString);
 
-    /**
-     * This class should not be instantiated.
-     *
-     * @throws IllegalStateException every time
-     */
     private IdConverters() {
-        throw new IllegalStateException("This class should not be instantiated");
+        throw Throwables.notInstantiableClass(getClass());
     }
 
     /**

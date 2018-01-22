@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.commons.cache.CacheBuilder;
@@ -48,13 +49,8 @@ final class PersistentEObjectAdapter {
             .weakKeys()
             .build();
 
-    /**
-     * This class should not be instantiated.
-     *
-     * @throws IllegalStateException every time
-     */
     private PersistentEObjectAdapter() {
-        throw new IllegalStateException("This class should not be instantiated");
+        throw Throwables.notInstantiableClass(getClass());
     }
 
     /**

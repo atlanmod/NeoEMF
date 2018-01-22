@@ -8,6 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
+import fr.inria.atlanmod.commons.Throwables;
+
 /**
  * This is a dummy class : <b>DON'T USE IT</b> !
  * <p>
@@ -15,12 +17,7 @@ package fr.inria.atlanmod.neoemf.tests;
  */
 final class Dummy {
 
-    /**
-     * This class should not be instantiated.
-     *
-     * @throws IllegalStateException every time
-     */
     private Dummy() {
-        throw new IllegalStateException("This class should not be instantiated");
+        throw Throwables.notInstantiableClass(getClass());
     }
 }
