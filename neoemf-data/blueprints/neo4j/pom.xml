@@ -28,7 +28,7 @@
     </licenses>
 
     <properties>
-        <neo4j.version>2.1.8</neo4j.version><!-- 2.2.0+ no longer use `javax.transaction` -->
+        <neo4j.version>2.1.8</neo4j.version><!-- 2.2.0+ : no longer use `javax.transaction` -->
         <lucene.version>3.6.2</lucene.version>
         <jta.version>1.1</jta.version>
     </properties>

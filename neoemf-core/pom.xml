@@ -19,13 +19,13 @@
     </description>
 
     <properties>
-        <chronicle-map.version>3.14.4</chronicle-map.version>
-        <chronicle-bytes.version>1.9.22</chronicle-bytes.version>
+        <chronicle-map.version>3.14.5</chronicle-map.version>
+        <chronicle-bytes.version>1.10.9</chronicle-bytes.version>
 
-        <log4j.version>2.8.2</log4j.version><!-- 2.9.0+ : issue with maven-bundle-plugin (JDK9 compatibility)-->
+        <log4j.version>2.8.2</log4j.version><!-- 2.9.0+ : compatibility issue with maven-bundle-plugin (JDK9)-->
 
-        <cglib.version>3.2.5</cglib.version>
-        <reflections.version>0.9.9</reflections.version><!-- Used for Guava compatibility (15.0) -->
+        <cglib.version>3.2.6</cglib.version>
+        <reflections.version>0.9.9</reflections.version><!-- 0.9.9+ : compatibility issue with Guava/HBase (15.0) -->
     </properties>
 
     <dependencies>
@@ -71,7 +71,7 @@
         <dependency><!-- Used by `reflections` -->
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-vfs2</artifactId>
-            <version>2.1</version><!-- == 2.0 with bugfixes -->
+            <version>2.2</version><!-- == 2.0 with bugfixes -->
             <scope>runtime</scope>
         </dependency>
 
