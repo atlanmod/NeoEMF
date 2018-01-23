@@ -12,7 +12,7 @@ import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.bind.Bindings;
+import fr.inria.atlanmod.neoemf.bind.BindingEngine;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -164,7 +164,7 @@ public final class BackendFactoryRegistry {
     public void registerAll() {
         Log.debug("Registering all factories...");
 
-        Bindings.allFactories().forEach(b -> register(Bindings.schemeOf(b), b));
+        BindingEngine.allFactories().forEach(b -> register(BindingEngine.schemeOf(b), b));
 
         initialized = true;
     }

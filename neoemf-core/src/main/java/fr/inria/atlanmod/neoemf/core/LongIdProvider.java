@@ -11,8 +11,6 @@ package fr.inria.atlanmod.neoemf.core;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.hash.Hasher;
-import fr.inria.atlanmod.commons.hash.Hashers;
 
 import java.util.UUID;
 
@@ -28,15 +26,13 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  */
 @Singleton
 @ParametersAreNonnullByDefault
-final class LongIdProvider implements IdProvider {
+public final class LongIdProvider extends AbstractIdProvider {
 
     /**
-     * The default {@link Hasher} used to generate {@link Id} from string.
-     *
-     * @see #generate(String)
+     * Constructs a new {@code LongIdProvider}.
      */
-    @Nonnull
-    private static final Hasher DEFAULT_HASHER = Hashers.xx();
+    private LongIdProvider() {
+    }
 
     /**
      * Returns the instance of this class.
@@ -78,7 +74,7 @@ final class LongIdProvider implements IdProvider {
     public Id generate(String baseValue) {
         checkNotNull(baseValue, "baseValue");
 
-        return fromLong(DEFAULT_HASHER.hash(baseValue).toLong());
+        return fromLong(hasher().hash(baseValue).toLong());
     }
 
     /**

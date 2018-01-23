@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
-import fr.inria.atlanmod.neoemf.bind.Bindings;
+import fr.inria.atlanmod.neoemf.bind.BindingEngine;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -25,7 +25,7 @@ public final class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) {
-        Bindings.withContext(context);
+        BindingEngine.withContext(context);
     }
 
     @Override

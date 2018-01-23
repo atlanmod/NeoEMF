@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.config;
 
 import fr.inria.atlanmod.commons.log.Level;
-import fr.inria.atlanmod.neoemf.bind.Bindings;
+import fr.inria.atlanmod.neoemf.bind.BindingEngine;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public interface Config extends ImmutableConfig {
      */
     @Nonnull
     static Config forName(String name) {
-        return Bindings.findBy(Config.class, name, Bindings::nameOf);
+        return BindingEngine.findBy(Config.class, name, BindingEngine::nameOf);
     }
 
     /**
@@ -56,7 +56,7 @@ public interface Config extends ImmutableConfig {
      */
     @Nonnull
     static Config forScheme(String scheme) {
-        return Bindings.findBy(Config.class, scheme, Bindings::schemeOf);
+        return BindingEngine.findBy(Config.class, scheme, BindingEngine::schemeOf);
     }
 
     /**

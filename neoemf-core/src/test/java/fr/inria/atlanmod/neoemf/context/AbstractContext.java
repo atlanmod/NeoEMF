@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
-import fr.inria.atlanmod.neoemf.bind.Bindings;
+import fr.inria.atlanmod.neoemf.bind.BindingEngine;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
@@ -30,7 +30,7 @@ public abstract class AbstractContext implements Context {
     @Nonnull
     @Override
     public String uriScheme() {
-        return Bindings.schemeOf(factory().getClass());
+        return BindingEngine.schemeOf(factory().getClass());
     }
 
     @Nonnull

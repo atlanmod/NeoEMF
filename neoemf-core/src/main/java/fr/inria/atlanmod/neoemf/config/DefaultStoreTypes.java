@@ -12,6 +12,7 @@ import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -24,44 +25,76 @@ final class DefaultStoreTypes {
     /**
      * Caches {@link org.eclipse.emf.ecore.EStructuralFeature}s.
      */
-    static final ConfigType<Store> CACHE_FEATURE = new ConfigType<>("fr.inria.atlanmod.neoemf.data.store.FeatureCacheStore", 60);
+    @Nonnull
+    public static final ConfigType<Store> CACHE_FEATURE = new ConfigType<>(
+            "fr.inria.atlanmod.neoemf.data.store.FeatureCacheStore",
+            60
+    );
 
     /**
      * Caches the size data.
      */
-    static final ConfigType<Store> CACHE_SIZE = new ConfigType<>("fr.inria.atlanmod.neoemf.data.store.SizeCacheStore", 60);
+    @Nonnull
+    public static final ConfigType<Store> CACHE_SIZE = new ConfigType<>(
+            "fr.inria.atlanmod.neoemf.data.store.SizeCacheStore",
+            60
+    );
 
     /**
      * Caches containers.
      */
-    static final ConfigType<Store> CACHE_CONTAINER = new ConfigType<>("fr.inria.atlanmod.neoemf.data.store.ContainerCacheStore", 70);
+    @Nonnull
+    public static final ConfigType<Store> CACHE_CONTAINER = new ConfigType<>(
+            "fr.inria.atlanmod.neoemf.data.store.ContainerCacheStore",
+            70
+    );
 
     /**
      * Caches meta-classes.
      */
-    static final ConfigType<Store> CACHE_METACLASS = new ConfigType<>("fr.inria.atlanmod.neoemf.data.store.ClassCacheStore", 70);
+    @Nonnull
+    public static final ConfigType<Store> CACHE_METACLASS = new ConfigType<>(
+            "fr.inria.atlanmod.neoemf.data.store.ClassCacheStore",
+            70
+    );
 
     /**
      * Logs every call to a methods.
      */
-    static final ConfigType<Store> LOG = new ConfigType<>("fr.inria.atlanmod.neoemf.data.store.LogStore", 90,
-            BaseConfig.STORE_LOG_LEVEL);
+    @Nonnull
+    public static final ConfigType<Store> LOG = new ConfigType<>(
+            "fr.inria.atlanmod.neoemf.data.store.LogStore",
+            90,
+            BaseConfig.STORE_LOG_LEVEL
+    );
 
     /**
      * Records several stats.
      */
-    static final ConfigType<Store> STATS = new ConfigType<>("fr.inria.atlanmod.neoemf.data.store.StatsRecordStore", 90);
+    @Nonnull
+    public static final ConfigType<Store> STATS = new ConfigType<>(
+            "fr.inria.atlanmod.neoemf.data.store.StatsRecordStore",
+            90
+    );
 
     /**
      * Automatically saves modifications as calls are made.
      */
-    static final ConfigType<Store> AUTOSAVE = new ConfigType<>("fr.inria.atlanmod.neoemf.data.store.AutoSaveStore", 100,
-            BaseConfig.STORE_AUTOSAVE_CHUNK);
+    @Nonnull
+    public static final ConfigType<Store> AUTOSAVE = new ConfigType<>(
+            "fr.inria.atlanmod.neoemf.data.store.AutoSaveStore",
+            100,
+            BaseConfig.STORE_AUTOSAVE_CHUNK
+    );
 
     /**
      * Only allows read operations.
      */
-    static final ConfigType<Store> READONLY = new ConfigType<>("fr.inria.atlanmod.neoemf.data.store.ReadOnlyStore", 100);
+    @Nonnull
+    public static final ConfigType<Store> READONLY = new ConfigType<>(
+            "fr.inria.atlanmod.neoemf.data.store.ReadOnlyStore",
+            100
+    );
 
     private DefaultStoreTypes() {
         throw Throwables.notInstantiableClass(getClass());

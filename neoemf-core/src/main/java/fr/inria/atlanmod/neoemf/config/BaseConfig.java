@@ -12,7 +12,7 @@ import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Builder;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.bind.Bindings;
+import fr.inria.atlanmod.neoemf.bind.BindingEngine;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
@@ -117,7 +117,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      */
     protected BaseConfig() {
         if (getClass() != BaseConfig.class) { // The only exception
-            setName(Bindings.factoryFor(getClass()).name());
+            setName(BindingEngine.factoryFor(getClass()).name());
         }
     }
 

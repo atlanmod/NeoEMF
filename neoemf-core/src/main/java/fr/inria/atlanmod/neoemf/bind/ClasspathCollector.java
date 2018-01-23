@@ -40,7 +40,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An {@link URLCollector} that analyzes a {@link java.net.URLClassLoader} to retrieve all modules related to this one.
- * This is the main {@link URLCollector} used by {@link Bindings} to retrieve associated object instances.
+ * This is the main {@link URLCollector} used by {@link BindingEngine} to retrieve associated object instances.
  */
 @Singleton
 @ParametersAreNonnullByDefault
@@ -142,7 +142,7 @@ public class ClasspathCollector implements URLCollector {
             try {
                 // One configuration for one task
                 ConfigurationBuilder baseConfig = new ConfigurationBuilder()
-                        .setExecutorService(Bindings.getBindingPool())
+                        .setExecutorService(BindingEngine.getBindingPool())
                         .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
 
                 // Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)

@@ -9,10 +9,10 @@
 package fr.inria.atlanmod.neoemf.bind;
 
 import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Builder;
-import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
+import fr.inria.atlanmod.commons.reflect.MoreReflection;
+import fr.inria.atlanmod.commons.reflect.ReflectionException;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
@@ -26,7 +26,6 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -48,7 +47,7 @@ import static java.util.Objects.nonNull;
 @Static
 @ParametersAreNonnullByDefault
 // TODO Handle the case of a name/scheme that refers to several factories (`factoryFor`, `findAny`): overriding factory
-public final class Bindings {
+public final class BindingEngine {
 
     /**
      * The shared concurrent pool for the scanning of elements in the classpath.
@@ -64,7 +63,7 @@ public final class Bindings {
         ClasspathCollector.getInstance().register(new SimpleCollector(ClasspathHelper::forManifest));
     }
 
-    private Bindings() {
+    private BindingEngine() {
         throw Throwables.notInstantiableClass(getClass());
     }
 
@@ -140,49 +139,6 @@ public final class Bindings {
                 .setUrls(ClasspathCollector.getInstance().get());
     }
 
-    /**
-     * Gets or creates a instance of the given {@code type} by using the static method named {@code name}.
-     * <p>
-     * If the {@code type} is annotated by {@link Singleton} or by {@link Builder}, then the static method identified by
-     * the value of the annotation is used to get the instance. Otherwise, the default constructor is used.
-     *
-     * @param type the class to look for
-     * @param <T>  the type of the instance
-     *
-     * @return the single instance if the {@code type} is a singleton, or a new instance
-     *
-     * @throws BindingException if an error occurs during the instantiation
-     */
-    @Nonnull
-    @SuppressWarnings("unchecked")
-    private static <T> T newInstance(Class<T> type) {
-        Optional<String> methodName;
-
-        if (type.isAnnotationPresent(Singleton.class)) {
-            methodName = Optional.of(type.getAnnotation(Singleton.class).value());
-        }
-        else if (type.isAnnotationPresent(Builder.class)) {
-            methodName = Optional.of(type.getAnnotation(Builder.class).value());
-        }
-        else if (type.isAnnotationPresent(Static.class)) {
-            throw new IllegalArgumentException(
-                    String.format("%s is annotated with @%s: cannot be instantiated", type.getName(), Static.class.getSimpleName()));
-        }
-        else {
-            // Use the default contructor
-            methodName = Optional.empty();
-        }
-
-        try {
-            return methodName.isPresent()
-                    ? (T) type.getMethod(methodName.get()).invoke(null)
-                    : type.newInstance();
-        }
-        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-            throw Throwables.wrap(e, BindingException.class);
-        }
-    }
-
     // endregion
 
     /**
@@ -242,8 +198,8 @@ public final class Bindings {
      *
      * @return a new instance of {@link BackendFactory}
      *
-     * @throws BindingException if no instance of {@link BackendFactory} is found for the {@code type}, or if an error
-     *                          occurs during the instantiation
+     * @throws BindingException    if no instance of {@link BackendFactory} is found for the {@code type}
+     * @throws ReflectionException if an error occurs during the instantiation
      */
     @Nonnull
     @SuppressWarnings("unchecked")
@@ -260,7 +216,7 @@ public final class Bindings {
         }
 
         return Optional.ofNullable(factoryType)
-                .map(Bindings::newInstance)
+                .map(MoreReflection::newInstance)
                 .orElseThrow(() -> new BindingException(
                         String.format("%s is not annotated with %s: Unable to retrieve the associated factory", type.getName(), FactoryBinding.class.getName())));
     }
@@ -269,14 +225,16 @@ public final class Bindings {
      * Returns all {@link BackendFactory} instances that are visible in the classpath.
      *
      * @return a set of initialized factories
+     *
+     * @throws ReflectionException if an error occurs during the instantiation of any factory
      */
     @Nonnull
     public static Set<BackendFactory> allFactories() {
-        return Bindings.typesAnnotatedWith(FactoryBinding.class, UriBuilder.class)
+        return typesAnnotatedWith(FactoryBinding.class, UriBuilder.class)
                 .stream()
                 .map(t -> t.getAnnotation(FactoryBinding.class).value())
                 .distinct()
-                .map(Bindings::newInstance)
+                .map(MoreReflection::newInstance)
                 .collect(Collectors.toSet());
     }
 
@@ -293,8 +251,8 @@ public final class Bindings {
      *
      * @return a new instance of the {@code type}
      *
-     * @throws BindingException if no instance of {@code type} is found for the {@code value} by using the {@code
-     *                          valueMapping}, or if an error occurs during the instantiation
+     * @throws BindingException    if no instance of {@code type} is found for the {@code value} by using the {@code valueMapping}
+     * @throws ReflectionException if an error occurs during the instantiation
      */
     @Nonnull
     public static <T> T findBy(Class<? extends T> type, String value, Function<Class<? extends BackendFactory>, String> valueMapping) {
@@ -304,7 +262,7 @@ public final class Bindings {
                     return nonNull(a) && Objects.equals(value, valueMapping.apply(a.value()));
                 })
                 .findFirst()
-                .map(Bindings::newInstance)
+                .map(MoreReflection::newInstance)
                 .orElseThrow(() -> new BindingException(
                         String.format("Unable to find a %s instance for value \"%s\"", type.getName(), value)));
     }
