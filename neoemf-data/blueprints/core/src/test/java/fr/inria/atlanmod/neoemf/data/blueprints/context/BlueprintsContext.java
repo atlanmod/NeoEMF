@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.context;
 
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -34,7 +34,7 @@ public abstract class BlueprintsContext extends AbstractContext {
         return new BlueprintsContext() {
             @Nonnull
             @Override
-            public Config config() {
+            public ImmutableConfig config() {
                 return BlueprintsTinkerConfig.newConfig();
             }
         };

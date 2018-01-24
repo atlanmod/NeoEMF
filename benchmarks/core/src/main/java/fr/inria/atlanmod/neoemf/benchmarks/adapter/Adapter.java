@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import org.eclipse.emf.ecore.EPackage;
@@ -43,7 +43,7 @@ public interface Adapter {
      * @return the datastore location
      */
     @Nonnull
-    File getOrCreateStore(File file, Config config, boolean useDirectImport) throws IOException;
+    File getOrCreateStore(File file, ImmutableConfig config, boolean useDirectImport) throws IOException;
 
     /**
      * Creates a datastore from the given {@code file} in a temporary location.
@@ -52,7 +52,7 @@ public interface Adapter {
      */
     @Nonnull
     @SuppressWarnings("UnusedReturnValue")
-    File createTempStore(File file, Config config, boolean useDirectImport) throws IOException;
+    File createTempStore(File file, ImmutableConfig config, boolean useDirectImport) throws IOException;
 
     /**
      * Loads a resource file from the given {@code file}.
@@ -60,12 +60,12 @@ public interface Adapter {
      * @return the loaded resource
      */
     @Nonnull
-    Resource load(File file, Config config) throws IOException;
+    Resource load(File file, ImmutableConfig config) throws IOException;
 
     /**
      * Saves the given {@code resource}.
      */
-    void save(Resource resource, Config config) throws IOException;
+    void save(Resource resource, ImmutableConfig config) throws IOException;
 
     /**
      * Unloads the given {@code resource}.
@@ -103,7 +103,7 @@ public interface Adapter {
          * @throws UnsupportedOperationException if this {@code Adapter} does not support {@link DataMapper} creation
          * @see #supportsMapper()
          */
-        default DataMapper createMapper(File file, Config config) {
+        default DataMapper createMapper(File file, ImmutableConfig config) {
             throw new UnsupportedOperationException("This adapter does not support DataMapper creation");
         }
 

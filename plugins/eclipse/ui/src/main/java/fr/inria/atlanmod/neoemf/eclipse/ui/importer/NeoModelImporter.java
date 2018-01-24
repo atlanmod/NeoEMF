@@ -46,7 +46,7 @@ public class NeoModelImporter extends ModelImporter {
     }
 
     @Override
-    protected void handleOriginalGenModel() throws DiagnosticException {
+    protected void handleOriginalGenModel() {
         URI genModelURI = getOriginalGenModel().eResource().getURI();
         StringBuilder text = new StringBuilder();
 
@@ -69,7 +69,7 @@ public class NeoModelImporter extends ModelImporter {
     }
 
     @Override
-    protected Diagnostic doComputeEPackages(Monitor monitor) throws Exception {
+    protected Diagnostic doComputeEPackages(Monitor monitor) {
         Diagnostic diagnostic = Diagnostic.OK_INSTANCE;
 
         List<URI> locationURIs = getModelLocationURIs();

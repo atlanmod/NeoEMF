@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.resource;
 
 import fr.inria.atlanmod.commons.io.MoreFiles;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
@@ -55,5 +55,5 @@ interface StoreCreator {
      * @throws IOException if a error occurs during the creation of the store
      */
     @Nonnull
-    File getOrCreateStore(File file, Config config, Adapter.Internal adapter, Path dir) throws IOException;
+    File getOrCreateStore(File file, ImmutableConfig config, Adapter.Internal adapter, Path dir) throws IOException;
 }

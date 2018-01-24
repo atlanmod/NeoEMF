@@ -9,7 +9,8 @@
 package fr.inria.atlanmod.neoemf.context;
 
 import fr.inria.atlanmod.commons.log.Level;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
@@ -75,8 +76,8 @@ final class ContextualResourceBuilder {
      * @return a new configuration
      */
     @Nonnull
-    private Config defaultConfig() {
-        return context.config()
+    private ImmutableConfig defaultConfig() {
+        return BaseConfig.newConfig().merge(context.config())
                 .log(Level.DEBUG)
                 .autoSave(100)
                 .recordStats()

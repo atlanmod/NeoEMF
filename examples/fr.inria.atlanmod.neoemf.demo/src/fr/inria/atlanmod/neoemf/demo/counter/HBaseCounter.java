@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.demo.counter;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
 import fr.inria.atlanmod.neoemf.demo.util.Helpers;
@@ -35,7 +35,7 @@ public class HBaseCounter {
         ResourceSet resourceSet = new ResourceSetImpl();
         URI uri = HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase");
 
-        Config config = HBaseConfig.newConfig();
+        ImmutableConfig config = HBaseConfig.newConfig();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 

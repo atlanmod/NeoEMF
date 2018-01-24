@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
@@ -33,7 +33,7 @@ public class DirectHBaseImporter {
     public static void main(String[] args) throws Exception {
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE);
 
-        Config config = HBaseConfig.newConfig()
+        ImmutableConfig config = HBaseConfig.newConfig()
                 .autoSave();
 
         BackendFactory factory = HBaseBackendFactory.getInstance();

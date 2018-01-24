@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.CdoAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.XmiAdapter;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Param;
@@ -145,10 +145,10 @@ public class RunnerState {
     }
 
     /**
-     * Returns all existing {@link Config} instances.
+     * Parses options given in arguments.
      */
     @Nonnull
-    public Config baseConfig() {
+    public ImmutableConfig baseConfig() {
         return ConfigParser.parse(o);
     }
 }

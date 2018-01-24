@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
 import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
@@ -50,7 +50,7 @@ public abstract class CoreContext extends AbstractContext {
 
     @Nonnull
     @Override
-    public Config config() {
+    public ImmutableConfig config() {
         return InMemoryConfig.newConfig();
     }
 

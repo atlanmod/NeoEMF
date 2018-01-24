@@ -8,7 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
@@ -55,8 +56,8 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
     }
 
     @Override
-    public DataMapper createMapper(File file, Config config) {
-        Config mergedConfig = config.merge(getOptions());
+    public DataMapper createMapper(File file, ImmutableConfig config) {
+        ImmutableConfig mergedConfig = BaseConfig.newConfig().merge(config).merge(getOptions());
 
         Backend backend = getFactory().createBackend(URI.createFileURI(file.getAbsolutePath()), mergedConfig);
         return StoreFactory.getInstance().createStore(backend, mergedConfig);
@@ -70,11 +71,11 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource load(File file, Config config) throws IOException {
+    public Resource load(File file, ImmutableConfig config) throws IOException {
         initAndGetEPackage();
 
         Resource resource = createResource(file, new ResourceSetImpl());
-        resource.load(config.merge(getOptions()).toMap());
+        resource.load(BaseConfig.newConfig().merge(config).merge(getOptions()).toMap());
 
         return resource;
     }

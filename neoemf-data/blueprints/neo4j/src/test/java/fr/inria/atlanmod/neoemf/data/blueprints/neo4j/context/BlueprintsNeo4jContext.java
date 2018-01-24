@@ -12,7 +12,7 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context;
 
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
@@ -36,7 +36,7 @@ public abstract class BlueprintsNeo4jContext extends BlueprintsContext {
         return new BlueprintsNeo4jContext() {
             @Nonnull
             @Override
-            public Config config() {
+            public ImmutableConfig config() {
                 return BlueprintsNeo4jConfig.newConfig();
             }
         };

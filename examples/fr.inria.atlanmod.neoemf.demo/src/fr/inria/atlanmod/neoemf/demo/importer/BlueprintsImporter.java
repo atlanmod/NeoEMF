@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -40,7 +40,7 @@ public class BlueprintsImporter {
         URI sourceUri = URI.createURI("models/sample.xmi");
         URI targetUri = BlueprintsUri.builder().fromFile("models/sample.graphdb");
 
-        Config config = BlueprintsNeo4jConfig.newConfig()
+        ImmutableConfig config = BlueprintsNeo4jConfig.newConfig()
                 .autoSave();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {

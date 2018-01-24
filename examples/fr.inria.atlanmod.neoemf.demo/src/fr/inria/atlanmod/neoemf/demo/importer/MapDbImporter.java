@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -40,7 +40,7 @@ public class MapDbImporter {
         URI sourceUri = URI.createURI("models/sample.xmi");
         URI targetUri = MapDbUri.builder().fromFile("models/sample.mapdb");
 
-        Config config = MapDbConfig.newConfig()
+        ImmutableConfig config = MapDbConfig.newConfig()
                 .withIndices()
                 .autoSave();
 

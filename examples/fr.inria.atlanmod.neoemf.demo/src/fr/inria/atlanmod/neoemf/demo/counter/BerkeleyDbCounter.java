@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.demo.counter;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.demo.util.Helpers;
@@ -36,7 +36,7 @@ public class BerkeleyDbCounter {
 
         URI uri = BerkeleyDbUri.builder().fromFile("models/sample.berkeleydb");
 
-        Config config = BerkeleyDbConfig.newConfig()
+        ImmutableConfig config = BerkeleyDbConfig.newConfig()
                 .withIndices();
 
         Stopwatch stopwatch = Stopwatch.createStarted();

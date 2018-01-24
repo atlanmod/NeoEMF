@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.resource;
 
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -35,7 +35,7 @@ public final class StandardStoreCreator implements StoreCreator {
 
     @Nonnull
     @Override
-    public File getOrCreateStore(File file, Config config, Adapter.Internal adapter, Path dir) throws IOException {
+    public File getOrCreateStore(File file, ImmutableConfig config, Adapter.Internal adapter, Path dir) throws IOException {
         File targetFile = dir.resolve(StoreCreator.getTargetFileName(file, adapter)).toFile();
 
         if (targetFile.exists()) {

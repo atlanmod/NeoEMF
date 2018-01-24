@@ -10,13 +10,10 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.Config;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.annotation.RegEx;
 
 /**
  * A class that handles options that can be used as benchmarks parameters.
@@ -55,14 +52,14 @@ final class ConfigParser {
     private static final String AUTO_SAVE = "A";
 
     /**
-     * Parses the given {@code text} and returns the associated {@link Config}.
+     * Parses the given {@code text} and returns the associated configuration.
      *
      * @param text the text containg the configuration to define
      *
-     * @return a {@link Config}
+     * @return an immutable configuration
      */
     @Nonnull
-    public static Config parse(String text) {
+    public static ImmutableConfig parse(String text) {
         Config options = BaseConfig.newConfig();
         String upperText = text.toUpperCase();
 

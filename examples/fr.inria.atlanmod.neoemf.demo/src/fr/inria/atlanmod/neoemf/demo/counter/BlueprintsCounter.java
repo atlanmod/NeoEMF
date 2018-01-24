@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.demo.counter;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
 import fr.inria.atlanmod.neoemf.demo.util.Helpers;
@@ -36,7 +36,7 @@ public class BlueprintsCounter {
 
         URI uri = BlueprintsUri.builder().fromFile("models/sample.graphdb");
 
-        Config config = BlueprintsNeo4jConfig.newConfig();
+        ImmutableConfig config = BlueprintsNeo4jConfig.newConfig();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 

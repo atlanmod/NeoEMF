@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
 import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -40,7 +40,7 @@ public class HBaseImporter {
         URI sourceUri = URI.createURI("models/sample.xmi");
         URI targetUri = HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase");
 
-        Config config = HBaseConfig.newConfig();
+        ImmutableConfig config = HBaseConfig.newConfig();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
             targetResource.save(config.toMap());

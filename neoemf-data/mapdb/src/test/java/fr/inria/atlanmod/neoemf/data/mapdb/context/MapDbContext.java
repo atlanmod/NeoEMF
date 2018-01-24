@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb.context;
 
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -40,7 +40,7 @@ public abstract class MapDbContext extends AbstractContext {
 
             @Nonnull
             @Override
-            public Config config() {
+            public ImmutableConfig config() {
                 return MapDbConfig.newConfig().withIndices();
             }
         };
@@ -62,7 +62,7 @@ public abstract class MapDbContext extends AbstractContext {
 
             @Nonnull
             @Override
-            public Config config() {
+            public ImmutableConfig config() {
                 return MapDbConfig.newConfig().withArrays();
             }
         };
@@ -84,7 +84,7 @@ public abstract class MapDbContext extends AbstractContext {
 
             @Nonnull
             @Override
-            public Config config() {
+            public ImmutableConfig config() {
                 return MapDbConfig.newConfig().withLists();
             }
         };

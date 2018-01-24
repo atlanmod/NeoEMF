@@ -28,6 +28,8 @@
 
         <generated-sources.location>${project.basedir}/src/main/java-gen/</generated-sources.location>
         <models.location>${project.basedir}/src/main/resources/model</models.location>
+
+        <xtext.version>2.13.0</xtext.version>
     </properties>
 
     <dependencies>
@@ -101,7 +103,7 @@
             <plugin>
                 <groupId>org.eclipse.xtext</groupId>
                 <artifactId>xtext-maven-plugin</artifactId>
-                <version>${emf.version}</version>
+                <version>${xtext.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -151,25 +153,25 @@
                     <dependency>
                         <groupId>org.eclipse.xtext</groupId>
                         <artifactId>org.eclipse.xtext.ecore</artifactId>
-                        <version>${emf.version}</version>
+                        <version>${xtext.version}</version>
                     </dependency>
 
                     <dependency>
                         <groupId>org.eclipse.xtext</groupId>
                         <artifactId>org.eclipse.xtext.builder.standalone</artifactId>
-                        <version>${emf.version}</version>
+                        <version>${xtext.version}</version>
                     </dependency>
 
                     <dependency>
                         <groupId>org.eclipse.xtext</groupId>
                         <artifactId>org.eclipse.xtext.generator</artifactId>
-                        <version>${emf.version}</version>
+                        <version>${xtext.version}</version>
                     </dependency>
 
                     <dependency>
                         <groupId>org.eclipse.xtext</groupId>
                         <artifactId>org.eclipse.xtext.xtext.generator</artifactId>
-                        <version>${emf.version}</version>
+                        <version>${xtext.version}</version>
                     </dependency>
 
                     <!-- EMF: Ecore -->

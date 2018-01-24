@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.demo.importer;
 
 import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -40,7 +40,7 @@ public class BerkeleyDbImporter {
         URI sourceUri = URI.createURI("models/sample.xmi");
         URI targetUri = BerkeleyDbUri.builder().fromFile("models/sample.berkeleydb");
 
-        Config config = BerkeleyDbConfig.newConfig()
+        ImmutableConfig config = BerkeleyDbConfig.newConfig()
                 .withIndices()
                 .autoSave();
 

@@ -12,7 +12,7 @@ import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
-import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -100,7 +100,7 @@ public final class Stores {
      * @see Workspace#newTempDirectory()
      */
     @Nonnull
-    public static File createTempStore(File resourceFile, Config config, Adapter.Internal adapter, boolean useDirectImport) throws IOException {
+    public static File createTempStore(File resourceFile, ImmutableConfig config, Adapter.Internal adapter, boolean useDirectImport) throws IOException {
         Path dir = Workspace.newTempDirectory();
 
         StoreCreator creator = useDirectImport && adapter.supportsMapper()
@@ -124,7 +124,7 @@ public final class Stores {
      * @see Workspace#getStoreDirectory()
      */
     @Nonnull
-    public static File getOrCreateStore(File resourceFile, Config config, Adapter.Internal adapter, boolean useDirectImport) throws IOException {
+    public static File getOrCreateStore(File resourceFile, ImmutableConfig config, Adapter.Internal adapter, boolean useDirectImport) throws IOException {
         Path dir = Workspace.getStoreDirectory();
 
         StoreCreator creator = useDirectImport && adapter.supportsMapper()
