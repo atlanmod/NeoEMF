@@ -36,7 +36,6 @@ public class ClassCacheStore extends AbstractCacheStore<Id, Optional<ClassBean>>
 
     @Nonnull
     @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Optional<ClassBean> metaClassOf(Id id) {
         return cache.get(id, super::metaClassOf);
     }

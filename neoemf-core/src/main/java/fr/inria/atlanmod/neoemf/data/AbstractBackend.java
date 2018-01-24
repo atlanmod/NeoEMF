@@ -120,7 +120,6 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     protected abstract void innerClose() throws IOException;
 
     @Override
-    @SuppressWarnings("unchecked")
     public void copyTo(DataMapper target) {
         checkNotNull(target, "target");
 

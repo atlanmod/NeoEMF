@@ -439,9 +439,8 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * @return the underlying Blueprints {@link IdGraph}
      */
     @Nonnull
-    @SuppressWarnings("unchecked")
-    public <T> T getGraph() {
-        return (T) graph;
+    public Graph getGraph() {
+        return graph;
     }
 
     /**

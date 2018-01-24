@@ -170,7 +170,6 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected E delegateRemove(int index) {
         E previousValue = super.delegateRemove(index);
         hardAllContents(PersistentEObject.from(previousValue)).forEach(e -> e.resource(null));

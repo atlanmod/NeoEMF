@@ -76,7 +76,6 @@ public abstract class AbstractBackendFactory<C extends Config> extends AbstractM
 
     @Nonnull
     @Override
-    @SuppressWarnings("unchecked")
     public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
         checkNotNull(uri, "uri");
         checkNotNull(baseConfig, "baseConfig");

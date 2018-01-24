@@ -117,7 +117,6 @@ final class PersistentEObjectAdapter {
      * @return an adapted object in the given {@code type}
      */
     @Nonnull
-    @SuppressWarnings("unchecked")
     private static <T extends PersistentEObject> T createAdapter(InternalEObject object, Class<T> type) {
         // Compute the interfaces that the proxy has to implement
         Set<Class<?>> interfaces = getAllInterfaces(object.getClass());
@@ -135,7 +134,7 @@ final class PersistentEObjectAdapter {
         proxy.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
         proxy.setCallback(new PersistentEObjectInterceptor());
 
-        return (T) proxy.create();
+        return type.cast(proxy.create());
     }
 
     /**

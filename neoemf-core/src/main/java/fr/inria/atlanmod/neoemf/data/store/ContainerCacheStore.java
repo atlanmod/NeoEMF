@@ -38,7 +38,6 @@ public class ContainerCacheStore extends AbstractCacheStore<Id, Optional<SingleF
 
     @Nonnull
     @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Optional<SingleFeatureBean> containerOf(Id id) {
         return cache.get(id, super::containerOf);
     }

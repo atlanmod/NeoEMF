@@ -30,7 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that automatically saves modifications as calls are made.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings({"unused", "MethodDoesntCallSuperMethod"}) // Called dynamically
+@SuppressWarnings("unused") // Called dynamically
 public class AutoSaveStore extends AbstractStore {
 
     /**

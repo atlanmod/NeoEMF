@@ -255,8 +255,9 @@ public final class BindingEngine {
      * @throws ReflectionException if an error occurs during the instantiation
      */
     @Nonnull
-    public static <T> T findBy(Class<? extends T> type, String value, Function<Class<? extends BackendFactory>, String> valueMapping) {
-        return typesAnnotatedWith(FactoryBinding.class, type).stream()
+    public static <T> T findBy(Class<? super T> type, String value, Function<Class<? extends BackendFactory>, String> valueMapping) {
+        return (T) typesAnnotatedWith(FactoryBinding.class, type)
+                .stream()
                 .filter(t -> {
                     FactoryBinding a = t.getDeclaredAnnotation(FactoryBinding.class);
                     return nonNull(a) && Objects.equals(value, valueMapping.apply(a.value()));

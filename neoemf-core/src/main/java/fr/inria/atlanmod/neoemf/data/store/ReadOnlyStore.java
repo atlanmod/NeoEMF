@@ -30,7 +30,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * called, preventing resource corruption.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings({"unused", "MethodDoesntCallSuperMethod"}) // Called dynamically
+@SuppressWarnings("unused") // Called dynamically
 public class ReadOnlyStore extends AbstractStore {
 
     /**

@@ -38,11 +38,12 @@ public interface Config extends ImmutableConfig {
      * wearing the specified {@code name}.
      *
      * @param name the name of the factory
+     * @param <C>  the type of the configuration
      *
      * @return a new instance of {@code Config}
      */
     @Nonnull
-    static Config forName(String name) {
+    static <C extends Config> C forName(String name) {
         return BindingEngine.findBy(Config.class, name, BindingEngine::nameOf);
     }
 
@@ -51,11 +52,12 @@ public interface Config extends ImmutableConfig {
      * which use the specified {@code scheme}.
      *
      * @param scheme the scheme of the factory
+     * @param <C>    the type of the configuration
      *
      * @return a new instance of {@code Config}
      */
     @Nonnull
-    static Config forScheme(String scheme) {
+    static <C extends Config> C forScheme(String scheme) {
         return BindingEngine.findBy(Config.class, scheme, BindingEngine::schemeOf);
     }
 
@@ -63,7 +65,7 @@ public interface Config extends ImmutableConfig {
      * Loads a configuration from the {@code directory}.
      *
      * @param directory the directory of the configuration to load
-     * @param <T>       the type of the configuration
+     * @param <C>       the type of the configuration
      *
      * @return an {@link Optional} containing the configuration, or {@link Optional#empty()} if the {@code directory}
      * does not contains any configuration
@@ -73,10 +75,10 @@ public interface Config extends ImmutableConfig {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    static <T extends Config> Optional<T> load(Path directory) throws IOException {
+    static <C extends Config> Optional<C> load(Path directory) throws IOException {
         if (ConfigFile.exists(directory)) {
             ConfigFile configFile = ConfigFile.load(directory);
-            T config = (T) Config.forName(configFile.get(BaseConfig.BACKEND_TYPE)).merge(configFile.toMap());
+            C config = (C) Config.forName(configFile.get(BaseConfig.BACKEND_TYPE)).merge(configFile.toMap());
             return Optional.of(config);
         }
 
@@ -144,7 +146,7 @@ public interface Config extends ImmutableConfig {
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    <T> Config addOption(String key, T value);
+    <V> Config addOption(String key, V value);
 
     /**
      * Adds a feature defined by the given {@code storeType} in this configuration.

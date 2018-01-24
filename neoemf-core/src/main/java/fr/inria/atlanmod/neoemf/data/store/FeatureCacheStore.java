@@ -43,7 +43,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
 
     @Nonnull
     @Override
-    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
+    @SuppressWarnings("unchecked")
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         return Optional.ofNullable((V) cache.get(key, k -> super.valueOf(SingleFeatureBean.class.cast(k)).orElse(null)));
     }
@@ -65,7 +65,6 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
 
     @Nonnull
     @Override
-    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
     public Optional<Id> referenceOf(SingleFeatureBean key) {
         return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(SingleFeatureBean.class.cast(k)).orElse(null))));
     }
@@ -87,7 +86,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
 
     @Nonnull
     @Override
-    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
+    @SuppressWarnings("unchecked")
     public <V> Optional<V> valueOf(ManyFeatureBean key) {
         return Optional.ofNullable((V) cache.get(key, k -> super.valueOf(ManyFeatureBean.class.cast(k)).orElse(null)));
     }
@@ -163,7 +162,6 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
 
     @Nonnull
     @Override
-    @SuppressWarnings({"unchecked", "MethodDoesntCallSuperMethod"})
     public Optional<Id> referenceOf(ManyFeatureBean key) {
         return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(ManyFeatureBean.class.cast(k)).orElse(null))));
     }

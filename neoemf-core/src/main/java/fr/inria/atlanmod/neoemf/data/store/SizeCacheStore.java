@@ -93,7 +93,6 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
     @Nonnull
     @Nonnegative
     @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         return cache.get(key, super::sizeOfValue);
     }
@@ -142,7 +141,6 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
     @Nonnull
     @Nonnegative
     @Override
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
         return cache.get(key, super::sizeOfReference);
     }
