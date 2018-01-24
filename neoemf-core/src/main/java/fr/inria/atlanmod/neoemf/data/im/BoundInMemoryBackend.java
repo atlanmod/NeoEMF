@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkEqualTo;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -117,7 +117,7 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
     @Override
     protected void checkKey(FeatureBean key) {
         super.checkKey(key);
-        checkArgument(key.owner().equals(owner), "%s is not the owner of this back-end (%s)", key.owner(), owner);
+        checkEqualTo(key.owner(), owner, "%s is not the owner of this back-end (%s)", key.owner(), owner);
     }
 
     @Nonnull

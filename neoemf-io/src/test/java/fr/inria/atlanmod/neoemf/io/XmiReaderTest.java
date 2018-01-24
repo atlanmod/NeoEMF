@@ -35,7 +35,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkGreaterThan;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -91,7 +91,7 @@ class XmiReaderTest extends AbstractTest {
      */
     @Nonnull
     private static InMemoryElement childFrom(InMemoryElement root, int... indices) {
-        checkArgument(indices.length > 0, "You must define at least one index");
+        checkGreaterThan(indices.length, 0, "You must define at least one index");
 
         InMemoryElement child = root;
 

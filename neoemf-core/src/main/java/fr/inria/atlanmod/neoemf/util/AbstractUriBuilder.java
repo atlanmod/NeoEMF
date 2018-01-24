@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkGreaterThanOrEqualTo;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -155,7 +156,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     public URI fromServer(String host, int port, String... segments) {
         checkNotNull(host, "host");
         checkNotNull(segments, "segments");
-        checkArgument(port >= 0, "port (%d) must not be negative");
+        checkGreaterThanOrEqualTo(port, 0, "port (%d) must not be negative", port);
 
         if (!supportsServer()) {
             throw new UnsupportedOperationException(String.format("%s does not support server-based URIs", getClass().getSimpleName()));

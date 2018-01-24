@@ -23,6 +23,8 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkState;
+
 /**
  * A {@link Writer} that persists data into a {@link DataMapper}.
  */
@@ -101,9 +103,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
         BasicMetaclass metaClass = element.metaClass();
         boolean success = target.metaClassFor(element.id(), ClassBean.of(metaClass.name(), metaClass.ns().uri()));
 
-        if (!success && !ignoreFailure) {
-            throw new IllegalArgumentException(String.format("An element with the same Id (%s) is already defined", element.id().toHexString()));
-        }
+        checkState(success || ignoreFailure, "An element with the same Id (%s) is already defined", element.id().toHexString());
 
         // Add the current element as content of the 'ROOT' node
         if (element.isRoot()) {

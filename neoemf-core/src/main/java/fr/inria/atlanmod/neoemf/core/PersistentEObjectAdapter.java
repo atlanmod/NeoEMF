@@ -85,9 +85,7 @@ final class PersistentEObjectAdapter {
 
         if (isNull(adapter)) {
             throw new IllegalArgumentException(
-                    String.format("Unable to create a %s adapter for this object of type %s",
-                            type.getSimpleName(),
-                            object.getClass().getSimpleName()));
+                    String.format("Unable to create a %s adapter for this object of type %s", type.getSimpleName(), object.getClass().getSimpleName()));
         }
 
         return type.cast(adapter);

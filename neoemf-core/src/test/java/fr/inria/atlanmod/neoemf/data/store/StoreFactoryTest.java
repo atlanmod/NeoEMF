@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkInstanceOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
@@ -54,9 +55,7 @@ class StoreFactoryTest extends AbstractTest {
      */
     @Nonnull
     private static <I, O> O getValue(Object object, String fieldName, Class<I> in, Class<O> out) {
-        if (!in.isInstance(object)) {
-            throw new IllegalArgumentException();
-        }
+        checkInstanceOf(object, in, "object must be instance of %s", in.getName());
 
         try {
             Field storeField = in.getDeclaredField(fieldName);

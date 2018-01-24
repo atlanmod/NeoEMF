@@ -215,7 +215,7 @@ class StoreAdapterTest extends AbstractTest {
     void testIsEmpty_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.isEmpty(object, eFeature))
-        ).isExactlyInstanceOf(IllegalArgumentException.class);
+        ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")
@@ -235,7 +235,7 @@ class StoreAdapterTest extends AbstractTest {
     void testSize_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.size(object, eFeature))
-        ).isExactlyInstanceOf(IllegalArgumentException.class);
+        ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")
@@ -261,7 +261,7 @@ class StoreAdapterTest extends AbstractTest {
     void testContains_Single(EStructuralFeature eFeature, Object value0) {
         assertThat(
                 catchThrowable(() -> store.contains(object, eFeature, value0))
-        ).isExactlyInstanceOf(IllegalArgumentException.class);
+        ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")
@@ -294,7 +294,7 @@ class StoreAdapterTest extends AbstractTest {
     void testIndexOf_Single(EStructuralFeature eFeature, Object value0) {
         assertThat(
                 catchThrowable(() -> store.indexOf(object, eFeature, value0))
-        ).isExactlyInstanceOf(IllegalArgumentException.class);
+        ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")
@@ -324,7 +324,7 @@ class StoreAdapterTest extends AbstractTest {
     void testLastIndexOf_Single(EStructuralFeature eFeature, Object value0) {
         assertThat(
                 catchThrowable(() -> store.lastIndexOf(object, eFeature, value0))
-        ).isExactlyInstanceOf(IllegalArgumentException.class);
+        ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")
@@ -354,7 +354,7 @@ class StoreAdapterTest extends AbstractTest {
     void testAdd_Single(EStructuralFeature eFeature, Object value0) {
         assertThat(
                 catchThrowable(() -> store.add(object, eFeature, 0, value0))
-        ).isExactlyInstanceOf(IllegalArgumentException.class);
+        ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")
@@ -384,7 +384,7 @@ class StoreAdapterTest extends AbstractTest {
     void testRemove_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.remove(object, eFeature, 0))
-        ).isExactlyInstanceOf(IllegalArgumentException.class);
+        ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")
@@ -408,7 +408,7 @@ class StoreAdapterTest extends AbstractTest {
     void testMove_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.move(object, eFeature, 1, 0))
-        ).isExactlyInstanceOf(IllegalArgumentException.class);
+        ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")
@@ -428,7 +428,7 @@ class StoreAdapterTest extends AbstractTest {
     void testClear_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.clear(object, eFeature))
-        ).isExactlyInstanceOf(IllegalArgumentException.class);
+        ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")
@@ -534,7 +534,7 @@ class StoreAdapterTest extends AbstractTest {
     void testSetAll_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.setAll(object, eFeature, Collections.emptyList()))
-        ).isExactlyInstanceOf(IllegalArgumentException.class);
+        ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")
@@ -557,7 +557,7 @@ class StoreAdapterTest extends AbstractTest {
     void testAddAll_Single(EStructuralFeature eFeature) {
         assertThat(
                 catchThrowable(() -> store.addAll(object, eFeature, 0, Collections.emptyList()))
-        ).isExactlyInstanceOf(IllegalArgumentException.class);
+        ).isExactlyInstanceOf(IllegalStateException.class);
     }
 
     @ParameterizedTest(name = "[{index}] With {3}")

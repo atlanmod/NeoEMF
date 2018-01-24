@@ -18,13 +18,13 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkEqualTo;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A {@link Writer} that stores all elements in {@link java.util.Collection}s.
@@ -92,12 +92,10 @@ public final class InMemoryWriter implements Writer {
         }
         else {
             InMemoryElement e = identifiers.get(attribute.owner());
-            if (nonNull(e) && Objects.equals(e.id(), attribute.owner())) {
-                e.attributes().add(attribute);
-            }
-            else {
-                throw new IllegalArgumentException();
-            }
+            checkNotNull(e, "identifiers.get(%s)", attribute.owner());
+            checkEqualTo(e.id(), attribute.owner(), "%s is not owner of this attribute (%s)", e.id(), attribute.owner());
+
+            e.attributes().add(attribute);
         }
     }
 
@@ -108,12 +106,10 @@ public final class InMemoryWriter implements Writer {
         }
         else {
             InMemoryElement e = identifiers.get(reference.owner());
-            if (nonNull(e) && Objects.equals(e.id(), reference.owner())) {
-                e.references().add(reference);
-            }
-            else {
-                throw new IllegalArgumentException();
-            }
+            checkNotNull(e, "identifiers.get(%s)", reference.owner());
+            checkEqualTo(e.id(), reference.owner(), "%s is not the owner of this reference (%s)", e.id(), reference.owner());
+
+            e.references().add(reference);
         }
     }
 

@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkGreaterThanOrEqualTo;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -148,7 +148,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      */
     default void sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
         checkNotNull(key, "key");
-        checkArgument(size >= 0, "size (%d) must not be negative");
+        checkGreaterThanOrEqualTo(size, 0, "size (%d) must not be negative", size);
 
         if (size > 0) {
             valueFor(key, size);

@@ -43,7 +43,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkElementIndex;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -289,7 +288,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(internalObject, "internalObject");
         checkNotNull(feature, "feature");
 
-        checkArgument(feature.isMany(), "Cannot compute isEmpty() of a single-valued feature");
+        checkState(feature.isMany(), "Cannot compute isEmpty() of a single-valued feature");
 
         return size(internalObject, feature) == 0;
     }
@@ -300,7 +299,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(internalObject, "internalObject");
         checkNotNull(feature, "feature");
 
-        checkArgument(feature.isMany(), "Cannot compute size() of a single-valued feature");
+        checkState(feature.isMany(), "Cannot compute size() of a single-valued feature");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
@@ -322,7 +321,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(internalObject, "internalObject");
         checkNotNull(feature, "feature");
 
-        checkArgument(feature.isMany(), "Cannot compute contains() of a single-valued feature");
+        checkState(feature.isMany(), "Cannot compute contains() of a single-valued feature");
 
         if (isNull(value)) {
             return false;
@@ -346,7 +345,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(internalObject, "internalObject");
         checkNotNull(feature, "feature");
 
-        checkArgument(feature.isMany(), "Cannot compute indexOf() of a single-valued feature");
+        checkState(feature.isMany(), "Cannot compute indexOf() of a single-valued feature");
 
         if (isNull(value)) {
             return EStore.NO_INDEX;
@@ -372,7 +371,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(internalObject, "internalObject");
         checkNotNull(feature, "feature");
 
-        checkArgument(feature.isMany(), "Cannot compute lastIndexOf() of a single-valued feature");
+        checkState(feature.isMany(), "Cannot compute lastIndexOf() of a single-valued feature");
 
         if (isNull(value)) {
             return EStore.NO_INDEX;
@@ -399,7 +398,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        checkArgument(feature.isMany(), "Cannot compute add() of a single-valued feature");
+        checkState(feature.isMany(), "Cannot compute add() of a single-valued feature");
 
         if (index != EStore.NO_INDEX) {
             checkPositionIndex(index, size(internalObject, feature));
@@ -437,7 +436,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(internalObject, "internalObject");
         checkNotNull(feature, "feature");
 
-        checkArgument(feature.isMany(), "Cannot compute remove() of a single-valued feature");
+        checkState(feature.isMany(), "Cannot compute remove() of a single-valued feature");
 
         checkElementIndex(index, size(internalObject, feature));
 
@@ -475,7 +474,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(internalObject, "internalObject");
         checkNotNull(feature, "feature");
 
-        checkArgument(feature.isMany(), "Cannot compute clear() of a single-valued feature");
+        checkState(feature.isMany(), "Cannot compute clear() of a single-valued feature");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
@@ -590,7 +589,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(feature, "feature");
         checkNotNull(values, "values");
 
-        checkArgument(feature.isMany(), "Cannot compute setAll() of a single-valued feature");
+        checkState(feature.isMany(), "Cannot compute setAll() of a single-valued feature");
 
         unset(internalObject, feature);
 
@@ -603,7 +602,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(feature, "feature");
         checkNotNull(values, "values");
 
-        checkArgument(feature.isMany(), "Cannot compute addAll() of a single-valued feature");
+        checkState(feature.isMany(), "Cannot compute addAll() of a single-valued feature");
 
         PersistentEObject object = PersistentEObject.from(internalObject);
         updateInstanceOf(object);

@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkGreaterThanOrEqualTo;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -80,7 +80,7 @@ public abstract class AbstractFeatureBean implements FeatureBean {
         this.id = id;
 
         if (isMany()) {
-            checkArgument(position >= 0, "position must be >= 0");
+            checkGreaterThanOrEqualTo(position, 0, "position (%d) must not be negative", position);
         }
         this.position = position;
     }

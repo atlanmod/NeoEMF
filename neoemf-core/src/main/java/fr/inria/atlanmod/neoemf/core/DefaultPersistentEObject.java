@@ -43,7 +43,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkInstanceOf;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
@@ -170,7 +170,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     public void eSetStore(EStore store) {
         checkNotNull(store, "store");
-        checkArgument(StoreAdapter.class.isInstance(store), "store must be instance of %d, but was not", StoreAdapter.class.getName());
+        checkInstanceOf(store, StoreAdapter.class, "store must be instance of %d", StoreAdapter.class.getName());
         refreshStore(StoreAdapter.class.cast(store));
     }
 

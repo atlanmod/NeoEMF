@@ -29,6 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
@@ -235,15 +236,12 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      */
     protected final void readMetaClass(String prefixedValue) {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
-        if (m.find()) {
-            BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromPrefix(m.group(1));
-            String name = m.group(2);
+        checkArgument(m.find(), "Malformed meta-class %s", prefixedValue);
 
-            currentElement.metaClass(new BasicMetaclass(ns, name));
-        }
-        else {
-            throw new IllegalArgumentException("Malformed meta-class " + prefixedValue);
-        }
+        BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromPrefix(m.group(1));
+        String name = m.group(2);
+
+        currentElement.metaClass(new BasicMetaclass(ns, name));
     }
 
     /**

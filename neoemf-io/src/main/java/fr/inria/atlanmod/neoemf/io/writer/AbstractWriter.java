@@ -21,13 +21,12 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkEqualTo;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -95,7 +94,7 @@ public abstract class AbstractWriter<T> implements Writer {
 
     @Override
     public final void onAttribute(BasicAttribute attribute) {
-        checkArgument(Objects.equals(previousId.getLast(), attribute.owner()),
+        checkEqualTo(previousId.getLast(), attribute.owner(),
                 "%s is not the owner of this attribute (%s)", previousId.getLast(), attribute.owner());
 
         if (!attribute.isMany()) {
@@ -110,7 +109,7 @@ public abstract class AbstractWriter<T> implements Writer {
     @Override
     public final void onReference(BasicReference reference) {
         if (!reference.isContainment()) { // Containment references are processed differently from standard references
-            checkArgument(Objects.equals(previousId.getLast(), reference.owner()),
+            checkEqualTo(previousId.getLast(), reference.owner(),
                     "%s is not the owner of this reference (%s)", previousId.getLast(), reference.owner());
         }
 
