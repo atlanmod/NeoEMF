@@ -36,6 +36,6 @@ enum RedirectionType {
 
     @Override
     public String toString() {
-        return "With " + label;
+        return label;
     }
 }

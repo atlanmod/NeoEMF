@@ -32,6 +32,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
@@ -47,6 +48,9 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 @ParametersAreNonnullByDefault
 @SuppressWarnings("ConstantConditions") // Test with `@Nonnull`
 public abstract class AbstractDataMapperTest extends AbstractUnitTest {
+
+    @Nonnull
+    private static final String TEST_NAME_PATTERN = "[{index}] With {0}";
 
     /**
      * The default {@link Id} used to store features.
@@ -275,7 +279,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ValueMapper#valueOf(SingleFeatureBean)} and {@link
      * ValueMapper#valueFor(SingleFeatureBean, Object)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testGetSet_Single(RedirectionType type, Object value0, Object value1) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -290,7 +294,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ValueMapper#valueOf(SingleFeatureBean)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testGet_Single_NotDefined(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -303,7 +307,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ValueMapper#valueFor(SingleFeatureBean, Object)} with a {@code null} value.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testSet_Single_Null(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -316,7 +320,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ValueMapper#removeValue(SingleFeatureBean)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testRemove_Single(RedirectionType type, Object value0) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -331,7 +335,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ValueMapper#removeValue(SingleFeatureBean)} when the value doesn't exist.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testRemove_Single_NotDefined(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -349,7 +353,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#valueOf(ManyFeatureBean)} and {@link
      * ManyValueMapper#valueFor(ManyFeatureBean, Object)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testGetSet_Many(RedirectionType type, Object value0, Object value1, Object value2, Object value3) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -366,7 +370,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#valueOf(ManyFeatureBean)} when the value doesn't exist.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testGet_Many_NotDefined(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -380,7 +384,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureBean, Object)} when the reference doesn't
      * exist.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testSet_Many_NotDefined(RedirectionType type, Object value0, Object value1) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -399,7 +403,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#valueFor(ManyFeatureBean, Object)} with a {@code null} value.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testSet_Many_Null(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -412,7 +416,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#allValuesOf(SingleFeatureBean)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testGetAll_Many(RedirectionType type, Object value0, Object value1, Object value2) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -431,7 +435,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#allValuesOf(SingleFeatureBean)} when the feature doesn't contain
      * any element.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testGetAll_Many_Empty(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -444,7 +448,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureBean, Object)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAdd_Many(RedirectionType type, Object value0, Object value1, Object value2) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -463,7 +467,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureBean, Object)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAdd_Many_OverSize(RedirectionType type, Object value0) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -476,7 +480,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#addValue(ManyFeatureBean, Object)} with a {@code null} value.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAdd_Many_Null(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -489,7 +493,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#appendValue(SingleFeatureBean, Object)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAppend_Many(RedirectionType type, Object value0, Object value1) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -508,7 +512,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#appendValue(SingleFeatureBean, Object)} with a {@code null} value.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAppend_Many_Null(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -522,7 +526,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature is not
      * defined yet.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAddAll_Many_FromStart(RedirectionType type, Object value0, Object value1) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -539,7 +543,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature is not
      * defined yet.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAddAll_Many_WithOffset(RedirectionType type, Object value0, Object value1) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -553,7 +557,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature already has
      * values.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAddAll_Many_FromMiddle(RedirectionType type, Object value0, Object value1, Object value2, Object value3) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -575,7 +579,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} when the feature already has
      * values.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAddAll_Many_FromEnd(RedirectionType type, Object value0, Object value1, Object value2) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -594,7 +598,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with an empty collection.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAddAll_Many_Empty(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -608,7 +612,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with a collection that
      * contains a {@code null} element.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAddAll_Many_WithNull(RedirectionType type, Object value0) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -622,7 +626,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#addAllValues(ManyFeatureBean, List)} with a {@code null}
      * collection.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAddAll_Many_Null(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -636,7 +640,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureBean, List)} when the feature is not
      * defined yet.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAppendAll_Many_FromStart(RedirectionType type, Object value0, Object value1) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -656,7 +660,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureBean, List)} when the feature already
      * has values.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAppendAll_Many_FromEnd(RedirectionType type, Object value0, Object value1, Object value2) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -681,7 +685,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureBean, List)} with an empty
      * collection.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAppendAll_Many_Empty(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -695,7 +699,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureBean, List)} with a collection that
      * contains a {@code null} element.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAppendAll_Many_WithNull(RedirectionType type, Object value0) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -709,7 +713,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
      * Checks the behavior of {@link ManyValueMapper#appendAllValues(SingleFeatureBean, List)} with a {@code null}
      * collection.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testAppendAll_Many_Null(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -722,7 +726,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testRemove_Many(RedirectionType type, Object value0, Object value1) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -739,7 +743,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testRemove_Many_Before(RedirectionType type, Object value0, Object value1, Object value2) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -758,7 +762,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testRemove_Many_After(RedirectionType type, Object value0, Object value1, Object value2) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -777,7 +781,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testRemove_Many_Last(RedirectionType type, Object value0, Object value1, Object value2) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -796,7 +800,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#removeValue(ManyFeatureBean)} when the value doesn't exist.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testRemove_Many_NotDefined(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -809,7 +813,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#removeAllValues(SingleFeatureBean)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testRemoveAll_Many(RedirectionType type, Object value0, Object value1, Object value2) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -828,7 +832,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#removeAllValues(SingleFeatureBean)} when the value doesn't exist.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testRemoveAll_Many_NotDefined(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -841,7 +845,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#sizeOfValue(SingleFeatureBean)}.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testSize_Many(RedirectionType type, Object value0, Object value1, Object value2) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
@@ -856,7 +860,7 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     /**
      * Checks the behavior of {@link ManyValueMapper#sizeOfValue(SingleFeatureBean)} when the value doesn't exist.
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = TEST_NAME_PATTERN)
     @ArgumentsSource(ParametersProvider.class)
     public void testSize_Many_NotDefined(RedirectionType type) {
         DataMapperRedirector m = new DataMapperRedirector(mapper, type);
