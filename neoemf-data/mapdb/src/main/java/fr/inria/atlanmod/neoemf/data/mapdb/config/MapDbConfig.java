@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
-@FactoryBinding(MapDbBackendFactory.class)
+@FactoryBinding(factory = MapDbBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class MapDbConfig extends BaseConfig<MapDbConfig> {
 

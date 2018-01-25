@@ -11,7 +11,6 @@ package fr.inria.atlanmod.neoemf.resource;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
-import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
@@ -110,14 +109,14 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Override
     @SuppressWarnings("unchecked")
-    public void save(Map<?, ?> options) throws IOException {
-        save(Config.forScheme(uri.scheme()).merge((Map<String, Object>) options));
+    public void save(Map<?, ?> options) {
+        save(BaseConfig.newConfig().merge((Map<String, Object>) options));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void load(Map<?, ?> options) throws IOException {
-        load(Config.forScheme(uri.scheme()).merge((Map<String, Object>) options));
+        load(BaseConfig.newConfig().merge((Map<String, Object>) options));
     }
 
     @Override

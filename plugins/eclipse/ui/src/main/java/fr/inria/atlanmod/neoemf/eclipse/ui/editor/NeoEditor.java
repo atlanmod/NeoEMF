@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
@@ -59,7 +60,7 @@ public class NeoEditor extends EcoreEditor {
 
             Resource resource = resourceSet.createResource(uri);
 
-            // Create the configuration depending of the backend
+            // Create a default configuration: the exact instance will be create when loading the existing configuration
             ImmutableConfig config = Config.forScheme(uriScheme)
                     .cacheContainers()
                     .cacheMetaClasses()

@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
-@FactoryBinding(HBaseBackendFactory.class)
+@FactoryBinding(factory = HBaseBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class HBaseUri extends AbstractUriBuilder {
 
@@ -39,17 +39,18 @@ public class HBaseUri extends AbstractUriBuilder {
      * @return a new builder
      */
     @Nonnull
+    @SuppressWarnings("unused") // Called dynamically
     public static UriBuilder builder() {
         return new HBaseUri();
     }
 
     @Override
-    protected boolean supportsFile() {
+    public boolean supportsFile() {
         return false;
     }
 
     @Override
-    protected boolean supportsServer() {
+    public boolean supportsServer() {
         return true;
     }
 }

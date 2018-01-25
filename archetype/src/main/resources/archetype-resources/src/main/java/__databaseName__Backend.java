@@ -8,7 +8,6 @@
 
 package ${package};
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.data.Backend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -29,12 +28,12 @@ public interface ${databaseName}Backend extends Backend {
     @Override
     default boolean isPersistent() {
         // TODO Implement this method
-        throw Throwables.notImplementedYet("isPersistent");
+        return true;
     }
 
     @Override
     default boolean isDistributed() {
         // TODO Implement this method
-        throw Throwables.notImplementedYet("isDistributed");
+        return false;
     }
 }

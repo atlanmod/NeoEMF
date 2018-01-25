@@ -24,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
-@FactoryBinding(InMemoryBackendFactory.class)
+@FactoryBinding(factory = InMemoryBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class InMemoryUri extends AbstractUriBuilder {
 
@@ -40,17 +40,18 @@ public class InMemoryUri extends AbstractUriBuilder {
      * @return a new builder
      */
     @Nonnull
+    @SuppressWarnings("unused") // Called dynamically
     public static UriBuilder builder() {
         return new InMemoryUri();
     }
 
     @Override
-    protected boolean supportsFile() {
+    public boolean supportsFile() {
         return true;
     }
 
     @Override
-    protected boolean supportsServer() {
+    public boolean supportsServer() {
         return false;
     }
 }

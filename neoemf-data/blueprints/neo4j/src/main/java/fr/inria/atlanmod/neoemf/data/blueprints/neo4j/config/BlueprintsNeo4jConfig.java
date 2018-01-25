@@ -12,6 +12,8 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config;
 
+import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BaseBlueprintsConfig;
 
 import javax.annotation.Nonnull;
@@ -22,6 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
+@FactoryBinding(factory = BlueprintsBackendFactory.class, variant = "neo4j")
 @ParametersAreNonnullByDefault
 public class BlueprintsNeo4jConfig extends BaseBlueprintsConfig<BlueprintsNeo4jConfig> {
 

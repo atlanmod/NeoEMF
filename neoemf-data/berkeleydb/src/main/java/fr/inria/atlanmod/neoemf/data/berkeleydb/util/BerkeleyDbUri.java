@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
-@FactoryBinding(BerkeleyDbBackendFactory.class)
+@FactoryBinding(factory = BerkeleyDbBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class BerkeleyDbUri extends AbstractUriBuilder {
 
@@ -39,17 +39,18 @@ public class BerkeleyDbUri extends AbstractUriBuilder {
      * @return a new builder
      */
     @Nonnull
+    @SuppressWarnings("unused") // Called dynamically
     public static UriBuilder builder() {
         return new BerkeleyDbUri();
     }
 
     @Override
-    protected boolean supportsFile() {
+    public boolean supportsFile() {
         return true;
     }
 
     @Override
-    protected boolean supportsServer() {
+    public boolean supportsServer() {
         return false;
     }
 }

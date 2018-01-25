@@ -8,6 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.config;
 
+import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
+
 import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
@@ -18,6 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
+@FactoryBinding(factory = BlueprintsBackendFactory.class, variant = "tinkergraph")
 @ParametersAreNonnullByDefault
 public class BlueprintsTinkerConfig extends BaseBlueprintsConfig<BlueprintsTinkerConfig> {
 

@@ -65,7 +65,7 @@ public final class MockBackendFactory extends AbstractBackendFactory<MockBackend
         return backend;
     }
 
-    @FactoryBinding(MockBackendFactory.class)
+    @FactoryBinding(factory = MockBackendFactory.class)
     @ParametersAreNonnullByDefault
     @SuppressWarnings("unused") // Called dynamically
     public static final class MockConfig extends BaseConfig<MockConfig> {
@@ -75,7 +75,7 @@ public final class MockBackendFactory extends AbstractBackendFactory<MockBackend
         }
     }
 
-    @FactoryBinding(MockBackendFactory.class)
+    @FactoryBinding(factory = MockBackendFactory.class)
     @ParametersAreNonnullByDefault
     @SuppressWarnings("unused") // Called dynamically
     public static final class MockUri extends AbstractUriBuilder {
@@ -85,12 +85,12 @@ public final class MockBackendFactory extends AbstractBackendFactory<MockBackend
         }
 
         @Override
-        protected boolean supportsFile() {
+        public boolean supportsFile() {
             return true;
         }
 
         @Override
-        protected boolean supportsServer() {
+        public boolean supportsServer() {
             return false;
         }
     }

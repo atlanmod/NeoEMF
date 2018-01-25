@@ -68,6 +68,8 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    // region Conditional tests
+
     /**
      * Checks the creation of a file-based {@link URI} from another {@link URI}.
      */
@@ -75,7 +77,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
     public void testCreateUriFromUriIfNotSupported() {
         AbstractUriBuilder uriBuilder = AbstractUriBuilder.class.cast(UriBuilder.forScheme(context().uriScheme()));
 
-        assumeFalse(uriBuilder.supportsFile());
+        assumeFalse(uriBuilder.supportsFile(), String.format("%s supports file-based URI", uriBuilder.getClass().getSimpleName()));
 
         assertThat(catchThrowable(() -> uriBuilder.fromUri(URI.createURI("uri0"))))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
@@ -86,9 +88,8 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromFileIfNotSupported() {
-        AbstractUriBuilder uriBuilder = AbstractUriBuilder.class.cast(UriBuilder.forScheme(context().uriScheme()));
-
-        assumeFalse(uriBuilder.supportsFile());
+        UriBuilder uriBuilder = UriBuilder.forScheme(context().uriScheme());
+        assumeFalse(uriBuilder.supportsFile(), String.format("%s supports file-based URI", uriBuilder.getClass().getSimpleName()));
 
         assertThat(catchThrowable(() -> uriBuilder.fromFile("file0")))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
@@ -99,11 +100,12 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromServerIfNotSupported() {
-        AbstractUriBuilder uriBuilder = AbstractUriBuilder.class.cast(UriBuilder.forScheme(context().uriScheme()));
-
-        assumeFalse(uriBuilder.supportsServer());
+        UriBuilder uriBuilder = UriBuilder.forScheme(context().uriScheme());
+        assumeFalse(uriBuilder.supportsServer(), String.format("%s supports server-based URI", uriBuilder.getClass().getSimpleName()));
 
         assertThat(catchThrowable(() -> uriBuilder.fromServer("host", 0, "segments")))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
+
+    // endregion
 }

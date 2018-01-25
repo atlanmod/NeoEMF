@@ -62,11 +62,16 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     static final String BACKEND = createKey(BASE_PREFIX, "backend");
 
     /**
-     * The key identifying the {@link fr.inria.atlanmod.neoemf.data.BackendFactory}.
+     * The key identifying the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} type.
      *
      * @see fr.inria.atlanmod.neoemf.data.BackendFactory#name()
      */
     static final String BACKEND_TYPE = createKey(BACKEND, "type");
+
+    /**
+     * The key identifying the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} binding.
+     */
+    static final String BACKEND_VARIANT = createKey(BACKEND, "variant");
 
     /**
      * The key identifying the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.Backend}.
@@ -117,7 +122,8 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      */
     protected BaseConfig() {
         if (getClass() != BaseConfig.class) { // The only exception
-            setName(BindingEngine.factoryFor(getClass()).name());
+            setName(BindingEngine.nameOf(getClass()));
+            setVariant(BindingEngine.variantOf(getClass()));
         }
     }
 
@@ -181,6 +187,19 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @SuppressWarnings("UnusedReturnValue")
     private C setName(String name) {
         return addOption(BACKEND_TYPE, name);
+    }
+
+    @Nonnull
+    @Override
+    public String getVariant() {
+        return this.<String>getOption(BACKEND_VARIANT)
+                .<InvalidConfigException>orElseThrow(() -> new InvalidConfigException("The variant is not defined"));
+    }
+
+    @Nonnull
+    @SuppressWarnings("UnusedReturnValue")
+    private C setVariant(String variant) {
+        return addOption(BACKEND_VARIANT, variant);
     }
 
     @Nonnull

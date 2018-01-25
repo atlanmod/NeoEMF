@@ -100,7 +100,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
      * @param expectedSize the expected size
      */
     protected void assertConfigurationHasSize(ImmutableConfig config, int expectedSize) {
-        assertThat(config.toMap()).hasSize(expectedSize + 1);
+        assertThat(config.toMap()).hasSize(expectedSize + 2);
     }
 
     /**

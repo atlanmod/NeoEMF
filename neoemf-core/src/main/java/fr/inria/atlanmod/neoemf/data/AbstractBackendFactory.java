@@ -107,7 +107,7 @@ public abstract class AbstractBackendFactory<C extends Config> extends AbstractM
         Path directory = uriToPath(uri);
 
         // Merge and check conflicts between the two configurations, or create a new default mutable configuration
-        C mergedConfig = (C) Config.load(directory).orElseGet(() -> Config.forName(name())).merge(baseConfig);
+        C mergedConfig = (C) Config.load(directory).orElseGet(() -> Config.forName(baseConfig.getName(), baseConfig.getVariant())).merge(baseConfig);
 
         Backend newBackend = createLocalBackend(directory, mergedConfig);
 
@@ -151,7 +151,7 @@ public abstract class AbstractBackendFactory<C extends Config> extends AbstractM
         URL url = uriToUrl(uri);
 
         // Create a new default mutable configuration
-        C mergedConfig = (C) Config.forName(name()).merge(baseConfig);
+        C mergedConfig = (C) Config.forName(baseConfig.getName(), baseConfig.getVariant()).merge(baseConfig);
 
         return createRemoteBackend(url, mergedConfig);
     }

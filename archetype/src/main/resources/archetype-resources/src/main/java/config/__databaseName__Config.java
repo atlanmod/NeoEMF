@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
-@FactoryBinding(${databaseName}BackendFactory.class)
+@FactoryBinding(factory = ${databaseName}BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class ${databaseName}Config extends BaseConfig<${databaseName}Config> {
 

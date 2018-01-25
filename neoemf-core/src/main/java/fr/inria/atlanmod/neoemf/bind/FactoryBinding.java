@@ -27,10 +27,24 @@ import javax.annotation.Nonnull;
 public @interface FactoryBinding {
 
     /**
-     * The type of the bound {@link BackendFactory}.
+     * The default variant.
+     */
+    @Nonnull
+    String DEFAULT_VARIANT = "default";
+
+    /**
+     * The type of the {@link BackendFactory} implied by this binding.
      *
      * @return the type
      */
     @Nonnull
-    Class<? extends BackendFactory> value();
+    Class<? extends BackendFactory> factory();
+
+    /**
+     * The variant identifier of this binding; should be unique by {@link #factory()}.
+     *
+     * @return the variant identifier
+     */
+    @Nonnull
+    String variant() default DEFAULT_VARIANT;
 }

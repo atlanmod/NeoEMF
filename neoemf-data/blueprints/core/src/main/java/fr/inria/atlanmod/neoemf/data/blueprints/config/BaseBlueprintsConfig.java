@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  *
  * @param <C> the "self"-type of this {@link fr.inria.atlanmod.neoemf.config.Config}
  */
-@FactoryBinding(BlueprintsBackendFactory.class)
+@FactoryBinding(factory = BlueprintsBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends BaseConfig<C> {
 
@@ -54,9 +54,9 @@ public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends Bas
     /**
      * Constructs a new {@code BaseBlueprintsConfig} instance with default settings.
      * <p>
-     * This method is used to create a Blueprints configuration when calling Config{@link #forName(String)} or
-     * Config{@link #forScheme(String)}: a specific implementation is not necessary because all the default values
-     * ​​have already been defined when they have been created.
+     * This method is used to create a Blueprints configuration when calling {@link #forName(String, String)} or
+     * {@link #forScheme(String)}: a specific implementation is not necessary because all the default values have
+     * already been defined when they have been created.
      *
      * @return a new configuration
      */

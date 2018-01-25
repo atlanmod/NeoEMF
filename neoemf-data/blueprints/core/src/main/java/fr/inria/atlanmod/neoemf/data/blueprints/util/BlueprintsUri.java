@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
-@FactoryBinding(BlueprintsBackendFactory.class)
+@FactoryBinding(factory = BlueprintsBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class BlueprintsUri extends AbstractUriBuilder {
 
@@ -39,17 +39,18 @@ public class BlueprintsUri extends AbstractUriBuilder {
      * @return a new builder
      */
     @Nonnull
+    @SuppressWarnings("unused") // Called dynamically
     public static UriBuilder builder() {
         return new BlueprintsUri();
     }
 
     @Override
-    protected boolean supportsFile() {
+    public boolean supportsFile() {
         return true;
     }
 
     @Override
-    protected boolean supportsServer() {
+    public boolean supportsServer() {
         return false;
     }
 }

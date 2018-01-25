@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
-@FactoryBinding(HBaseBackendFactory.class)
+@FactoryBinding(factory = HBaseBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class HBaseConfig extends BaseConfig<HBaseConfig> {
 

@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.neoemf.bind.BindingEngine;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -46,7 +47,7 @@ public interface UriBuilder {
      */
     @Nonnull
     static UriBuilder forName(String name) {
-        return BindingEngine.findBy(UriBuilder.class, name, BindingEngine::nameOf);
+        return BindingEngine.findBy(UriBuilder.class, BindingEngine::nameOf, name, null);
     }
 
     /**
@@ -58,8 +59,22 @@ public interface UriBuilder {
      */
     @Nonnull
     static UriBuilder forScheme(String scheme) {
-        return BindingEngine.findBy(UriBuilder.class, scheme, BindingEngine::schemeOf);
+        return BindingEngine.findBy(UriBuilder.class, BindingEngine::schemeOf, scheme, null);
     }
+
+    /**
+     * Checks that the {@link BackendFactory} associated to the created {@link URI} supports file-based storage.
+     *
+     * @return {@code true} if file-based {@link URI}s are supported
+     */
+    boolean supportsFile();
+
+    /**
+     * Checks that the {@link BackendFactory} associated to the created {@link URI} supports server-based storage.
+     *
+     * @return {@code true} if server-based {@link URI}s are supported
+     */
+    boolean supportsServer();
 
     /**
      * Creates a new {@code URI} from the given {@code uri}.

@@ -8,7 +8,6 @@
 
 package ${package}.util;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
@@ -25,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
-@FactoryBinding(${databaseName}BackendFactory.class)
+@FactoryBinding(factory = ${databaseName}BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class ${databaseName}Uri extends AbstractUriBuilder {
 
@@ -41,19 +40,20 @@ public class ${databaseName}Uri extends AbstractUriBuilder {
      * @return a new builder
      */
     @Nonnull
+    @SuppressWarnings("unused") // Called dynamically
     public static UriBuilder builder() {
         return new ${databaseName}Uri();
     }
 
     @Override
-    protected boolean supportsFile() {
+    public boolean supportsFile() {
         // TODO Implement this method
-        throw Throwables.notImplementedYet("supportsFile");
+        return true;
     }
 
     @Override
-    protected boolean supportsServer() {
+    public boolean supportsServer() {
         // TODO Implement this method
-        throw Throwables.notImplementedYet("supportsServer");
+        return true;
     }
 }

@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -37,14 +38,15 @@ public interface Config extends ImmutableConfig {
      * Retrieves the instance of {@code Config} that is associated to a {@link fr.inria.atlanmod.neoemf.data.BackendFactory}
      * wearing the specified {@code name}.
      *
-     * @param name the name of the factory
-     * @param <C>  the type of the configuration
+     * @param name    the name of the factory
+     * @param variant the variant of the binding
+     * @param <C>     the type of the configuration
      *
      * @return a new instance of {@code Config}
      */
     @Nonnull
-    static <C extends Config> C forName(String name) {
-        return BindingEngine.findBy(Config.class, name, BindingEngine::nameOf);
+    static <C extends Config> C forName(String name, @Nullable String variant) {
+        return BindingEngine.findBy(Config.class, BindingEngine::nameOf, name, variant);
     }
 
     /**
@@ -58,7 +60,7 @@ public interface Config extends ImmutableConfig {
      */
     @Nonnull
     static <C extends Config> C forScheme(String scheme) {
-        return BindingEngine.findBy(Config.class, scheme, BindingEngine::schemeOf);
+        return BindingEngine.findBy(Config.class, BindingEngine::schemeOf, scheme, null);
     }
 
     /**
@@ -78,7 +80,7 @@ public interface Config extends ImmutableConfig {
     static <C extends Config> Optional<C> load(Path directory) throws IOException {
         if (ConfigFile.exists(directory)) {
             ConfigFile configFile = ConfigFile.load(directory);
-            C config = (C) Config.forName(configFile.get(BaseConfig.BACKEND_TYPE)).merge(configFile.toMap());
+            C config = (C) forName(configFile.get(BaseConfig.BACKEND_TYPE), configFile.get(BaseConfig.BACKEND_VARIANT)).merge(configFile.toMap());
             return Optional.of(config);
         }
 

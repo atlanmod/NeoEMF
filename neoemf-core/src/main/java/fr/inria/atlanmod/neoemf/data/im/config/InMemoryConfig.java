@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
-@FactoryBinding(InMemoryBackendFactory.class)
+@FactoryBinding(factory = InMemoryBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class InMemoryConfig extends BaseConfig<InMemoryConfig> {
 

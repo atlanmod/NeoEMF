@@ -60,6 +60,14 @@ public interface ImmutableConfig {
     String getName();
 
     /**
+     * Returns the variant of the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} binding.
+     *
+     * @return the variant
+     */
+    @Nonnull
+    String getVariant();
+
+    /**
      * Returns the defined mapping.
      *
      * @return the class name of the mapping

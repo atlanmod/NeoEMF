@@ -69,12 +69,12 @@ public abstract class AbstractUriBuilder implements UriBuilder {
         return new AbstractUriBuilder(scheme) {
 
             @Override
-            protected boolean supportsFile() {
+            public boolean supportsFile() {
                 return true;
             }
 
             @Override
-            protected boolean supportsServer() {
+            public boolean supportsServer() {
                 return true;
             }
         };
@@ -91,18 +91,28 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     }
 
     /**
-     * Checks that the {@link BackendFactory} associated to the created {@link URI} supports file-based storage.
+     * Creates a new {@code URI} from the given {@code uri} by checking the referenced file exists on the file system.
      *
-     * @return {@code true} if file-based {@link URI}s are supported
+     * @param uri the base filed-based {@link URI}
+     *
+     * @return a new URI
+     *
+     * @throws UnsupportedOperationException if this URI builder does not support this method
+     * @throws NullPointerException          if the {@code uri} is {@code null}
      */
-    protected abstract boolean supportsFile();
+    @Nonnull
+    private URI fromFile(URI uri) {
+        checkArgument(uri.isFile(), "Expecting a file-based URI but was '%s'", uri.toString());
 
-    /**
-     * Checks that the {@link BackendFactory} associated to the created {@link URI} supports server-based storage.
-     *
-     * @return {@code true} if server-based {@link URI}s are supported
-     */
-    protected abstract boolean supportsServer();
+        final URI baseUri = URI.createHierarchicalURI(scheme(),
+                uri.authority(),
+                uri.device(),
+                uri.segments(),
+                uri.query(),
+                uri.fragment());
+
+        return fromUri(baseUri);
+    }
 
     @Nonnull
     @Override
@@ -168,29 +178,5 @@ public abstract class AbstractUriBuilder implements UriBuilder {
                 segments,
                 null,
                 null);
-    }
-
-    /**
-     * Creates a new {@code URI} from the given {@code uri} by checking the referenced file exists on the file system.
-     *
-     * @param uri the base filed-based {@link URI}
-     *
-     * @return a new URI
-     *
-     * @throws UnsupportedOperationException if this URI builder does not support this method
-     * @throws NullPointerException          if the {@code uri} is {@code null}
-     */
-    @Nonnull
-    private URI fromFile(URI uri) {
-        checkArgument(uri.isFile(), "Expecting a file-based URI but was '%s'", uri.toString());
-
-        final URI baseUri = URI.createHierarchicalURI(scheme(),
-                uri.authority(),
-                uri.device(),
-                uri.segments(),
-                uri.query(),
-                uri.fragment());
-
-        return fromUri(baseUri);
     }
 }

@@ -26,14 +26,17 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.annotation.Annotation;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -46,7 +49,6 @@ import static java.util.Objects.nonNull;
  */
 @Static
 @ParametersAreNonnullByDefault
-// TODO Handle the case of a name/scheme that refers to several factories (`factoryFor`, `findAny`): overriding factory
 public final class BindingEngine {
 
     /**
@@ -91,6 +93,18 @@ public final class BindingEngine {
         ClasspathCollector.getInstance().register(new BundleContextCollector(context));
     }
 
+    /**
+     * Creates a new default configuration for classpath analysis.
+     *
+     * @return a new configuration
+     */
+    @Nonnull
+    private static ConfigurationBuilder createConfiguration() {
+        return new ConfigurationBuilder()
+                .setExecutorService(getBindingPool())
+                .setUrls(ClasspathCollector.getInstance().get());
+    }
+
     // region Reflection
 
     /**
@@ -120,26 +134,16 @@ public final class BindingEngine {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    private static <T> Set<Class<? extends T>> typesAnnotatedWith(Class<? extends Annotation> annotation, Class<? extends T> type) {
+    private static <T> Set<Class<? extends T>> typesAnnotatedWith(Class<? extends Annotation> annotation, Class<? super T> type) {
         return typesAnnotatedWith(annotation).stream()
                 .filter(type::isAssignableFrom)
                 .map(c -> (Class<? extends T>) c)
                 .collect(Collectors.toSet());
     }
 
-    /**
-     * Creates a new default configuration for classpath analysis.
-     *
-     * @return a new configuration
-     */
-    @Nonnull
-    private static ConfigurationBuilder createConfiguration() {
-        return new ConfigurationBuilder()
-                .setExecutorService(getBindingPool())
-                .setUrls(ClasspathCollector.getInstance().get());
-    }
-
     // endregion
+
+    // region Annotation processing
 
     /**
      * Retrieves the {@link URI} scheme for the speficied {@code type}.
@@ -190,9 +194,30 @@ public final class BindingEngine {
     }
 
     /**
+     * Retrieves the variant for the specified {@code type}.
+     * <p>
+     * The {@code type} must be annotated with {@link FactoryBinding}.
+     *
+     * @param type the type
+     *
+     * @return the variant
+     */
+    @Nonnull
+    public static String variantOf(Class<?> type) {
+        checkNotNull(type, "type");
+
+        return Optional.of(type)
+                .filter(t -> t.isAnnotationPresent(FactoryBinding.class))
+                .map(t -> t.getAnnotation(FactoryBinding.class))
+                .map(FactoryBinding::variant)
+                .orElseThrow(() -> new BindingException(
+                        String.format("%s is not annotated with %s: Unable to retrieve the variant", type.getName(), FactoryBinding.class.getName())));
+    }
+
+    /**
      * Retrieves the {@link BackendFactory} associated to the {@code type}.
      * <p>
-     * The {@code type} <b>must</b> be annotated with {@link FactoryBinding}.
+     * The {@code type} <b>must</b> be annotated with {@link FactoryBinding}, or implements {@link BackendFactory}.
      *
      * @param type the type of the instance to look for
      *
@@ -207,12 +232,11 @@ public final class BindingEngine {
         checkNotNull(type, "type");
 
         Class<? extends BackendFactory> factoryType = null;
-
         if (BackendFactory.class.isAssignableFrom(type)) {
             factoryType = (Class<? extends BackendFactory>) type;
         }
         else if (type.isAnnotationPresent(FactoryBinding.class)) {
-            factoryType = type.getAnnotation(FactoryBinding.class).value();
+            factoryType = type.getAnnotation(FactoryBinding.class).factory();
         }
 
         return Optional.ofNullable(factoryType)
@@ -232,7 +256,7 @@ public final class BindingEngine {
     public static Set<BackendFactory> allFactories() {
         return typesAnnotatedWith(FactoryBinding.class, UriBuilder.class)
                 .stream()
-                .map(t -> t.getAnnotation(FactoryBinding.class).value())
+                .map(t -> t.getAnnotation(FactoryBinding.class).factory())
                 .distinct()
                 .map(MoreReflection::newInstance)
                 .collect(Collectors.toSet());
@@ -245,8 +269,9 @@ public final class BindingEngine {
      * The {@code type} <b>must</b> be annotated with {@link FactoryBinding}.
      *
      * @param type         the type of the instance to look for
-     * @param value        the expected value
-     * @param valueMapping the function used to retrieve the current value of a factory
+     * @param valueMapping the mapping function to retrieve the value from the factory bound by the annotation
+     * @param value        the value to look for
+     * @param variant      the variant to look for
      * @param <T>          the type of the instance
      *
      * @return a new instance of the {@code type}
@@ -255,16 +280,34 @@ public final class BindingEngine {
      * @throws ReflectionException if an error occurs during the instantiation
      */
     @Nonnull
-    public static <T> T findBy(Class<? super T> type, String value, Function<Class<? extends BackendFactory>, String> valueMapping) {
-        return (T) typesAnnotatedWith(FactoryBinding.class, type)
+    public static <T> T findBy(Class<? super T> type, Function<Class<? extends BackendFactory>, String> valueMapping, String value, @Nullable String variant) {
+        final String variantOrDefault = Optional.ofNullable(variant).orElse(FactoryBinding.DEFAULT_VARIANT);
+
+        // Predicate to filter types according to their annotation
+        final Predicate<Class<? extends T>> predicate = t -> {
+            FactoryBinding a = t.getDeclaredAnnotation(FactoryBinding.class);
+
+            return nonNull(a)
+                    && Objects.equals(value, valueMapping.apply(a.factory()))
+                    && Objects.equals(variantOrDefault, a.variant());
+        };
+
+        // Find all types that match the value and variant
+        List<Class<? extends T>> relevantTypes = BindingEngine.<T>typesAnnotatedWith(FactoryBinding.class, type)
                 .stream()
-                .filter(t -> {
-                    FactoryBinding a = t.getDeclaredAnnotation(FactoryBinding.class);
-                    return nonNull(a) && Objects.equals(value, valueMapping.apply(a.value()));
-                })
-                .findFirst()
-                .map(MoreReflection::newInstance)
-                .orElseThrow(() -> new BindingException(
-                        String.format("Unable to find a %s instance for value \"%s\"", type.getName(), value)));
+                .filter(predicate)
+                .collect(Collectors.toList());
+
+        // Ensure that only one type is relevant
+        if (relevantTypes.isEmpty()) {
+            throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; No relevant type found", type.getName(), value, variantOrDefault));
+        }
+        else if (relevantTypes.size() > 1) {
+            throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; Several relevant types found : %s", type.getName(), value, variantOrDefault, relevantTypes));
+        }
+
+        return MoreReflection.newInstance(relevantTypes.get(0));
     }
+
+    // endregion
 }

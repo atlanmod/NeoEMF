@@ -47,12 +47,24 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 public class ClasspathCollector implements URLCollector {
 
     /**
+     * The annotation used to determine the relation with NeoEMF.
+     */
+    @Nonnull
+    private static final Class<? extends Annotation> BASE_ANNOTATION = FactoryBinding.class;
+
+    /**
+     * The identifier of the phase 'ready-to-use' of the {@link #phaser}. In this state, no analysis is in progress.
+     */
+    @Nonnegative
+    private static final int READY = 0;
+
+    /**
      * The {@link Converter} used to manipulate {@link URI}s instead of {@link URL}s.
      * <p>
      * Prefer to store {@link URI}s because of the {@link URL#equals(Object)} method.
      */
     @Nonnull
-    private static final Converter<URL, URI> URL_TO_URI = Converter.from(
+    private final Converter<URL, URI> urlToUri = Converter.from(
             url -> {
                 try {
                     return url.toURI();
@@ -69,18 +81,6 @@ public class ClasspathCollector implements URLCollector {
                     throw Throwables.wrap(e, IllegalStateException.class);
                 }
             });
-
-    /**
-     * The annotation used to determine the relation with NeoEMF.
-     */
-    @Nonnull
-    private static final Class<? extends Annotation> BASE_ANNOTATION = FactoryBinding.class;
-
-    /**
-     * The identifier of the phase 'ready-to-use' of the {@link #phaser}. In this state, no analysis is in progress.
-     */
-    @Nonnegative
-    private static final int READY = 0;
 
     /**
      * The concurrent pool for managing classpath analysis tasks.
@@ -121,7 +121,7 @@ public class ClasspathCollector implements URLCollector {
         Log.debug("Classpath analysis is complete [phase = {0}]", phaser.getRegisteredParties());
 
         return registeredUris.stream()
-                .map(URL_TO_URI::revert)
+                .map(urlToUri::revert)
                 .collect(Collectors.toSet());
     }
 
@@ -148,7 +148,7 @@ public class ClasspathCollector implements URLCollector {
                 // Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)
                 checkNotNull(urlCollector.get(), "urlCollector.get").stream()
                         .filter(url -> isRelated(url, baseConfig))
-                        .map(URL_TO_URI::convert)
+                        .map(urlToUri::convert)
                         .collect(Collectors.toCollection(() -> registeredUris));
             }
             catch (Exception e) {
