@@ -412,7 +412,10 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      */
     @Nonnull
     protected Optional<Vertex> get(Id id) {
-        return Optional.ofNullable(verticesCache.get(id, i -> graph.getVertex(idConverter.convert(i))));
+        return Optional.ofNullable(verticesCache.get(id, i -> {
+            final Object objectId = idConverter.convert(i);
+            return graph.getVertex(objectId);
+        }));
     }
 
     /**
@@ -425,9 +428,10 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      */
     @Nonnull
     protected Vertex getOrCreate(Id id) {
-        return verticesCache.get(id, i ->
-                Optional.ofNullable(graph.getVertex(idConverter.convert(i)))
-                        .orElseGet(() -> graph.addVertex(idConverter.convert(i))));
+        return verticesCache.get(id, i -> {
+            final Object objectId = idConverter.convert(i);
+            return Optional.ofNullable(graph.getVertex(objectId)).orElseGet(() -> graph.addVertex(objectId));
+        });
     }
 
     /**
