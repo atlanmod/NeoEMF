@@ -12,10 +12,10 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config;
 
+import com.tinkerpop.blueprints.impls.neo4j2.Neo4j2Graph;
+
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfigTest;
-
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -28,14 +28,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 class BlueprintsNeo4jConfigTest extends BlueprintsTinkerConfigTest {
 
     /**
-     * Checks the definition of the {@link BlueprintsNeo4jConfig#BLUEPRINTS_GRAPH} option, with the Neo4j type.
+     * Checks the definition of the Graph implementation, with the default type.
      */
-    @Test
-    void testNeo4jGraphTypeOption() throws IOException {
+    @Override
+    public void testGraphOption() throws IOException {
         resource.save(BlueprintsNeo4jConfig.newConfig());
 
         ImmutableConfig config = loadConfig();
-        assertConfigurationHasEntry(config, BlueprintsNeo4jConfig.BLUEPRINTS_GRAPH, BlueprintsNeo4jConfig.BLUEPRINTS_GRAPH_NEO4J);
+        assertConfigurationHasEntry(config, "blueprints.graph", Neo4j2Graph.class.getName());
         assertConfigurationHasSize(config, 4);
     }
 }

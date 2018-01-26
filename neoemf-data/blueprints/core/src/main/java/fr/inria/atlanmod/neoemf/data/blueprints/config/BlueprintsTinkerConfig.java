@@ -8,9 +8,12 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.config;
 
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 
+import java.nio.file.Path;
 import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
@@ -26,26 +29,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BlueprintsTinkerConfig extends BaseBlueprintsConfig<BlueprintsTinkerConfig> {
 
     /**
-     * The base prefix for all natives options related to TinkerGraph under Blueprints.
+     * The base prefix for all natives options related to {@link TinkerGraph} under Blueprints.
      */
     static final String TINKER_PREFIX = createKey(BLUEPRINTS_PREFIX, "tg");
-
-    /**
-     * The TinkerGraph option key to define the graph type to use.
-     */
-    static final String TINKER_GRAPH_TYPE = createKey(TINKER_PREFIX, "file-type");
-
-    /**
-     * The default option value to define TinkerGraph as the graph implementation to use.
-     */
-    static final String BLUEPRINTS_GRAPH_TINKER = "com.tinkerpop.blueprints.impls.tg.TinkerGraph";
 
     /**
      * Constructs a new {@code BlueprintsTinkerConfig}.
      */
     protected BlueprintsTinkerConfig() {
-        setGraph(BLUEPRINTS_GRAPH_TINKER);
-        setGraphType("GRAPHML");
+        setGraph(TinkerGraph.class);
+        setFileType(TinkerGraph.FileType.GRAPHML);
     }
 
     /**
@@ -58,24 +51,24 @@ public class BlueprintsTinkerConfig extends BaseBlueprintsConfig<BlueprintsTinke
         return new BlueprintsTinkerConfig();
     }
 
-    /**
-     * Defines the given TinkerGraph type in this configuration.
-     * <p>
-     * See {@code com.tinkerpop.blueprints.impls.tg.TinkerGraph.FileType} for more details.
-     *
-     * @param graphType the graph type
-     *
-     * @return this configuration (for chaining)
-     */
-    @Nonnull
-    protected BlueprintsTinkerConfig setGraphType(String graphType) {
-        return addOption(TINKER_GRAPH_TYPE, graphType);
+    @Override
+    public void setLocation(Path directory) {
+        addOption(createKey(TINKER_PREFIX, "directory"), directory.toString());
     }
 
     @Nonnull
     @Override
     protected Predicate<String> isReadOnlyKey() {
         return super.isReadOnlyKey()
-                .or(s -> s.equals(TINKER_GRAPH_TYPE));
+                .or(s -> s.equals(createKey(TINKER_PREFIX, "file-type")));
+    }
+
+    /**
+     * Defines the given {@link TinkerGraph} {@code fileType} in this configuration.
+     *
+     * @param fileType the graph type
+     */
+    protected void setFileType(TinkerGraph.FileType fileType) {
+        addOption(createKey(TINKER_PREFIX, "file-type"), fileType.name());
     }
 }

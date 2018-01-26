@@ -150,6 +150,8 @@ public interface Config extends ImmutableConfig {
     @Nonnull
     <V> Config addOption(String key, V value);
 
+    // region Stores
+
     /**
      * Adds a feature defined by the given {@code storeType} in this configuration.
      *
@@ -249,4 +251,6 @@ public interface Config extends ImmutableConfig {
      */
     @Nonnull
     Config recordStats();
+
+    // endregion
 }

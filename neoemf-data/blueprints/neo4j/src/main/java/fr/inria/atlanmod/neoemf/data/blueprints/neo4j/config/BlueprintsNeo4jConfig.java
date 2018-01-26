@@ -12,9 +12,13 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config;
 
+import com.tinkerpop.blueprints.impls.neo4j2.Neo4j2Graph;
+
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BaseBlueprintsConfig;
+
+import java.nio.file.Path;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -29,20 +33,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BlueprintsNeo4jConfig extends BaseBlueprintsConfig<BlueprintsNeo4jConfig> {
 
     /**
-     * The base prefix for all natives options related to Neo4j under Blueprints.
+     * The base prefix for all natives options related to {@link Neo4j2Graph} under Blueprints.
      */
     static final String NEO4J_PREFIX = createKey(BLUEPRINTS_PREFIX, "neo4j");
-
-    /**
-     * The option value to define Neo4j as the graph implementation to use.
-     */
-    static final String BLUEPRINTS_GRAPH_NEO4J = "com.tinkerpop.blueprints.impls.neo4j2.Neo4j2Graph";
 
     /**
      * Constructs a new {@code BlueprintsNeo4jConfig}.
      */
     protected BlueprintsNeo4jConfig() {
-        setGraph(BLUEPRINTS_GRAPH_NEO4J);
+        setGraph(Neo4j2Graph.class);
     }
 
     /**
@@ -53,6 +52,11 @@ public class BlueprintsNeo4jConfig extends BaseBlueprintsConfig<BlueprintsNeo4jC
     @Nonnull
     public static BlueprintsNeo4jConfig newConfig() {
         return new BlueprintsNeo4jConfig();
+    }
+
+    @Override
+    public void setLocation(Path directory) {
+        addOption(createKey(NEO4J_PREFIX, "directory"), directory.toString());
     }
 
     /**

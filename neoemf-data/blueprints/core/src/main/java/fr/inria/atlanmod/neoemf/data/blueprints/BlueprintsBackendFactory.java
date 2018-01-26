@@ -61,7 +61,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory<BaseBluepri
     @Nonnull
     @Override
     protected Backend createLocalBackend(Path directory, BaseBlueprintsConfig<?> config) {
-        config.setDirectory(directory);
+        config.setLocation(directory);
 
         Graph graph = GraphFactory.open(config.getOptions(s -> s.startsWith(BaseBlueprintsConfig.BLUEPRINTS_PREFIX)));
         checkArgument(graph.getFeatures().supportsKeyIndices, "%s does not support key indices", graph.getClass().getSimpleName());

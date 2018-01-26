@@ -8,6 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.config;
 
+import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+
 import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
@@ -67,14 +69,14 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the definition of the {@link BlueprintsTinkerConfig#BLUEPRINTS_GRAPH} option, with the default type.
+     * Checks the definition of the Graph implementation, with the default type.
      */
     @Test
-    public void testDefaultGraphTypeOption() throws IOException {
+    public void testGraphOption() throws IOException {
         resource.save(BlueprintsTinkerConfig.newConfig());
 
         ImmutableConfig config = loadConfig();
-        assertConfigurationHasEntry(config, BlueprintsTinkerConfig.BLUEPRINTS_GRAPH, BlueprintsTinkerConfig.BLUEPRINTS_GRAPH_TINKER);
+        assertConfigurationHasEntry(config, "blueprints.graph", TinkerGraph.class.getName());
         assertConfigurationHasSize(config, 5);
     }
 

@@ -131,9 +131,9 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      * Constructs a new {@code BaseConfig} instance.
      * <p>
      * <b>NOTE:</b> This implementation is intended to configure a {@link fr.inria.atlanmod.neoemf.data.store.Store}'
-     * chain in a transient context. The created configuration is not associated with any {@link
-     * fr.inria.atlanmod.neoemf.data.BackendFactory}, so it cannot be used to configure a {@link
-     * fr.inria.atlanmod.neoemf.data.Backend}. Use the specific implementation for this.
+     * chain. The created configuration is not associated with any {@link fr.inria.atlanmod.neoemf.data.BackendFactory},
+     * so it cannot be used to configure a {@link fr.inria.atlanmod.neoemf.data.Backend}.
+     * Use the specific implementation for this.
      *
      * @return a new configuration
      */
@@ -229,6 +229,8 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
         return me();
     }
 
+    // region Stores
+
     @Nonnull
     @Override
     public C addStoreType(ConfigType<? extends Store> storeType) {
@@ -316,6 +318,8 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     public Set<ConfigType<? extends Store>> getStoreTypes() {
         return Collections.unmodifiableSet(stores);
     }
+
+    // endregion
 
     @Nonnull
     @Override
