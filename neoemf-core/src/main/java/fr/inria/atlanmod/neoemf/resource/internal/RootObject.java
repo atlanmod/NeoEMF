@@ -12,8 +12,6 @@ import fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.eclipse.emf.ecore.resource.Resource;
-
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -27,7 +25,7 @@ final class RootObject extends DefaultPersistentEObject {
      *
      * @param resource the resource containing this object.
      */
-    public RootObject(Resource.Internal resource) {
+    public RootObject(PersistentResource resource) {
         super(PersistentResource.ROOT_ID);
         eSetDirectResource(resource);
     }

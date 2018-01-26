@@ -13,6 +13,7 @@ import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.core.internal.AllContentsIterator;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsCopier;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsList;
 import fr.inria.atlanmod.neoemf.core.internal.LazyStoreFeatureMap;
@@ -27,6 +28,7 @@ import fr.inria.atlanmod.neoemf.data.store.adapter.TransientStoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -161,6 +163,42 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         locked = false;
     }
 
+    @Override
+    protected void eBasicSetContainer(@Nullable InternalEObject newContainer, int newContainerFeatureID) {
+        if (nonNull(newContainer)) {
+            PersistentEObject container = PersistentEObject.from(newContainer);
+            EReference containmentFeature = eContainmentFeature(this, container, newContainerFeatureID);
+
+            lazyContainer.update(container);
+            eStore().updateContainment(this, containmentFeature, container);
+            resource(container.resource());
+        }
+        else {
+            lazyContainer.update(null);
+            eStore().removeContainment(this);
+            resource(null);
+        }
+    }
+
+    @Override
+    public void eSetDirectResource(@Nullable Resource.Internal resource) {
+        resource(resource);
+
+        super.eSetDirectResource(resource);
+    }
+
+    @Nonnull
+    @Override
+    public EList<EObject> eContents() {
+        return ContentsList.newList(this);
+    }
+
+    @Nonnull
+    @Override
+    public TreeIterator<EObject> eAllContents() {
+        return new AllContentsIterator(this, false);
+    }
+
     @Nullable
     @Override
     public Resource.Internal eInternalResource() {
@@ -196,36 +234,6 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
 
         return sb.toString();
-    }
-
-    @Override
-    protected void eBasicSetContainer(@Nullable InternalEObject newContainer, int newContainerFeatureID) {
-        if (nonNull(newContainer)) {
-            PersistentEObject container = PersistentEObject.from(newContainer);
-            EReference containmentFeature = eContainmentFeature(this, container, newContainerFeatureID);
-
-            lazyContainer.update(container);
-            eStore().updateContainment(this, containmentFeature, container);
-            resource(container.resource());
-        }
-        else {
-            lazyContainer.update(null);
-            eStore().removeContainment(this);
-            resource(null);
-        }
-    }
-
-    @Override
-    public void eSetDirectResource(@Nullable Resource.Internal resource) {
-        resource(resource);
-
-        super.eSetDirectResource(resource);
-    }
-
-    @Nonnull
-    @Override
-    public EList<EObject> eContents() {
-        return ContentsList.newList(this);
     }
 
     @Nonnull

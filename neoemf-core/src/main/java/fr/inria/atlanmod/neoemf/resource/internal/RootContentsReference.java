@@ -10,11 +10,13 @@ package fr.inria.atlanmod.neoemf.resource.internal;
 
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.ETypedElement;
 import org.eclipse.emf.ecore.impl.EClassifierImpl;
 import org.eclipse.emf.ecore.impl.EReferenceImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -24,6 +26,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 final class RootContentsReference extends EReferenceImpl {
 
     /**
+     * The classifier of all {@link RootContentsReference} instances.
+     */
+    @Nonnull
+    private static final EClassifier CLASSIFIER = new EClassifierImpl() {};
+
+    /**
      * Constructs a new {@code RootContentsReference}.
      */
     public RootContentsReference() {
@@ -31,6 +39,6 @@ final class RootContentsReference extends EReferenceImpl {
         setName(PersistentResource.ROOT_REFERENCE_NAME);
         setLowerBound(0);
         setUpperBound(ETypedElement.UNBOUNDED_MULTIPLICITY);
-        setEType(new EClassifierImpl() {});
+        setEType(CLASSIFIER);
     }
 }

@@ -25,10 +25,12 @@ import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.data.store.adapter.PersistentStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
+import fr.inria.atlanmod.neoemf.resource.internal.AllContentsIterator;
 import fr.inria.atlanmod.neoemf.resource.internal.RootContentsList;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -91,6 +93,12 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     public EList<EObject> getContents() {
         return new RootContentsList<>(this);
+    }
+
+    @Nonnull
+    @Override
+    public TreeIterator<EObject> getAllContents() {
+        return new AllContentsIterator(this, false);
     }
 
     @Nonnull
