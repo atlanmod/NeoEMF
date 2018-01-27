@@ -14,6 +14,7 @@ import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.core.internal.AllContentsIterator;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
@@ -25,7 +26,6 @@ import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.data.store.adapter.PersistentStoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
-import fr.inria.atlanmod.neoemf.resource.internal.AllContentsIterator;
 import fr.inria.atlanmod.neoemf.resource.internal.RootContentsList;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -97,8 +97,9 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
 
     @Nonnull
     @Override
+    @SuppressWarnings("unchecked")
     public TreeIterator<EObject> getAllContents() {
-        return new AllContentsIterator<>(this, false);
+        return TreeIterator.class.cast(new AllContentsIterator<>(this));
     }
 
     @Nonnull
@@ -118,13 +119,13 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     @SuppressWarnings("unchecked")
     public void save(Map<?, ?> options) {
-        save(BaseConfig.newConfig().merge((Map<String, Object>) options));
+        save(createConfig(options));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void load(Map<?, ?> options) throws IOException {
-        load(BaseConfig.newConfig().merge((Map<String, Object>) options));
+        load(createConfig(options));
     }
 
     @Override
@@ -297,6 +298,12 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     private StoreAdapter createStore(Backend backend, ImmutableConfig config) {
         Store baseStore = StoreFactory.getInstance().createStore(backend, config);
         return new PersistentStoreAdapter(baseStore, this);
+    }
+
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    private ImmutableConfig createConfig(Map<?, ?> options) {
+        return BaseConfig.newConfig().merge((Map<String, Object>) options);
     }
 
     /**

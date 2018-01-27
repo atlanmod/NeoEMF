@@ -195,8 +195,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
 
     @Nonnull
     @Override
+    @SuppressWarnings("unchecked")
     public TreeIterator<EObject> eAllContents() {
-        return new AllContentsIterator<>(this, false);
+        return TreeIterator.class.cast(new AllContentsIterator<>(this));
     }
 
     @Nullable

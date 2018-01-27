@@ -14,6 +14,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import java.util.Iterator;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * fr.inria.atlanmod.neoemf.data.Backend}.
  */
 @ParametersAreNonnullByDefault
-public interface PersistentEObject extends InternalEObject, Storable {
+public interface PersistentEObject extends InternalEObject, Storable, Iterable<PersistentEObject> {
 
     /**
      * Returns the given {@code object} as a {@code PersistentEObject}.
@@ -72,4 +74,18 @@ public interface PersistentEObject extends InternalEObject, Storable {
 
     @Override
     PersistentEObject eInternalContainer();
+
+    /**
+     * Returns an iterator on the direct content of this object.
+     *
+     * @return an iterator
+     *
+     * @see #eContents()
+     */
+    @Nonnull
+    @Override
+    @SuppressWarnings("unchecked")
+    default Iterator<PersistentEObject> iterator() {
+        return Iterator.class.cast(eContents().iterator());
+    }
 }

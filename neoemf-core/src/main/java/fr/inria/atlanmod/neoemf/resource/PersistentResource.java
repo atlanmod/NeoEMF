@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.resource;
 
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.Storable;
 
 import org.eclipse.emf.ecore.EClass;
@@ -18,6 +19,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.annotation.Nonnegative;
@@ -33,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * and indices.
  */
 @ParametersAreNonnullByDefault
-public interface PersistentResource extends Resource, Resource.Internal, Storable, Closeable {
+public interface PersistentResource extends Resource, Resource.Internal, Storable, Closeable, Iterable<PersistentEObject> {
 
     /**
      * The identifier of the root element in a {@code PersistentResource}.
@@ -103,4 +105,18 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
      */
     @Nonnull
     <T extends EObject> Iterable<T> allInstancesOf(EClass eClass, boolean strict);
+
+    /**
+     * Returns an iterator on the direct content of this resource.
+     *
+     * @return an iterator
+     *
+     * @see #getContents()
+     */
+    @Nonnull
+    @Override
+    @SuppressWarnings("unchecked")
+    default Iterator<PersistentEObject> iterator() {
+        return Iterator.class.cast(getContents().iterator());
+    }
 }
