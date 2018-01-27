@@ -98,7 +98,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Nonnull
     @Override
     public TreeIterator<EObject> getAllContents() {
-        return new AllContentsIterator(this, false);
+        return new AllContentsIterator<>(this, false);
     }
 
     @Nonnull

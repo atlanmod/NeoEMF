@@ -37,7 +37,7 @@ import static java.util.Objects.nonNull;
  */
 @ParametersAreNonnullByDefault
 // TODO Reimplements `iterator()` and `listIterator()` to use batch methods
-public class ContentsList<E> extends EContentsEList<E> {
+public class ContentsList<E extends EObject> extends EContentsEList<E> {
 
     /**
      * The instance of an empty {@code ContentsList}.
@@ -71,7 +71,7 @@ public class ContentsList<E> extends EContentsEList<E> {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    public static <E> ContentsList<E> empty() {
+    public static <E extends EObject> ContentsList<E> empty() {
         return (ContentsList<E>) EMPTY;
     }
 
@@ -84,7 +84,7 @@ public class ContentsList<E> extends EContentsEList<E> {
      * @return a new list
      */
     @Nonnull
-    public static <E> ContentsList<E> newList(PersistentEObject owner) {
+    public static <E extends EObject> ContentsList<E> newList(PersistentEObject owner) {
         EStructuralFeature[] containments =
                 EClassImpl.FeatureSubsetSupplier.class.cast(owner.eClass()
                         .getEAllStructuralFeatures())
@@ -122,12 +122,12 @@ public class ContentsList<E> extends EContentsEList<E> {
 
     @Override
     protected ListIterator<E> newResolvingListIterator() {
-        return new FeatureListIteratorResolver<>(owner, eStructuralFeatures);
+        return new ContentsListIteratorResolver<>(owner, eStructuralFeatures);
     }
 
     @Override
     protected ListIterator<E> newNonResolvingListIterator() {
-        return new FeatureListIterator<>(owner, eStructuralFeatures);
+        return new ContentsListIterator<>(owner, eStructuralFeatures);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class ContentsList<E> extends EContentsEList<E> {
      * @param <E> the type of elements in this list
      */
     @ParametersAreNullableByDefault
-    private static class EmptyContentsList<E> extends ContentsList<E> {
+    private static class EmptyContentsList<E extends EObject> extends ContentsList<E> {
 
         /**
          * Constructs a new {@code EmptyContentsList}.
@@ -154,57 +154,6 @@ public class ContentsList<E> extends EContentsEList<E> {
         @Override
         public List<E> basicList() {
             return this;
-        }
-    }
-
-    /**
-     * A {@link ListIterator} that iterates over all the content of a {@link PersistentEObject}.
-     *
-     * @param <E> the type of elements in this iterator
-     *
-     * @see PersistentEObject#eContents()
-     * @see PersistentEObject#eAllContents()
-     */
-    @ParametersAreNonnullByDefault
-    private static class FeatureListIterator<E> extends FeatureIteratorImpl<E> {
-
-        /**
-         * Constructs a new {@code FeatureListIterator} for the given {@code owner}.
-         *
-         * @param owner    the owner of this iterator
-         * @param features the containment features that are handled by this iterator
-         */
-        public FeatureListIterator(EObject owner, EStructuralFeature[] features) {
-            super(owner, features);
-        }
-
-        @Override
-        protected final boolean useIsSet() {
-            return false;
-        }
-    }
-
-    /**
-     * A {@link FeatureListIterator} that resolves proxies.
-     *
-     * @param <E> the type of elements in this iterator
-     */
-    @ParametersAreNonnullByDefault
-    private static class FeatureListIteratorResolver<E> extends FeatureListIterator<E> {
-
-        /**
-         * Constructs a new {@code FeatureListIteratorResolver} for the given {@code owner}.
-         *
-         * @param owner    the owner of this iterator
-         * @param features the containment features that are handled by this iterator
-         */
-        public FeatureListIteratorResolver(EObject owner, EStructuralFeature[] features) {
-            super(owner, features);
-        }
-
-        @Override
-        protected boolean resolve() {
-            return true;
         }
     }
 }

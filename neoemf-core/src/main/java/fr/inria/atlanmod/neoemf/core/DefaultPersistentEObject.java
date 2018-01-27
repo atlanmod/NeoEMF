@@ -196,7 +196,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nonnull
     @Override
     public TreeIterator<EObject> eAllContents() {
-        return new AllContentsIterator(this, false);
+        return new AllContentsIterator<>(this, false);
     }
 
     @Nullable

@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Iterator} that iterates over all content of a {@link PersistentEObject}.
  */
 @ParametersAreNonnullByDefault
-public class AllContentsIterator extends AbstractTreeIterator<EObject> {
+public class AllContentsIterator<E extends EObject> extends AbstractTreeIterator<E> {
 
     /**
      * Constructs a new {@code AllContentsIterator}.
@@ -36,7 +36,8 @@ public class AllContentsIterator extends AbstractTreeIterator<EObject> {
 
     @Nonnull
     @Override
-    protected Iterator<? extends EObject> getChildren(Object object) {
-        return PersistentEObject.class.cast(object).eContents().iterator();
+    @SuppressWarnings("unchecked")
+    protected Iterator<? extends E> getChildren(Object object) {
+        return (Iterator<? extends E>) PersistentEObject.class.cast(object).eContents().iterator(); // ContentsList#iterator()
     }
 }
