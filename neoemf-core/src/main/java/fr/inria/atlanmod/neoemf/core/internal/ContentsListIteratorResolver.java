@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.core.internal;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -20,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @param <E> the type of elements in this iterator
  */
 @ParametersAreNonnullByDefault
-class ContentsListIteratorResolver<E> extends ContentsListIterator<E> {
+class ContentsListIteratorResolver<E extends EObject> extends ContentsListIterator<E> {
 
     /**
      * Constructs a new {@code ContentsListIteratorResolver} for the given {@code owner}.

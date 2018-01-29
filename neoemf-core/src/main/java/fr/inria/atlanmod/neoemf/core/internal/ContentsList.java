@@ -43,7 +43,7 @@ public class ContentsList<E extends EObject> extends EContentsEList<E> {
      * The instance of an empty {@code ContentsList}.
      */
     @Nonnull
-    private static final ContentsList<?> EMPTY = new EmptyContentsList<>();
+    private static final ContentsList<?> EMPTY = new Empty<>();
 
     /**
      * The owner of this list.
@@ -85,10 +85,8 @@ public class ContentsList<E extends EObject> extends EContentsEList<E> {
      */
     @Nonnull
     public static <E extends EObject> ContentsList<E> newList(PersistentEObject owner) {
-        EStructuralFeature[] containments =
-                EClassImpl.FeatureSubsetSupplier.class.cast(owner.eClass()
-                        .getEAllStructuralFeatures())
-                        .containments();
+        List<EStructuralFeature> features = owner.eClass().getEAllStructuralFeatures();
+        EStructuralFeature[] containments = EClassImpl.FeatureSubsetSupplier.class.cast(features).containments();
 
         return nonNull(containments)
                 ? new ContentsList<>(owner, containments)
@@ -117,7 +115,7 @@ public class ContentsList<E extends EObject> extends EContentsEList<E> {
             }
         }
 
-        throw new IndexOutOfBoundsException("index=" + index + ",size=" + featureSize);
+        throw new IndexOutOfBoundsException("index=" + index + ", size=" + featureSize);
     }
 
     @Override
@@ -141,13 +139,13 @@ public class ContentsList<E extends EObject> extends EContentsEList<E> {
      * @param <E> the type of elements in this list
      */
     @ParametersAreNullableByDefault
-    private static class EmptyContentsList<E extends EObject> extends ContentsList<E> {
+    private static class Empty<E extends EObject> extends ContentsList<E> {
 
         /**
-         * Constructs a new {@code EmptyContentsList}.
+         * Constructs a new {@code Empty}.
          */
         @SuppressWarnings("ConstantConditions")
-        public EmptyContentsList() {
+        public Empty() {
             super(null, null);
         }
 
