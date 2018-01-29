@@ -93,7 +93,7 @@ class AllInstancesTest extends AbstractResourceBasedTest {
     /**
      * Checks the content after calling {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}.
      */
-    @ParameterizedTest(name = "[{index}] {0}: isStrict = {2}")
+    @ParameterizedTest(name = "[{index}] {0}: isStrict = {1}")
     @ArgumentsSource(ContextProvider.AllWithBooleans.class)
     void testAllInstancesLoaded(Context context, Boolean isStrict) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
