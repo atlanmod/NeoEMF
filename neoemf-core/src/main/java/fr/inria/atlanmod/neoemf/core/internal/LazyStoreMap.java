@@ -10,16 +10,13 @@ package fr.inria.atlanmod.neoemf.core.internal;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.Store;
-import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
 import org.eclipse.emf.ecore.util.EcoreEMap;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -54,16 +51,10 @@ public class LazyStoreMap<K, V> extends EcoreEMap<K, V> {
      * A {@link List} that holds entries of this map.
      */
     @ParametersAreNonnullByDefault
-    private class EntryList extends EStoreEObjectImpl.BasicEStoreEList<Entry<K, V>> {
+    private class EntryList extends LazyStoreList<Entry<K, V>> {
 
         @SuppressWarnings("JavaDoc")
         private static final long serialVersionUID = 3373155561238654363L;
-
-        /**
-         * The owner of this list.
-         */
-        @Nonnull
-        private final transient PersistentEObject persistentOwner;
 
         /**
          * Constructs a new {@code EntryList}.
@@ -73,14 +64,9 @@ public class LazyStoreMap<K, V> extends EcoreEMap<K, V> {
          */
         public EntryList(PersistentEObject owner, EStructuralFeature feature) {
             super(owner, feature);
-            this.persistentOwner = owner;
         }
 
-        @Nonnull
-        @Override
-        protected StoreAdapter eStore() {
-            return persistentOwner.eStore();
-        }
+        // region Notifications
 
         @Override
         protected void didSet(int index, Entry<K, V> newObject, Entry<K, V> oldObject) {
@@ -107,5 +93,7 @@ public class LazyStoreMap<K, V> extends EcoreEMap<K, V> {
         protected void didMove(int index, Entry<K, V> movedObject, int oldIndex) {
             LazyStoreMap.this.doMove(movedObject);
         }
+
+        // endregion
     }
 }

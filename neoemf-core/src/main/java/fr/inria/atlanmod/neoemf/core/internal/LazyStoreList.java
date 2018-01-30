@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.core.internal;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+import fr.inria.atlanmod.neoemf.data.store.Storable;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
@@ -40,10 +41,10 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     private static final long serialVersionUID = 2630358403343923944L;
 
     /**
-     * The owner of this list.
+     * The object that holds the store.
      */
     @Nonnull
-    private final transient PersistentEObject persistentOwner;
+    private final transient Storable storable;
 
     /**
      * Constructs a new {@code LazyStoreList}.
@@ -53,24 +54,24 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
      */
     public LazyStoreList(PersistentEObject owner, EStructuralFeature feature) {
         super(owner, feature);
-        this.persistentOwner = owner;
+        this.storable = owner;
     }
 
     @Nonnull
     @Override
     protected StoreAdapter eStore() {
-        return persistentOwner.eStore();
+        return storable.eStore();
+    }
+
+    // region Delegating methods
+
+    @Override
+    protected void delegateAdd(Object object) {
+        delegateAdd(InternalEObject.EStore.NO_INDEX, object);
     }
 
     @Override
-    protected String delegateToString() {
-        return eStore().getAll(owner, eStructuralFeature).stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(", ", "[", "]"));
-    }
-
-    @Override
-    public boolean containsAll(Collection<?> collection) {
+    protected boolean delegateContainsAll(Collection<?> collection) {
         if (isNull(collection) || collection.isEmpty()) {
             return false;
         }
@@ -81,6 +82,32 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
 
         return eStore().getAll(owner, eStructuralFeature).containsAll(collection);
     }
+
+    @Override
+    // FIXME Does not resolve
+    protected boolean delegateEquals(Object object) {
+        if (object == this) {
+            return true;
+        }
+
+        if (!List.class.isInstance(object)) {
+            return false;
+        }
+
+        List<?> list = List.class.cast(object);
+        return list.size() == delegateSize()
+                && list.equals(eStore().getAll(owner, eStructuralFeature));
+    }
+
+    @Override
+    protected String delegateToString() {
+        return eStore().getAll(owner, eStructuralFeature)
+                .stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", ", "[", "]"));
+    }
+
+    // endregion
 
     @Nonnull
     @Override
@@ -95,16 +122,19 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     }
 
     @Override
+    // FIXME Does not resolve
     public boolean contains(Object object) {
         return delegateContains(object);
     }
 
     @Override
+    // FIXME Does not resolve
     public int indexOf(Object object) {
         return delegateIndexOf(object);
     }
 
     @Override
+    // FIXME Does not resolve
     public int lastIndexOf(Object object) {
         return delegateLastIndexOf(object);
     }

@@ -16,8 +16,8 @@ import fr.inria.atlanmod.neoemf.resource.DefaultPersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.notify.NotificationChain;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
-import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
@@ -32,8 +32,8 @@ import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link java.util.List} that delegates its operations to a {@link Store} for supporting {@link
- * Resource#getContents}.
+ * A {@link List} representing the content of the root of a {@link PersistentResource}, that delegates its operations to
+ * the associated {@link Store}.
  *
  * @see RootObject
  * @see RootContentsReference
@@ -44,8 +44,11 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 4130828923851153715L;
 
+    /**
+     * The resource that holds the owner of this list.
+     */
     @Nonnull
-    private final DefaultPersistentResource resource;
+    private final transient DefaultPersistentResource resource;
 
     /**
      * Constructs a new {@code RootContentsList}.
@@ -54,6 +57,34 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
         super(new RootObject(resource), new RootContentsReference());
         this.resource = resource;
     }
+
+    @Nonnull
+    @Override
+    protected StoreAdapter eStore() {
+        return resource.eStore();
+    }
+
+    // region Delegating methods
+
+    @Override
+    protected void delegateAdd(int index, Object value) {
+        hardAllContents(PersistentEObject.from(value)).forEach(e -> e.resource(resource));
+        super.delegateAdd(index, value);
+    }
+
+    @Override
+    protected void delegateAdd(Object object) {
+        delegateAdd(InternalEObject.EStore.NO_INDEX, object);
+    }
+
+    @Override
+    protected E delegateRemove(int index) {
+        E previousValue = super.delegateRemove(index);
+        hardAllContents(PersistentEObject.from(previousValue)).forEach(e -> e.resource(null));
+        return previousValue;
+    }
+
+    // endregion
 
     @Override
     protected E validate(int index, E object) {
@@ -108,31 +139,33 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
         return true;
     }
 
+    // region Notifications
+
     @Override
     protected void didSet(int index, E newObject, E oldObject) {
         super.didSet(index, newObject, oldObject);
-        modified();
+        notifyModified();
     }
 
     @Override
     protected void didAdd(int index, E object) {
         super.didAdd(index, object);
         if (index == size() - 1) {
-            loaded();
+            notifyLoaded();
         }
-        modified();
+        notifyModified();
     }
 
     @Override
     protected void didRemove(int index, E object) {
         super.didRemove(index, object);
-        modified();
+        notifyModified();
     }
 
     @Override
     protected void didClear(int oldSize, Object[] oldData) {
         if (oldSize == 0) {
-            loaded();
+            notifyLoaded();
         }
         else {
             super.didClear(oldSize, oldData);
@@ -142,7 +175,7 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     /**
      * Notifies that this resource has been loaded.
      */
-    private void loaded() {
+    private void notifyLoaded() {
         if (!resource.isLoaded()) {
             Optional.ofNullable(resource.setLoaded(true)).ifPresent(resource::eNotify);
         }
@@ -151,29 +184,13 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     /**
      * Notifies that this resource has been modified.
      */
-    private void modified() {
+    private void notifyModified() {
         if (resource.isTrackingModification()) {
             resource.setModified(true);
         }
     }
 
-    @Override
-    protected StoreAdapter eStore() {
-        return resource.eStore();
-    }
-
-    @Override
-    protected void delegateAdd(int index, Object value) {
-        hardAllContents(PersistentEObject.from(value)).forEach(e -> e.resource(resource));
-        super.delegateAdd(index, value);
-    }
-
-    @Override
-    protected E delegateRemove(int index) {
-        E previousValue = super.delegateRemove(index);
-        hardAllContents(PersistentEObject.from(previousValue)).forEach(e -> e.resource(null));
-        return previousValue;
-    }
+    // endregion
 
     /**
      * Retrieves all the content of the specified {@code rootObject} and stores it in a {@link List}.

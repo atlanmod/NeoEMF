@@ -31,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.LazyStoreList}.
  */
+// TODO Add missing methods
 @ParametersAreNonnullByDefault
 class LazyStoreListTest extends AbstractResourceBasedTest {
 

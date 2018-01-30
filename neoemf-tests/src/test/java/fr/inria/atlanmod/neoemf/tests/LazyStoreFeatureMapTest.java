@@ -30,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.LazyStoreFeatureMap}.
  */
+// TODO Add missing methods
 @ParametersAreNonnullByDefault
 class LazyStoreFeatureMapTest extends AbstractResourceBasedTest {
 
