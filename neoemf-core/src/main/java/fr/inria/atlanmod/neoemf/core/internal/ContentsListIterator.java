@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -28,21 +28,27 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link ListIterator} that iterates over all the content of a {@link PersistentEObject}.
+ * A read-only {@link ListIterator} that iterates over all the content of a {@link PersistentEObject}.
  *
  * @param <E> the type of elements in this iterator
  *
+ * @see ContentsList
  * @see PersistentEObject#eContents()
  * @see PersistentEObject#eAllContents()
  */
 @ParametersAreNonnullByDefault
 class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureListIterator<E>, EContentsEList.Filterable {
+
+    /**
+     * The instance of an empty {@code ContentsListIterator}.
+     */
+    @Nonnull
+    private static final ContentsListIterator<?> EMPTY = new EmptyContentsListIterator<>();
 
     /**
      * The owner of this iterator.
@@ -55,6 +61,11 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
      */
     @Nonnull
     protected final ListIterator<EStructuralFeature> features;
+
+    /**
+     * {@code true} if proxied {@link EObject objects} has to be resolved.
+     */
+    protected final boolean resolve;
 
     /**
      * The current position of this iterator.
@@ -71,11 +82,11 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
      * @see #prepare(IterationHelper)
      */
     @Nonnull
-    protected FutureResult<E> nextResult = FutureResult.undefined();
+    protected IterationResult<E> nextResult = IterationResult.undefined();
 
     /**
      * The current feature; initialized at the first call to {@link #next()} or {@link #previous()}. It corresponds to
-     * the {@link FutureResult#feature() feature} of the last returned result.
+     * the {@link IterationResult#feature() feature} of the last returned result.
      *
      * @see #feature()
      */
@@ -102,19 +113,23 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
      *
      * @param owner    the owner of this iterator
      * @param features the containment features that are handled by this iterator
+     * @param resolve  {@code true} if proxied {@link EObject objects} has to be resolved
      */
-    public ContentsListIterator(PersistentEObject owner, EStructuralFeature[] features) {
+    public ContentsListIterator(PersistentEObject owner, List<EStructuralFeature> features, boolean resolve) {
         this.owner = owner;
-        this.features = Arrays.asList(features).listIterator();
+        this.features = features.listIterator();
+        this.resolve = resolve;
     }
 
     /**
-     * Returns {@code true} if proxied {@link EObject objects} has to be resolved.
+     * Returns an empty {@code ContentsListIterator}.
      *
-     * @return {@code true} if proxied objects has to be resolved
+     * @return an empty iterator
      */
-    protected boolean resolve() {
-        return false;
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    public static <E extends EObject> ContentsListIterator<E> empty() {
+        return (ContentsListIterator<E>) EMPTY;
     }
 
     /**
@@ -151,9 +166,9 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     }
 
     @Override
-    public void filter(EContentsEList.FeatureFilter newFilter) {
-        checkState(cursor == 0 && isNull(filter), "Iterator already in use or already filtered");
-        filter = newFilter;
+    public void filter(EContentsEList.FeatureFilter filter) {
+        checkState(cursor == 0 && isNull(this.filter), "Iterator already in use or already filtered");
+        this.filter = filter;
     }
 
     @Override
@@ -226,7 +241,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
             if (nonNull(values)) {
                 helper.advance(values);
             }
-            nextResult = FutureResult.undefined();
+            nextResult = IterationResult.undefined();
         }
 
         if (!nextResult.isInitialized()) {
@@ -262,7 +277,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
         cursor = helper.advanceCursor(cursor);
 
         // Reset and prepare the next/previous element
-        nextResult = FutureResult.undefined();
+        nextResult = IterationResult.undefined();
         nextResult = prepare(helper);
 
         return e;
@@ -279,7 +294,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
      * @return the prepared result
      */
     @Nonnull
-    private FutureResult<E> prepare(IterationHelper helper) {
+    private IterationResult<E> prepare(IterationHelper helper) {
         // The current feature is multi-valued, or a feature map, and has unprocessed values
         if (nonNull(values) && hasRemainingValues(helper)) {
             return getValue(helper, currentFeature);
@@ -287,7 +302,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
 
         // Processes other features
         while (helper.hasMoreElements(features)) {
-            FutureResult<E> localResult = prepareFeature(helper, helper.advance(features));
+            IterationResult<E> localResult = prepareFeature(helper, helper.advance(features));
             if (!localResult.isEmpty()) {
                 return localResult;
             }
@@ -296,7 +311,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
         // No more value
         resetValues();
         isFeatureMap = false;
-        return FutureResult.empty(helper.direction());
+        return IterationResult.empty(helper.direction());
     }
 
     /**
@@ -309,15 +324,15 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
      * @return the prepared result
      */
     @Nonnull
-    private FutureResult<E> prepareFeature(IterationHelper helper, EStructuralFeature feature) {
+    private IterationResult<E> prepareFeature(IterationHelper helper, EStructuralFeature feature) {
         final IterationDirection direction = helper.direction();
 
         if (!isIncluded(feature)) {
             // Feature is ignored
-            return FutureResult.empty(direction);
+            return IterationResult.empty(direction);
         }
 
-        final Object value = owner.eGet(feature, resolve());
+        final Object value = owner.eGet(feature, resolve);
         isFeatureMap = FeatureMapUtil.isFeatureMap(feature);
 
         // The feature is multi-valued, or a feature map
@@ -331,11 +346,11 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
         // The feature is single-valued
         else if (nonNull(value)) {
             resetValues();
-            return new FutureResult<>(direction, value, feature);
+            return new IterationResult<>(direction, value, feature);
         }
 
         // The feature has no value
-        return FutureResult.empty(direction);
+        return IterationResult.empty(direction);
     }
 
     // region Value management of multi-valued features
@@ -351,7 +366,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
         List<E> valuesList = List.class.cast(value);
         final int firstIndex = helper.getFirstIndex(valuesList);
 
-        if (resolve()) {
+        if (resolve) {
             values = valuesList.listIterator(firstIndex);
         }
         else {
@@ -405,190 +420,65 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
      * @return the result of the iteration
      */
     @Nonnull
-    private FutureResult<E> getValue(IterationHelper helper, EStructuralFeature feature) {
+    private IterationResult<E> getValue(IterationHelper helper, EStructuralFeature feature) {
         checkState(nonNull(values), "The current feature is neither multi-valued or a feature map");
 
         final Object value = helper.advance(values);
         final IterationDirection direction = helper.direction();
 
         return isFeatureMap
-                ? new FutureResult<>(direction, FeatureMap.Entry.class.cast(value))
-                : new FutureResult<>(direction, value, feature);
+                ? new IterationResult<>(direction, FeatureMap.Entry.class.cast(value))
+                : new IterationResult<>(direction, value, feature);
     }
 
     // endregion
 
     /**
-     * A prepared result.
+     * An empty {@link ContentsListIterator}.
      *
-     * @param <E> the type of the value
+     * @param <E> the type of elements in this iterator
      */
     @ParametersAreNonnullByDefault
-    private static class FutureResult<E> {
+    private static final class EmptyContentsListIterator<E extends EObject> extends ContentsListIterator<E> {
 
         /**
-         * An undefined result.
+         * Constructs a new {@code EmptyContentsListIterator}.
          */
-        @Nonnull
-        private static final FutureResult<?> UNDEFINED = new Empty<>();
-
-        /**
-         * The result value.
-         */
-        private final E value;
-
-        /**
-         * The feature associated to the {@link #value}.
-         */
-        private final EStructuralFeature feature;
-
-        /**
-         * The iteration direction used to prepared this result.
-         */
-        @Nonnull
-        private final IterationDirection direction;
-
-        /**
-         * Constructs a new {@code FutureResult} with a value and a feature.
-         *
-         * @param direction the iteration direction used to prepared this result
-         * @param value     the result value
-         * @param feature   the feature associated to the {@code value}
-         */
-        @SuppressWarnings("unchecked")
-        public FutureResult(IterationDirection direction, Object value, EStructuralFeature feature) {
-            checkNotNull(direction, "direction");
-
-            this.direction = direction;
-            this.value = (E) value;
-            this.feature = feature;
+        @SuppressWarnings("ConstantConditions") // null owner
+        public EmptyContentsListIterator() {
+            super(null, Collections.emptyList(), false);
         }
 
-        /**
-         * Constructs a new {@code FutureResult} from an {@code entry}.
-         *
-         * @param direction the iteration direction used to prepared this result
-         * @param entry     the entry from which to retrieve the result and its associated feature
-         */
-        public FutureResult(IterationDirection direction, FeatureMap.Entry entry) {
-            this(direction, entry.getValue(), entry.getEStructuralFeature());
-        }
-
-        /**
-         * Returns an undefined {@code FutureResult}, i.e. not initialized.
-         *
-         * @return an undefined result
-         *
-         * @see #isInitialized()
-         */
-        @Nonnull
-        @SuppressWarnings("unchecked")
-        public static <E> FutureResult<E> undefined() {
-            return (FutureResult<E>) UNDEFINED;
-        }
-
-        /**
-         * Returns an empty {@code FutureResult}.
-         *
-         * @param direction the iteration direction used to prepared this result
-         *
-         * @return an empty result
-         */
-        @Nonnull
-        public static <E> FutureResult<E> empty(IterationDirection direction) {
-            return new Empty<>(direction);
-        }
-
-        /**
-         * Returns the result value.
-         *
-         * @return the result value
-         */
-        @Nonnull
-        public E value() {
-            return value;
-        }
-
-        /**
-         * Returns the feature associated to the result.
-         *
-         * @return the feature associated to the result
-         */
-        @Nonnull
-        public EStructuralFeature feature() {
-            return feature;
-        }
-
-        /**
-         * Returns {@code true} if the iteration direction used to prepared this result is {@code expectedDirection}.
-         *
-         * @param expectedDirection the expected iteration direction
-         *
-         * @return {@code true} if the iteration direction used to prepared this result is {@code expectedDirection}
-         */
-        public boolean hasDirection(IterationDirection expectedDirection) {
-            return direction == expectedDirection;
-        }
-
-        /**
-         * Returns {@code true} if this result has no value.
-         *
-         * @return {@code true} if this result has no value
-         */
-        public boolean isEmpty() {
+        @Override
+        public boolean hasNext() {
             return false;
         }
 
-        /**
-         * Returns {@code true} if this result has been initialized.
-         *
-         * @return {@code true} if this result has been initialized
-         */
-        public boolean isInitialized() {
-            return direction != IterationDirection.UNDEFINED;
+        @Nonnull
+        @Override
+        public E next() {
+            throw new NoSuchElementException();
         }
 
-        /**
-         * A {@link FutureResult} with no value.
-         *
-         * @param <E> the type of the value
-         */
-        @ParametersAreNonnullByDefault
-        private static final class Empty<E> extends FutureResult<E> {
+        @Override
+        public boolean hasPrevious() {
+            return false;
+        }
 
-            /**
-             * Constructs a new {@code Empty}.
-             */
-            public Empty() {
-                this(IterationDirection.UNDEFINED);
-            }
+        @Nonnull
+        @Override
+        public E previous() {
+            throw new NoSuchElementException();
+        }
 
-            /**
-             * Constructs a new {@code Empty}.
-             *
-             * @param direction the iteration direction used to prepared this result
-             */
-            @SuppressWarnings("ConstantConditions") // null values in constructors
-            public Empty(IterationDirection direction) {
-                super(direction, null, null);
-            }
+        @Override
+        public int nextIndex() {
+            return 0;
+        }
 
-            @Nonnull
-            @Override
-            public E value() {
-                throw new NoSuchElementException();
-            }
-
-            @Nonnull
-            @Override
-            public EStructuralFeature feature() {
-                throw new NoSuchElementException();
-            }
-
-            @Override
-            public boolean isEmpty() {
-                return true;
-            }
+        @Override
+        public int previousIndex() {
+            return -1;
         }
     }
 }

@@ -39,14 +39,13 @@ import static java.util.Objects.nonNull;
  * @see RootContentsReference
  */
 @ParametersAreNonnullByDefault
-// TODO Reimplements `iterator()` and `listIterator()` to use batch methods
 public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 4130828923851153715L;
 
     @Nonnull
-    private final transient DefaultPersistentResource resource;
+    private final DefaultPersistentResource resource;
 
     /**
      * Constructs a new {@code RootContentsList}.
