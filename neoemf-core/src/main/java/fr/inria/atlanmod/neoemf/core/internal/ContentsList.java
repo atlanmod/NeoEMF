@@ -26,13 +26,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.ParametersAreNullableByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -123,6 +125,29 @@ public class ContentsList<E extends EObject> extends AbstractSequentialInternalE
     }
 
     /**
+     * Creates a list iterator over the elements in this list
+     *
+     * @return a new list iterator
+     */
+    @Nonnull
+    protected ContentsListIterator<E> newListIterator() {
+        return features.isEmpty()
+                ? ContentsListIterator.empty()
+                : new ContentsListIterator<>(owner, features, resolve);
+    }
+
+    /**
+     * Returns {@code true} if the {@code feature} must be included in the result, {@code false} if it should be ignored.
+     *
+     * @param feature the feature to test
+     *
+     * @return {@code true} if the {@code feature} must be included in the result, {@code false} if it should be ignored
+     */
+    protected boolean isIncluded(EStructuralFeature feature) {
+        return true;
+    }
+
+    /**
      * Returns {@code true} if the feature of the {@code entry} must be included in the result, {@code false} if it
      * should be ignored.
      *
@@ -130,118 +155,113 @@ public class ContentsList<E extends EObject> extends AbstractSequentialInternalE
      *
      * @return {@code true} if the feature of the {@code entry} must be included in the result, {@code false} if it
      * should be ignored
+     *
+     * @see #isIncluded(EStructuralFeature)
      */
     protected boolean isIncludedEntry(FeatureMap.Entry entry) {
         final EStructuralFeature feature = entry.getEStructuralFeature();
 
         return nonNull(entry.getValue())
+                && isIncluded(feature)
                 && EObjects.isReference(feature)
                 && EObjects.asReference(feature).isContainment();
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    // FIXME Feature maps are not filtered: attributes are also included with this implementation
+    // TODO Remove this method when `ContentsListIterator#fastAdvance` will be optimized
     public E get(int index) {
-        if (features.isEmpty()) {
-            throw new IndexOutOfBoundsException(String.format("index=%s, size=%s", index, 0));
-        }
-
         int size = 0;
 
         for (EStructuralFeature feature : features) {
-            int localSize = feature.isMany()
-                    ? owner.eStore().size(owner, feature)
-                    : Booleans.toInt(owner.eStore().isSet(owner, feature));
+            if (isIncluded(feature)) {
+                int localSize = feature.isMany()
+                        ? owner.eStore().size(owner, feature)
+                        : Booleans.toInt(owner.eStore().isSet(owner, feature));
 
-            size += localSize;
+                size += localSize;
 
-            if (size > index) {
                 // The correct feature has been found
-                int localIndex = index - (size - localSize);
-                return (E) owner.eStore().get(owner, feature, localIndex);
+                if (size > index) {
+                    return (E) owner.eStore().get(owner, feature, index - (size - localSize));
+                }
             }
         }
 
-        throw new IndexOutOfBoundsException(String.format("index=%s, size=%s", index, size));
+        throw new IndexOutOfBoundsException(String.format("index=%d, size=%d", index, size));
     }
 
     @Nonnull
     @Override
     public ListIterator<E> listIterator(int index) {
-        checkPositionIndex(index, features.size());
-
-        ListIterator<E> iterator = features.isEmpty()
-                ? ContentsListIterator.empty()
-                : new ContentsListIterator<>(owner, features, resolve);
-
-        // Advance the cursor the desired index
-        for (int i = 0; i < index; i++) {
-            iterator.next();
+        if (features.isEmpty() && index != 0) {
+            throw new IndexOutOfBoundsException(String.format("index=%d, size=%d", index, 0));
         }
 
-        return iterator;
+        return newListIterator().fastAdvance(index);
     }
 
     @Nonnegative
     @Override
     public int size() {
-        int result = 0;
-
-        for (EStructuralFeature feature : features) {
-            final Object value = owner.eGet(feature, false);
-
-            // Feature is feature map
-            if (FeatureMapUtil.isFeatureMap(feature)) {
-                for (FeatureMap.Entry e : FeatureMap.class.cast(value)) {
-                    if (isIncludedEntry(e)) {
-                        result++;
-                    }
-                }
-            }
-
-            // Feature is multi-valued
-            else if (feature.isMany()) {
-                result += Collection.class.cast(value).size();
-            }
-
-            // Feature is single-valued
-            else if (nonNull(value)) {
-                result++;
-            }
-        }
-
-        return result;
+        return features.stream()
+                .filter(this::isIncluded)
+                .mapToInt(this::size)
+                .sum();
     }
 
     @Override
     public boolean isEmpty() {
-        for (EStructuralFeature feature : features) {
-            final Object value = owner.eGet(feature, false);
+        return features.stream()
+                .filter(this::isIncluded)
+                .allMatch(this::isEmpty);
+    }
 
-            // Feature is feature map
-            if (FeatureMapUtil.isFeatureMap(feature)) {
-                for (FeatureMap.Entry e : FeatureMap.class.cast(value)) {
-                    if (isIncludedEntry(e)) {
-                        return false;
-                    }
-                }
-            }
+    /**
+     * Returns the number of elements of the {@code feature}.
+     *
+     * @param feature the feature
+     *
+     * @return the number of elements of the {@code feature}
+     */
+    @Nonnegative
+    private int size(EStructuralFeature feature) {
+        final Object value = owner.eGet(feature, false);
 
-            // Feature is multi-valued
-            else if (feature.isMany()) {
-                if (!Collection.class.cast(value).isEmpty()) {
-                    return false;
-                }
-            }
-
-            // Feature is single-valued
-            else if (nonNull(value)) {
-                return false;
-            }
+        if (FeatureMapUtil.isFeatureMap(feature)) {
+            return FeatureMap.class.cast(value).stream()
+                    .filter(this::isIncludedEntry)
+                    .mapToInt(e -> 1)
+                    .sum();
         }
 
-        return true;
+        if (feature.isMany()) {
+            return Collection.class.cast(value).size();
+        }
+
+        return Booleans.toInt(nonNull(value));
+    }
+
+    /**
+     * Returns {@code true} if the {@code feature} has no element.
+     *
+     * @param feature the feature
+     *
+     * @return {@code true} if the {@code feature} has no element
+     */
+    private boolean isEmpty(EStructuralFeature feature) {
+        final Object value = owner.eGet(feature, false);
+
+        if (FeatureMapUtil.isFeatureMap(feature)) {
+            return FeatureMap.class.cast(value).stream()
+                    .noneMatch(this::isIncludedEntry);
+        }
+
+        if (feature.isMany()) {
+            return Collection.class.cast(value).isEmpty();
+        }
+
+        return isNull(value);
     }
 
     @Nonnull
@@ -258,6 +278,24 @@ public class ContentsList<E extends EObject> extends AbstractSequentialInternalE
     @Override
     public E move(int newPosition, int oldPosition) {
         throw new UnsupportedOperationException("move");
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (isNull(o) || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ContentsList<?> that = ContentsList.class.cast(o);
+        return Objects.equals(owner, that.owner);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(owner);
     }
 
     /**

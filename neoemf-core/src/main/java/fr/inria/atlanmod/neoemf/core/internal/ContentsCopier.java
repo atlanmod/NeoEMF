@@ -35,6 +35,9 @@ import static java.util.Objects.nonNull;
 @ParametersAreNonnullByDefault
 public final class ContentsCopier implements Copier<StoreAdapter> {
 
+    /**
+     * The root object to copy.
+     */
     @Nonnull
     private final PersistentEObject object;
 

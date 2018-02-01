@@ -138,8 +138,6 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
      * @param feature the feature to test
      *
      * @return {@code true} if the {@code feature} must be included in the result, {@code false} if it should be ignored
-     *
-     * @see EContentsEList.FeatureFilter#isIncluded(EStructuralFeature)
      */
     protected boolean isIncluded(EStructuralFeature feature) {
         return isNull(filter) || filter.isIncluded(feature);
@@ -206,6 +204,26 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     @Override
     public int previousIndex() {
         return IterationHelpers.DESCENDING.adaptCursor(cursor);
+    }
+
+    /**
+     * Advances this iterator at the specified {@code index}.
+     *
+     * @param index the desired position of this iterator
+     *
+     * @return this iterator
+     *
+     * @throws NoSuchElementException if {@code index > size}
+     */
+    @Nonnull
+    // TODO Re-implements and optimize this method by checking the size of each element
+    public ContentsListIterator<E> fastAdvance(int index) {
+        while (cursor < index) {
+            next();
+        }
+
+        checkState(cursor == index, "Cursor (%d) is not equal to index (%d)", cursor, index);
+        return this;
     }
 
     @Override
