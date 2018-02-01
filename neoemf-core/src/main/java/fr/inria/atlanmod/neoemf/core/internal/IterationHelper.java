@@ -93,5 +93,5 @@ interface IterationHelper {
      * @see List#listIterator(int)
      */
     @Nonnegative
-    <E> int getFirstIndex(List<E> list);
+    int getFirstIndex(List<?> list);
 }

@@ -81,7 +81,7 @@ final class IterationHelpers {
 
         @Nonnegative
         @Override
-        public <E> int getFirstIndex(List<E> list) {
+        public int getFirstIndex(List<?> list) {
             return 0;
         }
     }
@@ -128,7 +128,7 @@ final class IterationHelpers {
 
         @Nonnegative
         @Override
-        public <E> int getFirstIndex(List<E> list) {
+        public int getFirstIndex(List<?> list) {
             return list.size();
         }
     }

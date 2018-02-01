@@ -167,30 +167,6 @@ public class ContentsList<E extends EObject> extends AbstractSequentialInternalE
                 && EObjects.asReference(feature).isContainment();
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    // TODO Remove this method when `ContentsListIterator#fastAdvance` will be optimized
-    public E get(int index) {
-        int size = 0;
-
-        for (EStructuralFeature feature : features) {
-            if (isIncluded(feature)) {
-                int localSize = feature.isMany()
-                        ? owner.eStore().size(owner, feature)
-                        : Booleans.toInt(owner.eStore().isSet(owner, feature));
-
-                size += localSize;
-
-                // The correct feature has been found
-                if (size > index) {
-                    return (E) owner.eStore().get(owner, feature, index - (size - localSize));
-                }
-            }
-        }
-
-        throw new IndexOutOfBoundsException(String.format("index=%d, size=%d", index, size));
-    }
-
     @Nonnull
     @Override
     public ListIterator<E> listIterator(int index) {

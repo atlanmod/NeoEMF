@@ -19,9 +19,12 @@ import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -100,7 +103,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     /**
      * The list iterator on values; only with multi-valued features and feature maps.
      */
-    protected ListIterator<E> values;
+    protected ListIterator<?> values;
 
     /**
      * The feature filter to determine if a feature should be ignored from the result.
@@ -204,26 +207,6 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     @Override
     public int previousIndex() {
         return IterationHelpers.DESCENDING.adaptCursor(cursor);
-    }
-
-    /**
-     * Advances this iterator at the specified {@code index}.
-     *
-     * @param index the desired position of this iterator
-     *
-     * @return this iterator
-     *
-     * @throws NoSuchElementException if {@code index > size}
-     */
-    @Nonnull
-    // TODO Re-implements and optimize this method by checking the size of each element
-    public ContentsListIterator<E> fastAdvance(int index) {
-        while (cursor < index) {
-            next();
-        }
-
-        checkState(cursor == index, "Cursor (%d) is not equal to index (%d)", cursor, index);
-        return this;
     }
 
     @Override
@@ -353,21 +336,22 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
         final Object value = owner.eGet(feature, resolve);
         isFeatureMap = FeatureMapUtil.isFeatureMap(feature);
 
-        // The feature is multi-valued, or a feature map
+        // Feature is multi-valued, or a feature map
         if (isFeatureMap || feature.isMany()) {
-            setValues(helper, value);
+            List<?> newValues = List.class.cast(value);
+            setValues(newValues, helper.getFirstIndex(newValues));
 
             if (hasRemainingValues(helper)) {
                 return getValue(helper, feature);
             }
         }
-        // The feature is single-valued
+        // Feature is single-valued
         else if (nonNull(value)) {
             resetValues();
             return new IterationResult<>(direction, value, feature);
         }
 
-        // The feature has no value
+        // Feature has no value
         return IterationResult.empty(direction);
     }
 
@@ -376,19 +360,15 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     /**
      * Defines the iterator on values for the last prepared multi-valued feature.
      *
-     * @param helper the iteration helper that defines the direction to use
-     * @param value  the list of values
+     * @param newValues  the list of values
+     * @param firstIndex the position in the created list iterator
      */
-    @SuppressWarnings("unchecked")
-    private void setValues(IterationHelper helper, Object value) {
-        List<E> valuesList = List.class.cast(value);
-        final int firstIndex = helper.getFirstIndex(valuesList);
-
+    private void setValues(List<?> newValues, int firstIndex) {
         if (resolve) {
-            values = valuesList.listIterator(firstIndex);
+            values = newValues.listIterator(firstIndex);
         }
         else {
-            values = InternalEList.class.cast(valuesList).basicListIterator(firstIndex);
+            values = InternalEList.class.cast(newValues).basicListIterator(firstIndex);
         }
     }
 
@@ -417,8 +397,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
 
         // Filter the entries of the feature map
         while (helper.hasMoreElements(values)) {
-            E value = helper.advance(values);
-            FeatureMap.Entry entry = FeatureMap.Entry.class.cast(value);
+            FeatureMap.Entry entry = FeatureMap.Entry.class.cast(helper.advance(values));
             if (isIncludedEntry(entry)) {
                 helper.reverse(values);
                 return true;
@@ -447,6 +426,117 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
         return isFeatureMap
                 ? new IterationResult<>(direction, FeatureMap.Entry.class.cast(value))
                 : new IterationResult<>(direction, value, feature);
+    }
+
+    // endregion
+
+    // region Fast preparation
+
+    /**
+     * Advances this iterator at the specified {@code index}.
+     *
+     * @param index the desired position of this iterator
+     *
+     * @return this iterator
+     *
+     * @throws IllegalStateException  if the iterator is already in use
+     * @throws NoSuchElementException if {@code index > size}
+     *
+     * @see List#listIterator(int)
+     */
+    @Nonnull
+    public ContentsListIterator<E> fastAdvance(int index) {
+        checkState(cursor == 0, "Iterator already in use");
+
+        while (cursor < index && features.hasNext()) {
+            EStructuralFeature feature = features.next();
+            currentFeature = feature;
+            cursor += fastPrepare(feature, index);
+        }
+
+        if (index != cursor) {
+            throw new NoSuchElementException();
+        }
+
+        return this;
+    }
+
+    /**
+     * Analyzes the {@code feature} in order to prepare the value at the {@code expectedIndex}.
+     * The returned value can be either the size of the feature or the index of the element if the {@code expectedIndex}
+     * has been reached.
+     *
+     * @param feature       the feature
+     * @param expectedIndex the index to reach
+     *
+     * @return the number of steps taken during this preparation
+     */
+    @Nonnegative
+    // TODO Checks the behavior with feature maps
+    private int fastPrepare(EStructuralFeature feature, int expectedIndex) {
+        if (!isIncluded(feature)) {
+            // Feature is ignored
+            return 0;
+        }
+
+        final Object value = owner.eGet(feature, resolve);
+
+        int steps = 0;
+
+        // Feature is a feature map
+        if (FeatureMapUtil.isFeatureMap(feature)) {
+            List<FeatureMap.Entry> newValues = FeatureMap.class.cast(value);
+            SortedMap<Integer, Integer> indexMapping = fastFilterEntries(newValues);
+            steps = indexMapping.lastKey(); // Size of included entries only
+
+            if (cursor + steps >= expectedIndex) {
+                steps = expectedIndex - cursor; // Index among included entries only
+                setValues(newValues, indexMapping.get(steps));
+                isFeatureMap = true;
+            }
+        }
+        // Feature is multi-valued
+        else if (feature.isMany()) {
+            List<?> newValues = List.class.cast(value);
+            steps = newValues.size();
+
+            if (cursor + steps >= expectedIndex) {
+                steps = expectedIndex - cursor;
+                setValues(newValues, steps);
+            }
+        }
+        // Feature is single-valued
+        else if (nonNull(value)) {
+            steps = 1;
+        }
+
+        return steps;
+    }
+
+    /**
+     * Filters {@link FeatureMap.Entry}es from the list.
+     * The returned map contains the index of included entries (sequential and ordered), associated with their real
+     * index in the list.
+     *
+     * @param entries the list of entries
+     *
+     * @return the index mapping
+     *
+     * @see #isIncludedEntry(FeatureMap.Entry)
+     */
+    @Nonnull
+    private SortedMap<Integer, Integer> fastFilterEntries(List<FeatureMap.Entry> entries) {
+        int index = 0; // Index among all entries
+        int indexIncluded = 0; // Index among included entries only
+
+        SortedMap<Integer, Integer> mapping = new TreeMap<>(Comparator.comparingInt(i -> i));
+        for (FeatureMap.Entry e : entries) {
+            if (isIncludedEntry(e)) {
+                mapping.put(indexIncluded++, index);
+            }
+            index++;
+        }
+        return mapping;
     }
 
     // endregion
