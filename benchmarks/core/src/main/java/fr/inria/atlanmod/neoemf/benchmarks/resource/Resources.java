@@ -162,7 +162,7 @@ public final class Resources {
     private static Map<String, String> getRegisteredResources() throws IOException {
         if (isNull(registeredResources)) {
             Properties properties = new Properties();
-            properties.load(Stores.class.getResourceAsStream("/" + RESOURCES_PROPERTIES));
+            properties.load(Stores.class.getResourceAsStream('/' + RESOURCES_PROPERTIES));
             registeredResources = properties.entrySet().stream()
                     .collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
         }

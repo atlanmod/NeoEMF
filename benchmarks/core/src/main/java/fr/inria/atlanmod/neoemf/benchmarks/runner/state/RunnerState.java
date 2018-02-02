@@ -8,13 +8,10 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
+import fr.inria.atlanmod.commons.LazyObject;
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.BerkeleyDbAdapter;
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsAdapter;
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.CdoAdapter;
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter;
-import fr.inria.atlanmod.neoemf.benchmarks.adapter.XmiAdapter;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import org.openjdk.jmh.annotations.Level;
@@ -25,13 +22,14 @@ import org.openjdk.jmh.annotations.State;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.io.InputStream;
 import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 
 /**
  * This state contains all the benchmarks parameters, and provides a ready-to-use {@link Adapter} and the preloaded
@@ -41,25 +39,19 @@ import static java.util.Objects.nonNull;
 public class RunnerState {
 
     /**
+     * The name of the default properties file containing {@link Adapter} instances definition.
+     */
+    @Nonnull
+    private static final String ADAPTERS_PROPERTIES = "adapters.properties";
+
+    // region JMH parameters
+
+    /**
      * A map that holds all existing {@link Adapter} instances, identified by their name.
      */
     @Nonnull
-    private static final Map<String, Class<? extends Adapter>> ADAPTERS = new HashMap<>();
-
-    static {
-        ADAPTERS.put("xmi", XmiAdapter.class);
-        ADAPTERS.put("cdo", CdoAdapter.class);
-        ADAPTERS.put("mapdb-i", MapDbAdapter.WithIndices.class);
-        ADAPTERS.put("mapdb-a", MapDbAdapter.WithArrays.class);
-        ADAPTERS.put("mapdb-l", MapDbAdapter.WithLists.class);
-        ADAPTERS.put("berkeleydb-i", BerkeleyDbAdapter.WithIndices.class);
-        ADAPTERS.put("berkeleydb-a", BerkeleyDbAdapter.WithArrays.class);
-        ADAPTERS.put("berkeleydb-l", BerkeleyDbAdapter.WithLists.class);
-        ADAPTERS.put("tinker", BlueprintsAdapter.Tinker.class);
-        ADAPTERS.put("neo4j", BlueprintsAdapter.Neo4j.class);
-    }
-
-    // region JMH parameters
+    @SuppressWarnings("unchecked")
+    private final LazyObject<Map<String, Class<? extends Adapter>>> adapters = LazyObject.with(this::loadAdapters);
 
     /**
      * The name of the current {@link org.eclipse.emf.ecore.resource.Resource} file.
@@ -98,26 +90,33 @@ public class RunnerState {
     // endregion
 
     /**
+     * The current {@link Adapter}.
+     */
+    private Adapter adapter;
+
+    /**
      * The current {@link org.eclipse.emf.ecore.resource.Resource} file.
      */
     private File resourceFile;
+
+    /**
+     * {@code true} if the direct import has to be used when creating or importing resources.
+     */
+    private boolean useDirectImport;
+
+    /**
+     * The options to use with the defined adapter.
+     */
+    private ImmutableConfig baseConfig;
+
+    // region Getters
 
     /**
      * Returns the current adapter.
      */
     @Nonnull
     public Adapter adapter() {
-        try {
-            Adapter adapter;
-            Class<? extends Adapter> instance = ADAPTERS.get(a);
-            checkState(nonNull(instance), "No adapter named '%s' is registered", a);
-            adapter = ADAPTERS.get(a).newInstance();
-            return adapter;
-        }
-        catch (InstantiationException | IllegalAccessException e) {
-            Log.error(e);
-            throw new RuntimeException(e);
-        }
+        return adapter;
     }
 
     /**
@@ -132,23 +131,67 @@ public class RunnerState {
      * Returns {@code true} if the direct import has to be used when creating or importing resources.
      */
     public boolean useDirectImport() {
-        return Boolean.valueOf(direct);
+        return useDirectImport;
     }
 
     /**
-     * Loads and creates the current resource file.
-     */
-    @Setup(Level.Trial)
-    public void initResource() throws IOException {
-        Log.info("Initializing the resource");
-        resourceFile = adapter().getOrCreateResource(r);
-    }
-
-    /**
-     * Parses options given in arguments.
+     * Returns the options to use with the defined adapter.
      */
     @Nonnull
     public ImmutableConfig baseConfig() {
-        return ConfigParser.parse(o);
+        return baseConfig;
+    }
+
+    // endregion
+
+    /**
+     * Initializes all defined arguments.
+     */
+    @Setup(Level.Trial)
+    public void initArguments() throws IOException {
+        try {
+            Class<? extends Adapter> type = adapters.get().get(a);
+            if (isNull(type)) {
+                throw new IllegalArgumentException(String.format("No adapter named '%s' is registered", a));
+            }
+            adapter = type.newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e) {
+            throw Throwables.wrap(e, IllegalStateException.class);
+        }
+
+        baseConfig = ConfigParser.parse(o);
+        useDirectImport = Boolean.valueOf(direct);
+
+        Log.info("Initializing the resource");
+        resourceFile = adapter.getOrCreateResource(r);
+    }
+
+    /**
+     * Loads all known adapters from the properties file.
+     *
+     * @return the adapter mapping
+     */
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    private Map<String, Class<? extends Adapter>> loadAdapters() {
+        try (InputStream in = RunnerState.class.getResourceAsStream('/' + ADAPTERS_PROPERTIES)) {
+            Properties properties = new Properties();
+            properties.load(in);
+
+            return properties.stringPropertyNames()
+                    .stream()
+                    .collect(Collectors.toMap(n -> n, n -> {
+                        try {
+                            return (Class<? extends Adapter>) Class.forName(properties.getProperty(n));
+                        }
+                        catch (ClassNotFoundException e) {
+                            throw new IllegalArgumentException(e);
+                        }
+                    }));
+        }
+        catch (IOException e) {
+            throw Throwables.wrap(e, IllegalStateException.class);
+        }
     }
 }
