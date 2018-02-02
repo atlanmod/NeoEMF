@@ -441,7 +441,6 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
      *
      * @throws IllegalStateException  if the iterator is already in use
      * @throws NoSuchElementException if {@code index > size}
-     *
      * @see List#listIterator(int)
      */
     @Nonnull

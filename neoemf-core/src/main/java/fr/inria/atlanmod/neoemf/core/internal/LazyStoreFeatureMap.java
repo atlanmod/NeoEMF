@@ -13,13 +13,13 @@ import fr.inria.atlanmod.neoemf.data.store.Storable;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
-import org.eclipse.emf.common.util.AbstractEList;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
 import org.eclipse.emf.ecore.util.FeatureMap;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
@@ -110,6 +110,12 @@ public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap
 
     @Nonnull
     @Override
+    public Iterator<Entry> basicIterator() {
+        return new NonResolvingLazyIterator<>(this, () -> modCount);
+    }
+
+    @Nonnull
+    @Override
     public ListIterator<FeatureMap.Entry> basicListIterator() {
         return basicListIterator(0);
     }
@@ -119,7 +125,13 @@ public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap
     public ListIterator<FeatureMap.Entry> basicListIterator(int index) {
         // Avoid checking the size when index == 0
         checkPositionIndex(index, index == 0 ? 0 : size());
-        return new AbstractEList<FeatureMap.Entry>.NonResolvingEListIterator<>(index);
+        return new NonResolvingLazyListIterator<>(this, () -> modCount, index);
+    }
+
+    @Nonnull
+    @Override
+    public Iterator<Entry> iterator() {
+        return new LazyIterator<>(this, () -> modCount);
     }
 
     @Nonnull
@@ -133,6 +145,6 @@ public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap
     public ListIterator<FeatureMap.Entry> listIterator(int index) {
         // Avoid checking the size when index == 0
         checkPositionIndex(index, index == 0 ? 0 : size());
-        return new AbstractEList<FeatureMap.Entry>.EListIterator<>(index);
+        return new LazyListIterator<>(this, () -> modCount, index);
     }
 }

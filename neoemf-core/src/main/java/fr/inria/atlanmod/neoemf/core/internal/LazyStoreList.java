@@ -13,12 +13,12 @@ import fr.inria.atlanmod.neoemf.data.store.Storable;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
-import org.eclipse.emf.common.util.AbstractEList;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
@@ -143,6 +143,11 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     }
 
     @Override
+    public void addUnique(E object) {
+        addUnique(InternalEObject.EStore.NO_INDEX, object);
+    }
+
+    @Override
     protected boolean doAddAllUnique(Collection<? extends E> collection) {
         return doAddAllUnique(InternalEObject.EStore.NO_INDEX, collection);
     }
@@ -172,19 +177,10 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
         return super.removeAll(collection);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Override the default implementation which relies on {@link #size()} to compute the insertion index by providing a
-     * custom {@link StoreAdapter#NO_INDEX} features, meaning that the {@link fr.inria.atlanmod.neoemf.data.Backend} has
-     * to append the result to the existing list.
-     * <p>
-     * This behavior allows fast write operation on {@link fr.inria.atlanmod.neoemf.data.Backend} which would otherwise
-     * need to deserialize the underlying list to add the element at the specified index.
-     */
+    @Nonnull
     @Override
-    public void addUnique(E object) {
-        addUnique(InternalEObject.EStore.NO_INDEX, object);
+    public Iterator<E> basicIterator() {
+        return new NonResolvingLazyIterator<>(this, () -> modCount);
     }
 
     @Nonnull
@@ -198,7 +194,13 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     public ListIterator<E> basicListIterator(int index) {
         // Avoid checking the size when index == 0
         checkPositionIndex(index, index == 0 ? 0 : size());
-        return new AbstractEList<E>.NonResolvingEListIterator<>(index);
+        return new NonResolvingLazyListIterator<>(this, () -> modCount, index);
+    }
+
+    @Nonnull
+    @Override
+    public Iterator<E> iterator() {
+        return new LazyIterator<>(this, () -> modCount);
     }
 
     @Nonnull
@@ -212,6 +214,6 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     public ListIterator<E> listIterator(int index) {
         // Avoid checking the size when index == 0
         checkPositionIndex(index, index == 0 ? 0 : size());
-        return new AbstractEList<E>.EListIterator<>(index);
+        return new LazyListIterator<>(this, () -> modCount, index);
     }
 }
