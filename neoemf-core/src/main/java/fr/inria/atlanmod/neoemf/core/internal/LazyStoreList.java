@@ -13,17 +13,20 @@ import fr.inria.atlanmod.neoemf.data.store.Storable;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
+import org.eclipse.emf.common.util.AbstractEList;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
@@ -180,14 +183,35 @@ public class LazyStoreList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
      * need to deserialize the underlying list to add the element at the specified index.
      */
     @Override
-    public boolean add(E object) {
-        if (isUnique() && contains(object)) {
-            return false;
-        }
-        else {
-            // index = NO_INDEX results as a call to #append() in store, without checking the size
-            addUnique(InternalEObject.EStore.NO_INDEX, object);
-            return true;
-        }
+    public void addUnique(E object) {
+        addUnique(InternalEObject.EStore.NO_INDEX, object);
+    }
+
+    @Nonnull
+    @Override
+    public ListIterator<E> basicListIterator() {
+        return basicListIterator(0);
+    }
+
+    @Nonnull
+    @Override
+    public ListIterator<E> basicListIterator(int index) {
+        // Avoid checking the size when index == 0
+        checkPositionIndex(index, index == 0 ? 0 : size());
+        return new AbstractEList<E>.NonResolvingEListIterator<>(index);
+    }
+
+    @Nonnull
+    @Override
+    public ListIterator<E> listIterator() {
+        return listIterator(0);
+    }
+
+    @Nonnull
+    @Override
+    public ListIterator<E> listIterator(int index) {
+        // Avoid checking the size when index == 0
+        checkPositionIndex(index, index == 0 ? 0 : size());
+        return new AbstractEList<E>.EListIterator<>(index);
     }
 }
