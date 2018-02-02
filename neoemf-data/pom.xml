@@ -40,6 +40,13 @@
         <!-- Test -->
 
         <dependency>
+            <groupId>fr.inria.atlanmod.commons</groupId>
+            <artifactId>commons-core</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
         </dependency>
@@ -54,16 +61,11 @@
             <artifactId>assertj-core</artifactId>
         </dependency>
 
+        <!-- Test: EMF -->
+
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.common</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.commons</groupId>
-            <artifactId>commons-core</artifactId>
-            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
 
@@ -83,7 +85,7 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
+        <dependency> <!-- Used by `neoemf-core` : Required for `DataMapper` copy -->
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-io</artifactId>
             <version>${project.version}</version>
