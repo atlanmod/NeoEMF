@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.WillNotClose;
 
 /**
  * A {@link Serializer} for {@link Id}s.
@@ -29,13 +30,13 @@ final class IdSerializer extends AbstractSerializer<Id> {
     private static final long serialVersionUID = 4870583637926304450L;
 
     @Override
-    public void serialize(Id id, DataOutput out) throws IOException {
+    public void serialize(Id id, @WillNotClose DataOutput out) throws IOException {
         out.writeLong(id.toLong());
     }
 
     @Nonnull
     @Override
-    public Id deserialize(DataInput in) throws IOException {
+    public Id deserialize(@WillNotClose DataInput in) throws IOException {
         return Id.getProvider().fromLong(in.readLong());
     }
 }

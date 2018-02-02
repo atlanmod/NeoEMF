@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.WillNotClose;
 
 /**
  * A {@link Serializer} for {@link ClassBean}s.
@@ -29,14 +30,14 @@ final class ClassSerializer extends AbstractSerializer<ClassBean> {
     private static final long serialVersionUID = 2381621024821659111L;
 
     @Override
-    public void serialize(ClassBean metaClass, DataOutput out) throws IOException {
+    public void serialize(ClassBean metaClass, @WillNotClose DataOutput out) throws IOException {
         out.writeUTF(metaClass.name());
         out.writeUTF(metaClass.uri());
     }
 
     @Nonnull
     @Override
-    public ClassBean deserialize(DataInput in) throws IOException {
+    public ClassBean deserialize(@WillNotClose DataInput in) throws IOException {
         return ClassBean.of(
                 in.readUTF(),
                 in.readUTF()

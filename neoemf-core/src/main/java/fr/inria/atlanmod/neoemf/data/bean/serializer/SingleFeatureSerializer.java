@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.WillNotClose;
 
 /**
  * A {@link Serializer} for {@link SingleFeatureBean}s.
@@ -30,14 +31,14 @@ final class SingleFeatureSerializer extends AbstractSerializer<SingleFeatureBean
     private static final long serialVersionUID = -6425763366179041775L;
 
     @Override
-    public void serialize(SingleFeatureBean key, DataOutput out) throws IOException {
+    public void serialize(SingleFeatureBean key, @WillNotClose DataOutput out) throws IOException {
         out.writeLong(key.owner().toLong());
         out.writeInt(key.id());
     }
 
     @Nonnull
     @Override
-    public SingleFeatureBean deserialize(DataInput in) throws IOException {
+    public SingleFeatureBean deserialize(@WillNotClose DataInput in) throws IOException {
         return SingleFeatureBean.of(
                 Id.getProvider().fromLong(in.readLong()),
                 in.readInt()
