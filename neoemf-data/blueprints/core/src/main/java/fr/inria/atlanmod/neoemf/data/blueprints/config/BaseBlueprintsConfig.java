@@ -10,8 +10,10 @@ package fr.inria.atlanmod.neoemf.data.blueprints.config;
 
 import com.tinkerpop.blueprints.Graph;
 
+import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.InvalidConfigException;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 
 import java.nio.file.Path;
 import java.util.function.Predicate;
@@ -27,8 +29,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
  *
  * @param <C> the "self"-type of this {@link fr.inria.atlanmod.neoemf.config.Config}
  */
+@FactoryBinding(factory = BlueprintsBackendFactory.class)
 @ParametersAreNonnullByDefault
-public abstract class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends BaseConfig<C> {
+public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends BaseConfig<C> {
 
     /**
      * The base prefix for all options related to Blueprints, whatever the implementation.
@@ -76,7 +79,9 @@ public abstract class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> ex
      *
      * @param directory the location of the database
      */
-    public abstract void setLocation(Path directory);
+    public void setLocation(Path directory) {
+        throw new UnsupportedOperationException("This implementation should not be used directly");
+    }
 
     @Nonnull
     @Override
