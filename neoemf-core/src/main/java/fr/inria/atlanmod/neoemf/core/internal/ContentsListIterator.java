@@ -82,7 +82,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     /**
      * The prepared result that will be returned at the next call to {@link #next()} or {@link #previous()}.
      *
-     * @see #prepare(IterationHelper)
+     * @see #prepare(IterationDirection)
      */
     @Nonnull
     protected IterationResult<E> nextResult = IterationResult.undefined();
@@ -179,34 +179,34 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
 
     @Override
     public boolean hasNext() {
-        return hasMoreElements(IterationHelper.ASCENDING);
+        return hasMoreElements(IterationDirection.FORWARD);
     }
 
     @Nonnull
     @Override
     public E next() {
-        return advance(IterationHelper.ASCENDING);
+        return advance(IterationDirection.FORWARD);
     }
 
     @Override
     public boolean hasPrevious() {
-        return hasMoreElements(IterationHelper.DESCENDING);
+        return hasMoreElements(IterationDirection.BACKWARD);
     }
 
     @Nonnull
     @Override
     public E previous() {
-        return advance(IterationHelper.DESCENDING);
+        return advance(IterationDirection.BACKWARD);
     }
 
     @Override
     public int nextIndex() {
-        return IterationHelper.ASCENDING.adaptCursor(cursor);
+        return IterationDirection.FORWARD.adaptCursor(cursor);
     }
 
     @Override
     public int previousIndex() {
-        return IterationHelper.DESCENDING.adaptCursor(cursor);
+        return IterationDirection.BACKWARD.adaptCursor(cursor);
     }
 
     @Override
@@ -227,26 +227,25 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     /**
      * Returns {@code true} if this list iterator has more elements when traversing the list in the defined direction.
      *
-     * @param helper the iteration helper that defines the direction to use
+     * @param direction the iteration direction
      *
      * @return {@code true} if the list iterator has more elements
      *
      * @see #hasNext()
      * @see #hasPrevious()
-     * @see IterationHelper#direction()
-     * @see IterationHelper#hasMoreElements(ListIterator)
+     * @see IterationDirection#hasMoreElements(ListIterator)
      */
-    private boolean hasMoreElements(IterationHelper helper) {
+    private boolean hasMoreElements(IterationDirection direction) {
         // If the iterator is already prepared, but on the wrong side: undo the last preparation
-        if (nextResult.isInitialized() && !nextResult.hasDirection(helper.direction())) {
+        if (nextResult.isInitialized() && !nextResult.hasDirection(direction)) {
             if (nonNull(values)) {
-                helper.advance(values);
+                direction.advance(values);
             }
             nextResult = IterationResult.undefined();
         }
 
         if (!nextResult.isInitialized()) {
-            nextResult = prepare(helper);
+            nextResult = prepare(direction);
         }
 
         return !nextResult.isEmpty();
@@ -255,18 +254,17 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     /**
      * Returns the next element in the list and moves the cursor, according to the defined direction.
      *
-     * @param helper the iteration helper that defines the direction to use
+     * @param direction the iteration direction that defines the direction to use
      *
      * @return the next element in the list, according to the defined direction
      *
      * @see #next()
      * @see #previous()
-     * @see IterationHelper#direction()
-     * @see IterationHelper#advance(ListIterator)
+     * @see IterationDirection#advance(ListIterator)
      */
     @Nonnull
-    private E advance(IterationHelper helper) {
-        if ((!nextResult.hasDirection(helper.direction()) || nextResult.isEmpty()) && !hasMoreElements(helper)) {
+    private E advance(IterationDirection direction) {
+        if ((!nextResult.hasDirection(direction) || nextResult.isEmpty()) && !hasMoreElements(direction)) {
             throw new NoSuchElementException();
         }
 
@@ -275,35 +273,35 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
 
         // Store status information
         currentFeature = nextResult.feature();
-        cursor = helper.advanceCursor(cursor);
+        cursor = direction.advanceCursor(cursor);
 
         // Reset and prepare the next/previous element
         nextResult = IterationResult.undefined();
-        nextResult = prepare(helper);
+        nextResult = prepare(direction);
 
         return e;
     }
 
     /**
-     * Prepares the result that will be returned at the next call to {@link #advance(IterationHelper)}.
+     * Prepares the result that will be returned at the next call to {@link #advance(IterationDirection)}.
      * This method iterates over all features to retrieve the next value for the defined direction.
      * If the previously returned feature was multi-valued, then this method iterates over all remaining values before
      * analizing other features.
      *
-     * @param helper the iteration helper that defines the direction to use
+     * @param direction the iteration direction
      *
      * @return the prepared result
      */
     @Nonnull
-    private IterationResult<E> prepare(IterationHelper helper) {
+    private IterationResult<E> prepare(IterationDirection direction) {
         // The current feature is multi-valued, or a feature map, and has unprocessed values
-        if (nonNull(values) && hasRemainingValues(helper)) {
-            return getValue(helper, currentFeature);
+        if (nonNull(values) && hasRemainingValues(direction)) {
+            return getValue(direction, currentFeature);
         }
 
         // Processes other features
-        while (helper.hasMoreElements(features)) {
-            IterationResult<E> localResult = prepareFeature(helper, helper.advance(features));
+        while (direction.hasMoreElements(features)) {
+            IterationResult<E> localResult = prepareFeature(direction, direction.advance(features));
             if (!localResult.isEmpty()) {
                 return localResult;
             }
@@ -312,22 +310,20 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
         // No more value
         resetValues();
         isFeatureMap = false;
-        return IterationResult.empty(helper.direction());
+        return IterationResult.empty(direction);
     }
 
     /**
-     * Prepares the result that will be returned at the next call to {@link #advance(IterationHelper)} for the specified
+     * Prepares the result that will be returned at the next call to {@link #advance(IterationDirection)} for the specified
      * {@code feature} in the defined direction.
      *
-     * @param helper  the iteration helper that defines the direction to use
-     * @param feature the feature to retrieve the next value
+     * @param direction the iteration direction
+     * @param feature   the feature to retrieve the next value
      *
      * @return the prepared result
      */
     @Nonnull
-    private IterationResult<E> prepareFeature(IterationHelper helper, EStructuralFeature feature) {
-        final IterationDirection direction = helper.direction();
-
+    private IterationResult<E> prepareFeature(IterationDirection direction, EStructuralFeature feature) {
         if (!isIncluded(feature)) {
             // Feature is ignored
             return IterationResult.empty(direction);
@@ -339,10 +335,10 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
         // Feature is multi-valued, or a feature map
         if (isFeatureMap || feature.isMany()) {
             List<?> newValues = List.class.cast(value);
-            setValues(newValues, helper.getFirstIndex(newValues));
+            setValues(newValues, direction.getFirstIndex(newValues));
 
-            if (hasRemainingValues(helper)) {
-                return getValue(helper, feature);
+            if (hasRemainingValues(direction)) {
+                return getValue(direction, feature);
             }
         }
         // Feature is single-valued
@@ -383,23 +379,23 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
      * Returns {@code true} if the iterator on values for the last prepared multi-valued feature has more elements when
      * traversing the list in the defined direction.
      *
-     * @param helper the iteration helper that defines the direction to use
+     * @param direction the iteration direction
      *
      * @return {@code true} if the iterator on values for the last prepared multi-valued feature has more elements
      */
-    private boolean hasRemainingValues(IterationHelper helper) {
+    private boolean hasRemainingValues(IterationDirection direction) {
         checkState(nonNull(values), "The current feature is neither multi-valued or a feature map");
 
         // Not a feature map
         if (!isFeatureMap) {
-            return helper.hasMoreElements(values);
+            return direction.hasMoreElements(values);
         }
 
         // Filter the entries of the feature map
-        while (helper.hasMoreElements(values)) {
-            FeatureMap.Entry entry = FeatureMap.Entry.class.cast(helper.advance(values));
+        while (direction.hasMoreElements(values)) {
+            FeatureMap.Entry entry = FeatureMap.Entry.class.cast(direction.advance(values));
             if (isIncludedEntry(entry)) {
-                helper.reverse(values);
+                direction.reverse(values);
                 return true;
             }
         }
@@ -411,17 +407,16 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
      * Advances the iterator on values for the current multi-valued feature, and returns the value associated to the
      * specified {@code feature}.
      *
-     * @param helper  the iteration helper that defines the direction to use
-     * @param feature the multi-valued feature associated with the value
+     * @param direction the iteration direction
+     * @param feature   the multi-valued feature associated with the value
      *
      * @return the result of the iteration
      */
     @Nonnull
-    private IterationResult<E> getValue(IterationHelper helper, EStructuralFeature feature) {
+    private IterationResult<E> getValue(IterationDirection direction, EStructuralFeature feature) {
         checkState(nonNull(values), "The current feature is neither multi-valued or a feature map");
 
-        final Object value = helper.advance(values);
-        final IterationDirection direction = helper.direction();
+        final Object value = direction.advance(values);
 
         return isFeatureMap
                 ? new IterationResult<>(direction, FeatureMap.Entry.class.cast(value))

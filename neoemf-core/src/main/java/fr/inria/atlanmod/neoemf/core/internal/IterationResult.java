@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A result prepared by iterating a {@link ListIterator} in a defined {@link IterationHelper#direction() direction}.
+ * A result prepared by iterating a {@link ListIterator} in a defined {@link IterationDirection direction}.
  *
  * @param <E> the type of the value
  *
