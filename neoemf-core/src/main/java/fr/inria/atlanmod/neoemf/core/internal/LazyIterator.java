@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.core.internal;
 
-import fr.inria.atlanmod.commons.LazyObject;
+import fr.inria.atlanmod.commons.LazyInt;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -47,7 +47,7 @@ public class LazyIterator<L extends List<E>, E> implements Iterator<E> {
      * The cached size of the containing list.
      */
     @Nonnull
-    protected final LazyObject<Integer> size;
+    protected final LazyInt size;
 
     /**
      * The current position of the iterator.
@@ -75,12 +75,12 @@ public class LazyIterator<L extends List<E>, E> implements Iterator<E> {
         this.modCount = modCount;
         this.containingList = containingList;
         this.expectedModCount = modCount.getAsInt();
-        this.size = LazyObject.with(containingList::size);
+        this.size = LazyInt.with(containingList::size);
     }
 
     @Override
     public final boolean hasNext() {
-        return cursor < size.get();
+        return cursor < size.getAsInt();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class LazyIterator<L extends List<E>, E> implements Iterator<E> {
         try {
             doRemove(lastCursor);
             expectedModCount = modCount.getAsInt();
-            size.update(size.get() - 1);
+            size.update(s -> s - 1);
             if (lastCursor < cursor) {
                 --cursor;
             }

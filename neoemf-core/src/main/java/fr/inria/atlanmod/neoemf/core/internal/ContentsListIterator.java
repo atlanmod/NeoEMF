@@ -179,34 +179,34 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
 
     @Override
     public boolean hasNext() {
-        return hasMoreElements(IterationHelpers.ASCENDING);
+        return hasMoreElements(IterationHelper.ASCENDING);
     }
 
     @Nonnull
     @Override
     public E next() {
-        return advance(IterationHelpers.ASCENDING);
+        return advance(IterationHelper.ASCENDING);
     }
 
     @Override
     public boolean hasPrevious() {
-        return hasMoreElements(IterationHelpers.DESCENDING);
+        return hasMoreElements(IterationHelper.DESCENDING);
     }
 
     @Nonnull
     @Override
     public E previous() {
-        return advance(IterationHelpers.DESCENDING);
+        return advance(IterationHelper.DESCENDING);
     }
 
     @Override
     public int nextIndex() {
-        return IterationHelpers.ASCENDING.adaptCursor(cursor);
+        return IterationHelper.ASCENDING.adaptCursor(cursor);
     }
 
     @Override
     public int previousIndex() {
-        return IterationHelpers.DESCENDING.adaptCursor(cursor);
+        return IterationHelper.DESCENDING.adaptCursor(cursor);
     }
 
     @Override

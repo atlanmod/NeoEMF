@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.commons.LazyObject;
+import fr.inria.atlanmod.commons.Lazy;
 import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
@@ -69,7 +69,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      * The {@link StoreAdapter} where this object is stored.
      */
     @Nonnull
-    private final LazyObject<StoreAdapter> lazyStore = LazyObject.with(() -> getOrCreateStore(resource()));
+    private final Lazy<StoreAdapter> lazyStore = Lazy.with(() -> getOrCreateStore(resource()));
 
     /**
      * The cached container of this object.

@@ -13,7 +13,6 @@ import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.Vertex;
 
-import fr.inria.atlanmod.commons.collect.DelegatedIterator;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.collect.SizedIterator;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -337,13 +336,9 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         final Vertex vertex = optVertex.get();
 
-        final Iterator<Edge> sortedEdges = MoreIterables.stream(vertex.getEdges(Direction.OUT, formatLabel(key)))
+        return MoreIterables.stream(vertex.getEdges(Direction.OUT, formatLabel(key)))
                 .sorted(Comparator.comparingInt(e -> e.getProperty(PROPERTY_INDEX)))
-                .iterator();
-
-        final Iterator<Id> iter = new DelegatedIterator<>(sortedEdges, e -> idConverter.revert(e.getVertex(Direction.IN).getId()));
-
-        return MoreIterables.stream(() -> iter);
+                .map(e -> idConverter.revert(e.getVertex(Direction.IN).getId()));
     }
 
     @Nonnull

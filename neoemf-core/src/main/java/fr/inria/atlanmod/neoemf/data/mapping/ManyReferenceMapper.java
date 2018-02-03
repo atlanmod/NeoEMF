@@ -47,7 +47,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param key the key identifying the multi-valued reference
      *
-     * @return an immutable ordered {@link Stream} containing all references
+     * @return an immutable ordered {@link Stream} over all references
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */

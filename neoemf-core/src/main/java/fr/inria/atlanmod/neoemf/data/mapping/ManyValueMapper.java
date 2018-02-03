@@ -46,7 +46,7 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @param key the key identifying the multi-valued attribute
      *
-     * @return an immutable ordered {@link Stream} containing all values
+     * @return an immutable ordered {@link Stream} over all values
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */

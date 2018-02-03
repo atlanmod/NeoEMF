@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.bind;
 
-import fr.inria.atlanmod.commons.LazyObject;
+import fr.inria.atlanmod.commons.Lazy;
 import fr.inria.atlanmod.neoemf.util.Activator;
 
 import org.osgi.framework.Bundle;
@@ -42,7 +42,7 @@ public class BundleContextCollector implements URLCollector {
      * The {@code FileLocator#getBundleFile(Bundle)} method.
      */
     @Nonnull
-    private static final LazyObject<Method> BUNDLE_LOCATOR = LazyObject.with(() -> {
+    private static final Lazy<Method> BUNDLE_LOCATOR = Lazy.with(() -> {
         try {
             return Activator.class.getClassLoader()
                     .loadClass("org.eclipse.core.runtime.FileLocator")

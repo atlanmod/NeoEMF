@@ -47,7 +47,7 @@ public class LazyListIterator<L extends List<E>, E> extends LazyIterator<L, E> i
      */
     public LazyListIterator(L containingList, IntSupplier modCount, int index) {
         super(containingList, modCount);
-        checkPositionIndex(index, index == 0 ? 0 : size.get());
+        checkPositionIndex(index, index == 0 ? 0 : size.getAsInt());
         this.cursor = index;
     }
 
@@ -103,7 +103,7 @@ public class LazyListIterator<L extends List<E>, E> extends LazyIterator<L, E> i
         try {
             doAdd(cursor++, e);
             expectedModCount = modCount.getAsInt();
-            size.update(size.get() + 1);
+            size.update(s -> s + 1);
             lastCursor = -1;
         }
         catch (IndexOutOfBoundsException exception) {
