@@ -23,7 +23,6 @@ import fr.inria.atlanmod.neoemf.util.EObjects;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
@@ -89,9 +88,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                 .map(ClassBean::get)
                 .<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
 
-        EPackage ePackage = eClass.getEPackage();
-        BasicNamespace ns = BasicNamespace.Registry.getInstance().register(ePackage.getNsPrefix(), ePackage.getNsURI());
-        ns.ePackage(ePackage);
+        BasicNamespace ns = BasicNamespace.Registry.getInstance().register(eClass.getEPackage());
 
         // Retrieve the name of the element
         // If root it's the name of the meta-class, otherwise the name of the containing feature from the previous class
@@ -101,15 +98,16 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                 .map(EStructuralFeature::getName)
                 .<IllegalStateException>orElseThrow(IllegalStateException::new);
 
-        // Create the element
-        BasicElement element = new BasicElement();
-        element.name(name);
-        element.id(id);
-        element.isRoot(isRoot);
+        // Create the meta-class
+        BasicMetaclass metaClass = new BasicMetaclass(ns)
+                .eClass(eClass);
 
-        BasicMetaclass metaClass = new BasicMetaclass(ns);
-        metaClass.eClass(eClass);
-        element.metaClass(metaClass);
+        // Create the element
+        BasicElement element = new BasicElement()
+                .name(name)
+                .id(id)
+                .isRoot(isRoot)
+                .metaClass(metaClass);
 
         notifyStartElement(element);
         previousClasses.addLast(eClass);
@@ -187,11 +185,11 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * @param value      the value of the attribute
      */
     private void createAttribute(SingleFeatureBean key, EAttribute eAttribute, Object value) {
-        BasicAttribute attribute = new BasicAttribute();
-        attribute.owner(key.owner());
-        attribute.id(key.id());
-        attribute.eFeature(eAttribute);
-        attribute.value(value);
+        BasicAttribute attribute = new BasicAttribute()
+                .owner(key.owner())
+                .id(key.id())
+                .eFeature(eAttribute)
+                .value(value);
 
         notifyAttribute(attribute);
     }
@@ -207,11 +205,11 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      */
     @Nullable
     private Id createReference(SingleFeatureBean key, EReference eReference, Id value) {
-        BasicReference reference = new BasicReference();
-        reference.owner(key.owner());
-        reference.id(key.id());
-        reference.eFeature(eReference);
-        reference.value(value);
+        BasicReference reference = new BasicReference()
+                .owner(key.owner())
+                .id(key.id())
+                .eFeature(eReference)
+                .value(value);
 
         notifyReference(reference);
 

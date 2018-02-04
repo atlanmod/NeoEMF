@@ -8,6 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
+import fr.inria.atlanmod.commons.LazyReference;
+
 import org.eclipse.emf.ecore.EClass;
 
 import java.util.Objects;
@@ -17,14 +19,13 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
  * A simple representation of a {@link EClass}.
  */
 @ParametersAreNonnullByDefault
-public class BasicMetaclass extends AbstractNamedElement {
+public class BasicMetaclass extends AbstractNamedElement<BasicMetaclass> {
 
     /**
      * The instance of the default meta-class.
@@ -41,7 +42,12 @@ public class BasicMetaclass extends AbstractNamedElement {
     /**
      * The {@link EClass} associated to this meta-class.
      */
-    private EClass eClass;
+    @Nonnull
+    private final LazyReference<EClass> eClass = LazyReference.soft(() -> {
+        EClass c = EClass.class.cast(ns().ePackage().getEClassifier(name()));
+        checkNotNull(c, "eClass");
+        return c;
+    });
 
     /**
      * Constructs a new {@code BasicMetaclass} with the given {@code ns}.
@@ -93,20 +99,21 @@ public class BasicMetaclass extends AbstractNamedElement {
      */
     @Nonnull
     public EClass eClass() {
-        if (isNull(eClass)) {
-            eClass = checkNotNull(EClass.class.cast(ns().ePackage().getEClassifier(name())), "eClass");
-        }
-        return eClass;
+        return eClass.get();
     }
 
     /**
      * Defines the {@link EClass} associated to this meta-class.
      *
      * @param eClass the {@link EClass}
+     *
+     * @return this instance (for chaining)
      */
-    public void eClass(EClass eClass) {
-        this.eClass = checkNotNull(eClass, "eClass");
-        name(eClass.getName());
+    public BasicMetaclass eClass(EClass eClass) {
+        checkNotNull(eClass, "eClass");
+        this.eClass.update(eClass);
+
+        return name(eClass.getName());
     }
 
     @Override

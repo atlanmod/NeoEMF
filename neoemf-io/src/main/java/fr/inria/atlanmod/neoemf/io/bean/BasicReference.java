@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A simple representation of a {@link EReference}.
  */
 @ParametersAreNonnullByDefault
-public class BasicReference extends AbstractBasicFeature<EReference, Id> {
+public class BasicReference extends AbstractBasicFeature<BasicReference, EReference, Id> {
 
     /**
      * Whether this reference is a containment.
@@ -44,15 +44,19 @@ public class BasicReference extends AbstractBasicFeature<EReference, Id> {
      * Defines whether this reference is a containment.
      *
      * @param isContainment {@code true} if this reference is a containment
+     *
+     * @return this instance (for chaining)
      */
-    public void isContainment(boolean isContainment) {
+    public BasicReference isContainment(boolean isContainment) {
         this.isContainment = isContainment;
+
+        return me();
     }
 
     @Override
-    public void eFeature(EReference eFeature) {
-        super.eFeature(eFeature);
-        isContainment(eFeature.isContainment());
+    public BasicReference eFeature(EReference eFeature) {
+        return super.eFeature(eFeature)
+                .isContainment(eFeature.isContainment());
     }
 
     /**
@@ -69,8 +73,12 @@ public class BasicReference extends AbstractBasicFeature<EReference, Id> {
      * Defines the string representation of the identifier of the referenced element(s).
      *
      * @param rawValue the string representation of the identifier of the referenced element(s)
+     *
+     * @return this instance (for chaining)
      */
-    public void rawValue(@Nullable String rawValue) {
+    public BasicReference rawValue(@Nullable String rawValue) {
         this.rawValue = rawValue;
+
+        return me();
     }
 }

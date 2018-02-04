@@ -151,10 +151,11 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * @param name the name of the element
      */
     protected final void readStartElement(@Nullable String uri, String name) {
-        currentElement = new BasicElement();
-        currentElement.name(name);
-
         BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromUri(Strings.emptyToNull(uri));
+
+        currentElement = new BasicElement()
+                .name(name);
+
         if (nonNull(ns)) {
             currentElement.metaClass(new BasicMetaclass(ns));
         }
@@ -197,9 +198,9 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      */
     protected final void readAttribute(@Nullable String prefix, String name, String value) {
         if (!ignoreElement && !isSpecialAttribute(prefix, name, value)) {
-            BasicAttribute attribute = new BasicAttribute();
-            attribute.name(name);
-            attribute.value(value);
+            BasicAttribute attribute = new BasicAttribute()
+                    .name(name)
+                    .value(value);
 
             currentAttributes.add(attribute);
         }

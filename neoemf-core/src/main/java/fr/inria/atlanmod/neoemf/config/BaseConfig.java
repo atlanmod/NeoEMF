@@ -388,6 +388,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      *
      * @return this instance
      */
+    @Nonnull
     @SuppressWarnings("unchecked")
     private C me() {
         return (C) this;

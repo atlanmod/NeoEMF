@@ -16,5 +16,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A simple representation of a {@link EAttribute}
  */
 @ParametersAreNonnullByDefault
-public class BasicAttribute extends AbstractBasicFeature<EAttribute, Object> {
+public class BasicAttribute extends AbstractBasicFeature<BasicAttribute, EAttribute, Object> {
 }

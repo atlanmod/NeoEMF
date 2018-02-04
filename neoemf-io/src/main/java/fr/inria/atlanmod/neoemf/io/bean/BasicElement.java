@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A simple representation of a {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}.
  */
 @ParametersAreNonnullByDefault
-public class BasicElement extends AbstractNamedElement {
+public class BasicElement extends AbstractNamedElement<BasicElement> {
 
     /**
      * The identifier of this element.
@@ -54,9 +54,13 @@ public class BasicElement extends AbstractNamedElement {
      * Defines the identifier of this element.
      *
      * @param id the identifier
+     *
+     * @return this instance (for chaining)
      */
-    public void id(Id id) {
+    public BasicElement id(Id id) {
         this.id = id;
+
+        return me();
     }
 
     /**
@@ -72,9 +76,13 @@ public class BasicElement extends AbstractNamedElement {
      * Defines the string representation of the identifier.
      *
      * @param rawId the string representation of the identifier
+     *
+     * @return this instance (for chaining)
      */
-    public void rawId(@Nullable String rawId) {
+    public BasicElement rawId(@Nullable String rawId) {
         this.rawId = rawId;
+
+        return me();
     }
 
     /**
@@ -90,9 +98,13 @@ public class BasicElement extends AbstractNamedElement {
      * Defines the meta-class of this element.
      *
      * @param metaClass the meta-class
+     *
+     * @return this instance (for chaining)
      */
-    public void metaClass(BasicMetaclass metaClass) {
+    public BasicElement metaClass(BasicMetaclass metaClass) {
         this.metaClass = metaClass;
+
+        return me();
     }
 
     /**
@@ -108,9 +120,13 @@ public class BasicElement extends AbstractNamedElement {
      * Defines whether this element is the root of a structure.
      *
      * @param isRoot {@code true} if this element is the root of a structure
+     *
+     * @return this instance (for chaining)
      */
-    public void isRoot(boolean isRoot) {
+    public BasicElement isRoot(boolean isRoot) {
         this.isRoot = isRoot;
+
+        return me();
     }
 
     @Override

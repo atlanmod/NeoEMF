@@ -24,7 +24,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * A simple representation of a {@link EStructuralFeature}.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> extends AbstractNamedElement {
+public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, V>, F extends EStructuralFeature, V> extends AbstractNamedElement<T> {
 
     /**
      * The identifier of element that owns this feature.
@@ -63,10 +63,14 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
     /**
      * Defines the identifier of the element that owns this feature.
      *
-     * @param ownerId the owner's identifier
+     * @param owner the owner's identifier
+     *
+     * @return this instance (for chaining)
      */
-    public void owner(Id ownerId) {
-        this.owner = ownerId;
+    public T owner(Id owner) {
+        this.owner = owner;
+
+        return me();
     }
 
     /**
@@ -82,9 +86,13 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
      * Defines the identifier of the feature for the owner element.
      *
      * @param id the feature's identifier
+     *
+     * @return this instance (for chaining)
      */
-    public void id(int id) {
+    public T id(int id) {
         this.id = id;
+
+        return me();
     }
 
     /**
@@ -100,9 +108,13 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
      * Defines whether this feature is multi-valued.
      *
      * @param isMany {@code true} if this feature is multi-valued
+     *
+     * @return this instance (for chaining)
      */
-    public void isMany(boolean isMany) {
+    public T isMany(boolean isMany) {
         this.isMany = isMany;
+
+        return me();
     }
 
     /**
@@ -118,9 +130,13 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
      * Defines the value of this feature.
      *
      * @param value the value
+     *
+     * @return this instance (for chaining)
      */
-    public void value(V value) {
+    public T value(V value) {
         this.value = value;
+
+        return me();
     }
 
     /**
@@ -137,11 +153,14 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
      * Defines the {@link EStructuralFeature} associated to this meta-class.
      *
      * @param eFeature the {@link EStructuralFeature}
+     *
+     * @return this instance (for chaining)
      */
-    public void eFeature(F eFeature) {
+    public T eFeature(F eFeature) {
         this.eFeature = checkNotNull(eFeature, "eFeature");
-        name(eFeature.getName());
-        isMany(eFeature.isMany());
+
+        return name(eFeature.getName())
+                .isMany(eFeature.isMany());
     }
 
     @Override
@@ -161,7 +180,7 @@ public abstract class AbstractBasicFeature<F extends EStructuralFeature, V> exte
             return false;
         }
 
-        AbstractBasicFeature<?, ?> that = AbstractBasicFeature.class.cast(o);
+        AbstractBasicFeature<?, ?, ?> that = AbstractBasicFeature.class.cast(o);
         return Objects.equals(owner, that.owner);
     }
 }

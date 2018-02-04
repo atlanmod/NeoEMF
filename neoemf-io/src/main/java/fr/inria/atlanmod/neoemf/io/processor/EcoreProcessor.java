@@ -93,8 +93,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         }
         else {
             // Otherwise redirect to the reference handler
-            BasicReference reference = new BasicReference();
-            reference.rawValue(String.class.cast(attribute.value()));
+            BasicReference reference = new BasicReference()
+                    .rawValue(String.class.cast(attribute.value()));
 
             processReference(reference, EObjects.asReference(eFeature));
         }
@@ -113,6 +113,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         // Defines the value of the waiting attribute, if exists
         if (nonNull(waitingAttribute)) {
             waitingAttribute.value(ValueConverter.INSTANCE.convert(characters, waitingAttribute.eFeature()));
+
             onAttribute(waitingAttribute);
 
             waitingAttribute = null;
@@ -146,16 +147,14 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     private void processElementAsRoot(BasicElement element) {
         checkNotNull(element.metaClass(), "The root element must have a namespace");
 
-        // Retrieve the EPackage from the NS prefix
-        BasicNamespace ns = element.metaClass().ns();
-        EPackage ePackage = ns.ePackage();
+        BasicMetaclass metaClass = element.metaClass();
 
-        // Retrieve the current EClass
+        // Retrieve the EPackage from the NS prefix
+        EPackage ePackage = metaClass.ns().ePackage();
+
+        // Retrieve the current EClass & define the meta-class of the current element if not present
         EClass eClass = EClass.class.cast(ePackage.getEClassifier(element.name()));
         checkNotNull(eClass, "Cannot retrieve EClass %s from the EPackage %s", element.name(), ePackage);
-
-        // Define the meta-class of the current element if not present
-        BasicMetaclass metaClass = element.metaClass();
         metaClass.eClass(eClass);
 
         // Define the element as root node
@@ -206,10 +205,10 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
                 element.metaClass(new BasicMetaclass(ns));
             }
 
-            // Retrieve the type the reference or gets the type from the registered meta-class
-            EClass eClass = resolveInstanceOf(element.metaClass(), EClass.class.cast(eReference.getEType()), ePackage);
-
             BasicMetaclass metaClass = element.metaClass();
+
+            // Retrieve the type the reference or gets the type from the registered meta-class
+            EClass eClass = resolveInstanceOf(metaClass, EClass.class.cast(eReference.getEType()), ePackage);
             metaClass.eClass(eClass);
 
             processElementAsReference(element, eReference);
@@ -229,14 +228,12 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         BasicElement parentElement = previousElements.getLast();
         EClass parentEClass = parentElement.metaClass().eClass();
 
-        // Waiting a plain text value
-        BasicAttribute attribute = new BasicAttribute();
-        attribute.owner(parentElement.id());
-        attribute.id(parentEClass.getFeatureID(eAttribute));
-        attribute.eFeature(eAttribute);
+        // The attribute waiting a plain text value
+        waitingAttribute = new BasicAttribute()
+                .owner(parentElement.id())
+                .id(parentEClass.getFeatureID(eAttribute))
+                .eFeature(eAttribute);
 
-        // The attribute waiting for a value
-        waitingAttribute = attribute;
         previousWasAttribute = true;
     }
 
@@ -255,8 +252,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
         // Create a reference from the parent to this element, with the given local name
         if (eReference.isContainment()) {
-            BasicReference reference = new BasicReference();
-            reference.value(currentId);
+            BasicReference reference = new BasicReference()
+                    .value(currentId);
 
             processReference(reference, eReference);
         }
@@ -275,10 +272,10 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         BasicElement parentElement = previousElements.getLast();
         EClass parentEClass = parentElement.metaClass().eClass();
 
-        attribute.owner(parentElement.id());
-        attribute.id(parentEClass.getFeatureID(eAttribute));
-        attribute.eFeature(eAttribute);
-        attribute.value(ValueConverter.INSTANCE.convert(String.class.cast(attribute.value()), eAttribute));
+        attribute.owner(parentElement.id())
+                .id(parentEClass.getFeatureID(eAttribute))
+                .eFeature(eAttribute)
+                .value(ValueConverter.INSTANCE.convert(String.class.cast(attribute.value()), eAttribute));
 
         notifyAttribute(attribute);
     }
@@ -293,9 +290,9 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         BasicElement parentElement = previousElements.getLast();
         EClass parentEClass = parentElement.metaClass().eClass();
 
-        reference.owner(parentElement.id());
-        reference.id(parentEClass.getFeatureID(eReference));
-        reference.eFeature(eReference);
+        reference.owner(parentElement.id())
+                .id(parentEClass.getFeatureID(eReference))
+                .eFeature(eReference);
 
         // The unique identifier is already set
         if (nonNull(reference.value())) {
@@ -317,15 +314,11 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         Arrays.stream(reference.rawValue().split(Strings.SPACE))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
-                .map(s -> {
-                    BasicReference newRef = new BasicReference();
-                    newRef.owner(reference.owner());
-                    newRef.id(reference.id());
-                    newRef.eFeature(eReference);
-                    newRef.rawValue(s);
-
-                    return newRef;
-                })
+                .map(s -> new BasicReference()
+                        .owner(reference.owner())
+                        .id(reference.id())
+                        .eFeature(eReference)
+                        .rawValue(s))
                 .forEach(this::notifyReference);
     }
 

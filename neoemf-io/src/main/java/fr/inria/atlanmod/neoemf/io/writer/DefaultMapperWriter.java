@@ -43,9 +43,9 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
     @Override
     public void onInitialize() {
         // Create the 'ROOT' node with the default meta-class
-        BasicElement rootElement = new BasicElement();
-        rootElement.id(PersistentResource.ROOT_ID);
-        rootElement.metaClass(BasicMetaclass.getDefault());
+        BasicElement rootElement = new BasicElement()
+                .id(PersistentResource.ROOT_ID)
+                .metaClass(BasicMetaclass.getDefault());
 
         createElement(rootElement, true);
     }
@@ -107,13 +107,13 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
 
         // Add the current element as content of the 'ROOT' node
         if (element.isRoot()) {
-            BasicReference reference = new BasicReference();
-            reference.owner(PersistentResource.ROOT_ID);
-            reference.name(PersistentResource.ROOT_REFERENCE_NAME);
-            reference.id(-1); // TODO Calculates the feature identifier
-            reference.isMany(true);
+            BasicReference rootReference = new BasicReference()
+                    .owner(PersistentResource.ROOT_ID)
+                    .name(PersistentResource.ROOT_REFERENCE_NAME)
+                    .id(-1)
+                    .isMany(true);
 
-            onReference(reference, Collections.singletonList(element.id()));
+            onReference(rootReference, Collections.singletonList(element.id()));
         }
     }
 }

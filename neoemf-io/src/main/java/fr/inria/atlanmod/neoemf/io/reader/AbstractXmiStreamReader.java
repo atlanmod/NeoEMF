@@ -49,10 +49,11 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             final String prefixedValue = XmiConstants.format(prefix, name);
 
             if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // A reference of the previous element
-                BasicReference reference = new BasicReference();
-                reference.name(getCurrentElement().name());
-                reference.owner(getPreviousId());
-                reference.rawValue(value);
+                BasicReference reference = new BasicReference()
+                        .name(getCurrentElement().name())
+                        .owner(getPreviousId())
+                        .rawValue(value);
+
                 notifyReference(reference);
 
                 ignoreCurrentElement();

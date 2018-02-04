@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.io.bean;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -17,12 +18,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A simple element that has a name.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractNamedElement {
+public abstract class AbstractNamedElement<T extends AbstractNamedElement<T>> {
 
     /**
      * The name of the element.
      */
     private String name;
+
+    /**
+     * Returns this instance, casted as a {@link T}.
+     *
+     * @return this instance
+     */
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    protected T me() {
+        return (T) this;
+    }
 
     /**
      * Returns the name of this element.
@@ -37,9 +49,13 @@ public abstract class AbstractNamedElement {
      * Defines the name of this element.
      *
      * @param name the name
+     *
+     * @return this instance (for chaining)
      */
-    public void name(String name) {
+    public T name(String name) {
         this.name = name;
+
+        return me();
     }
 
     @Override
@@ -56,7 +72,7 @@ public abstract class AbstractNamedElement {
             return false;
         }
 
-        AbstractNamedElement that = AbstractNamedElement.class.cast(o);
+        AbstractNamedElement<?> that = AbstractNamedElement.class.cast(o);
         return Objects.equals(name, that.name);
     }
 

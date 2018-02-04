@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
+import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 
@@ -24,7 +25,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * A simple representation of a {@link EPackage}.
@@ -53,7 +53,12 @@ public class BasicNamespace {
     /**
      * The {@link EPackage} associated to this namespace.
      */
-    private EPackage ePackage;
+    @Nonnull
+    private LazyReference<EPackage> ePackage = LazyReference.soft(() -> {
+        EPackage p = EPackage.Registry.INSTANCE.getEPackage(uri());
+        checkNotNull(p, "EPackage %s is not registered.", uri());
+        return p;
+    });
 
     /**
      * Constructs a new {@code BasicNamespace} with the given {@code prefix} and {@code uri}.
@@ -103,20 +108,21 @@ public class BasicNamespace {
      */
     @Nonnull
     public EPackage ePackage() {
-        if (isNull(ePackage)) {
-            ePackage = checkNotNull(EPackage.Registry.INSTANCE.getEPackage(uri),
-                    "EPackage %s is not registered.", uri);
-        }
-        return ePackage;
+        return ePackage.get();
     }
 
     /**
      * Defines the {@link EPackage} associated to this namespace.
      *
      * @param ePackage the {@link EPackage}
+     *
+     * @return this instance (for chaining)
      */
-    public void ePackage(EPackage ePackage) {
-        this.ePackage = checkNotNull(ePackage, "ePackage");
+    public BasicNamespace ePackage(EPackage ePackage) {
+        checkNotNull(ePackage, "ePackage");
+
+        this.ePackage.update(ePackage);
+        return this;
     }
 
     @Override
@@ -212,6 +218,21 @@ public class BasicNamespace {
             return Optional.ofNullable(uri)
                     .map(v -> namespacesByUri.get(uri))
                     .orElse(null);
+        }
+
+        /**
+         * Registers a new {@link BasicNamespace} from the given {@code ePackage}.
+         *
+         * @param ePackage the {@link EPackage} associated with the namespace
+         *
+         * @return the new {@link BasicNamespace}
+         */
+        @Nonnull
+        public BasicNamespace register(EPackage ePackage) {
+            checkNotNull(ePackage, "ePackage");
+
+            return register(ePackage.getNsPrefix(), ePackage.getNsURI())
+                    .ePackage(ePackage);
         }
 
         /**
