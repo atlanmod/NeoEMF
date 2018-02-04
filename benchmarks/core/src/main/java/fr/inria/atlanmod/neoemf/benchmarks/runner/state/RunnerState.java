@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
-import fr.inria.atlanmod.commons.LazyObject;
+import fr.inria.atlanmod.commons.Lazy;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
@@ -51,7 +51,7 @@ public class RunnerState {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    private final LazyObject<Map<String, Class<? extends Adapter>>> adapters = LazyObject.with(this::loadAdapters);
+    private final Lazy<Map<String, Class<? extends Adapter>>> adapters = Lazy.with(this::loadAdapters);
 
     /**
      * The name of the current {@link org.eclipse.emf.ecore.resource.Resource} file.
