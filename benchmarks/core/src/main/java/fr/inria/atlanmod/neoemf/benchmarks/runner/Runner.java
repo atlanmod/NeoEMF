@@ -25,9 +25,9 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 5)
 @Fork(
         value = 1,
-        jvmArgsPrepend = "-Dfile.encoding=utf-8",
-        jvmArgs = {"-server", "-XX:+UseConcMarkSweepGC"},
-        jvmArgsAppend = "-Xmx8g"
+        jvmArgsPrepend = {}, // Used to declare the JProfiler agent in the Docker environment: Keep it empty!
+        jvmArgs = {"-Dfile.encoding=utf-8", "-server", "-XX:+UseConcMarkSweepGC"},
+        jvmArgsAppend = {"-Xmx8g"}
 )
 public class Runner {
 }
