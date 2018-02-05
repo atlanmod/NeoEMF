@@ -41,7 +41,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
      * The identifier of the root element in a {@code PersistentResource}.
      */
     @Nonnull
-    Id ROOT_ID = Id.getProvider().generate("ROOT");
+    Id ROOT_ID = Id.getProvider().fromLong(0);
 
     /**
      * The name of the property used by the {@link #ROOT_ID} element to define its content.
