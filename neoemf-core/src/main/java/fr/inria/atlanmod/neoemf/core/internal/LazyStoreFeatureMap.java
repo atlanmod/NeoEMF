@@ -13,9 +13,11 @@ import fr.inria.atlanmod.neoemf.data.store.Storable;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
+import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
+import org.eclipse.emf.ecore.util.DelegatingFeatureMap;
+import org.eclipse.emf.ecore.util.EcoreEList;
 import org.eclipse.emf.ecore.util.FeatureMap;
 
 import java.util.Collection;
@@ -37,7 +39,8 @@ import static java.util.Objects.isNull;
  * @see PersistentEObject#eStore()
  */
 @ParametersAreNonnullByDefault
-public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap {
+// TODO Synchronize modifications from `LazyStoreList`
+public class LazyStoreFeatureMap extends DelegatingFeatureMap {
 
     /**
      * The object that holds the store.
@@ -57,16 +60,30 @@ public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap
     }
 
     @Nonnull
-    @Override
     protected StoreAdapter eStore() {
         return storable.eStore();
     }
 
-    // region Delegating methods (identical from LazyStoreList)
+    // region Delegating methods (identical to LazyStoreList)
 
     @Override
-    protected void delegateAdd(Entry object) {
-        delegateAdd(InternalEObject.EStore.NO_INDEX, object);
+    protected List<Entry> delegateList() {
+        throw new UnsupportedOperationException("delegateList");
+    }
+
+    @Override
+    protected int delegateSize() {
+        return eStore().size(owner, eStructuralFeature);
+    }
+
+    @Override
+    protected boolean delegateIsEmpty() {
+        return eStore().isEmpty(owner, eStructuralFeature);
+    }
+
+    @Override
+    protected boolean delegateContains(Object object) {
+        return eStore().contains(owner, eStructuralFeature, object);
     }
 
     @Override
@@ -75,7 +92,7 @@ public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap
             return false;
         }
 
-        if (collection.size() <= 1) {
+        if (collection.size() == 1) {
             return contains(collection.iterator().next());
         }
 
@@ -83,11 +100,58 @@ public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap
     }
 
     @Override
-    protected String delegateToString() {
-        return eStore().getAll(owner, eStructuralFeature)
-                .stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(", ", "[", "]"));
+    protected int delegateIndexOf(Object object) {
+        return eStore().indexOf(owner, eStructuralFeature, object);
+    }
+
+    @Override
+    protected int delegateLastIndexOf(Object object) {
+        return eStore().lastIndexOf(owner, eStructuralFeature, object);
+    }
+
+    @Override
+    protected Object[] delegateToArray() {
+        return eStore().toArray(owner, eStructuralFeature);
+    }
+
+    @Override
+    protected <T> T[] delegateToArray(T[] array) {
+        return eStore().toArray(owner, eStructuralFeature, array);
+    }
+
+    @Override
+    protected Entry delegateGet(int index) {
+        return (Entry) eStore().get(owner, eStructuralFeature, index);
+    }
+
+    @Override
+    protected Entry delegateSet(int index, Entry object) {
+        return (Entry) eStore().set(owner, eStructuralFeature, index, object);
+    }
+
+    @Override
+    protected void delegateAdd(Entry object) {
+        delegateAdd(InternalEObject.EStore.NO_INDEX, object);
+    }
+
+    @Override
+    protected void delegateAdd(int index, Entry object) {
+        eStore().add(owner, eStructuralFeature, index, object);
+    }
+
+    @Override
+    protected Entry delegateRemove(int index) {
+        return (Entry) eStore().remove(owner, eStructuralFeature, index);
+    }
+
+    @Override
+    protected void delegateClear() {
+        eStore().clear(owner, eStructuralFeature);
+    }
+
+    @Override
+    protected Entry delegateMove(int targetIndex, int sourceIndex) {
+        return (Entry) eStore().move(owner, eStructuralFeature, targetIndex, sourceIndex);
     }
 
     @Override
@@ -106,7 +170,41 @@ public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap
                 && list.equals(eStore().getAll(owner, eStructuralFeature));
     }
 
+    @Override
+    protected int delegateHashCode() {
+        return eStore().hashCode(owner, eStructuralFeature);
+    }
+
+    @Override
+    protected String delegateToString() {
+        return eStore().getAll(owner, eStructuralFeature)
+                .stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", ", "[", "]"));
+    }
+
+    @Override
+    protected Iterator<Entry> delegateIterator() {
+        return iterator();
+    }
+
+    @Override
+    protected ListIterator<Entry> delegateListIterator() {
+        return listIterator();
+    }
+
+    @Override
+    protected List<Entry> delegateBasicList() {
+        Object[] data = eStore().toArray(owner, eStructuralFeature);
+
+        return data.length == 0
+                ? ECollections.emptyEList()
+                : new EcoreEList.UnmodifiableEList<>(owner, eStructuralFeature, data.length, data);
+    }
+
     // endregion
+
+    // region Iterators (identical to LazyStoreList)
 
     @Nonnull
     @Override
@@ -147,4 +245,6 @@ public class LazyStoreFeatureMap extends EStoreEObjectImpl.BasicEStoreFeatureMap
         checkPositionIndex(index, index == 0 ? 0 : size());
         return new LazyListIterator<>(this, () -> modCount, index);
     }
+
+    // endregion
 }
