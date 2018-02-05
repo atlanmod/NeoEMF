@@ -78,7 +78,7 @@ public class RunnerState {
     /**
      * The name of the current store chain.
      */
-    @Param("AMC")
+    @Param("A")
     protected String o;
 
     /**
