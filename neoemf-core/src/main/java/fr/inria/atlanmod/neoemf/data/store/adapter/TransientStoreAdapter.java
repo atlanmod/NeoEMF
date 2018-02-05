@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
 import fr.inria.atlanmod.commons.cache.Cache;
-import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.Store;
@@ -109,9 +108,7 @@ public class TransientStoreAdapter extends AbstractStoreAdapter {
          * In-memory cache that holds recently loaded {@link PersistentEObject}s, identified by their {@link Id}.
          */
         @Nonnull
-        private final Cache<Id, PersistentEObject> cache = CacheBuilder.builder()
-                .softValues()
-                .build();
+        private final Cache<Id, PersistentEObject> cache = createCache();
 
         /**
          * The resource associated to this holder.

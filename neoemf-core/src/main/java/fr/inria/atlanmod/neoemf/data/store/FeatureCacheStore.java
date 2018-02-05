@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Store} wrapper that caches {@link EStructuralFeature}.
+ * A {@link Store} wrapper that caches {@link EStructuralFeature} values.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically

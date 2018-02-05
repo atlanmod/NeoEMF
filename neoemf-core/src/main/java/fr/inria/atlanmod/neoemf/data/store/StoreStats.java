@@ -26,6 +26,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  */
 @Immutable
 @ParametersAreNonnullByDefault
+// TODO Include CacheStats
 public final class StoreStats {
 
     /**

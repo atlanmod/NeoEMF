@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.data.store.adapter;
 
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.cache.Cache;
+import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.collect.MoreStreams;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
@@ -90,6 +91,20 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     protected AbstractStoreAdapter(Store store, @Nullable Resource.Internal resource) {
         this.store = store;
         this.resource = resource;
+    }
+
+    /**
+     * Creates a new cache to store {@link Id}s and their associated {@link PersistentEObject}.
+     *
+     * @return a new cache
+     *
+     * @see #cache()
+     */
+    @Nonnull
+    protected static Cache<Id, PersistentEObject> createCache() {
+        return CacheBuilder.builder()
+                .softValues()
+                .build();
     }
 
     @Override
