@@ -8,8 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.resource;
 
+import fr.inria.atlanmod.commons.Lazy;
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.io.MoreFiles;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
 
@@ -17,6 +20,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +64,8 @@ public final class Resources {
     /**
      * A {@link Map} that holds all registered resources.
      */
-    private static Map<String, String> registeredResources;
+    @Nonnull
+    private static Lazy<Map<String, String>> registeredResources = Lazy.with(() -> getRegisteredResources());
 
     @SuppressWarnings("JavaDoc")
     private Resources() {
@@ -80,6 +85,8 @@ public final class Resources {
      */
     @Nonnull
     public static File getOrCreateResource(String resourceFileName, Adapter.Internal adapter) throws IOException {
+        Log.info("Initializing the resource: {0}", resourceFileName);
+
         checkNotNull(resourceFileName);
         checkArgument(resourceFileName.length() >= 4);
 
@@ -155,18 +162,17 @@ public final class Resources {
      * Returns all registered resources.
      *
      * @return a {@link Map} containing all registered resources identified by their name
-     *
-     * @throws IOException if the properties file cannot be found
      */
     @Nonnull
-    private static Map<String, String> getRegisteredResources() throws IOException {
-        if (isNull(registeredResources)) {
+    private static Map<String, String> getRegisteredResources() {
+        try (InputStream in = Resources.class.getResourceAsStream('/' + RESOURCES_PROPERTIES)) {
             Properties properties = new Properties();
-            properties.load(Stores.class.getResourceAsStream('/' + RESOURCES_PROPERTIES));
-            registeredResources = properties.entrySet().stream()
-                    .collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
+            properties.load(in);
+            return properties.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
         }
-        return registeredResources;
+        catch (IOException e) {
+            throw Throwables.wrap(e, IllegalStateException.class);
+        }
     }
 
     // endregion

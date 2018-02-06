@@ -162,8 +162,6 @@ public class RunnerState {
 
         baseConfig = ConfigParser.parse(o);
         useDirectImport = Boolean.valueOf(direct);
-
-        Log.info("Initializing the resource");
         resourceFile = adapter.getOrCreateResource(r);
     }
 
