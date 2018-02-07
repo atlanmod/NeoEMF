@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An abstract {@link Query}.
  *
- * @param <T> the result type of method {@code apply}
+ * @param <T> the result type of method {@code executeOn}
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractQuery<T> implements Query<T> {
@@ -60,8 +61,8 @@ public abstract class AbstractQuery<T> implements Query<T> {
     protected <U extends EObject> Iterable<U> allInstancesOf(Resource resource, EClass type) {
         Collection<U> result = createOrderedCollection();
 
-        Iterable<EObject> allContents = resource::getAllContents;
-        for (EObject e : allContents) {
+        for (Iterator<EObject> iterator = resource.getAllContents(); iterator.hasNext(); ) {
+            EObject e = iterator.next();
             if (type.isInstance(e)) {
                 result.add((U) e);
             }
@@ -103,7 +104,7 @@ public abstract class AbstractQuery<T> implements Query<T> {
      * @return a new mutable map
      */
     @Nonnull
-    protected <U, V extends EObject> Map<U, Iterable<V>> createMap() {
+    protected <U, V extends EObject> Map<U, Iterable<V>> createMultiMap() {
         return new HashMap<>();
     }
 }

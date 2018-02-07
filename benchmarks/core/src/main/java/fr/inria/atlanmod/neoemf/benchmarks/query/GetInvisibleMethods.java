@@ -29,7 +29,7 @@ import static org.eclipse.gmt.modisco.java.VisibilityKind.PROTECTED;
  *
  */
 @ParametersAreNonnullByDefault
-class CountInvisibleMethods extends AbstractQuery<Integer> {
+class GetInvisibleMethods extends AbstractQuery<Collection<MethodDeclaration>> {
 
     /**
      * All {@link ClassDeclaration} instances of the current resource.
@@ -37,8 +37,9 @@ class CountInvisibleMethods extends AbstractQuery<Integer> {
     @Nonnull
     private Iterable<ClassDeclaration> classDeclarations = Collections.emptyList();
 
+    @Nonnull
     @Override
-    public Integer apply(Resource resource) {
+    public Collection<MethodDeclaration> executeOn(Resource resource) {
         Collection<MethodDeclaration> result = createOrderedCollection();
 
         classDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getClassDeclaration());
@@ -55,7 +56,7 @@ class CountInvisibleMethods extends AbstractQuery<Integer> {
             }
         }
 
-        return result.size();
+        return result;
     }
 
     /**

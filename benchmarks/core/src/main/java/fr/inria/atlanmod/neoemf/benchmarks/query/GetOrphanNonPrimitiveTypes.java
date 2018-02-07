@@ -15,6 +15,7 @@ import org.eclipse.gmt.modisco.java.Type;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -26,10 +27,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see Model#getOrphanTypes()
  */
 @ParametersAreNonnullByDefault
-class CountOrphanNonPrimitiveTypes extends AbstractQuery<Integer> {
+class GetOrphanNonPrimitiveTypes extends AbstractQuery<Collection<Type>> {
 
+    @Nonnull
     @Override
-    public Integer apply(Resource resource) {
+    public Collection<Type> executeOn(Resource resource) {
         Collection<Type> result = createOrderedCollection();
 
         Model model = Model.class.cast(resource.getContents().get(0));
@@ -40,6 +42,6 @@ class CountOrphanNonPrimitiveTypes extends AbstractQuery<Integer> {
             }
         }
 
-        return result.size();
+        return result;
     }
 }

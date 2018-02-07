@@ -19,16 +19,18 @@ import org.eclipse.gmt.modisco.java.TextElement;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  *
  */
 @ParametersAreNonnullByDefault
-class CountTagComments extends AbstractQuery<Integer> {
+class GetTagComments extends AbstractQuery<Collection<TextElement>> {
 
+    @Nonnull
     @Override
-    public Integer apply(Resource resource) {
+    public Collection<TextElement> executeOn(Resource resource) {
         Collection<TextElement> result = createOrderedCollection();
 
         Model model = getRoot(resource);
@@ -49,6 +51,6 @@ class CountTagComments extends AbstractQuery<Integer> {
             }
         }
 
-        return result.size();
+        return result;
     }
 }

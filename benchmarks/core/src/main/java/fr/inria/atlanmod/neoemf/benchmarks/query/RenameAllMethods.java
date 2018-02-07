@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A query that renames all the method names.
  */
 @ParametersAreNonnullByDefault
-class RenameAllMethods extends AbstractQuery<Integer> {
+class RenameAllMethods extends AbstractQuery<Long> {
 
     @Nonnull
     private final String name;
@@ -33,9 +33,10 @@ class RenameAllMethods extends AbstractQuery<Integer> {
         this.name = name;
     }
 
+    @Nonnull
     @Override
-    public Integer apply(Resource resource) {
-        int count = 0;
+    public Long executeOn(Resource resource) {
+        long count = 0;
 
         Iterable<MethodDeclaration> methodDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getMethodDeclaration());
 

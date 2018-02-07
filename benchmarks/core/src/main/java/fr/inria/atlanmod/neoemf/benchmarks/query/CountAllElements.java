@@ -11,6 +11,9 @@ package fr.inria.atlanmod.neoemf.benchmarks.query;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
+import java.util.Iterator;
+
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -19,12 +22,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 class CountAllElements extends AbstractQuery<Long> {
 
+    @Nonnull
     @Override
-    public Long apply(Resource resource) {
+    public Long executeOn(Resource resource) {
         long count = 0L;
 
-        Iterable<EObject> allContents = resource::getAllContents;
-        for (EObject o : allContents) {
+        for (Iterator<EObject> iterator = resource.getAllContents(); iterator.hasNext(); iterator.next()) {
             count++;
         }
 

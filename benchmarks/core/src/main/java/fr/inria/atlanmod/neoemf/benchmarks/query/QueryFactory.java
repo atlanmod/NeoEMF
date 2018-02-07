@@ -11,7 +11,15 @@ package fr.inria.atlanmod.neoemf.benchmarks.query;
 import fr.inria.atlanmod.commons.Throwables;
 
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.gmt.modisco.java.ClassDeclaration;
+import org.eclipse.gmt.modisco.java.MethodDeclaration;
 import org.eclipse.gmt.modisco.java.Model;
+import org.eclipse.gmt.modisco.java.NamedElement;
+import org.eclipse.gmt.modisco.java.Type;
+import org.eclipse.gmt.modisco.java.TypeAccess;
+
+import java.util.Collection;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -45,31 +53,31 @@ public class QueryFactory {
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> countOrphanNonPrimitiveTypes() {
-        return new CountOrphanNonPrimitiveTypes();
+    public static Query<Collection<Type>> getOrphanNonPrimitiveTypes() {
+        return new GetOrphanNonPrimitiveTypes();
     }
 
     /**
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> countClassFields() {
-        return new CountClassFields();
+    public static Query<Map<String, Iterable<NamedElement>>> getClassFields() {
+        return new GetClassFields();
     }
 
     /**
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> countThrownExceptionsPerPackage() {
-        return new CountThrownExceptionsPerPackage();
+    public static Query<Map<String, Iterable<TypeAccess>>> getThrownExceptionsPerPackage() {
+        return new GetThrownExceptionsPerPackage();
     }
 
     /**
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> grabats() {
+    public static Query<Collection<ClassDeclaration>> grabats() {
         return new Grabats();
     }
 
@@ -77,24 +85,24 @@ public class QueryFactory {
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> countInvisibleMethods() {
-        return new CountInvisibleMethods();
+    public static Query<Collection<MethodDeclaration>> getInvisibleMethods() {
+        return new GetInvisibleMethods();
     }
 
     /**
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> countUnusedMethodsWithList() {
-        return new CountUnusedMethods.WithList();
+    public static Query<Collection<MethodDeclaration>> getUnusedMethodsWithList() {
+        return new GetUnusedMethods.WithList();
     }
 
     /**
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> countUnusedMethodsWithLoop() {
-        return new CountUnusedMethods.WithLoop();
+    public static Query<Collection<MethodDeclaration>> getUnusedMethodsWithLoop() {
+        return new GetUnusedMethods.WithLoop();
     }
 
     // endregion
@@ -109,7 +117,7 @@ public class QueryFactory {
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> renameAllMethods(String name) {
+    public static Query<Long> renameAllMethods(String name) {
         return new RenameAllMethods(name);
     }
 

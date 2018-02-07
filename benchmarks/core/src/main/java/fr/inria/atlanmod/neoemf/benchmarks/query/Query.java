@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.query;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
-import java.util.function.Function;
+import javax.annotation.Nonnull;
 
 /**
  * A query to execute on the content of a {@link Resource}.
@@ -18,5 +18,15 @@ import java.util.function.Function;
  * @param <V> the result type of method {@code call}
  */
 @FunctionalInterface
-public interface Query<V> extends Function<Resource, V> {
+public interface Query<V> {
+
+    /**
+     * Executes this query on the given {@code resource}.
+     *
+     * @param resource the resource where to execute this query
+     *
+     * @return the result of the query
+     */
+    @Nonnull
+    V executeOn(Resource resource);
 }

@@ -17,16 +17,18 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  *
  */
 @ParametersAreNonnullByDefault
-class CountThrownExceptions extends AbstractQuery<Integer> {
+class GetThrownExceptions extends AbstractQuery<Collection<TypeAccess>> {
 
+    @Nonnull
     @Override
-    public Integer apply(Resource resource) {
+    public Collection<TypeAccess> executeOn(Resource resource) {
         Collection<TypeAccess> result = createUniqueCollection();
 
         Iterable<ClassDeclaration> classDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getClassDeclaration());
@@ -35,7 +37,7 @@ class CountThrownExceptions extends AbstractQuery<Integer> {
             appendThrownExceptions(type, result);
         }
 
-        return result.size();
+        return result;
     }
 
     /**

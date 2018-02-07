@@ -17,6 +17,7 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
@@ -25,10 +26,11 @@ import static java.util.Objects.nonNull;
  *
  */
 @ParametersAreNonnullByDefault
-class Grabats extends AbstractQuery<Integer> {
+class Grabats extends AbstractQuery<Collection<ClassDeclaration>> {
 
+    @Nonnull
     @Override
-    public Integer apply(Resource resource) {
+    public Collection<ClassDeclaration> executeOn(Resource resource) {
         Collection<ClassDeclaration> result = createOrderedCollection();
 
         Iterable<ClassDeclaration> classDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getClassDeclaration());
@@ -44,7 +46,7 @@ class Grabats extends AbstractQuery<Integer> {
             }
         }
 
-        return result.size();
+        return result;
     }
 
     /**

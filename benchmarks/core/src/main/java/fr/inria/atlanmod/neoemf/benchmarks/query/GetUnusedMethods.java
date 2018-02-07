@@ -29,10 +29,11 @@ import static org.eclipse.gmt.modisco.java.VisibilityKind.PRIVATE;
  *
  */
 @ParametersAreNonnullByDefault
-abstract class CountUnusedMethods extends AbstractQuery<Integer> {
+abstract class GetUnusedMethods extends AbstractQuery<Collection<MethodDeclaration>> {
 
+    @Nonnull
     @Override
-    public Integer apply(Resource resource) {
+    public Collection<MethodDeclaration> executeOn(Resource resource) {
         Collection<MethodDeclaration> result = createOrderedCollection();
 
         prepareInvokedMethods(resource);
@@ -46,7 +47,7 @@ abstract class CountUnusedMethods extends AbstractQuery<Integer> {
             }
         }
 
-        return result.size();
+        return result;
     }
 
     /**
@@ -71,7 +72,7 @@ abstract class CountUnusedMethods extends AbstractQuery<Integer> {
      *
      */
     @ParametersAreNonnullByDefault
-    public static class WithList extends CountUnusedMethods {
+    public static class WithList extends GetUnusedMethods {
 
         /**
          * All invoked methods.
@@ -99,7 +100,7 @@ abstract class CountUnusedMethods extends AbstractQuery<Integer> {
      *
      */
     @ParametersAreNonnullByDefault
-    public static class WithLoop extends CountUnusedMethods {
+    public static class WithLoop extends GetUnusedMethods {
 
         /**
          * All {@link MethodInvocation} instances of the current resource.

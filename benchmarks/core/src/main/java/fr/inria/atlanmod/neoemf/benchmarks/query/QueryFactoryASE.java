@@ -8,6 +8,14 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
+import org.eclipse.gmt.modisco.java.ClassDeclaration;
+import org.eclipse.gmt.modisco.java.MethodDeclaration;
+import org.eclipse.gmt.modisco.java.Statement;
+import org.eclipse.gmt.modisco.java.TextElement;
+import org.eclipse.gmt.modisco.java.TypeAccess;
+
+import java.util.Collection;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -23,7 +31,7 @@ public class QueryFactoryASE extends QueryFactory {
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> grabatsASE() {
+    public static Query<Collection<ClassDeclaration>> grabatsASE() {
         return new GrabatsASE();
     }
 
@@ -31,32 +39,32 @@ public class QueryFactoryASE extends QueryFactory {
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> countThrownExceptions() {
-        return new CountThrownExceptions();
+    public static Query<Collection<TypeAccess>> getThrownExceptions() {
+        return new GetThrownExceptions();
     }
 
     /**
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> countInvisibleMethodsSpecific() {
-        return new CountInvisibleMethodsSpecific();
+    public static Query<Collection<MethodDeclaration>> getInvisibleMethodsSpecific() {
+        return new GetInvisibleMethodsSpecific();
     }
 
     /**
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> countTagComments() {
-        return new CountTagComments();
+    public static Query<Collection<TextElement>> getTagComments() {
+        return new GetTagComments();
     }
 
     /**
      * @return a new query
      */
     @Nonnull
-    public static Query<Integer> countBranchStatements() {
-        return new CountBranchStatements();
+    public static Query<Collection<Statement>> getBranchStatements() {
+        return new GetBranchStatements();
     }
 
     // endregion

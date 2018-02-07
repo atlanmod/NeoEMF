@@ -23,10 +23,10 @@ import java.util.UUID;
 public class ReadWriteRunner extends Runner {
 
     @Benchmark
-    public int renameAllMethods(ReadWriteRunnerState state) throws IOException {
+    public Long renameAllMethods(ReadWriteRunnerState state) throws IOException {
         String name = UUID.randomUUID().toString();
         Resource resource = state.resource();
-        Integer result = QueryFactory.renameAllMethods(name).apply(resource);
+        Long result = QueryFactory.renameAllMethods(name).executeOn(resource);
         state.adapter().save(resource, state.baseConfig());
         return result;
     }

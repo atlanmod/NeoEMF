@@ -21,6 +21,7 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
@@ -28,10 +29,11 @@ import static org.eclipse.gmt.modisco.java.VisibilityKind.PRIVATE;
 import static org.eclipse.gmt.modisco.java.VisibilityKind.PROTECTED;
 
 @ParametersAreNonnullByDefault
-class CountInvisibleMethodsSpecific extends CountInvisibleMethods {
+class GetInvisibleMethodsSpecific extends GetInvisibleMethods {
 
+    @Nonnull
     @Override
-    public Integer apply(Resource resource) {
+    public Collection<MethodDeclaration> executeOn(Resource resource) {
         Collection<MethodDeclaration> result = createOrderedCollection();
 
         Model model = (Model) resource.getContents().get(0);
@@ -40,7 +42,7 @@ class CountInvisibleMethodsSpecific extends CountInvisibleMethods {
             appendInvisibleMethods(pkg, result);
         }
 
-        return result.size();
+        return result;
     }
 
     /**

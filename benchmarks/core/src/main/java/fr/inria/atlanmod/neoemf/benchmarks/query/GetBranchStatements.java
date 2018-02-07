@@ -22,6 +22,7 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
 import java.util.Collection;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
@@ -30,10 +31,11 @@ import static java.util.Objects.nonNull;
  *
  */
 @ParametersAreNonnullByDefault
-class CountBranchStatements extends AbstractQuery<Integer> {
+class GetBranchStatements extends AbstractQuery<Collection<Statement>> {
 
+    @Nonnull
     @Override
-    public Integer apply(Resource resource) {
+    public Collection<Statement> executeOn(Resource resource) {
         Collection<Statement> result = createOrderedCollection();
 
         Model model = getRoot(resource);
@@ -42,7 +44,7 @@ class CountBranchStatements extends AbstractQuery<Integer> {
             appendAccessedTypes(pkg, result);
         }
 
-        return result.size();
+        return result;
     }
 
     /**

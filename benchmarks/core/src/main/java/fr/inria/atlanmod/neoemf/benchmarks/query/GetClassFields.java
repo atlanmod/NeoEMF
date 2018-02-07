@@ -25,11 +25,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * ???
  */
 @ParametersAreNonnullByDefault
-class CountClassFields extends AbstractQuery<Integer> {
+class GetClassFields extends AbstractQuery<Map<String, Iterable<NamedElement>>> {
 
+    @Nonnull
     @Override
-    public Integer apply(Resource resource) {
-        Map<String, Iterable<NamedElement>> result = createMap();
+    public Map<String, Iterable<NamedElement>> executeOn(Resource resource) {
+        Map<String, Iterable<NamedElement>> result = createMultiMap();
 
         Iterable<ClassDeclaration> classDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getClassDeclaration());
 
@@ -37,7 +38,7 @@ class CountClassFields extends AbstractQuery<Integer> {
             result.put(type.getName(), separateFields(type.getBodyDeclarations()));
         }
 
-        return result.size();
+        return result;
     }
 
     /**
