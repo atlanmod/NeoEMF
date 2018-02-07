@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -35,7 +35,7 @@ public class WriteOnlyRunner extends Runner {
     @Warmup(iterations = 1)
     @Measurement(iterations = 0)
     public void initResource(@SuppressWarnings("unused") RunnerState state) {
-        // Let setup and read down methods to create resource
+        // Let the setup method creates the resource
     }
 
     /**
@@ -47,7 +47,7 @@ public class WriteOnlyRunner extends Runner {
     @Warmup(iterations = 1)
     @Measurement(iterations = 0)
     public void initStore(@SuppressWarnings("unused") ReadOnlyRunnerState state) {
-        // Let setup and tear down methods create resource and stores
+        // Let the setup method creates the resource and its store
     }
 
     /**

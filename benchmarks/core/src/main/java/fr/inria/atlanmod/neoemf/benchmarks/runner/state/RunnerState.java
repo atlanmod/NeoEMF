@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
 import fr.inria.atlanmod.commons.Lazy;
 import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 

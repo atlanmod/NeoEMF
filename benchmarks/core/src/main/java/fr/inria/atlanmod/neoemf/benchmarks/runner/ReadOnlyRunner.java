@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
-import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactoryAse15;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactoryASE;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadOnlyRunnerState;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -21,69 +21,69 @@ public class ReadOnlyRunner extends Runner {
 
     @Benchmark
     public long traverse(ReadOnlyRunnerState state) {
-        return QueryFactory.queryCountAllElements().apply(state.resource());
+        return QueryFactory.countAllElements().apply(state.resource());
     }
 
     @Benchmark
     public int classDeclarationAttributes(ReadOnlyRunnerState state) {
-        return QueryFactory.queryClassDeclarationAttributes().apply(state.resource());
+        return QueryFactory.countClassFields().apply(state.resource());
     }
 
     @Benchmark
     public int grabats(ReadOnlyRunnerState state) {
-        return QueryFactory.queryGrabats().apply(state.resource());
+        return QueryFactory.grabats().apply(state.resource());
     }
 
     @Benchmark
     public int invisibleMethodDeclarations(ReadOnlyRunnerState state) {
-        return QueryFactory.queryInvisibleMethodDeclarations().apply(state.resource());
+        return QueryFactory.countInvisibleMethods().apply(state.resource());
     }
 
     @Benchmark
     public int orphanNonPrimitiveTypes(ReadOnlyRunnerState state) {
-        return QueryFactory.queryOrphanNonPrimitivesTypes().apply(state.resource());
+        return QueryFactory.countOrphanNonPrimitiveTypes().apply(state.resource());
     }
 
     @Benchmark
     public int thrownExceptionsPerPackage(ReadOnlyRunnerState state) {
-        return QueryFactory.queryThrownExceptionsPerPackage().apply(state.resource());
+        return QueryFactory.countThrownExceptionsPerPackage().apply(state.resource());
     }
 
     @Benchmark
     public int unusedMethodsWithList(ReadOnlyRunnerState state) {
-        return QueryFactory.queryUnusedMethodsWithList().apply(state.resource());
+        return QueryFactory.countUnusedMethodsWithList().apply(state.resource());
     }
 
     @Benchmark
     public int unusedMethodsWithLoop(ReadOnlyRunnerState state) {
-        return QueryFactory.queryUnusedMethodsWithLoop().apply(state.resource());
+        return QueryFactory.countUnusedMethodsWithLoop().apply(state.resource());
     }
 
     // region ASE 2015
 
     @Benchmark
     public int ase15CommentsTagContent(ReadOnlyRunnerState state) {
-        return QueryFactoryAse15.queryCommentsTagContent().apply(state.resource());
+        return QueryFactoryASE.countTagComments().apply(state.resource());
     }
 
     @Benchmark
     public int ase15Grabats(ReadOnlyRunnerState state) {
-        return QueryFactoryAse15.queryGrabats().apply(state.resource());
+        return QueryFactoryASE.grabatsASE().apply(state.resource());
     }
 
     @Benchmark
     public int ase15SpecificInvisibleMethodDeclarations(ReadOnlyRunnerState state) {
-        return QueryFactoryAse15.querySpecificInvisibleMethodDeclarations().apply(state.resource());
+        return QueryFactoryASE.countInvisibleMethodsSpecific().apply(state.resource());
     }
 
     @Benchmark
     public int ase15ThrownExceptions(ReadOnlyRunnerState state) {
-        return QueryFactoryAse15.queryThrownExceptions().apply(state.resource());
+        return QueryFactoryASE.countThrownExceptions().apply(state.resource());
     }
 
     @Benchmark
     public int ase15BranchStatements(ReadOnlyRunnerState state) {
-        return QueryFactoryAse15.queryBranchStatements().apply(state.resource());
+        return QueryFactoryASE.countBranchStatements().apply(state.resource());
     }
 
     //endregion
