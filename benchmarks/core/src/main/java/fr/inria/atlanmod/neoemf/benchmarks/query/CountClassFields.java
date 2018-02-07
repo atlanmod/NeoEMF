@@ -15,9 +15,7 @@ import org.eclipse.gmt.modisco.java.FieldDeclaration;
 import org.eclipse.gmt.modisco.java.NamedElement;
 import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -31,7 +29,7 @@ class CountClassFields extends AbstractQuery<Integer> {
 
     @Override
     public Integer apply(Resource resource) {
-        Map<String, Iterable<NamedElement>> result = new HashMap<>();
+        Map<String, Iterable<NamedElement>> result = createMap();
 
         Iterable<ClassDeclaration> classDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getClassDeclaration());
 
@@ -49,7 +47,7 @@ class CountClassFields extends AbstractQuery<Integer> {
      */
     @Nonnull
     protected Iterable<NamedElement> separateFields(Iterable<BodyDeclaration> bodyDeclarations) {
-        List<NamedElement> fields = new ArrayList<>();
+        Collection<NamedElement> fields = createOrderedCollection();
 
         for (BodyDeclaration body : bodyDeclarations) {
             if (FieldDeclaration.class.isInstance(body)) {

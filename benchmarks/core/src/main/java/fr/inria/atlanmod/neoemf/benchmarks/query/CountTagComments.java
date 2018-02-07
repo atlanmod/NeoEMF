@@ -17,8 +17,7 @@ import org.eclipse.gmt.modisco.java.Model;
 import org.eclipse.gmt.modisco.java.TagElement;
 import org.eclipse.gmt.modisco.java.TextElement;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -30,7 +29,7 @@ class CountTagComments extends AbstractQuery<Integer> {
 
     @Override
     public Integer apply(Resource resource) {
-        Set<TextElement> result = new HashSet<>();
+        Collection<TextElement> result = createOrderedCollection();
 
         Model model = getRoot(resource);
 

@@ -15,12 +15,9 @@ import org.eclipse.gmt.modisco.java.MethodInvocation;
 import org.eclipse.gmt.modisco.java.Modifier;
 import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,7 +33,7 @@ abstract class CountUnusedMethods extends AbstractQuery<Integer> {
 
     @Override
     public Integer apply(Resource resource) {
-        List<MethodDeclaration> result = new ArrayList<>();
+        Collection<MethodDeclaration> result = createOrderedCollection();
 
         prepareInvokedMethods(resource);
 
@@ -80,13 +77,13 @@ abstract class CountUnusedMethods extends AbstractQuery<Integer> {
          * All invoked methods.
          */
         @Nonnull
-        private Set<AbstractMethodDeclaration> invokedMethods = Collections.emptySet();
+        private Collection<AbstractMethodDeclaration> invokedMethods = Collections.emptySet();
 
         @Override
         protected void prepareInvokedMethods(Resource resource) {
             Iterable<MethodInvocation> methodInvocations = allInstancesOf(resource, JavaPackage.eINSTANCE.getMethodInvocation());
 
-            invokedMethods = new HashSet<>();
+            invokedMethods = createUniqueCollection();
             for (MethodInvocation invocation : methodInvocations) {
                 invokedMethods.add(invocation.getMethod());
             }

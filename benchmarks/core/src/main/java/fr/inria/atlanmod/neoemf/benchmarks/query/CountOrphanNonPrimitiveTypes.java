@@ -13,8 +13,7 @@ import org.eclipse.gmt.modisco.java.Model;
 import org.eclipse.gmt.modisco.java.PrimitiveType;
 import org.eclipse.gmt.modisco.java.Type;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -31,7 +30,7 @@ class CountOrphanNonPrimitiveTypes extends AbstractQuery<Integer> {
 
     @Override
     public Integer apply(Resource resource) {
-        List<Type> result = new ArrayList<>();
+        Collection<Type> result = createOrderedCollection();
 
         Model model = Model.class.cast(resource.getContents().get(0));
 

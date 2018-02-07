@@ -15,9 +15,8 @@ import org.eclipse.gmt.modisco.java.MethodDeclaration;
 import org.eclipse.gmt.modisco.java.Modifier;
 import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -40,7 +39,7 @@ class CountInvisibleMethods extends AbstractQuery<Integer> {
 
     @Override
     public Integer apply(Resource resource) {
-        List<MethodDeclaration> result = new ArrayList<>();
+        Collection<MethodDeclaration> result = createOrderedCollection();
 
         classDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getClassDeclaration());
 

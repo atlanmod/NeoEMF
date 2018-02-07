@@ -13,8 +13,13 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -48,12 +53,12 @@ public abstract class AbstractQuery<T> implements Query<T> {
      * @param type     the instance of the expected objects
      * @param <U>      the type of the expected objects
      *
-     * @return an iterable
+     * @return an immutable iterable
      */
     @Nonnull
     @SuppressWarnings("unchecked")
     protected <U extends EObject> Iterable<U> allInstancesOf(Resource resource, EClass type) {
-        List<U> result = new ArrayList<>();
+        Collection<U> result = createOrderedCollection();
 
         Iterable<EObject> allContents = resource::getAllContents;
         for (EObject e : allContents) {
@@ -62,6 +67,43 @@ public abstract class AbstractQuery<T> implements Query<T> {
             }
         }
 
-        return Collections.unmodifiableList(result);
+        return Collections.unmodifiableCollection(result);
+    }
+
+    /**
+     * Creates a new {@link List} to store the result of queries.
+     *
+     * @param <U> the type of queried elements
+     *
+     * @return a new mutable list
+     */
+    @Nonnull
+    protected <U extends EObject> List<U> createOrderedCollection() {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Creates a new {@link Set} to store the result of queries.
+     *
+     * @param <U> the type of queried elements
+     *
+     * @return a new mutable set
+     */
+    @Nonnull
+    protected <U extends EObject> Set<U> createUniqueCollection() {
+        return new HashSet<>();
+    }
+
+    /**
+     * Creates a new {@link Map} to store the result of queries.
+     *
+     * @param <U> the type of the key identifying the elements
+     * @param <V> the type of queried elements
+     *
+     * @return a new mutable map
+     */
+    @Nonnull
+    protected <U, V extends EObject> Map<U, Iterable<V>> createMap() {
+        return new HashMap<>();
     }
 }

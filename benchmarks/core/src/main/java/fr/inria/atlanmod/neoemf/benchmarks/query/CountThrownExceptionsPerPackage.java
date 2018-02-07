@@ -15,10 +15,8 @@ import org.eclipse.gmt.modisco.java.Package;
 import org.eclipse.gmt.modisco.java.TypeAccess;
 import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -30,12 +28,12 @@ class CountThrownExceptionsPerPackage extends CountThrownExceptions {
 
     @Override
     public Integer apply(Resource resource) {
-        Map<String, Iterable<TypeAccess>> result = new HashMap<>();
+        Map<String, Iterable<TypeAccess>> result = createMap();
 
         Iterable<Package> packages = allInstancesOf(resource, JavaPackage.eINSTANCE.getPackage());
 
         for (Package pkg : packages) {
-            Set<TypeAccess> thrownExceptions = new HashSet<>();
+            Collection<TypeAccess> thrownExceptions = createUniqueCollection();
             for (AbstractTypeDeclaration abstractType : pkg.getOwnedElements()) {
                 if (ClassDeclaration.class.isInstance(abstractType)) {
                     ClassDeclaration type = ClassDeclaration.class.cast(abstractType);

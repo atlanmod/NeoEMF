@@ -20,8 +20,7 @@ import org.eclipse.gmt.modisco.java.Package;
 import org.eclipse.gmt.modisco.java.Statement;
 import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -35,7 +34,7 @@ class CountBranchStatements extends AbstractQuery<Integer> {
 
     @Override
     public Integer apply(Resource resource) {
-        List<Statement> result = new ArrayList<>();
+        Collection<Statement> result = createOrderedCollection();
 
         Model model = getRoot(resource);
 
@@ -50,7 +49,7 @@ class CountBranchStatements extends AbstractQuery<Integer> {
      * @param basePackage
      * @param accessedTypes
      */
-    protected void appendAccessedTypes(Package basePackage, List<Statement> accessedTypes) {
+    protected void appendAccessedTypes(Package basePackage, Collection<Statement> accessedTypes) {
         EClass eClass = JavaPackage.eINSTANCE.getClassDeclaration();
 
         for (AbstractTypeDeclaration abstractType : basePackage.getOwnedElements()) {
@@ -69,7 +68,7 @@ class CountBranchStatements extends AbstractQuery<Integer> {
      * @param type
      * @param accessedTypes
      */
-    protected void appendAccessedTypes(ClassDeclaration type, List<Statement> accessedTypes) {
+    protected void appendAccessedTypes(ClassDeclaration type, Collection<Statement> accessedTypes) {
         for (BodyDeclaration body : type.getBodyDeclarations()) {
             if (MethodDeclaration.class.isInstance(body)) {
                 MethodDeclaration method = MethodDeclaration.class.cast(body);
@@ -85,7 +84,7 @@ class CountBranchStatements extends AbstractQuery<Integer> {
      * @param statements
      * @param accessedTypes
      */
-    protected void appendAccessedTypes(List<Statement> statements, List<Statement> accessedTypes) {
+    protected void appendAccessedTypes(Iterable<Statement> statements, Collection<Statement> accessedTypes) {
         for (Statement statement : statements) {
             if (Block.class.isInstance(statement)) {
                 Block block = Block.class.cast(statement);

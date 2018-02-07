@@ -15,8 +15,7 @@ import org.eclipse.gmt.modisco.java.MethodDeclaration;
 import org.eclipse.gmt.modisco.java.Modifier;
 import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -30,7 +29,7 @@ class Grabats extends AbstractQuery<Integer> {
 
     @Override
     public Integer apply(Resource resource) {
-        List<ClassDeclaration> result = new ArrayList<>();
+        Collection<ClassDeclaration> result = createOrderedCollection();
 
         Iterable<ClassDeclaration> classDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getClassDeclaration());
 

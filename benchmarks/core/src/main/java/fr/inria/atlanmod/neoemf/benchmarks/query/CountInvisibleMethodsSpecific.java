@@ -19,8 +19,7 @@ import org.eclipse.gmt.modisco.java.Modifier;
 import org.eclipse.gmt.modisco.java.Package;
 import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -33,7 +32,7 @@ class CountInvisibleMethodsSpecific extends CountInvisibleMethods {
 
     @Override
     public Integer apply(Resource resource) {
-        List<MethodDeclaration> result = new ArrayList<>();
+        Collection<MethodDeclaration> result = createOrderedCollection();
 
         Model model = (Model) resource.getContents().get(0);
 
@@ -48,7 +47,7 @@ class CountInvisibleMethodsSpecific extends CountInvisibleMethods {
      * @param basePackage
      * @param invisibleMethods
      */
-    protected void appendInvisibleMethods(Package basePackage, List<MethodDeclaration> invisibleMethods) {
+    protected void appendInvisibleMethods(Package basePackage, Collection<MethodDeclaration> invisibleMethods) {
         EClass eClass = JavaPackage.eINSTANCE.getClassDeclaration();
 
         for (AbstractTypeDeclaration abstractType : basePackage.getOwnedElements()) {
@@ -67,7 +66,7 @@ class CountInvisibleMethodsSpecific extends CountInvisibleMethods {
      * @param type
      * @param invisibleMethods
      */
-    protected void appendInvisibleMethods(ClassDeclaration type, List<MethodDeclaration> invisibleMethods) {
+    protected void appendInvisibleMethods(ClassDeclaration type, Collection<MethodDeclaration> invisibleMethods) {
         for (BodyDeclaration bd : type.getBodyDeclarations()) {
             if (MethodDeclaration.class.isInstance(bd)) {
                 MethodDeclaration md = MethodDeclaration.class.cast(bd);

@@ -15,8 +15,7 @@ import org.eclipse.gmt.modisco.java.MethodDeclaration;
 import org.eclipse.gmt.modisco.java.TypeAccess;
 import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -28,7 +27,7 @@ class CountThrownExceptions extends AbstractQuery<Integer> {
 
     @Override
     public Integer apply(Resource resource) {
-        Set<TypeAccess> result = new HashSet<>();
+        Collection<TypeAccess> result = createUniqueCollection();
 
         Iterable<ClassDeclaration> classDeclarations = allInstancesOf(resource, JavaPackage.eINSTANCE.getClassDeclaration());
 
@@ -43,7 +42,7 @@ class CountThrownExceptions extends AbstractQuery<Integer> {
      * @param type
      * @param thrownExceptions
      */
-    protected void appendThrownExceptions(ClassDeclaration type, Set<TypeAccess> thrownExceptions) {
+    protected void appendThrownExceptions(ClassDeclaration type, Collection<TypeAccess> thrownExceptions) {
         for (BodyDeclaration body : type.getBodyDeclarations()) {
             if (MethodDeclaration.class.isInstance(body)) {
                 MethodDeclaration method = MethodDeclaration.class.cast(body);
