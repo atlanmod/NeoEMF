@@ -15,6 +15,8 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+
 /**
  * A query that renames all the method names.
  */
@@ -30,6 +32,8 @@ class RenameAllMethods extends AbstractQuery<Long> {
      * @param name the new name of all methods
      */
     public RenameAllMethods(String name) {
+        checkNotNull(name, "name");
+
         this.name = name;
     }
 

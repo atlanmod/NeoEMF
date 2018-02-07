@@ -78,7 +78,7 @@ public class ReadOnlyRunner extends Runner {
 
     @Benchmark
     public Collection<ClassDeclaration> ase15Grabats(ReadOnlyRunnerState state) {
-        return QueryFactoryASE.grabatsASE().executeOn(state.resource());
+        return QueryFactoryASE.grabats().executeOn(state.resource());
     }
 
     @Benchmark

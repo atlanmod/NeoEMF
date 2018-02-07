@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
 import fr.inria.atlanmod.commons.Throwables;
+import fr.inria.atlanmod.commons.annotation.Static;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.gmt.modisco.java.ClassDeclaration;
@@ -27,10 +28,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A factory that creates instances of {@link Query}.
  */
+@Static
 @ParametersAreNonnullByDefault
 public class QueryFactory {
 
-    protected QueryFactory() {
+    private QueryFactory() {
         throw Throwables.notInstantiableClass(getClass());
     }
 

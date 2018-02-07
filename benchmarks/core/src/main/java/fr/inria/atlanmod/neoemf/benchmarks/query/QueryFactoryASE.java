@@ -8,6 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
+import fr.inria.atlanmod.commons.Throwables;
+import fr.inria.atlanmod.commons.annotation.Static;
+
 import org.eclipse.gmt.modisco.java.ClassDeclaration;
 import org.eclipse.gmt.modisco.java.MethodDeclaration;
 import org.eclipse.gmt.modisco.java.Statement;
@@ -22,8 +25,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A {@link QueryFactory} that creates instances of {@link Query} related to the {@code ASE 2015} conference.
  */
+@Static
 @ParametersAreNonnullByDefault
-public class QueryFactoryASE extends QueryFactory {
+public class QueryFactoryASE {
+
+    private QueryFactoryASE() {
+        throw Throwables.notInstantiableClass(getClass());
+    }
 
     // region Read-Only
 
@@ -31,7 +39,7 @@ public class QueryFactoryASE extends QueryFactory {
      * @return a new query
      */
     @Nonnull
-    public static Query<Collection<ClassDeclaration>> grabatsASE() {
+    public static Query<Collection<ClassDeclaration>> grabats() {
         return new GrabatsASE();
     }
 
