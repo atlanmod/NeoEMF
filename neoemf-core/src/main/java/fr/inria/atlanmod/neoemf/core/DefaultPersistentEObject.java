@@ -16,9 +16,9 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.core.internal.AllContentsIterator;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsCopier;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsList;
-import fr.inria.atlanmod.neoemf.core.internal.LazyStoreFeatureMap;
-import fr.inria.atlanmod.neoemf.core.internal.LazyStoreList;
-import fr.inria.atlanmod.neoemf.core.internal.LazyStoreMap;
+import fr.inria.atlanmod.neoemf.core.internal.DirectStoreFeatureMap;
+import fr.inria.atlanmod.neoemf.core.internal.DirectStoreList;
+import fr.inria.atlanmod.neoemf.core.internal.DirectStoreMap;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.im.BoundInMemoryBackend;
 import fr.inria.atlanmod.neoemf.data.store.Store;
@@ -249,15 +249,15 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
 
         if (FeatureMapUtil.isFeatureMap(feature)) {
-            return new LazyStoreFeatureMap(this, feature);
+            return new DirectStoreFeatureMap(this, feature);
         }
 
         if (feature.isMany()) {
             if (Objects.equals(feature.getEType().getInstanceClassName(), java.util.Map.Entry.class.getName())) {
-                return new LazyStoreMap<>(this, feature);
+                return new DirectStoreMap<>(this, feature);
             }
             else {
-                return new LazyStoreList<>(this, feature);
+                return new DirectStoreList<>(this, feature);
             }
         }
 

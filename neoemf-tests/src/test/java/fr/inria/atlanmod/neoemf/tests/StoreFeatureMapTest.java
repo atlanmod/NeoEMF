@@ -28,11 +28,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.LazyStoreFeatureMap}.
+ * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.DirectStoreFeatureMap}.
  */
 // TODO Add missing methods
 @ParametersAreNonnullByDefault
-class LazyStoreFeatureMapTest extends AbstractResourceBasedTest {
+class StoreFeatureMapTest extends AbstractResourceBasedTest {
 
     /**
      * Checks that the {@link FeatureMap}s are correctly detected and created.

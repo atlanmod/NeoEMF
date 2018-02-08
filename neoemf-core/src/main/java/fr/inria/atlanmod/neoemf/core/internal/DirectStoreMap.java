@@ -29,18 +29,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see PersistentEObject#eStore()
  */
 @ParametersAreNonnullByDefault
-public class LazyStoreMap<K, V> extends EcoreEMap<K, V> {
+public class DirectStoreMap<K, V> extends EcoreEMap<K, V> {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 9173875843551606055L;
 
     /**
-     * Constructs a {@code LazyStoreMap} with the given {@code owner} and {@code feature}.
+     * Constructs a {@code DirectStoreMap} with the given {@code owner} and {@code feature}.
      *
      * @param owner   the owner the {@code feature}
      * @param feature the feature associated with this map
      */
-    public LazyStoreMap(PersistentEObject owner, EStructuralFeature feature) {
+    public DirectStoreMap(PersistentEObject owner, EStructuralFeature feature) {
         super(EClass.class.cast(feature.getEType()), Entry.class, null);
 
         this.delegateEList = new EntryList(owner, feature);
@@ -51,7 +51,7 @@ public class LazyStoreMap<K, V> extends EcoreEMap<K, V> {
      * A {@link List} that holds entries of this map.
      */
     @ParametersAreNonnullByDefault
-    private class EntryList extends LazyStoreList<Entry<K, V>> {
+    private class EntryList extends DirectStoreList<Entry<K, V>> {
 
         @SuppressWarnings("JavaDoc")
         private static final long serialVersionUID = 3373155561238654363L;
@@ -59,7 +59,7 @@ public class LazyStoreMap<K, V> extends EcoreEMap<K, V> {
         /**
          * Constructs a new {@code EntryList}.
          *
-         * @param owner   the persistentOwner the {@code feature}
+         * @param owner   the owner the {@code feature}
          * @param feature the feature associated with this list
          */
         public EntryList(PersistentEObject owner, EStructuralFeature feature) {
@@ -76,22 +76,22 @@ public class LazyStoreMap<K, V> extends EcoreEMap<K, V> {
 
         @Override
         protected void didAdd(int index, Entry<K, V> newObject) {
-            LazyStoreMap.this.doPut(newObject);
+            DirectStoreMap.this.doPut(newObject);
         }
 
         @Override
         protected void didRemove(int index, Entry<K, V> oldObject) {
-            LazyStoreMap.this.doRemove(oldObject);
+            DirectStoreMap.this.doRemove(oldObject);
         }
 
         @Override
         protected void didClear(int size, Object[] oldObjects) {
-            LazyStoreMap.this.doClear();
+            DirectStoreMap.this.doClear();
         }
 
         @Override
         protected void didMove(int index, Entry<K, V> movedObject, int oldIndex) {
-            LazyStoreMap.this.doMove(movedObject);
+            DirectStoreMap.this.doMove(movedObject);
         }
 
         // endregion

@@ -26,11 +26,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.LazyStoreMap}.
+ * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.DirectStoreMap}.
  */
 // TODO Add missing methods
 @ParametersAreNonnullByDefault
-class LazyStoreMapTest extends AbstractResourceBasedTest {
+class StoreMapTest extends AbstractResourceBasedTest {
 
     private static final String KEY1 = "key1";
     private static final String KEY2 = "key2";
