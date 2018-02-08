@@ -17,7 +17,6 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.GraphHelper;
 import com.tinkerpop.blueprints.util.wrappers.WrapperGraph;
-import com.tinkerpop.blueprints.util.wrappers.id.IdEdge;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 
 import fr.inria.atlanmod.commons.cache.Cache;
@@ -39,7 +38,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
@@ -117,6 +115,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * @see #innerCopyTo(DataMapper)
      */
     @Nonnull
+    // FIXME This set is not consistent across executions.
     private final Set<ClassBean> metaClassSet;
 
     /**
@@ -445,78 +444,5 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     @Nonnull
     public Graph getGraph() {
         return graph;
-    }
-
-    /**
-     * An {@link IdGraph} that automatically removes unused {@link Vertex}.
-     */
-    @ParametersAreNonnullByDefault
-    private static class SmartIdGraph extends IdGraph<KeyIndexableGraph> {
-
-        /**
-         * Constructs a new {@code SmartIdGraph} on the specified {@code baseGraph}.
-         *
-         * @param baseGraph the base graph
-         */
-        public SmartIdGraph(KeyIndexableGraph baseGraph) {
-            super(baseGraph, true, false);
-            enforceUniqueIds(false);
-        }
-
-        @Override
-        public Edge addEdge(Object id, Vertex outVertex, Vertex inVertex, String label) {
-            return createFrom(super.addEdge(id, outVertex, inVertex, label));
-        }
-
-        @Override
-        public Edge getEdge(Object id) {
-            return createFrom(super.getEdge(id));
-        }
-
-        /**
-         * Creates a new {@link SmartIdEdge} from another {@link Edge}.
-         *
-         * @param edge the base edge
-         *
-         * @return an {@link SmartIdEdge}
-         */
-        private Edge createFrom(@Nullable Edge edge) {
-            return Optional.ofNullable(edge)
-                    .map(SmartIdEdge::new)
-                    .orElse(null);
-        }
-
-        /**
-         * An {@link IdEdge} that automatically removes {@link Vertex} that are no longer referenced.
-         */
-        @ParametersAreNonnullByDefault
-        private class SmartIdEdge extends IdEdge {
-
-            /**
-             * Constructs a new {@code SmartIdEdge} on the specified {@code edge}.
-             *
-             * @param edge the base edge
-             */
-            public SmartIdEdge(Edge edge) {
-                super(edge, SmartIdGraph.this);
-            }
-
-            /**
-             * {@inheritDoc}
-             * <p>
-             * If the {@link Edge} references a {@link Vertex} with no more incoming {@link Edge}, the referenced {@link
-             * Vertex} is removed as well.
-             */
-            @Override
-            public void remove() {
-                Vertex referencedVertex = getVertex(Direction.IN);
-                super.remove();
-
-                if (MoreIterables.isEmpty(referencedVertex.getEdges(Direction.IN))) {
-                    // If the Vertex has no more incoming edges remove it from the DB
-                    referencedVertex.remove();
-                }
-            }
-        }
     }
 }
