@@ -31,7 +31,6 @@ import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -109,16 +108,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
             .build();
 
     /**
-     * A set that holds indexed {@link ClassBean}.
-     *
-     * @see #metaClassIndex
-     * @see #innerCopyTo(DataMapper)
-     */
-    @Nonnull
-    // FIXME This set is not consistent across executions.
-    private final Set<ClassBean> metaClassSet;
-
-    /**
      * Index containing meta-classes.
      */
     @Nonnull
@@ -151,10 +140,9 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
         graph = new SmartIdGraph(baseGraph);
 
-        requireUniqueLabels = TinkerGraph.class.isInstance(getOrigin(baseGraph));
-
-        metaClassSet = new HashSet<>();
         metaClassIndex = getOrCreateIndex("instances");
+
+        requireUniqueLabels = TinkerGraph.class.isInstance(getOrigin(baseGraph));
     }
 
     /**
@@ -276,12 +264,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         AbstractBlueprintsBackend to = AbstractBlueprintsBackend.class.cast(target);
 
         GraphHelper.copyGraph(graph, to.graph);
-
-        metaClassSet.forEach(m -> {
-            Id id = generateClassId(m);
-            Vertex vertex = get(id).<IllegalStateException>orElseThrow(IllegalStateException::new);
-            to.metaClassIndex.put(PROPERTY_INSTANCE_NAME, m.name(), vertex);
-        });
     }
 
     @Nonnull
@@ -297,9 +279,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         final Vertex containmentVertex = optContainmentVertex.get();
 
         return MoreIterables.onlyElement(containmentVertex.getEdges(Direction.OUT, EDGE_CONTAINER))
-                .map(e -> SingleFeatureBean.of(
-                        idConverter.revert(e.getVertex(Direction.IN).getId()),
-                        e.getProperty(PROPERTY_CONTAINER_NAME)));
+                .map(this::createContainer);
     }
 
     @Override
@@ -340,9 +320,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         final Vertex vertex = optVertex.get();
 
         return MoreIterables.onlyElement(vertex.getVertices(Direction.OUT, EDGE_INSTANCE_OF))
-                .map(v -> ClassBean.of(
-                        v.getProperty(PROPERTY_INSTANCE_NAME),
-                        v.getProperty(PROPERTY_INSTANCE_URI)));
+                .map(this::createMetaClass);
     }
 
     @Override
@@ -354,22 +332,21 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
         // Check the presence of a meta-class
         if (MoreIterables.onlyElement(vertex.getEdges(Direction.OUT, EDGE_INSTANCE_OF)).isPresent()) {
+            // TODO Update the index if necessary
+            // After a copy, indices are empty
+            // Using sets is not a good idea, because they are not consistent across several executions
             return false;
         }
 
         // Retrieve or create the meta-class and store it in the index
-        Iterable<Vertex> instanceVertices = metaClassIndex.get(PROPERTY_INSTANCE_NAME, metaClass.name());
+        Iterable<Vertex> metaClassVertices = metaClassIndex.get(PROPERTY_INSTANCE_NAME, metaClass.name());
 
-        Vertex metaClassVertex = MoreIterables.onlyElement(instanceVertices).orElseGet(() -> {
-            Vertex mcv = graph.addVertex(idConverter.convert(generateClassId(metaClass)));
-            mcv.setProperty(PROPERTY_INSTANCE_NAME, metaClass.name());
-            mcv.setProperty(PROPERTY_INSTANCE_URI, metaClass.uri());
-
-            metaClassIndex.put(PROPERTY_INSTANCE_NAME, metaClass.name(), mcv);
-            metaClassSet.add(metaClass);
-
-            return mcv;
-        });
+        Vertex metaClassVertex = MoreIterables.onlyElement(metaClassVertices)
+                .orElseGet(() -> {
+                    Vertex mcv = createMetaClass(metaClass);
+                    metaClassIndex.put(PROPERTY_INSTANCE_NAME, metaClass.name(), mcv);
+                    return mcv;
+                });
 
         // Defines the meta-class
         vertex.addEdge(EDGE_INSTANCE_OF, metaClassVertex);
@@ -385,7 +362,8 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .flatMap(MoreIterables::stream)
                 .map(mcv -> mcv.getVertices(Direction.IN, EDGE_INSTANCE_OF))
                 .flatMap(MoreIterables::stream)
-                .map(v -> idConverter.revert(v.getId()))
+                .map(Vertex::getId)
+                .map(idConverter::revert)
                 .collect(Collectors.toSet());
     }
 
@@ -431,6 +409,56 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
             final Object objectId = idConverter.convert(i);
             return Optional.ofNullable(graph.getVertex(objectId)).orElseGet(() -> graph.addVertex(objectId));
         });
+    }
+
+    /**
+     * Creates a {@link SingleFeatureBean} from an {@link Edge}.
+     *
+     * @param edge the edge
+     *
+     * @return the container
+     */
+    @Nonnull
+    protected SingleFeatureBean createContainer(Edge edge) {
+        Vertex vertex = edge.getVertex(Direction.IN);
+
+        Id id = idConverter.revert(vertex.getId());
+        int name = edge.getProperty(PROPERTY_CONTAINER_NAME);
+
+        return SingleFeatureBean.of(id, name);
+    }
+
+    /**
+     * Creates a {@link ClassBean} from a {@link Vertex}.
+     *
+     * @param vertex the vertex
+     *
+     * @return the meta-class
+     */
+    @Nonnull
+    protected ClassBean createMetaClass(Vertex vertex) {
+        String name = vertex.getProperty(PROPERTY_INSTANCE_NAME);
+        String uri = vertex.getProperty(PROPERTY_INSTANCE_URI);
+
+        return ClassBean.of(name, uri);
+    }
+
+    /**
+     * Creates a {@link Vertex} from a {@link ClassBean}.
+     *
+     * @param classBean the meta-class
+     *
+     * @return a new vertex
+     */
+    @Nonnull
+    protected Vertex createMetaClass(ClassBean classBean) {
+        Id id = generateClassId(classBean);
+
+        Vertex vertex = graph.addVertex(idConverter.convert(id));
+        vertex.setProperty(PROPERTY_INSTANCE_NAME, classBean.name());
+        vertex.setProperty(PROPERTY_INSTANCE_URI, classBean.uri());
+
+        return vertex;
     }
 
     /**
