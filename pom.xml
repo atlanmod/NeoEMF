@@ -51,7 +51,6 @@
         <module>neoemf-utils</module>
         <module>neoemf-utils/p2</module>
         <module>neoemf-tests</module>
-    <module>neoemf-data/mongodb</module>
   </modules>
 
     <developers>

@@ -8,7 +8,7 @@
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>neoemf-data/mongodb</artifactId>
+    <artifactId>neoemf-data-mongodb</artifactId>
 
     <packaging>bundle</packaging>
 
