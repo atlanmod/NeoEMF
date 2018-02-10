@@ -101,7 +101,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         final Vertex vertex = optVertex.get();
 
-        return MoreIterables.onlyElement(vertex.getVertices(Direction.OUT, formatLabel(key)))
+        return getFirstElement(vertex.getVertices(Direction.OUT, formatLabel(key)))
                 .map(v -> idConverter.revert(v.getId()));
     }
 
@@ -113,7 +113,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         Vertex vertex = getOrCreate(key.owner());
 
-        Optional<Edge> referenceEdge = MoreIterables.onlyElement(vertex.getEdges(Direction.OUT, formatLabel(key)));
+        Optional<Edge> referenceEdge = getFirstElement(vertex.getEdges(Direction.OUT, formatLabel(key)));
 
         Optional<Id> previousId = Optional.empty();
         if (referenceEdge.isPresent()) {
@@ -165,7 +165,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         final Vertex vertex = optVertex.get();
 
-        final int size = sizeOf(key, vertex);
+        final int size = getSize(vertex, key);
         final Iterator<V> iter = new SizedIterator<>(size, i -> vertex.getProperty(formatProperty(key, i)));
 
         return MoreIterables.stream(() -> iter);
@@ -196,7 +196,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Vertex vertex = getOrCreate(key.owner());
 
         final int firstPosition = key.position();
-        final int size = sizeOf(key.withoutPosition(), vertex);
+        final int size = getSize(vertex, key.withoutPosition());
         checkPositionIndex(firstPosition, size);
 
         for (int i = size - 1; i >= firstPosition; i--) {
@@ -206,7 +206,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         vertex.<V>setProperty(formatProperty(key, firstPosition), value);
 
-        sizeFor(key.withoutPosition(), vertex, size + 1);
+        setSize(vertex, key.withoutPosition(), size + 1);
     }
 
     @Override
@@ -222,7 +222,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Vertex vertex = getOrCreate(key.owner());
 
         final int firstPosition = key.position();
-        final int size = sizeOf(key.withoutPosition(), vertex);
+        final int size = getSize(vertex, key.withoutPosition());
         checkPositionIndex(firstPosition, size);
 
         final int additionCount = collection.size();
@@ -236,7 +236,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             vertex.<V>setProperty(formatProperty(key, firstPosition + i), collection.get(i));
         }
 
-        sizeFor(key.withoutPosition(), vertex, size + additionCount);
+        setSize(vertex, key.withoutPosition(), size + additionCount);
     }
 
     @Nonnull
@@ -252,7 +252,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         final Vertex vertex = optVertex.get();
 
         final int firstPosition = key.position();
-        final int size = sizeOf(key.withoutPosition(), vertex);
+        final int size = getSize(vertex, key.withoutPosition());
         if (size == 0) {
             return Optional.empty();
         }
@@ -266,7 +266,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         vertex.<V>removeProperty(formatProperty(key, size - 1));
 
-        sizeFor(key.withoutPosition(), vertex, size - 1);
+        setSize(vertex, key.withoutPosition(), size - 1);
 
         return previousValue;
     }
@@ -282,9 +282,9 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         final Vertex vertex = optVertex.get();
 
-        IntStream.range(0, sizeOf(key, vertex)).forEach(i -> vertex.removeProperty(formatProperty(key, i)));
+        IntStream.range(0, getSize(vertex, key)).forEach(i -> vertex.removeProperty(formatProperty(key, i)));
 
-        sizeFor(key, vertex, 0);
+        setSize(vertex, key, 0);
     }
 
     @Nonnull
@@ -294,7 +294,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
 
         return get(key.owner())
-                .map(v -> sizeOf(key, v))
+                .map(v -> getSize(v, key))
                 .filter(s -> s > 0);
     }
 
@@ -320,7 +320,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .has(PROPERTY_INDEX, key.position())
                 .vertices();
 
-        return MoreIterables.onlyElement(referencedVertices)
+        return getFirstElement(referencedVertices)
                 .map(v -> idConverter.revert(v.getId()));
     }
 
@@ -355,7 +355,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                 .has(PROPERTY_INDEX, key.position())
                 .edges();
 
-        Edge previousEdge = MoreIterables.onlyElement(edges).<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+        Edge previousEdge = getFirstElement(edges).<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
         Vertex previousReferencedVertex = previousEdge.getVertex(Direction.IN);
         Optional<Id> previousId = Optional.of(idConverter.revert(previousReferencedVertex.getId()));
@@ -374,7 +374,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Vertex vertex = getOrCreate(key.owner());
 
         final int firstPosition = key.position();
-        final int size = sizeOf(key.withoutPosition(), vertex);
+        final int size = getSize(vertex, key.withoutPosition());
         checkPositionIndex(firstPosition, size);
 
         if (firstPosition < size) {
@@ -389,7 +389,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         vertex.addEdge(formatLabel(key), getOrCreate(reference)).setProperty(PROPERTY_INDEX, firstPosition);
 
-        sizeFor(key.withoutPosition(), vertex, size + 1);
+        setSize(vertex, key.withoutPosition(), size + 1);
     }
 
     @Override
@@ -405,7 +405,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Vertex vertex = getOrCreate(key.owner());
 
         final int firstPosition = key.position();
-        final int size = sizeOf(key.withoutPosition(), vertex);
+        final int size = getSize(vertex, key.withoutPosition());
         checkPositionIndex(firstPosition, size);
 
         final int additionCount = collection.size();
@@ -424,7 +424,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             vertex.addEdge(formatLabel(key), getOrCreate(collection.get(i))).setProperty(PROPERTY_INDEX, firstPosition + i);
         }
 
-        sizeFor(key.withoutPosition(), vertex, size + additionCount);
+        setSize(vertex, key.withoutPosition(), size + additionCount);
     }
 
     @Nonnull
@@ -440,7 +440,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         final Vertex vertex = optVertex.get();
 
         final int firstPosition = key.position();
-        final int size = sizeOf(key.withoutPosition(), vertex);
+        final int size = getSize(vertex, key.withoutPosition());
         if (size == 0) {
             return Optional.empty();
         }
@@ -466,7 +466,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             }
         }
 
-        sizeFor(key.withoutPosition(), vertex, size - 1);
+        setSize(vertex, key.withoutPosition(), size - 1);
 
         return previousId;
     }
@@ -484,7 +484,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         vertex.getEdges(Direction.OUT, formatLabel(key)).forEach(Edge::remove);
 
-        sizeFor(key, vertex, 0);
+        setSize(vertex, key, 0);
     }
 
     @Nonnull
