@@ -104,6 +104,12 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     protected final Converter<Id, Object> idConverter;
 
     /**
+     * The Blueprints graph.
+     */
+    @Nonnull
+    protected final IdGraph<KeyIndexableGraph> graph;
+
+    /**
      * In-memory cache that holds recently loaded {@link Vertex}s, identified by their associated {@link Id}.
      * <p>
      * This cache exists only because of the low performance of the Lucene indices.
@@ -120,12 +126,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      */
     @Nonnull
     private final Index<Vertex> allMetaClassesIndex;
-
-    /**
-     * The Blueprints graph.
-     */
-    @Nonnull
-    private final IdGraph<KeyIndexableGraph> graph;
 
     /**
      * {@code true} if the base {@link Graph} requires unique labels and properties.
@@ -399,8 +399,9 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     protected void setContainer(Vertex vertex, SingleFeatureBean container) {
         Vertex containerVertex = getOrCreate(container.owner());
 
-        Edge edge = vertex.addEdge(EDGE_CONTAINER, containerVertex);
-        edge.setProperty(PROPERTY_CONTAINER_NAME, container.id());
+        // TODO Add an identifier for this edge
+        Edge containerEdge = graph.addEdge(null, vertex, containerVertex, EDGE_CONTAINER);
+        containerEdge.setProperty(PROPERTY_CONTAINER_NAME, container.id());
     }
 
     /**
@@ -443,7 +444,8 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         metaClassVertex.setProperty(PROPERTY_INSTANCE_NAME, name);
         metaClassVertex.setProperty(PROPERTY_INSTANCE_URI, uri);
 
-        vertex.addEdge(EDGE_INSTANCE_OF, metaClassVertex);
+        // TODO Add an identifier for this edge
+        graph.addEdge(null, vertex, metaClassVertex, EDGE_INSTANCE_OF);
 
         // Update the index if necessary
         try (CloseableIterable<Vertex> iterable = allMetaClassesIndex.get(PROPERTY_INSTANCE_NAME, name)) {

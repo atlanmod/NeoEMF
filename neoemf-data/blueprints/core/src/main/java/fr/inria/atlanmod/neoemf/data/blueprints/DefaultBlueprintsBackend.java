@@ -122,7 +122,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             referenceEdge.get().remove();
         }
 
-        vertex.addEdge(formatLabel(key), getOrCreate(reference));
+        graph.addEdge(null, vertex, getOrCreate(reference), formatLabel(key));
 
         return previousId;
     }
@@ -361,7 +361,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Optional<Id> previousId = Optional.of(idConverter.revert(previousReferencedVertex.getId()));
         previousEdge.remove();
 
-        vertex.addEdge(formatLabel(key), getOrCreate(reference)).setProperty(PROPERTY_INDEX, key.position());
+        Edge newEdge = graph.addEdge(null, vertex, getOrCreate(reference), formatLabel(key));
+        newEdge.setProperty(PROPERTY_INDEX, key.position());
 
         return previousId;
     }
@@ -387,7 +388,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
                     .forEach(e -> e.setProperty(PROPERTY_INDEX, e.<Integer>getProperty(PROPERTY_INDEX) + 1));
         }
 
-        vertex.addEdge(formatLabel(key), getOrCreate(reference)).setProperty(PROPERTY_INDEX, firstPosition);
+        Edge newEdge = graph.addEdge(null, vertex, getOrCreate(reference), formatLabel(key));
+        newEdge.setProperty(PROPERTY_INDEX, firstPosition);
 
         setSize(vertex, key.withoutPosition(), size + 1);
     }
@@ -421,7 +423,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         }
 
         for (int i = 0; i < additionCount; i++) {
-            vertex.addEdge(formatLabel(key), getOrCreate(collection.get(i))).setProperty(PROPERTY_INDEX, firstPosition + i);
+            Edge newEdge = graph.addEdge(null, vertex, getOrCreate(collection.get(i)), formatLabel(key));
+            newEdge.setProperty(PROPERTY_INDEX, firstPosition + i);
         }
 
         setSize(vertex, key.withoutPosition(), size + additionCount);
