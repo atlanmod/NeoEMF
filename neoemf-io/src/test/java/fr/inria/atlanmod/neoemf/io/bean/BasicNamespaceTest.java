@@ -115,10 +115,10 @@ class BasicNamespaceTest extends AbstractTest {
         BasicNamespace ns0 = registry.register(prefix0, uri0);
         BasicNamespace ns1 = registry.register(prefix1, uri1);
 
-        BasicNamespace ns0Bis = registry.getFromPrefix(prefix0);
+        BasicNamespace ns0Bis = registry.getByPrefix(prefix0);
         assertThat(ns0Bis).isEqualTo(ns0);
 
-        BasicNamespace ns1Bis = registry.getFromUri(uri1);
+        BasicNamespace ns1Bis = registry.getByUri(uri1);
         assertThat(ns1Bis).isEqualTo(ns1);
 
         Iterable<String> prefixes = registry.getPrefixes();
@@ -127,7 +127,7 @@ class BasicNamespaceTest extends AbstractTest {
         registry.clean();
         assertThat(prefixes).isEmpty();
 
-        assertThat(registry.getFromPrefix(prefix0)).isNull();
-        assertThat(registry.getFromUri(uri1)).isNull();
+        assertThat(registry.getByPrefix(prefix0)).isNull();
+        assertThat(registry.getByUri(uri1)).isNull();
     }
 }

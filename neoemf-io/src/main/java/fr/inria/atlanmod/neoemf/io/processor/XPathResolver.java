@@ -186,7 +186,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
             referencedId = generateId(path);
         }
 
-        reference.value(referencedId).rawValue(null);
+        reference.value(referencedId);
     }
 
     /**

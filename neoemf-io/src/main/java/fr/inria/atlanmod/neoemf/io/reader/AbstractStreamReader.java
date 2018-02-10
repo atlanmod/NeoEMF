@@ -151,7 +151,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * @param name the name of the element
      */
     protected final void readStartElement(@Nullable String uri, String name) {
-        BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromUri(Strings.emptyToNull(uri));
+        BasicNamespace ns = BasicNamespace.Registry.getInstance().getByUri(Strings.emptyToNull(uri));
 
         currentElement = new BasicElement()
                 .name(name);
@@ -200,7 +200,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
         if (!ignoreElement && !isSpecialAttribute(prefix, name, value)) {
             BasicAttribute attribute = new BasicAttribute()
                     .name(name)
-                    .value(value);
+                    .rawValue(value);
 
             currentAttributes.add(attribute);
         }
@@ -239,7 +239,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
         checkArgument(m.find(), "Malformed meta-class %s", prefixedValue);
 
-        BasicNamespace ns = BasicNamespace.Registry.getInstance().getFromPrefix(m.group(1));
+        BasicNamespace ns = BasicNamespace.Registry.getInstance().getByPrefix(m.group(1));
         String name = m.group(2);
 
         currentElement.metaClass(new BasicMetaclass(ns, name));
