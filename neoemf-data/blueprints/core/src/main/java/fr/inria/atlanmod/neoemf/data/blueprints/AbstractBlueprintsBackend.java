@@ -22,8 +22,6 @@ import com.tinkerpop.blueprints.util.GraphHelper;
 import com.tinkerpop.blueprints.util.wrappers.WrapperGraph;
 import com.tinkerpop.blueprints.util.wrappers.id.IdGraph;
 
-import fr.inria.atlanmod.commons.cache.Cache;
-import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -35,7 +33,6 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -46,6 +43,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.collect.MoreIterables.firstElement;
 
 /**
  * An abstract {@link BlueprintsBackend} that provides overall behavior for the management of a Blueprints database.
@@ -53,47 +51,46 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 @ParametersAreNonnullByDefault
 abstract class AbstractBlueprintsBackend extends AbstractBackend implements BlueprintsBackend {
 
-    /**
-     * The property key used to define the index of an edge.
-     */
-    protected static final String PROPERTY_INDEX = "_p";
-
-    /**
-     * The label used to define container {@link Edge}s.
-     */
-    private static final String EDGE_CONTAINER = "_c";
-
-    /**
-     * The label of type conformance {@link Edge}s.
-     */
-    private static final String EDGE_INSTANCE_OF = "_i";
-
-    /**
-     * The property key used to define the name of the the opposite containing feature in container {@link Edge}s.
-     */
-    private static final String PROPERTY_CONTAINER_NAME = "_cn";
-
-    /**
-     * The property key used to define the name of meta-class {@link Vertex}s.
-     */
-    private static final String PROPERTY_INSTANCE_NAME = "_in";
-
-    /**
-     * The property key used to define the URI of meta-class {@link Vertex}s.
-     */
-    private static final String PROPERTY_INSTANCE_URI = "_iu";
-
-    /**
-     * The property key used to define the number of edges with a specific label.
-     */
-    private static final String PROPERTY_SIZE = "_s";
+    // region Keys
 
     /**
      * The delimiter used to separate the property name and its value in a composed property.
      *
      * @see #formatProperty(FeatureBean, Object)
      */
-    private static final String DELIMITER = "_";
+    protected static final String DELIMITER = "_";
+
+    /**
+     * The label used to define container {@link Edge}s.
+     */
+    private static final String EDGE_CONTAINER = DELIMITER + "c";
+
+    /**
+     * The label of type conformance {@link Edge}s.
+     */
+    private static final String EDGE_INSTANCE_OF = DELIMITER + "i";
+
+    /**
+     * The property key used to define the name of the the opposite containing feature in container {@link Edge}s.
+     */
+    private static final String PROPERTY_CONTAINER_NAME = DELIMITER + "cn";
+
+    /**
+     * The property key used to define the name of meta-class {@link Vertex}s.
+     */
+    private static final String PROPERTY_INSTANCE_NAME = DELIMITER + "in";
+
+    /**
+     * The property key used to define the URI of meta-class {@link Vertex}s.
+     */
+    private static final String PROPERTY_INSTANCE_URI = DELIMITER + "iu";
+
+    /**
+     * The property key used to define the number of edges with a specific label.
+     */
+    private static final String PROPERTY_SIZE = DELIMITER + "s";
+
+    // endregion
 
     /**
      * The {@link Converter} to use a long representation instead of {@link Id}.
@@ -107,17 +104,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * The Blueprints graph.
      */
     @Nonnull
-    protected final IdGraph<KeyIndexableGraph> graph;
-
-    /**
-     * In-memory cache that holds recently loaded {@link Vertex}s, identified by their associated {@link Id}.
-     * <p>
-     * This cache exists only because of the low performance of the Lucene indices.
-     */
-    @Nonnull
-    private final Cache<Id, Vertex> verticesCache = CacheBuilder.builder()
-            .softValues()
-            .build();
+    protected final CachedIdGraph graph;
 
     /**
      * The index that holds all meta-class vertices.
@@ -146,36 +133,21 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     protected AbstractBlueprintsBackend(KeyIndexableGraph baseGraph) {
         checkNotNull(baseGraph, "baseGraph");
 
-        graph = new CachedIdGraph(baseGraph);
-
-        allMetaClassesIndex = getOrCreateIndex("instances-all", Vertex.class);
-
+        // Pre-process arguments
         Graph originGraph = getOrigin(baseGraph);
         if (TinkerGraph.class.isInstance(originGraph)) {
-            requireUniqueLabels = true;
-
             // Tinkergraph is stored as XML: prefer using String-based identifiers
             idConverter = Converter.compose(IdConverters.withHexString(), Converter.from(Function.identity(), String.class::cast));
+            requireUniqueLabels = true;
         }
         else {
-            requireUniqueLabels = false;
-
             idConverter = Converter.compose(IdConverters.withLong(), Converter.from(Function.identity(), Long.class::cast));
+            requireUniqueLabels = false;
         }
-    }
 
-    /**
-     * Returns the first element of the given {@code iterable}.
-     *
-     * @param iterable the iterable
-     * @param <T>      the type of the expected element
-     *
-     * @return an {@link Optional} containing the first element, or {@link Optional#empty()} if the iterable is empty.
-     */
-    @Nonnull
-    protected static <T extends Element> Optional<T> getFirstElement(Iterable<T> iterable) {
-        final Iterator<T> iterator = iterable.iterator();
-        return iterator.hasNext() ? Optional.of(iterator.next()) : Optional.empty();
+        // Build graph and components
+        graph = new CachedIdGraph(baseGraph, idConverter);
+        allMetaClassesIndex = graph.getOrCreateIndex("instances-all", Vertex.class);
     }
 
     /**
@@ -256,8 +228,8 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         checkNotNull(id, "id");
 
         // Try to retrieve the container edge from the vertex
-        return get(id)
-                .flatMap(v -> getFirstElement(v.getEdges(Direction.OUT, EDGE_CONTAINER)))
+        return graph.getVertex(id)
+                .flatMap(v -> firstElement(v.getEdges(Direction.OUT, EDGE_CONTAINER)))
                 .map(this::createContainer);
     }
 
@@ -266,7 +238,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         checkNotNull(id, "id");
         checkNotNull(container, "container");
 
-        Vertex containmentVertex = getOrCreate(id);
+        Vertex containmentVertex = graph.getOrCreateVertex(id);
 
         // Remove the existing container
         removeContainer(containmentVertex);
@@ -279,7 +251,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     public void removeContainer(Id id) {
         checkNotNull(id, "id");
 
-        get(id).ifPresent(this::removeContainer);
+        graph.getVertex(id).ifPresent(this::removeContainer);
     }
 
     @Nonnull
@@ -288,8 +260,8 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         checkNotNull(id, "id");
 
         // Try to retrieve the meta-class vertex from the vertex
-        return get(id)
-                .flatMap(v -> getFirstElement(v.getVertices(Direction.OUT, EDGE_INSTANCE_OF)))
+        return graph.getVertex(id)
+                .flatMap(v -> firstElement(v.getVertices(Direction.OUT, EDGE_INSTANCE_OF)))
                 .map(this::createMetaClass);
     }
 
@@ -299,9 +271,9 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
         checkNotNull(metaClass, "metaClass");
 
         // Try to retrieve the meta-class vertex from the vertex
-        Vertex vertex = getOrCreate(id);
+        Vertex vertex = graph.getOrCreateVertex(id);
 
-        Optional<Edge> instanceOfEdge = getFirstElement(vertex.getEdges(Direction.OUT, EDGE_INSTANCE_OF));
+        Optional<Edge> instanceOfEdge = firstElement(vertex.getEdges(Direction.OUT, EDGE_INSTANCE_OF));
         if (!instanceOfEdge.isPresent()) {
             setMetaClass(vertex, metaClass);
             return true;
@@ -322,54 +294,6 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
                 .map(idConverter::revert)
                 .collect(Collectors.toSet());
     }
-
-    // region Get or create
-
-    /**
-     * Retrieves the {@link Vertex} corresponding to the provided {@code id}.
-     *
-     * @param id the {@link Id} of the element to find
-     *
-     * @return an {@link Optional} containing the {@link Vertex}, or {@link Optional#empty()} if it doesn't exist
-     */
-    @Nonnull
-    protected Optional<Vertex> get(Id id) {
-        return Optional.ofNullable(verticesCache.get(id, i -> {
-            final Object vertexId = idConverter.convert(i);
-            return graph.getVertex(vertexId);
-        }));
-    }
-
-    /**
-     * Retrieves the {@link Vertex} corresponding to the provided {@code id}. If it doesn't already exist, it will be
-     * created.
-     *
-     * @param id the {@link Id} of the element to find, or create
-     *
-     * @return the {@link Vertex}
-     */
-    @Nonnull
-    protected Vertex getOrCreate(Id id) {
-        return verticesCache.get(id, i -> {
-            final Object vertexId = idConverter.convert(i);
-            return Optional.ofNullable(graph.getVertex(vertexId)).orElseGet(() -> graph.addVertex(vertexId));
-        });
-    }
-
-    /**
-     * Retrieves or create an index for the given {@code name}.
-     *
-     * @param name the name of the index
-     *
-     * @return the index
-     */
-    @Nonnull
-    protected <T extends Element> Index<T> getOrCreateIndex(String name, Class<T> type) {
-        return Optional.ofNullable(graph.getIndex(name, type))
-                .orElseGet(() -> graph.createIndex(name, type));
-    }
-
-    // endregion
 
     // region Bean transformation
 
@@ -397,7 +321,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * @param container information about the container
      */
     protected void setContainer(Vertex vertex, SingleFeatureBean container) {
-        Vertex containerVertex = getOrCreate(container.owner());
+        Vertex containerVertex = graph.getOrCreateVertex(container.owner());
 
         // TODO Add an identifier for this edge
         Edge containerEdge = graph.addEdge(null, vertex, containerVertex, EDGE_CONTAINER);
@@ -410,7 +334,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * @param vertex the vertex
      */
     protected void removeContainer(Vertex vertex) {
-        getFirstElement(vertex.getEdges(Direction.OUT, EDGE_CONTAINER)).ifPresent(Element::remove);
+        firstElement(vertex.getEdges(Direction.OUT, EDGE_CONTAINER)).ifPresent(Element::remove);
     }
 
     /**
@@ -440,7 +364,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
         Id id = Id.getProvider().generate(name + uri);
 
-        Vertex metaClassVertex = getOrCreate(id);
+        Vertex metaClassVertex = graph.getOrCreateVertex(id);
         metaClassVertex.setProperty(PROPERTY_INSTANCE_NAME, name);
         metaClassVertex.setProperty(PROPERTY_INSTANCE_URI, uri);
 
@@ -449,7 +373,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
         // Update the index if necessary
         try (CloseableIterable<Vertex> iterable = allMetaClassesIndex.get(PROPERTY_INSTANCE_NAME, name)) {
-            if (!getFirstElement(iterable).isPresent()) {
+            if (!firstElement(iterable).isPresent()) {
                 allMetaClassesIndex.put(PROPERTY_INSTANCE_NAME, name, metaClassVertex);
             }
         }
