@@ -21,8 +21,6 @@
     </modules>
 
     <properties>
-        <project.rootdir>${project.basedir}/../..</project.rootdir>
-
         <blueprints.version>2.6.0</blueprints.version>
         <commons-configuration.version>1.10</commons-configuration.version>
     </properties>
