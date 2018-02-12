@@ -12,7 +12,6 @@ import fr.inria.atlanmod.commons.LazyReference;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EcorePackage;
 
 import java.util.Objects;
 

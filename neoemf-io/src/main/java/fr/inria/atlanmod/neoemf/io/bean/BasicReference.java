@@ -12,7 +12,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 
 import org.eclipse.emf.ecore.EReference;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**

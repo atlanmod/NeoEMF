@@ -64,23 +64,27 @@ public class ClasspathCollector implements URLCollector {
      * Prefer to store {@link URI}s because of the {@link URL#equals(Object)} method.
      */
     @Nonnull
-    private final Converter<URL, URI> urlToUri = Converter.from(
-            url -> {
-                try {
-                    return url.toURI();
-                }
-                catch (URISyntaxException e) {
-                    throw Throwables.wrap(e, IllegalStateException.class);
-                }
-            },
-            uri -> {
-                try {
-                    return uri.toURL();
-                }
-                catch (MalformedURLException e) {
-                    throw Throwables.wrap(e, IllegalStateException.class);
-                }
-            });
+    private final Converter<URL, URI> urlToUri = new Converter<URL, URI>() {
+        @Override
+        public URI convert(URL url) {
+            try {
+                return url.toURI();
+            }
+            catch (URISyntaxException e) {
+                throw Throwables.wrap(e, IllegalStateException.class);
+            }
+        }
+
+        @Override
+        public URL revert(URI uri) {
+            try {
+                return uri.toURL();
+            }
+            catch (MalformedURLException e) {
+                throw Throwables.wrap(e, IllegalStateException.class);
+            }
+        }
+    };
 
     /**
      * The concurrent pool for managing classpath analysis tasks.

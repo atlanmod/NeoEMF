@@ -88,9 +88,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
      * A converter to use {@code byte[]} instead of {@link Id}.
      */
     @Nonnull
-    private static final Converter<Id, byte[]> AS_BYTES = Converter.from(
-            id -> Strings.toBytes(IdConverters.withHexString().convert(id)),
-            bs -> IdConverters.withHexString().revert(Bytes.toString(bs)));
+    private static final Converter<Id, byte[]> AS_BYTES = Converter.compose(IdConverters.withHexString(), Converter.from(Strings::toBytes, Bytes::toString));
 
     /**
      * The HBase table used to access the model.

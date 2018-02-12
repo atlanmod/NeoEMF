@@ -26,17 +26,41 @@ public final class IdConverters {
      * The {@link Converter} to use a long representation instead of {@link Id}.
      */
     @Nonnull
-    private static final Converter<Id, Long> WITH_LONG = Converter.from(
-            Id::toLong,
-            Id.getProvider()::fromLong);
+    private static final Converter<Id, Long> WITH_LONG = new Converter<Id, Long>() {
+
+        @Nonnull
+        private final IdProvider idProvider = Id.getProvider();
+
+        @Override
+        public Long convert(Id id) {
+            return id.toLong();
+        }
+
+        @Override
+        public Id revert(Long aLong) {
+            return idProvider.fromLong(aLong);
+        }
+    };
 
     /**
      * The {@link Converter} to use a hexadecimal representation instead of {@link Id}.
      */
     @Nonnull
-    private static final Converter<Id, String> WITH_HEX_STRING = Converter.from(
-            Id::toHexString,
-            Id.getProvider()::fromHexString);
+    private static final Converter<Id, String> WITH_HEX_STRING = new Converter<Id, String>() {
+
+        @Nonnull
+        private final IdProvider idProvider = Id.getProvider();
+
+        @Override
+        public String convert(Id id) {
+            return id.toHexString();
+        }
+
+        @Override
+        public Id revert(String s) {
+            return idProvider.fromHexString(s);
+        }
+    };
 
     private IdConverters() {
         throw Throwables.notInstantiableClass(getClass());
