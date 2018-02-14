@@ -93,7 +93,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         int firstPosition = key.position();
 
         IntStream.range(0, collection.size())
-                .forEach(i -> addValue(key.withPosition(firstPosition + i), collection.get(i)));
+                .forEachOrdered(i -> addValue(key.withPosition(firstPosition + i), collection.get(i)));
     }
 
     @Nonnull
@@ -122,7 +122,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Override
     default void removeAllValues(SingleFeatureBean key) {
         IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> innerValueFor(key.withPosition(i), null));
+                .forEachOrdered(i -> innerValueFor(key.withPosition(i), null));
 
         removeValue(key);
     }

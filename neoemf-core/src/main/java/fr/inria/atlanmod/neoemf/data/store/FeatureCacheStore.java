@@ -104,7 +104,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
         cache.put(key, value);
 
         IntStream.range(key.position() + 1, sizeOfValue(key.withoutPosition()).orElseGet(() -> key.position() + 1))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+                .forEachOrdered(i -> cache.invalidate(key.withPosition(i)));
 
         super.addValue(key, value);
     }
@@ -114,10 +114,10 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
         int firstPosition = key.position();
 
         IntStream.range(0, collection.size())
-                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
+                .forEachOrdered(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
 
         IntStream.range(firstPosition + collection.size(), sizeOfValue(key.withoutPosition()).orElseGet(() -> firstPosition + collection.size()))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+                .forEachOrdered(i -> cache.invalidate(key.withPosition(i)));
 
         super.addAllValues(key, collection);
     }
@@ -138,7 +138,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
         int firstPosition = super.appendAllValues(key, collection);
 
         IntStream.range(0, collection.size())
-                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
+                .forEachOrdered(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
 
         return firstPosition;
     }
@@ -147,7 +147,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
     @Override
     public <V> Optional<V> removeValue(ManyFeatureBean key) {
         IntStream.range(key.position(), sizeOfValue(key.withoutPosition()).orElseGet(key::position))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+                .forEachOrdered(i -> cache.invalidate(key.withPosition(i)));
 
         return super.removeValue(key);
     }
@@ -155,7 +155,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
     @Override
     public void removeAllValues(SingleFeatureBean key) {
         IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+                .forEachOrdered(i -> cache.invalidate(key.withPosition(i)));
 
         super.removeAllValues(key);
     }
@@ -179,7 +179,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
         cache.put(key, reference);
 
         IntStream.range(key.position() + 1, sizeOfReference(key.withoutPosition()).orElseGet(() -> key.position() + 1))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+                .forEachOrdered(i -> cache.invalidate(key.withPosition(i)));
 
         super.addReference(key, reference);
     }
@@ -189,10 +189,10 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
         int firstPosition = key.position();
 
         IntStream.range(0, collection.size())
-                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
+                .forEachOrdered(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
 
         IntStream.range(firstPosition + collection.size(), sizeOfReference(key.withoutPosition()).orElseGet(() -> firstPosition + collection.size()))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+                .forEachOrdered(i -> cache.invalidate(key.withPosition(i)));
 
         super.addAllReferences(key, collection);
     }
@@ -213,7 +213,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
         int firstPosition = super.appendAllReferences(key, collection);
 
         IntStream.range(0, collection.size())
-                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
+                .forEachOrdered(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
 
         return firstPosition;
     }
@@ -222,7 +222,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
     @Override
     public Optional<Id> removeReference(ManyFeatureBean key) {
         IntStream.range(key.position(), sizeOfReference(key.withoutPosition()).orElseGet(key::position))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+                .forEachOrdered(i -> cache.invalidate(key.withPosition(i)));
 
         return super.removeReference(key);
     }
@@ -230,7 +230,7 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
     @Override
     public void removeAllReferences(SingleFeatureBean key) {
         IntStream.range(0, sizeOfReference(key).orElse(0))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+                .forEachOrdered(i -> cache.invalidate(key.withPosition(i)));
 
         super.removeAllReferences(key);
     }

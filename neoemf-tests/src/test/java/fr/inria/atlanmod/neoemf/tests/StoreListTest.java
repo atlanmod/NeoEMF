@@ -63,7 +63,7 @@ class StoreListTest extends AbstractResourceBasedTest {
         PrimaryObject primary = EFACTORY.createPrimaryObject();
         primary.setName("Model");
 
-        IntStream.rangeClosed(0, count).forEach(i -> {
+        IntStream.rangeClosed(0, count).forEachOrdered(i -> {
             TargetObject target = EFACTORY.createTargetObject();
             target.setName("target" + i);
             targets.add(target);
