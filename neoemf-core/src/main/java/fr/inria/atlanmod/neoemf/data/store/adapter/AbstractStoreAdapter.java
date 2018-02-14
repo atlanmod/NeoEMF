@@ -140,10 +140,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     public final PersistentEObject resolve(Id id) {
         checkNotNull(id, "id");
 
-        PersistentEObject object = cache().get(id, k ->
-                resolveInstanceOf(k)
-                        .map(c -> PersistenceFactory.getInstance().create(c, k))
-                        .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
+        PersistentEObject object = cache().get(id, this::rebuild);
 
         Resource.Internal currentResource = resource();
         if (nonNull(currentResource)) {
@@ -683,11 +680,11 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         updateInstanceOf(object);
         updateInstanceOf(container);
 
-        Id objectId = refConverter.convert(object);
-        Optional<SingleFeatureBean> containerDesc = store.containerOf(objectId);
+        final Id id = refConverter.convert(object);
+        Optional<SingleFeatureBean> containerDesc = store.containerOf(id);
 
         if (!containerDesc.isPresent() || !Objects.equals(containerDesc.get().owner(), refConverter.convert(container))) {
-            store.containerFor(objectId, SingleFeatureBean.from(container, containerReference));
+            store.containerFor(id, SingleFeatureBean.from(container, containerReference));
         }
     }
 
@@ -712,14 +709,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public void updateInstanceOf(PersistentEObject object) {
-        Id objectId = refConverter.convert(object);
+        final Id id = refConverter.convert(object);
 
         // If the object is already present in the cache, then the meta-class is defined
-        if (cache().contains(objectId)) {
+        if (cache().contains(id)) {
             return;
         }
 
-        store.metaClassFor(objectId, ClassBean.from(object));
+        store.metaClassFor(id, ClassBean.from(object));
         refresh(object);
     }
 
@@ -743,6 +740,19 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      */
     private void refresh(PersistentEObject object) {
         cache().putIfAbsent(refConverter.convert(object), object);
+    }
+
+    /**
+     * Rebuilds the {@link PersistentEObject} from the specified {@code id}.
+     *
+     * @param id the identifier of the object to rebuild
+     *
+     * @return the object
+     */
+    @Nonnull
+    private PersistentEObject rebuild(Id id) {
+        final EClass eClass = resolveInstanceOf(id).<IllegalStateException>orElseThrow(IllegalStateException::new); // Should never happen
+        return PersistenceFactory.getInstance().create(eClass, id);
     }
 
     /**

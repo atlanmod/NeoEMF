@@ -80,7 +80,7 @@ public class TransientStoreAdapter extends AbstractStoreAdapter {
     @Nonnull
     @Override
     protected Cache<Id, PersistentEObject> cache() {
-        return holder.cache();
+        return holder.cache;
     }
 
     /**
@@ -133,15 +133,6 @@ public class TransientStoreAdapter extends AbstractStoreAdapter {
             SharedHolder holder = REGISTRY.computeIfAbsent(resource, SharedHolder::new);
             holder.dependencies.incrementAndGet();
             return holder;
-        }
-
-        /**
-         * Returns the cache of this holder.
-         *
-         * @return the cache
-         */
-        public Cache<Id, PersistentEObject> cache() {
-            return cache;
         }
 
         @Override
