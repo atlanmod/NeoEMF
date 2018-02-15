@@ -61,15 +61,9 @@ public final class ModelComparisonUtils {
                 .build()
                 .compare(scope);
 
-        List<Diff> differences = comparison.getDifferences();
+        final List<Diff> differences = comparison.getDifferences();
 
-        if (differences.isEmpty()) {
-            Log.info("Models are equivalent");
-        }
-        else {
-            Log.warn("Models have {0} differences", differences.size());
-        }
-
-        assertThat(differences).hasSize(0);
+        // Don't display all differences
+        assertThat(differences.size()).isEqualTo(0).withFailMessage("Models have %d differences", differences.size());
     }
 }
