@@ -8,19 +8,17 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
-import com.tinkerpop.blueprints.Direction;
-import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
-import com.tinkerpop.blueprints.Vertex;
 
 import fr.inria.atlanmod.commons.collect.MoreIterables;
-import fr.inria.atlanmod.commons.collect.SizedIterator;
+import fr.inria.atlanmod.commons.collect.MoreStreams;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.blueprints.graph.ElementEdge;
+import fr.inria.atlanmod.neoemf.data.blueprints.graph.ElementVertex;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -34,7 +32,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
-import static fr.inria.atlanmod.commons.collect.MoreIterables.firstElement;
 
 /**
  * The default {@link BlueprintsBackend} mapping.
@@ -43,11 +40,6 @@ import static fr.inria.atlanmod.commons.collect.MoreIterables.firstElement;
  */
 @ParametersAreNonnullByDefault
 class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
-
-    /**
-     * The property key used to define the index of an edge.
-     */
-    private static final String PROPERTY_INDEX = DELIMITER + "p";
 
     /**
      * Constructs a new {@code DefaultBlueprintsBackend} wrapping the provided {@code baseGraph}.
@@ -67,7 +59,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        return graph.getVertex(key.owner()).map(v -> v.<V>getProperty(formatLabel(key)));
+        return graph.getVertex(key.owner())
+                .flatMap(v -> v.getValue(key));
     }
 
     @Nonnull
@@ -76,19 +69,16 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        Vertex vertex = graph.getOrCreateVertex(key.owner());
-
-        Optional<V> previousValue = Optional.ofNullable(vertex.<V>getProperty(formatLabel(key)));
-        vertex.<V>setProperty(formatLabel(key), value);
-
-        return previousValue;
+        return graph.getOrCreateVertex(key.owner())
+                .setValue(key, value);
     }
 
     @Override
     public void removeValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        graph.getVertex(key.owner()).ifPresent(v -> v.removeProperty(formatLabel(key)));
+        graph.getVertex(key.owner())
+                .ifPresent(v -> v.removeValue(key));
     }
 
     //endregion
@@ -100,15 +90,9 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public Optional<Id> referenceOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Optional<Vertex> optVertex = graph.getVertex(key.owner());
-        if (!optVertex.isPresent()) {
-            return Optional.empty();
-        }
-
-        final Vertex vertex = optVertex.get();
-
-        return firstElement(vertex.getVertices(Direction.OUT, formatLabel(key)))
-                .map(v -> idConverter.revert(v.getId()));
+        return graph.getVertex(key.owner())
+                .flatMap(v -> v.getReference(key))
+                .map(ElementVertex::getElementId);
     }
 
     @Nonnull
@@ -117,34 +101,17 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
-        Vertex vertex = graph.getOrCreateVertex(key.owner());
-
-        Optional<Edge> referenceEdge = firstElement(vertex.getEdges(Direction.OUT, formatLabel(key)));
-
-        Optional<Id> previousId = Optional.empty();
-        if (referenceEdge.isPresent()) {
-            Vertex previousVertex = referenceEdge.get().getVertex(Direction.IN);
-            previousId = Optional.of(idConverter.revert(previousVertex.getId()));
-            referenceEdge.get().remove();
-        }
-
-        graph.addEdge(null, vertex, graph.getOrCreateVertex(reference), formatLabel(key));
-
-        return previousId;
+        return graph.getOrCreateVertex(key.owner())
+                .setReference(key, reference)
+                .map(ElementVertex::getElementId);
     }
 
     @Override
     public void removeReference(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Optional<Vertex> optVertex = graph.getVertex(key.owner());
-        if (!optVertex.isPresent()) {
-            return;
-        }
-
-        final Vertex vertex = optVertex.get();
-
-        vertex.getEdges(Direction.OUT, formatLabel(key)).forEach(Edge::remove);
+        graph.getVertex(key.owner())
+                .ifPresent(v -> v.removeReferences(key));
     }
 
     //endregion
@@ -156,7 +123,8 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> Optional<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        return graph.getVertex(key.owner()).map(v -> v.<V>getProperty(formatProperty(key, key.position())));
+        return graph.getVertex(key.owner())
+                .flatMap(v -> v.getValue(key, key.position()));
     }
 
     @Nonnull
@@ -164,17 +132,10 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Optional<Vertex> optVertex = graph.getVertex(key.owner());
-        if (!optVertex.isPresent()) {
-            return Stream.empty();
-        }
-
-        final Vertex vertex = optVertex.get();
-
-        final int size = getSize(vertex, key);
-        final Iterator<V> iter = new SizedIterator<>(size, i -> vertex.getProperty(formatProperty(key, i)));
-
-        return MoreIterables.stream(() -> iter);
+        return graph.getVertex(key.owner())
+                .map(v -> v.<V>getValues(key))
+                .map(MoreIterables::stream)
+                .orElseGet(Stream::empty);
     }
 
     @Nonnull
@@ -182,16 +143,11 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        Vertex vertex = graph.getVertex(key.owner()).<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+        V previousValue = graph.getVertex(key.owner())
+                .flatMap(v -> v.replaceValue(key, key.position(), value))
+                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
-        Optional<V> previousValue = valueOf(key);
-        if (!previousValue.isPresent()) {
-            throw new NoSuchElementException();
-        }
-
-        vertex.<V>setProperty(formatProperty(key, key.position()), value);
-
-        return previousValue;
+        return Optional.of(previousValue);
     }
 
     @Override
@@ -199,20 +155,18 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        Vertex vertex = graph.getOrCreateVertex(key.owner());
+        ElementVertex vertex = graph.getOrCreateVertex(key.owner());
 
         final int firstPosition = key.position();
-        final int size = getSize(vertex, key.withoutPosition());
+        final int size = vertex.getSize(key);
         checkPositionIndex(firstPosition, size);
 
-        for (int i = size - 1; i >= firstPosition; i--) {
-            V movedValue = vertex.getProperty(formatProperty(key, i));
-            vertex.<V>setProperty(formatProperty(key, i + 1), movedValue);
-        }
+        IntStream.range(firstPosition, size)
+                .map(MoreStreams.reverseOrder(firstPosition, size))
+                .forEachOrdered(i -> vertex.moveValue(key, i, i + 1));
 
-        vertex.<V>setProperty(formatProperty(key, firstPosition), value);
-
-        setSize(vertex, key.withoutPosition(), size + 1);
+        vertex.setValue(key, firstPosition, value);
+        vertex.setSize(key, size + 1);
     }
 
     @Override
@@ -225,24 +179,22 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             return;
         }
 
-        Vertex vertex = graph.getOrCreateVertex(key.owner());
+        ElementVertex vertex = graph.getOrCreateVertex(key.owner());
 
         final int firstPosition = key.position();
-        final int size = getSize(vertex, key.withoutPosition());
+        final int size = vertex.getSize(key);
         checkPositionIndex(firstPosition, size);
 
         final int additionCount = collection.size();
 
-        for (int i = size - 1; i >= firstPosition; i--) {
-            V movedValue = vertex.getProperty(formatProperty(key, i));
-            vertex.<V>setProperty(formatProperty(key, i + additionCount), movedValue);
-        }
+        IntStream.range(firstPosition, size)
+                .map(MoreStreams.reverseOrder(firstPosition, size))
+                .forEachOrdered(i -> vertex.moveValue(key, i, i + additionCount));
 
-        for (int i = 0; i < additionCount; i++) {
-            vertex.<V>setProperty(formatProperty(key, firstPosition + i), collection.get(i));
-        }
+        IntStream.range(0, additionCount)
+                .forEachOrdered(i -> vertex.setValue(key, firstPosition + i, collection.get(i)));
 
-        setSize(vertex, key.withoutPosition(), size + additionCount);
+        vertex.setSize(key, size + additionCount);
     }
 
     @Nonnull
@@ -250,29 +202,26 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> Optional<V> removeValue(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        Optional<Vertex> optVertex = graph.getVertex(key.owner());
+        Optional<ElementVertex> optVertex = graph.getVertex(key.owner());
         if (!optVertex.isPresent()) {
             return Optional.empty();
         }
 
-        final Vertex vertex = optVertex.get();
+        final ElementVertex vertex = optVertex.get();
 
         final int firstPosition = key.position();
-        final int size = getSize(vertex, key.withoutPosition());
+        final int size = vertex.getSize(key);
         if (size == 0) {
             return Optional.empty();
         }
 
-        Optional<V> previousValue = Optional.ofNullable(vertex.<V>getProperty(formatProperty(key, firstPosition)));
+        Optional<V> previousValue = vertex.getValue(key, firstPosition);
 
-        for (int i = firstPosition; i < size - 1; i++) {
-            V movedValue = vertex.getProperty(formatProperty(key, i + 1));
-            vertex.<V>setProperty(formatProperty(key, i), movedValue);
-        }
+        IntStream.range(firstPosition, size - 1)
+                .forEachOrdered(i -> vertex.moveValue(key, i + 1, i));
 
-        vertex.<V>removeProperty(formatProperty(key, size - 1));
-
-        setSize(vertex, key.withoutPosition(), size - 1);
+        vertex.removeValue(key, size - 1);
+        vertex.setSize(key, size - 1);
 
         return previousValue;
     }
@@ -281,16 +230,14 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public void removeAllValues(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Optional<Vertex> optVertex = graph.getVertex(key.owner());
-        if (!optVertex.isPresent()) {
-            return;
-        }
+        graph.getVertex(key.owner()).ifPresent(v -> {
+            final int size = v.getSize(key);
 
-        final Vertex vertex = optVertex.get();
+            IntStream.range(0, size)
+                    .forEachOrdered(i -> v.removeValue(key, i));
 
-        IntStream.range(0, getSize(vertex, key)).forEach(i -> vertex.removeProperty(formatProperty(key, i)));
-
-        setSize(vertex, key, 0);
+            v.setSize(key, 0);
+        });
     }
 
     @Nonnull
@@ -300,7 +247,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
 
         return graph.getVertex(key.owner())
-                .map(v -> getSize(v, key))
+                .map(v -> v.getSize(key))
                 .filter(s -> s > 0);
     }
 
@@ -313,21 +260,9 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public Optional<Id> referenceOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        Optional<Vertex> optVertex = graph.getVertex(key.owner());
-        if (!optVertex.isPresent()) {
-            return Optional.empty();
-        }
-
-        final Vertex vertex = optVertex.get();
-
-        Iterable<Vertex> referencedVertices = vertex.query()
-                .labels(formatLabel(key))
-                .direction(Direction.OUT)
-                .has(PROPERTY_INDEX, key.position())
-                .vertices();
-
-        return firstElement(referencedVertices)
-                .map(v -> idConverter.revert(v.getId()));
+        return graph.getVertex(key.owner())
+                .flatMap(v -> v.getReference(key, key.position()))
+                .map(ElementVertex::getElementId);
     }
 
     @Nonnull
@@ -335,16 +270,12 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public Stream<Id> allReferencesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Optional<Vertex> optVertex = graph.getVertex(key.owner());
-        if (!optVertex.isPresent()) {
-            return Stream.empty();
-        }
-
-        final Vertex vertex = optVertex.get();
-
-        return MoreIterables.stream(vertex.getEdges(Direction.OUT, formatLabel(key)))
-                .sorted(Comparator.comparingInt(e -> e.getProperty(PROPERTY_INDEX)))
-                .map(e -> idConverter.revert(e.getVertex(Direction.IN).getId()));
+        return graph.getVertex(key.owner())
+                .map(v -> MoreIterables.stream(v.getReferenceEdges(key))
+                        .sorted(Comparator.comparingInt(ElementEdge::getPosition))
+                        .map(ElementEdge::getReferencedVertex)
+                        .map(ElementVertex::getElementId))
+                .orElseGet(Stream::empty);
     }
 
     @Nonnull
@@ -353,24 +284,12 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
-        Vertex vertex = graph.getVertex(key.owner()).<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+        Id previousId = graph.getVertex(key.owner())
+                .flatMap(v -> v.replaceReference(key, key.position(), reference))
+                .map(ElementVertex::getElementId)
+                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
-        Iterable<Edge> edges = vertex.query()
-                .labels(formatLabel(key))
-                .direction(Direction.OUT)
-                .has(PROPERTY_INDEX, key.position())
-                .edges();
-
-        Edge previousEdge = firstElement(edges).<NoSuchElementException>orElseThrow(NoSuchElementException::new);
-
-        Vertex previousReferencedVertex = previousEdge.getVertex(Direction.IN);
-        Optional<Id> previousId = Optional.of(idConverter.revert(previousReferencedVertex.getId()));
-        previousEdge.remove();
-
-        Edge newEdge = graph.addEdge(null, vertex, graph.getOrCreateVertex(reference), formatLabel(key));
-        newEdge.setProperty(PROPERTY_INDEX, key.position());
-
-        return previousId;
+        return Optional.of(previousId);
     }
 
     @Override
@@ -378,26 +297,19 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
-        Vertex vertex = graph.getOrCreateVertex(key.owner());
+        ElementVertex vertex = graph.getOrCreateVertex(key.owner());
 
         final int firstPosition = key.position();
-        final int size = getSize(vertex, key.withoutPosition());
+        final int size = vertex.getSize(key);
         checkPositionIndex(firstPosition, size);
 
         if (firstPosition < size) {
-            vertex.query()
-                    .labels(formatLabel(key))
-                    .direction(Direction.OUT)
-                    .interval(PROPERTY_INDEX, firstPosition, size + 1)
-                    .limit(size + 1 - firstPosition)
-                    .edges()
-                    .forEach(e -> e.setProperty(PROPERTY_INDEX, e.<Integer>getProperty(PROPERTY_INDEX) + 1));
+            vertex.getReferenceEdges(key, firstPosition, size + 1)
+                    .forEach(e -> e.updatePosition(p -> p + 1));
         }
 
-        Edge newEdge = graph.addEdge(null, vertex, graph.getOrCreateVertex(reference), formatLabel(key));
-        newEdge.setProperty(PROPERTY_INDEX, firstPosition);
-
-        setSize(vertex, key.withoutPosition(), size + 1);
+        vertex.setReference(key, firstPosition, reference);
+        vertex.setSize(key, size + 1);
     }
 
     @Override
@@ -410,30 +322,23 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             return;
         }
 
-        Vertex vertex = graph.getOrCreateVertex(key.owner());
+        ElementVertex vertex = graph.getOrCreateVertex(key.owner());
 
         final int firstPosition = key.position();
-        final int size = getSize(vertex, key.withoutPosition());
+        final int size = vertex.getSize(key);
         checkPositionIndex(firstPosition, size);
 
         final int additionCount = collection.size();
 
         if (firstPosition < size) {
-            vertex.query()
-                    .labels(formatLabel(key))
-                    .direction(Direction.OUT)
-                    .interval(PROPERTY_INDEX, firstPosition, size + additionCount)
-                    .limit(size + additionCount - firstPosition)
-                    .edges()
-                    .forEach(e -> e.setProperty(PROPERTY_INDEX, e.<Integer>getProperty(PROPERTY_INDEX) + additionCount));
+            vertex.getReferenceEdges(key, firstPosition, size + additionCount)
+                    .forEach(e -> e.updatePosition(p -> p + additionCount));
         }
 
-        for (int i = 0; i < additionCount; i++) {
-            Edge newEdge = graph.addEdge(null, vertex, graph.getOrCreateVertex(collection.get(i)), formatLabel(key));
-            newEdge.setProperty(PROPERTY_INDEX, firstPosition + i);
-        }
+        IntStream.range(0, additionCount)
+                .forEachOrdered(i -> vertex.setReference(key, firstPosition + i, collection.get(i)));
 
-        setSize(vertex, key.withoutPosition(), size + additionCount);
+        vertex.setSize(key, size + additionCount);
     }
 
     @Nonnull
@@ -441,41 +346,33 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public Optional<Id> removeReference(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        Optional<Vertex> optVertex = graph.getVertex(key.owner());
+        Optional<ElementVertex> optVertex = graph.getVertex(key.owner());
         if (!optVertex.isPresent()) {
             return Optional.empty();
         }
 
-        final Vertex vertex = optVertex.get();
+        final ElementVertex vertex = optVertex.get();
 
         final int firstPosition = key.position();
-        final int size = getSize(vertex, key.withoutPosition());
+        final int size = vertex.getSize(key);
         if (size == 0) {
             return Optional.empty();
         }
 
-        Iterable<Edge> edges = vertex.query()
-                .labels(formatLabel(key))
-                .direction(Direction.OUT)
-                .interval(PROPERTY_INDEX, firstPosition, size)
-                .limit(size - firstPosition)
-                .edges();
-
         Optional<Id> previousId = Optional.empty();
-        for (Edge edge : edges) {
-            int position = edge.getProperty(PROPERTY_INDEX);
 
+        for (ElementEdge edge : vertex.getReferenceEdges(key, firstPosition, size)) {
+            int position = edge.getPosition();
             if (position != firstPosition) {
-                edge.setProperty(PROPERTY_INDEX, position - 1);
+                edge.updatePosition(p -> p - 1);
             }
             else {
-                Vertex referencedVertex = edge.getVertex(Direction.IN);
-                previousId = Optional.of(idConverter.revert(referencedVertex.getId()));
+                previousId = Optional.of(edge.getReferencedVertex().getElementId());
                 edge.remove();
             }
         }
 
-        setSize(vertex, key.withoutPosition(), size - 1);
+        vertex.setSize(key, size - 1);
 
         return previousId;
     }
@@ -484,16 +381,10 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public void removeAllReferences(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        Optional<Vertex> optVertex = graph.getVertex(key.owner());
-        if (!optVertex.isPresent()) {
-            return;
-        }
-
-        final Vertex vertex = optVertex.get();
-
-        vertex.getEdges(Direction.OUT, formatLabel(key)).forEach(Edge::remove);
-
-        setSize(vertex, key, 0);
+        graph.getVertex(key.owner()).ifPresent(v -> {
+            v.removeReferences(key);
+            v.setSize(key, 0);
+        });
     }
 
     @Nonnull
