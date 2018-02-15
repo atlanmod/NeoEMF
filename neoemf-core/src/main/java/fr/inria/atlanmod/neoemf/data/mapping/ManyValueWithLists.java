@@ -37,84 +37,84 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    default <V> Optional<V> valueOf(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return this.<List<V>>valueOf(key.withoutPosition())
-                .filter(values -> key.position() < values.size())
-                .map(values -> values.get(key.position()));
+        return this.<List<V>>valueOf(feature.withoutPosition())
+                .filter(values -> feature.position() < values.size())
+                .map(values -> values.get(feature.position()));
     }
 
     @Nonnull
     @Override
-    default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        return this.<List<V>>valueOf(key)
+    default <V> Stream<V> allValuesOf(SingleFeatureBean feature) {
+        return this.<List<V>>valueOf(feature)
                 .map(List::stream)
                 .orElseGet(Stream::empty);
     }
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    default <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
+        List<V> values = this.<List<V>>valueOf(feature.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
-        if (key.position() >= values.size()) {
+        if (feature.position() >= values.size()) {
             throw new NoSuchElementException();
         }
 
-        Optional<V> previousValue = Optional.of(values.set(key.position(), value));
+        Optional<V> previousValue = Optional.of(values.set(feature.position(), value));
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(feature.withoutPosition(), values);
 
         return previousValue;
     }
 
     @Override
-    default <V> void addValue(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    default <V> void addValue(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .orElseGet(() -> getOrCreateList(key.withoutPosition()));
+        List<V> values = this.<List<V>>valueOf(feature.withoutPosition())
+                .orElseGet(() -> getOrCreateList(feature.withoutPosition()));
 
-        checkPositionIndex(key.position(), values.size());
+        checkPositionIndex(feature.position(), values.size());
 
-        values.add(key.position(), value);
+        values.add(feature.position(), value);
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(feature.withoutPosition(), values);
     }
 
     @Override
-    default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
-        checkNotContainsNull(collection);
+    default <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+        checkNotNull(feature, "feature");
+        checkNotNull(values, "values");
+        checkNotContainsNull(values);
 
-        if (collection.isEmpty()) {
+        if (values.isEmpty()) {
             return;
         }
 
-        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
-                .orElseGet(() -> getOrCreateList(key.withoutPosition()));
+        List<V> valuesList = this.<List<V>>valueOf(feature.withoutPosition())
+                .orElseGet(() -> getOrCreateList(feature.withoutPosition()));
 
-        int firstPosition = key.position();
-        checkPositionIndex(firstPosition, values.size());
+        int firstPosition = feature.position();
+        checkPositionIndex(firstPosition, valuesList.size());
 
-        values.addAll(firstPosition, collection);
+        valuesList.addAll(firstPosition, values);
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(feature.withoutPosition(), valuesList);
     }
 
     @Nonnull
     @Override
-    default <V> Optional<V> removeValue(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    default <V> Optional<V> removeValue(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        List<V> values = this.<List<V>>valueOf(key.withoutPosition())
+        List<V> values = this.<List<V>>valueOf(feature.withoutPosition())
                 .orElse(null);
 
         if (isNull(values)) {
@@ -123,14 +123,14 @@ public interface ManyValueWithLists extends ManyValueMapper {
 
         Optional<V> previousValue = Optional.empty();
 
-        if (key.position() < values.size()) {
-            previousValue = Optional.of(values.remove(key.position()));
+        if (feature.position() < values.size()) {
+            previousValue = Optional.of(values.remove(feature.position()));
 
             if (values.isEmpty()) {
-                removeAllValues(key.withoutPosition());
+                removeAllValues(feature.withoutPosition());
             }
             else {
-                valueFor(key.withoutPosition(), values);
+                valueFor(feature.withoutPosition(), values);
             }
         }
 
@@ -138,30 +138,30 @@ public interface ManyValueWithLists extends ManyValueMapper {
     }
 
     @Override
-    default void removeAllValues(SingleFeatureBean key) {
-        removeValue(key);
+    default void removeAllValues(SingleFeatureBean feature) {
+        removeValue(feature);
     }
 
     @Nonnull
     @Override
-    default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        return this.<List<Object>>valueOf(key)
+    default Optional<Integer> sizeOfValue(SingleFeatureBean feature) {
+        return this.<List<Object>>valueOf(feature)
                 .map(List::size)
                 .filter(s -> s > 0);
     }
 
     /**
-     * Gets or creates a new {@link List} to store the multi-valued features identified by the {@code key}.
+     * Gets or creates a new {@link List} to store the multi-valued features identified by the {@code feature}.
      * <p>
      * By default, this method creates an {@link ArrayList} which favor random read access method, to the detriment of
      * insertions and deletions.
      *
-     * @param key the key identifying the multi-valued attribute
-     * @param <V> the type of elements in this list
+     * @param feature the bean identifying the multi-valued attribute
+     * @param <V>     the type of elements in this list
      *
      * @return a new {@link List}
      */
-    default <V> List<V> getOrCreateList(SingleFeatureBean key) {
+    default <V> List<V> getOrCreateList(SingleFeatureBean feature) {
         return new ArrayList<>();
     }
 }

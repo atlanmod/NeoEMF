@@ -38,120 +38,120 @@ public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Option
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        cacheSize(key, 0);
-        super.removeValue(key);
+    public void removeValue(SingleFeatureBean feature) {
+        cacheSize(feature, 0);
+        super.removeValue(feature);
     }
 
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        cacheSize(key, 0);
-        super.removeReference(key);
+    public void removeReference(SingleFeatureBean feature) {
+        cacheSize(feature, 0);
+        super.removeReference(feature);
     }
 
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        cacheSize(key.withoutPosition(), sizeOfValue(key.withoutPosition()).orElse(0) + 1);
-        super.addValue(key, value);
+    public <V> void addValue(ManyFeatureBean feature, V value) {
+        cacheSize(feature.withoutPosition(), sizeOfValue(feature.withoutPosition()).orElse(0) + 1);
+        super.addValue(feature, value);
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        cacheSize(key.withoutPosition(), sizeOfValue(key.withoutPosition()).orElse(0) + collection.size());
-        super.addAllValues(key, collection);
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+        cacheSize(feature.withoutPosition(), sizeOfValue(feature.withoutPosition()).orElse(0) + values.size());
+        super.addAllValues(feature, values);
     }
 
     @Nonnegative
     @Override
-    public <V> int appendValue(SingleFeatureBean key, V value) {
-        int position = super.appendValue(key, value);
-        cacheSize(key, position + 1);
+    public <V> int appendValue(SingleFeatureBean feature, V value) {
+        int position = super.appendValue(feature, value);
+        cacheSize(feature, position + 1);
         return position;
     }
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        int firstPosition = super.appendAllValues(key, collection);
-        cacheSize(key, firstPosition + collection.size());
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
+        int firstPosition = super.appendAllValues(feature, values);
+        cacheSize(feature, firstPosition + values.size());
         return firstPosition;
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        sizeOfValue(key.withoutPosition()).ifPresent(s -> cacheSize(key.withoutPosition(), s - 1));
-        return super.removeValue(key);
+    public <V> Optional<V> removeValue(ManyFeatureBean feature) {
+        sizeOfValue(feature.withoutPosition()).ifPresent(s -> cacheSize(feature.withoutPosition(), s - 1));
+        return super.removeValue(feature);
     }
 
     @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        cacheSize(key, 0);
-        super.removeAllValues(key);
+    public void removeAllValues(SingleFeatureBean feature) {
+        cacheSize(feature, 0);
+        super.removeAllValues(feature);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        return cache.get(key, super::sizeOfValue);
+    public Optional<Integer> sizeOfValue(SingleFeatureBean feature) {
+        return cache.get(feature, super::sizeOfValue);
     }
 
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
-        cacheSize(key.withoutPosition(), sizeOfReference(key.withoutPosition()).orElse(0) + 1);
-        super.addReference(key, reference);
+    public void addReference(ManyFeatureBean feature, Id reference) {
+        cacheSize(feature.withoutPosition(), sizeOfReference(feature.withoutPosition()).orElse(0) + 1);
+        super.addReference(feature, reference);
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        cacheSize(key.withoutPosition(), sizeOfReference(key.withoutPosition()).orElse(0) + collection.size());
-        super.addAllReferences(key, collection);
+    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+        cacheSize(feature.withoutPosition(), sizeOfReference(feature.withoutPosition()).orElse(0) + references.size());
+        super.addAllReferences(feature, references);
     }
 
     @Nonnegative
     @Override
-    public int appendReference(SingleFeatureBean key, Id reference) {
-        int position = super.appendReference(key, reference);
-        cacheSize(key, position + 1);
+    public int appendReference(SingleFeatureBean feature, Id reference) {
+        int position = super.appendReference(feature, reference);
+        cacheSize(feature, position + 1);
         return position;
     }
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        int firstPosition = super.appendAllReferences(key, collection);
-        cacheSize(key, firstPosition + collection.size());
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
+        int firstPosition = super.appendAllReferences(feature, references);
+        cacheSize(feature, firstPosition + references.size());
         return firstPosition;
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        sizeOfReference(key.withoutPosition()).ifPresent(s -> cacheSize(key.withoutPosition(), s - 1));
-        return super.removeReference(key);
+    public Optional<Id> removeReference(ManyFeatureBean feature) {
+        sizeOfReference(feature.withoutPosition()).ifPresent(s -> cacheSize(feature.withoutPosition(), s - 1));
+        return super.removeReference(feature);
     }
 
     @Override
-    public void removeAllReferences(SingleFeatureBean key) {
-        cacheSize(key, 0);
-        super.removeAllReferences(key);
+    public void removeAllReferences(SingleFeatureBean feature) {
+        cacheSize(feature, 0);
+        super.removeAllReferences(feature);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        return cache.get(key, super::sizeOfReference);
+    public Optional<Integer> sizeOfReference(SingleFeatureBean feature) {
+        return cache.get(feature, super::sizeOfReference);
     }
 
     /**
-     * Defines the number of elements of the given {@code key}.
+     * Defines the number of elements of the given {@code feature}.
      *
-     * @param key  the key to define the size
-     * @param size the size
+     * @param feature the feature to define the size
+     * @param size    the size
      */
-    private void cacheSize(SingleFeatureBean key, @Nonnegative int size) {
-        cache.put(key, size != 0 ? Optional.of(size) : Optional.empty());
+    private void cacheSize(SingleFeatureBean feature, @Nonnegative int size) {
+        cache.put(feature, size != 0 ? Optional.of(size) : Optional.empty());
     }
 }

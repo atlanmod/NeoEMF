@@ -41,21 +41,21 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
     @Nonnull
     @Override
-    default Optional<Id> referenceOf(ManyFeatureBean key) {
+    default Optional<Id> referenceOf(ManyFeatureBean feature) {
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        return this.<M>valueOf(key.withoutPosition())
+        return this.<M>valueOf(feature.withoutPosition())
                 .map(converter::revert)
-                .filter(ids -> key.position() < ids.size())
-                .map(ids -> ids.get(key.position()));
+                .filter(ids -> feature.position() < ids.size())
+                .map(ids -> ids.get(feature.position()));
     }
 
     @Nonnull
     @Override
-    default Stream<Id> allReferencesOf(SingleFeatureBean key) {
+    default Stream<Id> allReferencesOf(SingleFeatureBean feature) {
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        return this.<M>valueOf(key)
+        return this.<M>valueOf(feature)
                 .map(converter::revert)
                 .map(List::stream)
                 .orElseGet(Stream::empty);
@@ -63,79 +63,79 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
     @Nonnull
     @Override
-    default Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    default Optional<Id> referenceFor(ManyFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        List<Id> ids = this.<M>valueOf(key.withoutPosition())
+        List<Id> ids = this.<M>valueOf(feature.withoutPosition())
                 .map(converter::revert)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
-        if (key.position() >= ids.size()) {
+        if (feature.position() >= ids.size()) {
             throw new NoSuchElementException();
         }
 
-        Optional<Id> previousId = Optional.of(ids.get(key.position()));
+        Optional<Id> previousId = Optional.of(ids.get(feature.position()));
 
-        ids.set(key.position(), reference);
+        ids.set(feature.position(), reference);
 
-        valueFor(key.withoutPosition(), converter.convert(ids));
+        valueFor(feature.withoutPosition(), converter.convert(ids));
 
         return previousId;
     }
 
     @Override
-    default void addReference(ManyFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    default void addReference(ManyFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        List<Id> ids = this.<M>valueOf(key.withoutPosition())
+        List<Id> ids = this.<M>valueOf(feature.withoutPosition())
                 .map(converter::revert)
                 .orElseGet(ArrayList::new);
 
-        checkPositionIndex(key.position(), ids.size());
+        checkPositionIndex(feature.position(), ids.size());
 
-        ids.add(key.position(), reference);
+        ids.add(feature.position(), reference);
 
-        valueFor(key.withoutPosition(), converter.convert(ids));
+        valueFor(feature.withoutPosition(), converter.convert(ids));
     }
 
     @Override
-    default void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
-        checkNotContainsNull(collection);
+    default void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+        checkNotNull(feature, "feature");
+        checkNotNull(references, "references");
+        checkNotContainsNull(references);
 
-        if (collection.isEmpty()) {
+        if (references.isEmpty()) {
             return;
         }
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        List<Id> ids = this.<M>valueOf(key.withoutPosition())
+        List<Id> ids = this.<M>valueOf(feature.withoutPosition())
                 .map(converter::revert)
                 .orElseGet(ArrayList::new);
 
-        int firstPosition = key.position();
+        int firstPosition = feature.position();
         checkPositionIndex(firstPosition, ids.size());
 
-        ids.addAll(firstPosition, collection);
+        ids.addAll(firstPosition, references);
 
-        valueFor(key.withoutPosition(), converter.convert(ids));
+        valueFor(feature.withoutPosition(), converter.convert(ids));
     }
 
     @Nonnull
     @Override
-    default Optional<Id> removeReference(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    default Optional<Id> removeReference(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        List<Id> ids = this.<M>valueOf(key.withoutPosition())
+        List<Id> ids = this.<M>valueOf(feature.withoutPosition())
                 .map(converter::revert)
                 .orElse(null);
 
@@ -145,14 +145,14 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
         Optional<Id> previousId = Optional.empty();
 
-        if (key.position() < ids.size()) {
-            previousId = Optional.of(ids.remove(key.position()));
+        if (feature.position() < ids.size()) {
+            previousId = Optional.of(ids.remove(feature.position()));
 
             if (ids.isEmpty()) {
-                removeAllReferences(key.withoutPosition());
+                removeAllReferences(feature.withoutPosition());
             }
             else {
-                valueFor(key.withoutPosition(), converter.convert(ids));
+                valueFor(feature.withoutPosition(), converter.convert(ids));
             }
         }
 
@@ -160,17 +160,17 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
     }
 
     @Override
-    default void removeAllReferences(SingleFeatureBean key) {
-        removeReference(key);
+    default void removeAllReferences(SingleFeatureBean feature) {
+        removeReference(feature);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default Optional<Integer> sizeOfReference(SingleFeatureBean key) {
+    default Optional<Integer> sizeOfReference(SingleFeatureBean feature) {
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        return this.<M>valueOf(key)
+        return this.<M>valueOf(feature)
                 .map(converter::revert)
                 .map(List::size)
                 .filter(s -> s != 0);

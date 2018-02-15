@@ -122,174 +122,174 @@ public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataM
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        return next.valueOf(key);
+    public <V> Optional<V> valueOf(SingleFeatureBean feature) {
+        return next.valueOf(feature);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        return next.valueFor(key, value);
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        return next.valueFor(feature, value);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void removeValue(SingleFeatureBean key) {
-        next.removeValue(key);
+    public void removeValue(SingleFeatureBean feature) {
+        next.removeValue(feature);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
-        return next.referenceOf(key);
+    public Optional<Id> referenceOf(SingleFeatureBean feature) {
+        return next.referenceOf(feature);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        return next.referenceFor(key, reference);
+    public Optional<Id> referenceFor(SingleFeatureBean feature, Id reference) {
+        return next.referenceFor(feature, reference);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void removeReference(SingleFeatureBean key) {
-        next.removeReference(key);
+    public void removeReference(SingleFeatureBean feature) {
+        next.removeReference(feature);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        return next.valueOf(key);
+    public <V> Optional<V> valueOf(ManyFeatureBean feature) {
+        return next.valueOf(feature);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        return next.allValuesOf(key);
+    public <V> Stream<V> allValuesOf(SingleFeatureBean feature) {
+        return next.allValuesOf(feature);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        return next.valueFor(key, value);
+    public <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
+        return next.valueFor(feature, value);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        next.addValue(key, value);
+    public <V> void addValue(ManyFeatureBean feature, V value) {
+        next.addValue(feature, value);
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        next.addAllValues(key, collection);
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+        next.addAllValues(feature, values);
     }
 
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> int appendValue(SingleFeatureBean key, V value) {
-        return next.appendValue(key, value);
+    public <V> int appendValue(SingleFeatureBean feature, V value) {
+        return next.appendValue(feature, value);
     }
 
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        return next.appendAllValues(key, collection);
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
+        return next.appendAllValues(feature, values);
     }
 
     @Nonnull
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        return next.removeValue(key);
+    public <V> Optional<V> removeValue(ManyFeatureBean feature) {
+        return next.removeValue(feature);
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void removeAllValues(SingleFeatureBean key) {
-        next.removeAllValues(key);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        return next.sizeOfValue(key);
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Optional<Id> referenceOf(ManyFeatureBean key) {
-        return next.referenceOf(key);
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
-        return next.allReferencesOf(key);
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        return next.referenceFor(key, reference);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void addReference(ManyFeatureBean key, Id reference) {
-        next.addReference(key, reference);
-    }
-
-    @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        next.addAllReferences(key, collection);
-    }
-
-    @Nonnegative
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public int appendReference(SingleFeatureBean key, Id reference) {
-        return next.appendReference(key, reference);
-    }
-
-    @Nonnegative
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        return next.appendAllReferences(key, collection);
-    }
-
-    @Nonnull
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        return next.removeReference(key);
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void removeAllReferences(SingleFeatureBean key) {
-        next.removeAllReferences(key);
+    public void removeAllValues(SingleFeatureBean feature) {
+        next.removeAllValues(feature);
     }
 
     @Nonnull
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        return next.sizeOfReference(key);
+    public Optional<Integer> sizeOfValue(SingleFeatureBean feature) {
+        return next.sizeOfValue(feature);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<Id> referenceOf(ManyFeatureBean feature) {
+        return next.referenceOf(feature);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Stream<Id> allReferencesOf(SingleFeatureBean feature) {
+        return next.allReferencesOf(feature);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<Id> referenceFor(ManyFeatureBean feature, Id reference) {
+        return next.referenceFor(feature, reference);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void addReference(ManyFeatureBean feature, Id reference) {
+        next.addReference(feature, reference);
+    }
+
+    @Override
+    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+        next.addAllReferences(feature, references);
+    }
+
+    @Nonnegative
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public int appendReference(SingleFeatureBean feature, Id reference) {
+        return next.appendReference(feature, reference);
+    }
+
+    @Nonnegative
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
+        return next.appendAllReferences(feature, references);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<Id> removeReference(ManyFeatureBean feature) {
+        return next.removeReference(feature);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void removeAllReferences(SingleFeatureBean feature) {
+        next.removeAllReferences(feature);
+    }
+
+    @Nonnull
+    @Nonnegative
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public Optional<Integer> sizeOfReference(SingleFeatureBean feature) {
+        return next.sizeOfReference(feature);
     }
 }

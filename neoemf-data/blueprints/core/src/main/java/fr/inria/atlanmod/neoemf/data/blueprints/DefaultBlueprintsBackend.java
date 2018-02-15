@@ -56,29 +56,29 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return graph.getVertex(key.owner())
-                .flatMap(v -> v.getValue(key));
+        return graph.getVertex(feature.owner())
+                .flatMap(v -> v.getValue(feature));
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        return graph.getOrCreateVertex(key.owner())
-                .setValue(key, value);
+        return graph.getOrCreateVertex(feature.owner())
+                .setValue(feature, value);
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeValue(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        graph.getVertex(key.owner())
-                .ifPresent(v -> v.removeValue(key));
+        graph.getVertex(feature.owner())
+                .ifPresent(v -> v.removeValue(feature));
     }
 
     //endregion
@@ -87,31 +87,31 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Optional<Id> referenceOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return graph.getVertex(key.owner())
-                .flatMap(v -> v.getReference(key))
+        return graph.getVertex(feature.owner())
+                .flatMap(v -> v.getReference(feature))
                 .map(ElementVertex::getElementId);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    public Optional<Id> referenceFor(SingleFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
-        return graph.getOrCreateVertex(key.owner())
-                .setReference(key, reference)
+        return graph.getOrCreateVertex(feature.owner())
+                .setReference(feature, reference)
                 .map(ElementVertex::getElementId);
     }
 
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeReference(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        graph.getVertex(key.owner())
-                .ifPresent(v -> v.removeReferences(key));
+        graph.getVertex(feature.owner())
+                .ifPresent(v -> v.removeReferences(feature));
     }
 
     //endregion
@@ -120,134 +120,134 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueOf(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return graph.getVertex(key.owner())
-                .flatMap(v -> v.getValue(key, key.position()));
+        return graph.getVertex(feature.owner())
+                .flatMap(v -> v.getValue(feature, feature.position()));
     }
 
     @Nonnull
     @Override
-    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Stream<V> allValuesOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return graph.getVertex(key.owner())
-                .map(v -> v.<V>getValues(key))
+        return graph.getVertex(feature.owner())
+                .map(v -> v.<V>getValues(feature))
                 .map(MoreIterables::stream)
                 .orElseGet(Stream::empty);
     }
 
     @Nonnull
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        V previousValue = graph.getVertex(key.owner())
-                .flatMap(v -> v.replaceValue(key, key.position(), value))
+        V previousValue = graph.getVertex(feature.owner())
+                .flatMap(v -> v.replaceValue(feature, feature.position(), value))
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
         return Optional.of(previousValue);
     }
 
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    public <V> void addValue(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        ElementVertex vertex = graph.getOrCreateVertex(key.owner());
+        ElementVertex vertex = graph.getOrCreateVertex(feature.owner());
 
-        final int firstPosition = key.position();
-        final int size = vertex.getSize(key);
+        final int firstPosition = feature.position();
+        final int size = vertex.getSize(feature);
         checkPositionIndex(firstPosition, size);
 
         IntStream.range(firstPosition, size)
                 .map(MoreStreams.reverseOrder(firstPosition, size))
-                .forEachOrdered(i -> vertex.moveValue(key, i, i + 1));
+                .forEachOrdered(i -> vertex.moveValue(feature, i, i + 1));
 
-        vertex.setValue(key, firstPosition, value);
-        vertex.setSize(key, size + 1);
+        vertex.setValue(feature, firstPosition, value);
+        vertex.setSize(feature, size + 1);
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
-        checkNotContainsNull(collection);
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+        checkNotNull(feature, "feature");
+        checkNotNull(values, "values");
+        checkNotContainsNull(values);
 
-        if (collection.isEmpty()) {
+        if (values.isEmpty()) {
             return;
         }
 
-        ElementVertex vertex = graph.getOrCreateVertex(key.owner());
+        ElementVertex vertex = graph.getOrCreateVertex(feature.owner());
 
-        final int firstPosition = key.position();
-        final int size = vertex.getSize(key);
+        final int firstPosition = feature.position();
+        final int size = vertex.getSize(feature);
         checkPositionIndex(firstPosition, size);
 
-        final int additionCount = collection.size();
+        final int additionCount = values.size();
 
         IntStream.range(firstPosition, size)
                 .map(MoreStreams.reverseOrder(firstPosition, size))
-                .forEachOrdered(i -> vertex.moveValue(key, i, i + additionCount));
+                .forEachOrdered(i -> vertex.moveValue(feature, i, i + additionCount));
 
         IntStream.range(0, additionCount)
-                .forEachOrdered(i -> vertex.setValue(key, firstPosition + i, collection.get(i)));
+                .forEachOrdered(i -> vertex.setValue(feature, firstPosition + i, values.get(i)));
 
-        vertex.setSize(key, size + additionCount);
+        vertex.setSize(feature, size + additionCount);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> removeValue(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        Optional<ElementVertex> optVertex = graph.getVertex(key.owner());
+        Optional<ElementVertex> optVertex = graph.getVertex(feature.owner());
         if (!optVertex.isPresent()) {
             return Optional.empty();
         }
 
         final ElementVertex vertex = optVertex.get();
 
-        final int firstPosition = key.position();
-        final int size = vertex.getSize(key);
+        final int firstPosition = feature.position();
+        final int size = vertex.getSize(feature);
         if (size == 0) {
             return Optional.empty();
         }
 
-        Optional<V> previousValue = vertex.getValue(key, firstPosition);
+        Optional<V> previousValue = vertex.getValue(feature, firstPosition);
 
         IntStream.range(firstPosition, size - 1)
-                .forEachOrdered(i -> vertex.moveValue(key, i + 1, i));
+                .forEachOrdered(i -> vertex.moveValue(feature, i + 1, i));
 
-        vertex.removeValue(key, size - 1);
-        vertex.setSize(key, size - 1);
+        vertex.removeValue(feature, size - 1);
+        vertex.setSize(feature, size - 1);
 
         return previousValue;
     }
 
     @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeAllValues(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        graph.getVertex(key.owner()).ifPresent(v -> {
-            final int size = v.getSize(key);
+        graph.getVertex(feature.owner()).ifPresent(v -> {
+            final int size = v.getSize(feature);
 
             IntStream.range(0, size)
-                    .forEachOrdered(i -> v.removeValue(key, i));
+                    .forEachOrdered(i -> v.removeValue(feature, i));
 
-            v.setSize(key, 0);
+            v.setSize(feature, 0);
         });
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Optional<Integer> sizeOfValue(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return graph.getVertex(key.owner())
-                .map(v -> v.getSize(key))
+        return graph.getVertex(feature.owner())
+                .map(v -> v.getSize(feature))
                 .filter(s -> s > 0);
     }
 
@@ -257,21 +257,21 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public Optional<Id> referenceOf(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return graph.getVertex(key.owner())
-                .flatMap(v -> v.getReference(key, key.position()))
+        return graph.getVertex(feature.owner())
+                .flatMap(v -> v.getReference(feature, feature.position()))
                 .map(ElementVertex::getElementId);
     }
 
     @Nonnull
     @Override
-    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Stream<Id> allReferencesOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return graph.getVertex(key.owner())
-                .map(v -> MoreIterables.stream(v.getReferenceEdges(key))
+        return graph.getVertex(feature.owner())
+                .map(v -> MoreIterables.stream(v.getReferenceEdges(feature))
                         .sorted(Comparator.comparingInt(ElementEdge::getPosition))
                         .map(ElementEdge::getReferencedVertex)
                         .map(ElementVertex::getElementId))
@@ -280,12 +280,12 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    public Optional<Id> referenceFor(ManyFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
-        Id previousId = graph.getVertex(key.owner())
-                .flatMap(v -> v.replaceReference(key, key.position(), reference))
+        Id previousId = graph.getVertex(feature.owner())
+                .flatMap(v -> v.replaceReference(feature, feature.position(), reference))
                 .map(ElementVertex::getElementId)
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
@@ -293,75 +293,75 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    public void addReference(ManyFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
-        ElementVertex vertex = graph.getOrCreateVertex(key.owner());
+        ElementVertex vertex = graph.getOrCreateVertex(feature.owner());
 
-        final int firstPosition = key.position();
-        final int size = vertex.getSize(key);
+        final int firstPosition = feature.position();
+        final int size = vertex.getSize(feature);
         checkPositionIndex(firstPosition, size);
 
         if (firstPosition < size) {
-            vertex.getReferenceEdges(key, firstPosition, size + 1)
+            vertex.getReferenceEdges(feature, firstPosition, size + 1)
                     .forEach(e -> e.updatePosition(p -> p + 1));
         }
 
-        vertex.setReference(key, firstPosition, reference);
-        vertex.setSize(key, size + 1);
+        vertex.setReference(feature, firstPosition, reference);
+        vertex.setSize(feature, size + 1);
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
-        checkNotContainsNull(collection);
+    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+        checkNotNull(feature, "feature");
+        checkNotNull(references, "references");
+        checkNotContainsNull(references);
 
-        if (collection.isEmpty()) {
+        if (references.isEmpty()) {
             return;
         }
 
-        ElementVertex vertex = graph.getOrCreateVertex(key.owner());
+        ElementVertex vertex = graph.getOrCreateVertex(feature.owner());
 
-        final int firstPosition = key.position();
-        final int size = vertex.getSize(key);
+        final int firstPosition = feature.position();
+        final int size = vertex.getSize(feature);
         checkPositionIndex(firstPosition, size);
 
-        final int additionCount = collection.size();
+        final int additionCount = references.size();
 
         if (firstPosition < size) {
-            vertex.getReferenceEdges(key, firstPosition, size + additionCount)
+            vertex.getReferenceEdges(feature, firstPosition, size + additionCount)
                     .forEach(e -> e.updatePosition(p -> p + additionCount));
         }
 
         IntStream.range(0, additionCount)
-                .forEachOrdered(i -> vertex.setReference(key, firstPosition + i, collection.get(i)));
+                .forEachOrdered(i -> vertex.setReference(feature, firstPosition + i, references.get(i)));
 
-        vertex.setSize(key, size + additionCount);
+        vertex.setSize(feature, size + additionCount);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public Optional<Id> removeReference(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        Optional<ElementVertex> optVertex = graph.getVertex(key.owner());
+        Optional<ElementVertex> optVertex = graph.getVertex(feature.owner());
         if (!optVertex.isPresent()) {
             return Optional.empty();
         }
 
         final ElementVertex vertex = optVertex.get();
 
-        final int firstPosition = key.position();
-        final int size = vertex.getSize(key);
+        final int firstPosition = feature.position();
+        final int size = vertex.getSize(feature);
         if (size == 0) {
             return Optional.empty();
         }
 
         Optional<Id> previousId = Optional.empty();
 
-        for (ElementEdge edge : vertex.getReferenceEdges(key, firstPosition, size)) {
+        for (ElementEdge edge : vertex.getReferenceEdges(feature, firstPosition, size)) {
             int position = edge.getPosition();
             if (position != firstPosition) {
                 edge.updatePosition(p -> p - 1);
@@ -372,25 +372,25 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
             }
         }
 
-        vertex.setSize(key, size - 1);
+        vertex.setSize(feature, size - 1);
 
         return previousId;
     }
 
     @Override
-    public void removeAllReferences(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeAllReferences(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        graph.getVertex(key.owner()).ifPresent(v -> {
-            v.removeReferences(key);
-            v.setSize(key, 0);
+        graph.getVertex(feature.owner()).ifPresent(v -> {
+            v.removeReferences(feature);
+            v.setSize(feature, 0);
         });
     }
 
     @Nonnull
     @Override
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        return sizeOfValue(key);
+    public Optional<Integer> sizeOfReference(SingleFeatureBean feature) {
+        return sizeOfValue(feature);
     }
 
     //endregion

@@ -31,10 +31,10 @@ final class ManyFeatureSerializer extends AbstractSerializer<ManyFeatureBean> {
     private static final long serialVersionUID = -8503200234566675439L;
 
     @Override
-    public void serialize(ManyFeatureBean key, @WillNotClose DataOutput out) throws IOException {
-        out.writeLong(key.owner().toLong());
-        out.writeInt(key.id());
-        out.writeInt(key.position());
+    public void serialize(ManyFeatureBean feature, @WillNotClose DataOutput out) throws IOException {
+        out.writeLong(feature.owner().toLong());
+        out.writeInt(feature.id());
+        out.writeInt(feature.position());
     }
 
     @Nonnull

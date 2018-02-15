@@ -71,101 +71,101 @@ public class ReadOnlyStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
         throw e.get();
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        throw e.get();
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        throw e.get();
-    }
-
-    @Override
-    public void removeReference(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean feature) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
+    public Optional<Id> referenceFor(SingleFeatureBean feature, Id reference) {
         throw e.get();
     }
 
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
+    public void removeReference(SingleFeatureBean feature) {
+        throw e.get();
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
         throw e.get();
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
+    public <V> void addValue(ManyFeatureBean feature, V value) {
+        throw e.get();
+    }
+
+    @Override
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
         throw e.get();
     }
 
     @Nonnegative
     @Override
-    public <V> int appendValue(SingleFeatureBean key, V value) {
+    public <V> int appendValue(SingleFeatureBean feature, V value) {
         throw e.get();
     }
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
+    public <V> Optional<V> removeValue(ManyFeatureBean feature) {
         throw e.get();
     }
 
     @Override
-    public void removeAllValues(SingleFeatureBean key) {
+    public void removeAllValues(SingleFeatureBean feature) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    public Optional<Id> referenceFor(ManyFeatureBean feature, Id reference) {
         throw e.get();
     }
 
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
+    public void addReference(ManyFeatureBean feature, Id reference) {
         throw e.get();
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
+    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
         throw e.get();
     }
 
     @Nonnegative
     @Override
-    public int appendReference(SingleFeatureBean key, Id reference) {
+    public int appendReference(SingleFeatureBean feature, Id reference) {
         throw e.get();
     }
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
+    public Optional<Id> removeReference(ManyFeatureBean feature) {
         throw e.get();
     }
 
     @Override
-    public void removeAllReferences(SingleFeatureBean key) {
+    public void removeAllReferences(SingleFeatureBean feature) {
         throw e.get();
     }
 }

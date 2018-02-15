@@ -23,38 +23,38 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface ReferenceMapper {
 
     /**
-     * Retrieves the reference of the specified {@code key}.
+     * Retrieves the reference of the specified {@code feature}.
      *
-     * @param key the key identifying the reference
+     * @param feature the bean identifying the reference
      *
-     * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the key hasn't any reference
+     * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the feature hasn't any reference
      * or doesn't exist
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    Optional<Id> referenceOf(SingleFeatureBean key);
+    Optional<Id> referenceOf(SingleFeatureBean feature);
 
     /**
-     * Defines the reference of the specified {@code key}.
+     * Defines the reference of the specified {@code feature}.
      *
-     * @param key       the key identifying the reference
+     * @param feature   the bean identifying the reference
      * @param reference the reference to set
      *
-     * @return an {@link Optional} containing the previous reference of the {@code key}, or {@link Optional#empty()} if
-     * the key has no reference before
+     * @return an {@link Optional} containing the previous reference of the {@code feature}, or {@link Optional#empty()} if
+     * the feature has no reference before
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    Optional<Id> referenceFor(SingleFeatureBean key, Id reference);
+    Optional<Id> referenceFor(SingleFeatureBean feature, Id reference);
 
     /**
-     * Removes the reference of the specified {@code key}.
+     * Removes the reference of the specified {@code feature}.
      *
-     * @param key the key identifying the reference
+     * @param feature the bean identifying the reference
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    void removeReference(SingleFeatureBean key);
+    void removeReference(SingleFeatureBean feature);
 }

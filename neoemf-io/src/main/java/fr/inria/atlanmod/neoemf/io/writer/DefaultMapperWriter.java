@@ -64,30 +64,30 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
 
     @Override
     public void onAttribute(BasicAttribute attribute, List<Object> values) {
-        SingleFeatureBean key = SingleFeatureBean.of(attribute.owner(), attribute.id());
+        SingleFeatureBean bean = SingleFeatureBean.of(attribute.owner(), attribute.id());
 
         if (!attribute.isMany()) {
-            target.valueFor(key, values.get(0));
+            target.valueFor(bean, values.get(0));
         }
         else {
-            target.appendAllValues(key, values);
+            target.appendAllValues(bean, values);
         }
     }
 
     @Override
     public void onReference(BasicReference reference, List<Id> values) {
-        SingleFeatureBean key = SingleFeatureBean.of(reference.owner(), reference.id());
+        SingleFeatureBean bean = SingleFeatureBean.of(reference.owner(), reference.id());
 
         // Update the containment reference if needed
         if (reference.isContainment()) {
-            values.forEach(i -> target.containerFor(i, key));
+            values.forEach(i -> target.containerFor(i, bean));
         }
 
         if (!reference.isMany()) {
-            target.referenceFor(key, values.get(0));
+            target.referenceFor(bean, values.get(0));
         }
         else {
-            target.appendAllReferences(key, values);
+            target.appendAllReferences(bean, values);
         }
     }
 

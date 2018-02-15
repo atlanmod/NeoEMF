@@ -115,30 +115,30 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
     }
 
     @Override
-    protected void checkKey(FeatureBean key) {
-        super.checkKey(key);
-        checkEqualTo(key.owner(), owner, "%s is not the owner of this back-end (%s)", key.owner(), owner);
+    protected void checkFeature(FeatureBean feature) {
+        super.checkFeature(feature);
+        checkEqualTo(feature.owner(), owner, "%s is not the owner of this back-end (%s)", feature.owner(), owner);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        Optional<V> previousValue = super.valueFor(key, value);
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        Optional<V> previousValue = super.valueFor(feature, value);
 
         dataHolder.featuresById
-                .computeIfAbsent(key.owner(), id -> new HashSet<>())
-                .add(key.id());
+                .computeIfAbsent(feature.owner(), id -> new HashSet<>())
+                .add(feature.id());
 
         return previousValue;
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        super.removeValue(key);
+    public void removeValue(SingleFeatureBean feature) {
+        super.removeValue(feature);
 
         dataHolder.featuresById
-                .computeIfAbsent(key.owner(), id -> new HashSet<>())
-                .remove(key.id());
+                .computeIfAbsent(feature.owner(), id -> new HashSet<>())
+                .remove(feature.id());
     }
 
     @Override

@@ -58,21 +58,21 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueOf(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return get(manyFeatures, key);
+        return get(manyFeatures, feature);
     }
 
     @Override
-    public <V> void valueForNullable(ManyFeatureBean key, @Nullable V value) {
-        checkNotNull(key, "key");
+    public <V> void valueForNullable(ManyFeatureBean feature, @Nullable V value) {
+        checkNotNull(feature, "feature");
 
         if (nonNull(value)) {
-            put(manyFeatures, key, value);
+            put(manyFeatures, feature, value);
         }
         else {
-            delete(manyFeatures, key);
+            delete(manyFeatures, feature);
         }
     }
 }

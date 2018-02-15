@@ -36,88 +36,88 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    default <V> Optional<V> valueOf(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return this.<V[]>valueOf(key.withoutPosition())
-                .filter(values -> key.position() < values.length)
-                .map(values -> values[key.position()]);
+        return this.<V[]>valueOf(feature.withoutPosition())
+                .filter(values -> feature.position() < values.length)
+                .map(values -> values[feature.position()]);
     }
 
     @Nonnull
     @Override
-    default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    default <V> Stream<V> allValuesOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return this.<V[]>valueOf(key)
+        return this.<V[]>valueOf(feature)
                 .map(Arrays::stream)
                 .orElseGet(Stream::empty);
     }
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    default <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
+        V[] values = this.<V[]>valueOf(feature.withoutPosition())
                 .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
 
-        if (key.position() >= values.length) {
+        if (feature.position() >= values.length) {
             throw new NoSuchElementException();
         }
 
-        Optional<V> previousValue = Optional.of(values[key.position()]);
+        Optional<V> previousValue = Optional.of(values[feature.position()]);
 
-        values[key.position()] = value;
+        values[feature.position()] = value;
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(feature.withoutPosition(), values);
 
         return previousValue;
     }
 
     @Override
-    default <V> void addValue(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    default <V> void addValue(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
+        V[] values = this.<V[]>valueOf(feature.withoutPosition())
                 .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
 
-        checkPositionIndex(key.position(), values.length);
+        checkPositionIndex(feature.position(), values.length);
 
-        values = MoreArrays.add(values, key.position(), value);
+        values = MoreArrays.add(values, feature.position(), value);
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(feature.withoutPosition(), values);
     }
 
     @Override
-    default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
-        checkNotContainsNull(collection);
+    default <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+        checkNotNull(feature, "feature");
+        checkNotNull(values, "values");
+        checkNotContainsNull(values);
 
-        if (collection.isEmpty()) {
+        if (values.isEmpty()) {
             return;
         }
 
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
+        V[] valuesArray = this.<V[]>valueOf(feature.withoutPosition())
                 .orElseGet(() -> MoreArrays.newArray(Object.class, 0));
 
-        int firstPosition = key.position();
-        checkPositionIndex(firstPosition, values.length);
+        int firstPosition = feature.position();
+        checkPositionIndex(firstPosition, valuesArray.length);
 
-        values = MoreArrays.addAll(values, firstPosition, collection);
+        valuesArray = MoreArrays.addAll(valuesArray, firstPosition, values);
 
-        valueFor(key.withoutPosition(), values);
+        valueFor(feature.withoutPosition(), valuesArray);
     }
 
     @Nonnull
     @Override
-    default <V> Optional<V> removeValue(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    default <V> Optional<V> removeValue(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        V[] values = this.<V[]>valueOf(key.withoutPosition())
+        V[] values = this.<V[]>valueOf(feature.withoutPosition())
                 .orElse(null);
 
         if (isNull(values)) {
@@ -126,16 +126,16 @@ public interface ManyValueWithArrays extends ManyValueMapper {
 
         Optional<V> previousValue = Optional.empty();
 
-        if (key.position() < values.length) {
-            previousValue = Optional.of(values[key.position()]);
+        if (feature.position() < values.length) {
+            previousValue = Optional.of(values[feature.position()]);
 
-            values = MoreArrays.remove(values, key.position());
+            values = MoreArrays.remove(values, feature.position());
 
             if (values.length == 0) {
-                removeAllValues(key.withoutPosition());
+                removeAllValues(feature.withoutPosition());
             }
             else {
-                valueFor(key.withoutPosition(), values);
+                valueFor(feature.withoutPosition(), values);
             }
         }
 
@@ -143,15 +143,15 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     }
 
     @Override
-    default void removeAllValues(SingleFeatureBean key) {
-        this.removeValue(key);
+    default void removeAllValues(SingleFeatureBean feature) {
+        this.removeValue(feature);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        return this.<Object[]>valueOf(key)
+    default Optional<Integer> sizeOfValue(SingleFeatureBean feature) {
+        return this.<Object[]>valueOf(feature)
                 .map(a -> a.length)
                 .filter(s -> s > 0);
     }

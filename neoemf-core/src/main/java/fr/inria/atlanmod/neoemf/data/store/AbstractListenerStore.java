@@ -87,152 +87,152 @@ public abstract class AbstractListenerStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        return onCallResult(super::valueOf, key);
+    public <V> Optional<V> valueOf(SingleFeatureBean feature) {
+        return onCallResult(super::valueOf, feature);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        return onCallResult(super::valueFor, key, value);
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        return onCallResult(super::valueFor, feature, value);
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        onCall(super::removeValue, key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
-        return onCallResult(super::referenceOf, key);
+    public void removeValue(SingleFeatureBean feature) {
+        onCall(super::removeValue, feature);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        return onCallResult(super::referenceFor, key, reference);
-    }
-
-    @Override
-    public void removeReference(SingleFeatureBean key) {
-        onCall(super::removeReference, key);
+    public Optional<Id> referenceOf(SingleFeatureBean feature) {
+        return onCallResult(super::referenceOf, feature);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        return onCallResult(super::valueOf, key);
+    public Optional<Id> referenceFor(SingleFeatureBean feature, Id reference) {
+        return onCallResult(super::referenceFor, feature, reference);
+    }
+
+    @Override
+    public void removeReference(SingleFeatureBean feature) {
+        onCall(super::removeReference, feature);
     }
 
     @Nonnull
     @Override
-    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        return onCallResult(super::allValuesOf, key);
+    public <V> Optional<V> valueOf(ManyFeatureBean feature) {
+        return onCallResult(super::valueOf, feature);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        return onCallResult(super::valueFor, key, value);
+    public <V> Stream<V> allValuesOf(SingleFeatureBean feature) {
+        return onCallResult(super::allValuesOf, feature);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
+        return onCallResult(super::valueFor, feature, value);
     }
 
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        onCall(super::addValue, key, value);
+    public <V> void addValue(ManyFeatureBean feature, V value) {
+        onCall(super::addValue, feature, value);
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        onCall(super::addAllValues, key, collection);
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+        onCall(super::addAllValues, feature, values);
     }
 
     @Nonnegative
     @Override
-    public <V> int appendValue(SingleFeatureBean key, V value) {
-        return onCallResult(super::appendValue, key, value);
+    public <V> int appendValue(SingleFeatureBean feature, V value) {
+        return onCallResult(super::appendValue, feature, value);
     }
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        return onCallResult(super::appendAllValues, key, collection);
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
+        return onCallResult(super::appendAllValues, feature, values);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        return onCallResult(super::removeValue, key);
+    public <V> Optional<V> removeValue(ManyFeatureBean feature) {
+        return onCallResult(super::removeValue, feature);
     }
 
     @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        onCall(super::removeAllValues, key);
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        return onCallResult(super::sizeOfValue, key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(ManyFeatureBean key) {
-        return onCallResult(super::referenceOf, key);
-    }
-
-    @Nonnull
-    @Override
-    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
-        return onCallResult(super::allReferencesOf, key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        return onCallResult(super::referenceFor, key, reference);
-    }
-
-    @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
-        onCall(super::addReference, key, reference);
-    }
-
-    @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        onCall(super::addAllReferences, key, collection);
-    }
-
-    @Nonnegative
-    @Override
-    public int appendReference(SingleFeatureBean key, Id reference) {
-        return onCallResult(super::appendReference, key, reference);
-    }
-
-    @Nonnegative
-    @Override
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        return onCallResult(super::appendAllReferences, key, collection);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        return onCallResult(super::removeReference, key);
-    }
-
-    @Override
-    public void removeAllReferences(SingleFeatureBean key) {
-        onCall(super::removeAllReferences, key);
+    public void removeAllValues(SingleFeatureBean feature) {
+        onCall(super::removeAllValues, feature);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        return onCallResult(super::sizeOfReference, key);
+    public Optional<Integer> sizeOfValue(SingleFeatureBean feature) {
+        return onCallResult(super::sizeOfValue, feature);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(ManyFeatureBean feature) {
+        return onCallResult(super::referenceOf, feature);
+    }
+
+    @Nonnull
+    @Override
+    public Stream<Id> allReferencesOf(SingleFeatureBean feature) {
+        return onCallResult(super::allReferencesOf, feature);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(ManyFeatureBean feature, Id reference) {
+        return onCallResult(super::referenceFor, feature, reference);
+    }
+
+    @Override
+    public void addReference(ManyFeatureBean feature, Id reference) {
+        onCall(super::addReference, feature, reference);
+    }
+
+    @Override
+    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+        onCall(super::addAllReferences, feature, references);
+    }
+
+    @Nonnegative
+    @Override
+    public int appendReference(SingleFeatureBean feature, Id reference) {
+        return onCallResult(super::appendReference, feature, reference);
+    }
+
+    @Nonnegative
+    @Override
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
+        return onCallResult(super::appendAllReferences, feature, references);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> removeReference(ManyFeatureBean feature) {
+        return onCallResult(super::removeReference, feature);
+    }
+
+    @Override
+    public void removeAllReferences(SingleFeatureBean feature) {
+        onCall(super::removeAllReferences, feature);
+    }
+
+    @Nonnull
+    @Nonnegative
+    @Override
+    public Optional<Integer> sizeOfReference(SingleFeatureBean feature) {
+        return onCallResult(super::sizeOfReference, feature);
     }
 
     /**

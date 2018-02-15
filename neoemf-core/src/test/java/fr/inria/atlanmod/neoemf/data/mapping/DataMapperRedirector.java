@@ -56,12 +56,12 @@ class DataMapperRedirector {
      * @return the result
      */
     @Nonnull
-    public <V> Optional<V> get(SingleFeatureBean key) {
+    public <V> Optional<V> get(SingleFeatureBean feature) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.valueOf(key);
+            return delegate.valueOf(feature);
         }
         else {
-            return (Optional<V>) delegate.referenceOf(key);
+            return (Optional<V>) delegate.referenceOf(feature);
         }
     }
 
@@ -70,24 +70,24 @@ class DataMapperRedirector {
      *
      * @return the result
      */
-    public <V> Optional<V> set(SingleFeatureBean key, V value) {
+    public <V> Optional<V> set(SingleFeatureBean feature, V value) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.valueFor(key, value);
+            return delegate.valueFor(feature, value);
         }
         else {
-            return (Optional<V>) delegate.referenceFor(key, (Id) value);
+            return (Optional<V>) delegate.referenceFor(feature, (Id) value);
         }
     }
 
     /**
      * Redirects the call to {@link DataMapper#removeValue(SingleFeatureBean)} ou {@link DataMapper#removeReference(SingleFeatureBean)} according to the redirection type.
      */
-    public void remove(SingleFeatureBean key) {
+    public void remove(SingleFeatureBean feature) {
         if (type == RedirectionType.ATTRIBUTE) {
-            delegate.removeValue(key);
+            delegate.removeValue(feature);
         }
         else {
-            delegate.removeReference(key);
+            delegate.removeReference(feature);
         }
     }
 
@@ -97,12 +97,12 @@ class DataMapperRedirector {
      * @return the result
      */
     @Nonnull
-    public <V> Optional<V> get(ManyFeatureBean key) {
+    public <V> Optional<V> get(ManyFeatureBean feature) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.valueOf(key);
+            return delegate.valueOf(feature);
         }
         else {
-            return (Optional<V>) delegate.referenceOf(key);
+            return (Optional<V>) delegate.referenceOf(feature);
         }
     }
 
@@ -112,12 +112,12 @@ class DataMapperRedirector {
      * @return the result
      */
     @Nonnull
-    public <V> Stream<V> getAll(SingleFeatureBean key) {
+    public <V> Stream<V> getAll(SingleFeatureBean feature) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.allValuesOf(key);
+            return delegate.allValuesOf(feature);
         }
         else {
-            return (Stream<V>) delegate.allReferencesOf(key);
+            return (Stream<V>) delegate.allReferencesOf(feature);
         }
     }
 
@@ -127,36 +127,36 @@ class DataMapperRedirector {
      * @return the result
      */
     @Nonnull
-    public <V> Optional<V> set(ManyFeatureBean key, V value) {
+    public <V> Optional<V> set(ManyFeatureBean feature, V value) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.valueFor(key, value);
+            return delegate.valueFor(feature, value);
         }
         else {
-            return (Optional<V>) delegate.referenceFor(key, (Id) value);
+            return (Optional<V>) delegate.referenceFor(feature, (Id) value);
         }
     }
 
     /**
      * Redirects the call to {@link DataMapper#addValue(ManyFeatureBean, Object)} ou {@link DataMapper#addReference(ManyFeatureBean, Id)} according to the redirection type.
      */
-    public <V> void add(ManyFeatureBean key, V value) {
+    public <V> void add(ManyFeatureBean feature, V value) {
         if (type == RedirectionType.ATTRIBUTE) {
-            delegate.addValue(key, value);
+            delegate.addValue(feature, value);
         }
         else {
-            delegate.addReference(key, (Id) value);
+            delegate.addReference(feature, (Id) value);
         }
     }
 
     /**
      * Redirects the call to {@link DataMapper#addAllValues(ManyFeatureBean, List)} ou {@link DataMapper#addAllReferences(ManyFeatureBean, List)} according to the redirection type.
      */
-    public <V> void addAll(ManyFeatureBean key, List<? extends V> values) {
+    public <V> void addAll(ManyFeatureBean feature, List<? extends V> values) {
         if (type == RedirectionType.ATTRIBUTE) {
-            delegate.addAllValues(key, values);
+            delegate.addAllValues(feature, values);
         }
         else {
-            delegate.addAllReferences(key, (List<Id>) values);
+            delegate.addAllReferences(feature, (List<Id>) values);
         }
     }
 
@@ -166,12 +166,12 @@ class DataMapperRedirector {
      * @return the result
      */
     @Nonnegative
-    public <V> int append(SingleFeatureBean key, V value) {
+    public <V> int append(SingleFeatureBean feature, V value) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.appendValue(key, value);
+            return delegate.appendValue(feature, value);
         }
         else {
-            return delegate.appendReference(key, (Id) value);
+            return delegate.appendReference(feature, (Id) value);
         }
     }
 
@@ -181,12 +181,12 @@ class DataMapperRedirector {
      * @return the result
      */
     @Nonnegative
-    public <V> int appendAll(SingleFeatureBean key, List<? extends V> values) {
+    public <V> int appendAll(SingleFeatureBean feature, List<? extends V> values) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.appendAllValues(key, values);
+            return delegate.appendAllValues(feature, values);
         }
         else {
-            return delegate.appendAllReferences(key, (List<Id>) values);
+            return delegate.appendAllReferences(feature, (List<Id>) values);
         }
     }
 
@@ -196,24 +196,24 @@ class DataMapperRedirector {
      * @return the result
      */
     @Nonnull
-    public <V> Optional<V> remove(ManyFeatureBean key) {
+    public <V> Optional<V> remove(ManyFeatureBean feature) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.removeValue(key);
+            return delegate.removeValue(feature);
         }
         else {
-            return (Optional<V>) delegate.removeReference(key);
+            return (Optional<V>) delegate.removeReference(feature);
         }
     }
 
     /**
      * Redirects the call to {@link DataMapper#removeAllValues(SingleFeatureBean)} ou {@link DataMapper#removeAllReferences(SingleFeatureBean)} according to the redirection type.
      */
-    public void removeAll(SingleFeatureBean key) {
+    public void removeAll(SingleFeatureBean feature) {
         if (type == RedirectionType.ATTRIBUTE) {
-            delegate.removeAllValues(key);
+            delegate.removeAllValues(feature);
         }
         else {
-            delegate.removeAllReferences(key);
+            delegate.removeAllReferences(feature);
         }
     }
 
@@ -223,12 +223,12 @@ class DataMapperRedirector {
      * @return the result
      */
     @Nonnull
-    public Optional<Integer> sizeOf(SingleFeatureBean key) {
+    public Optional<Integer> sizeOf(SingleFeatureBean feature) {
         if (type == RedirectionType.ATTRIBUTE) {
-            return delegate.sizeOfValue(key);
+            return delegate.sizeOfValue(feature);
         }
         else {
-            return delegate.sizeOfReference(key);
+            return delegate.sizeOfReference(feature);
         }
     }
 }

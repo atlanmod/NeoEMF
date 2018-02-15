@@ -114,12 +114,12 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     protected abstract Map<SingleFeatureBean, Object> features();
 
     /**
-     * Checks the specified {@code key} before using it.
+     * Checks the specified {@code feature} before using it.
      *
-     * @param key the key to check
+     * @param feature the feature to check
      */
-    protected void checkKey(FeatureBean key) {
-        checkNotNull(key, "key");
+    protected void checkFeature(FeatureBean feature) {
+        checkNotNull(feature, "feature");
     }
 
     @Nonnull
@@ -172,26 +172,26 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkKey(key);
+    public <V> Optional<V> valueOf(SingleFeatureBean feature) {
+        checkFeature(feature);
 
-        return Optional.ofNullable(cast(features().get(key)));
+        return Optional.ofNullable(cast(features().get(feature)));
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkKey(key);
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        checkFeature(feature);
         checkNotNull(value, "value");
 
-        return Optional.ofNullable(cast(features().put(key, value)));
+        return Optional.ofNullable(cast(features().put(feature, value)));
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        checkKey(key);
+    public void removeValue(SingleFeatureBean feature) {
+        checkFeature(feature);
 
-        features().remove(key);
+        features().remove(feature);
     }
 
     @Nonnull
