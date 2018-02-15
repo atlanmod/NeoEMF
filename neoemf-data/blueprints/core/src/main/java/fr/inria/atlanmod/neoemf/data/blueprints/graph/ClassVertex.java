@@ -45,6 +45,12 @@ public class ClassVertex extends IdVertex<ModelGraph> {
     private final Lazy<String> lazyName = Lazy.with(() -> check(getProperty(PROPERTY_NAME)));
 
     /**
+     * The URI of the represented meta-class.
+     */
+    @Nonnull
+    private final Lazy<String> lazyUri = Lazy.with(() -> check(getProperty(PROPERTY_URI)));
+
+    /**
      * Constructs a new {@code ClassVertex}.
      *
      * @param baseVertex the base vertex
@@ -141,7 +147,7 @@ public class ClassVertex extends IdVertex<ModelGraph> {
      */
     @Nonnull
     public String getUri() {
-        return check(getProperty(PROPERTY_URI));
+        return lazyUri.get();
     }
 
     /**
@@ -154,6 +160,7 @@ public class ClassVertex extends IdVertex<ModelGraph> {
     @Nonnull
     private ClassVertex setUri(String uri) {
         setProperty(PROPERTY_URI, uri);
+        lazyUri.update(uri);
         return this;
     }
 
