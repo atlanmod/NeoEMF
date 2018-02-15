@@ -54,10 +54,6 @@ public class WriteOnlyRunner extends Runner {
      * Creates a new store in a temporary location.
      */
     @Benchmark
-    @BenchmarkMode(Mode.SingleShotTime)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    @Warmup(iterations = 0)
-    @Measurement(iterations = 1)
     public void create(RunnerState state) throws IOException {
         state.adapter().createTempStore(state.resourceFile(), state.baseConfig(), state.useDirectImport());
     }
