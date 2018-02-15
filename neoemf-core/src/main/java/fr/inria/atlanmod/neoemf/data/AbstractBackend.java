@@ -70,6 +70,16 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
         close(true);
     }
 
+    @Override
+    public final void save() {
+        try {
+            internalSave();
+        }
+        catch (Exception e) {
+            Log.warn(e);
+        }
+    }
+
     /**
      * Cleanly closes this back-end, and releases any system resources associated with it. All modifications are saved
      * before closing.
@@ -89,7 +99,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
 
         try {
             save();
-            innerClose();
+            internalClose();
         }
         catch (Exception e) {
             Log.warn(e);
@@ -98,6 +108,20 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
             isClosed = true;
         }
     }
+
+    /**
+     * Cleanly closes the database, and releases any system resources associated with it.
+     *
+     * @throws IOException if an I/O error occurs when closing
+     */
+    protected abstract void internalClose() throws IOException;
+
+    /**
+     * Saves all modifications made on this back-end since the last call.
+     *
+     * @throws IOException if an I/O error occurs when saving
+     */
+    protected abstract void internalSave() throws IOException;
 
     @Nonnull
     @Override
@@ -112,12 +136,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
         return allInstancesOf(allInstances);
     }
 
-    /**
-     * Cleanly closes the database, and releases any system resources associated with it.
-     *
-     * @throws IOException if an I/O error occurs during the closure
-     */
-    protected abstract void innerClose() throws IOException;
+    // region Copy
 
     @Override
     public void copyTo(DataMapper target) {
@@ -151,7 +170,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
 
         try {
             if (getClass() == target.getClass()) {
-                innerCopyTo(target);
+                internalCopyTo(target);
             }
             else {
                 defaultCopyTo(target);
@@ -185,9 +204,11 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
      *
      * @throws UnsupportedOperationException if this back-end does not support the specific copy
      */
-    protected void innerCopyTo(DataMapper target) {
+    protected void internalCopyTo(DataMapper target) {
         throw new UnsupportedOperationException(String.format("%s does not support specific copy", getClass().getName()));
     }
+
+    // endregion
 
     @Override
     public String toString() {

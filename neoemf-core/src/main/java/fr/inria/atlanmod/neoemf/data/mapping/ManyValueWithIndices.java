@@ -62,7 +62,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
             throw new NoSuchElementException();
         }
 
-        innerValueFor(key, value);
+        valueForNullable(key, value);
 
         return previousValue;
     }
@@ -76,12 +76,12 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkPositionIndex(key.position(), size);
 
         for (int i = size - 1; i >= key.position(); i--) {
-            innerValueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+            valueForNullable(key.withPosition(i + 1), valueOf(key.withPosition(i)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         }
 
         sizeForValue(key.withoutPosition(), size + 1);
 
-        innerValueFor(key, value);
+        valueForNullable(key, value);
     }
 
     @Override
@@ -109,10 +109,10 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         Optional<V> previousValue = valueOf(key);
 
         for (int i = key.position(); i < size - 1; i++) {
-            innerValueFor(key.withPosition(i), valueOf(key.withPosition(i + 1)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+            valueForNullable(key.withPosition(i), valueOf(key.withPosition(i + 1)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         }
 
-        innerValueFor(key.withPosition(size - 1), null);
+        valueForNullable(key.withPosition(size - 1), null);
 
         sizeForValue(key.withoutPosition(), size - 1);
 
@@ -122,7 +122,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     @Override
     default void removeAllValues(SingleFeatureBean key) {
         IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEachOrdered(i -> innerValueFor(key.withPosition(i), null));
+                .forEachOrdered(i -> valueForNullable(key.withPosition(i), null));
 
         removeValue(key);
     }
@@ -161,8 +161,9 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     /**
      * Defines the {@code value} of the specified {@code key} at a defined position.
      * <p>
-     * This method behaves like: {@link #valueFor(ManyFeatureBean, Object)}, without checking whether the multi-valued
-     * feature already exists, in order to replace it. If {@code value == null}, the key is removed.
+     * This method behaves like {@link #valueFor(ManyFeatureBean, Object)}, without checking whether the multi-valued
+     * feature already exists, in order to replace it.
+     * If {@code value == null}, the key is removed.
      *
      * @param key   the key identifying the multi-valued attribute
      * @param value the value to set
@@ -170,5 +171,5 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      *
      * @throws NullPointerException if the {@code key} is {@code null}
      */
-    <V> void innerValueFor(ManyFeatureBean key, @Nullable V value);
+    <V> void valueForNullable(ManyFeatureBean key, @Nullable V value);
 }

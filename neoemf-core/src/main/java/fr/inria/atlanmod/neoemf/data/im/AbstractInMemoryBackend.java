@@ -85,7 +85,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     }
 
     @Override
-    public void save() {
+    public void internalSave() {
         // No need to save anything
     }
 

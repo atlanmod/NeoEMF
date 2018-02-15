@@ -46,7 +46,7 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
     /**
      * The number of instances of this class.
      *
-     * @see #innerClose()
+     * @see #internalClose()
      * @see DataHolder#close(Id)
      */
     @Nonnull
@@ -85,7 +85,7 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
     }
 
     @Override
-    protected void innerClose() {
+    protected void internalClose() {
         COUNTER.decrementAndGet();
 
         dataHolder.close(owner);

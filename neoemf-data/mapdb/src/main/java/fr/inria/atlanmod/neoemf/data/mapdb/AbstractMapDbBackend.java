@@ -109,20 +109,20 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     }
 
     @Override
-    public void save() {
+    protected void internalClose() {
+        database.close();
+    }
+
+    @Override
+    public void internalSave() {
         if (!database.isClosed()) {
             database.commit();
         }
     }
 
     @Override
-    protected void innerClose() {
-        database.close();
-    }
-
-    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    protected void innerCopyTo(DataMapper target) {
+    protected void internalCopyTo(DataMapper target) {
         AbstractMapDbBackend to = AbstractMapDbBackend.class.cast(target);
 
         for (Map.Entry<String, Object> entry : database.getAll().entrySet()) {

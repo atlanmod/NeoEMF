@@ -97,12 +97,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     }
 
     @Override
-    public void save() {
-        // Do nothing: data are automatically saved
-    }
-
-    @Override
-    protected void innerClose() {
+    protected void internalClose() {
         containers.close();
         instances.close();
         features.close();
@@ -111,7 +106,12 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     }
 
     @Override
-    protected void innerCopyTo(DataMapper target) {
+    public void internalSave() {
+        // Do nothing: data are automatically saved
+    }
+
+    @Override
+    protected void internalCopyTo(DataMapper target) {
         AbstractBerkeleyDbBackend to = AbstractBerkeleyDbBackend.class.cast(target);
 
         copy(containers, to.containers);

@@ -108,13 +108,13 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     }
 
     @Override
-    public void save() {
-        // TODO Implement this method
+    protected void internalClose() throws IOException {
+        table.close();
     }
 
     @Override
-    protected void innerClose() throws IOException {
-        table.close();
+    public void internalSave() {
+        // TODO Implement this method
     }
 
     @Nonnull

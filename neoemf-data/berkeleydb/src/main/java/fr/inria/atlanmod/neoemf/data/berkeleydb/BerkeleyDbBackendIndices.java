@@ -55,14 +55,14 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     }
 
     @Override
-    protected void innerClose() {
+    protected void internalClose() {
         manyFeatures.close();
-        super.innerClose();
+        super.internalClose();
     }
 
     @Override
-    protected void innerCopyTo(DataMapper target) {
-        super.innerCopyTo(target);
+    protected void internalCopyTo(DataMapper target) {
+        super.internalCopyTo(target);
 
         BerkeleyDbBackendIndices to = BerkeleyDbBackendIndices.class.cast(target);
         this.copy(manyFeatures, to.manyFeatures);
@@ -77,7 +77,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     }
 
     @Override
-    public <V> void innerValueFor(ManyFeatureBean key, @Nullable V value) {
+    public <V> void valueForNullable(ManyFeatureBean key, @Nullable V value) {
         checkNotNull(key, "key");
 
         if (nonNull(value)) {

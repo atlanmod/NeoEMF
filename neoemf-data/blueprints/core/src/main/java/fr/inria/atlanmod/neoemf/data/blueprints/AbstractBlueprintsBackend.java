@@ -73,18 +73,18 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     }
 
     @Override
-    public void save() {
+    protected void internalClose() {
+        graph.shutdown();
+    }
+
+    @Override
+    public void internalSave() {
         if (graph.getFeatures().supportsTransactions) {
             graph.commit();
         }
         else {
             graph.shutdown();
         }
-    }
-
-    @Override
-    protected void innerClose() {
-        graph.shutdown();
     }
 
     /**
@@ -94,7 +94,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * @see ElementHelper#copyProperties(Element, Element)
      */
     @Override
-    protected void innerCopyTo(DataMapper target) {
+    protected void internalCopyTo(DataMapper target) {
         AbstractBlueprintsBackend to = AbstractBlueprintsBackend.class.cast(target);
 
         graph.copyTo(to.graph);
