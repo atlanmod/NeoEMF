@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
 import fr.inria.atlanmod.commons.Copiable;
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.Savable;
@@ -51,7 +52,6 @@ public interface StoreAdapter extends Savable, Copiable<StoreAdapter>, InternalE
      *
      * @return the resource
      */
-    @Nullable
     Resource.Internal resource();
 
     /**
@@ -190,7 +190,10 @@ public interface StoreAdapter extends Savable, Copiable<StoreAdapter>, InternalE
      * @param feature        a {@link org.eclipse.emf.ecore.ETypedElement#isMany() many-valued} feature of the object
      * @param values         the values to remove
      */
-    void removeAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values);
+    // TODO Implement this method
+    default void removeAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values) {
+        throw Throwables.notImplementedYet("removeAll");
+    }
 
     /**
      * Creates or updates the containment link between {@code object} and {@code container}, and deletes any previous

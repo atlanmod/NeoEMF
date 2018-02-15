@@ -48,17 +48,17 @@ public class PersistentStoreAdapter extends AbstractStoreAdapter {
         super(store, checkNotNull(resource, "resource"));
     }
 
+    @Nonnull
+    @Override
+    protected Cache<Id, PersistentEObject> getCache() {
+        return cache;
+    }
+
     @Override
     public void close() {
         cache.invalidateAll();
         cache.cleanUp();
 
         super.close();
-    }
-
-    @Nonnull
-    @Override
-    protected Cache<Id, PersistentEObject> cache() {
-        return cache;
     }
 }

@@ -340,7 +340,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
                 }
 
                 // If the resource is persistent, it will close its store
-                if (!PersistentResource.class.isInstance(currentStore.resource())) {
+                if (!PersistentResource.isPersistent(currentStore.resource())) {
                     currentStore.close();
                 }
             }

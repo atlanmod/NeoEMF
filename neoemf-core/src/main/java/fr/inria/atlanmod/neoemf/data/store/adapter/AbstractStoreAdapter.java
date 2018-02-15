@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.collect.MoreStreams;
@@ -44,12 +43,9 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkElementIndex;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@code StoreAdapter}.
@@ -94,17 +90,34 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     }
 
     /**
-     * Creates a new cache to store {@link Id}s and their associated {@link PersistentEObject}.
+     * Creates a new in-memory cache to store {@link Id}s and their associated {@link PersistentEObject}.
      *
      * @return a new cache
      *
-     * @see #cache()
+     * @see #getCache()
      */
     @Nonnull
     protected static Cache<Id, PersistentEObject> createCache() {
         return CacheBuilder.builder()
                 .softValues()
                 .build();
+    }
+
+    /**
+     * Returns the in-memory cache holding recently loaded {@link PersistentEObject}s.
+     *
+     * @return the cache
+     */
+    @Nonnull
+    protected abstract Cache<Id, PersistentEObject> getCache();
+
+    /**
+     * Refreshes the {@code object} with its {@link Id} in the cache, only it does not already exist.
+     *
+     * @param object the object to refresh
+     */
+    private void refresh(PersistentEObject object) {
+        getCache().putIfAbsent(refConverter.convert(object), object);
     }
 
     @Override
@@ -140,12 +153,10 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     public final PersistentEObject resolve(Id id) {
         checkNotNull(id, "id");
 
-        PersistentEObject object = cache().get(id, this::rebuild);
+        PersistentEObject object = getCache().get(id, this::rebuild);
 
-        Resource.Internal currentResource = resource();
-        if (nonNull(currentResource)) {
-            object.resource(currentResource);
-        }
+        // Define the resource of the object
+        Optional.ofNullable(resource).ifPresent(object::resource);
 
         return object;
     }
@@ -155,10 +166,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     public final Object get(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int index) {
         checkNotNull(internalObject, "internalObject");
         checkNotNull(feature, "feature");
-
-        if (checkIndices() && feature.isMany()) {
-            checkElementIndex(index, size(internalObject, feature));
-        }
 
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
@@ -203,16 +210,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             Object previousValue = get(internalObject, feature, index);
             unset(internalObject, feature);
             return previousValue;
-        }
-
-        if (checkIndices() && feature.isMany()) {
-            try {
-                checkElementIndex(index, size(internalObject, feature));
-            }
-            catch (IndexOutOfBoundsException e) {
-                // This method must throw a NoSuchException, not an IndexOutOfBoundException
-                throw Throwables.wrap(e, NoSuchElementException.class);
-            }
         }
 
         PersistentEObject object = PersistentEObject.from(internalObject);
@@ -424,10 +421,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         checkState(feature.isMany(), "Cannot compute add() of a single-valued feature");
 
-        if (checkIndices() && index != EStore.NO_INDEX) {
-            checkPositionIndex(index, size(internalObject, feature));
-        }
-
         PersistentEObject object = PersistentEObject.from(internalObject);
         updateInstanceOf(object);
 
@@ -462,10 +455,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         checkState(feature.isMany(), "Cannot compute remove() of a single-valued feature");
 
-        if (checkIndices()) {
-            checkElementIndex(index, size(internalObject, feature));
-        }
-
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
 
@@ -485,12 +474,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final Object move(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int targetIndex, @Nonnegative int sourceIndex) {
-        if (checkIndices()) {
-            checkElementIndex(targetIndex, size(internalObject, feature));
-        }
-
         Object moved = remove(internalObject, feature, sourceIndex);
-        checkState(nonNull(moved), "inconsistency issue");
+        checkNotNull(moved, "inconsistency issue");
 
         add(internalObject, feature, targetIndex, moved);
 
@@ -670,12 +655,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     }
 
     @Override
-    // TODO Implement this method
-    public void removeAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values) {
-        throw Throwables.notImplementedYet("removeAll");
-    }
-
-    @Override
     public void updateContainment(PersistentEObject object, EReference containerReference, PersistentEObject container) {
         updateInstanceOf(object);
         updateInstanceOf(container);
@@ -712,7 +691,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         final Id id = refConverter.convert(object);
 
         // If the object is already present in the cache, then the meta-class is defined
-        if (cache().contains(id)) {
+        if (getCache().contains(id)) {
             return;
         }
 
@@ -726,23 +705,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     }
 
     /**
-     * Returns the in-memory cache holding recently loaded {@link PersistentEObject}s.
-     *
-     * @return the cache
-     */
-    @Nonnull
-    protected abstract Cache<Id, PersistentEObject> cache();
-
-    /**
-     * Refreshes the {@code object} with its {@link Id} in the cache, only it does not already exist.
-     *
-     * @param object the object to refresh
-     */
-    private void refresh(PersistentEObject object) {
-        cache().putIfAbsent(refConverter.convert(object), object);
-    }
-
-    /**
      * Rebuilds the {@link PersistentEObject} from the specified {@code id}.
      *
      * @param id the identifier of the object to rebuild
@@ -753,17 +715,5 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     private PersistentEObject rebuild(Id id) {
         final EClass eClass = resolveInstanceOf(id).<IllegalStateException>orElseThrow(IllegalStateException::new); // Should never happen
         return PersistenceFactory.getInstance().create(eClass, id);
-    }
-
-    /**
-     * Returns {@code true} if all indices must be checked.
-     * <p>
-     * <b>NOTE: </b> When {@code true}, indices will be compared with {@link #size(InternalEObject, EStructuralFeature)}
-     * which can cause an important performance loss.
-     *
-     * @return {@code true} if all indices must be checked
-     */
-    protected boolean checkIndices() {
-        return false;
     }
 }
