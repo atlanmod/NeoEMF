@@ -108,7 +108,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
     default void addAllReferences(ManyFeatureBean feature, List<Id> references) {
         checkNotNull(feature, "feature");
         checkNotNull(references, "references");
-        checkNotContainsNull(references);
+        checkNotContainsNull(references, "references");
 
         if (references.isEmpty()) {
             return;

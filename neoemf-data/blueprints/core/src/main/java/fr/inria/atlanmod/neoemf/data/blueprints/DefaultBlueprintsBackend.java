@@ -173,7 +173,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
         checkNotNull(feature, "feature");
         checkNotNull(values, "values");
-        checkNotContainsNull(values);
+        checkNotContainsNull(values, "values");
 
         if (values.isEmpty()) {
             return;
@@ -316,7 +316,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
         checkNotNull(feature, "feature");
         checkNotNull(references, "references");
-        checkNotContainsNull(references);
+        checkNotContainsNull(references, "references");
 
         if (references.isEmpty()) {
             return;

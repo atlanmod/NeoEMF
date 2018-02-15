@@ -88,7 +88,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     default <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
         checkNotNull(feature, "feature");
         checkNotNull(values, "values");
-        checkNotContainsNull(values);
+        checkNotContainsNull(values, "values");
 
         int firstPosition = feature.position();
 
