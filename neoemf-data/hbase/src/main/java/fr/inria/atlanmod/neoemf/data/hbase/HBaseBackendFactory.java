@@ -80,17 +80,15 @@ public class HBaseBackendFactory extends AbstractBackendFactory<HBaseConfig> {
         Connection connection = ConnectionFactory.createConnection(configuration);
         Admin admin = connection.getAdmin();
 
-        TableName tableName = TableName.valueOf(url.getFile());
+        TableName tableName = TableName.valueOf(url.getPath().substring(1));
 
         if (!admin.tableExists(tableName) && !config.isReadOnly()) {
-            HTableDescriptor desc = new HTableDescriptor(tableName);
-            HColumnDescriptor propertyFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_PROPERTY);
-            HColumnDescriptor typeFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_TYPE);
-            HColumnDescriptor containmentFamily = new HColumnDescriptor(AbstractHBaseBackend.FAMILY_CONTAINMENT);
-            desc.addFamily(propertyFamily);
-            desc.addFamily(typeFamily);
-            desc.addFamily(containmentFamily);
-            admin.createTable(desc);
+            HTableDescriptor tableDescriptor = new HTableDescriptor(tableName)
+                    .addFamily(new HColumnDescriptor(AbstractHBaseBackend.FAMILY_PROPERTY))
+                    .addFamily(new HColumnDescriptor(AbstractHBaseBackend.FAMILY_TYPE))
+                    .addFamily(new HColumnDescriptor(AbstractHBaseBackend.FAMILY_CONTAINMENT));
+
+            admin.createTable(tableDescriptor);
         }
 
         Table table = connection.getTable(tableName);

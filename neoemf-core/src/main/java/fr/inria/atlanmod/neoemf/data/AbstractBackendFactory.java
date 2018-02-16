@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.commons.annotation.Singleton;
+import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperFactory;
@@ -63,15 +64,18 @@ public abstract class AbstractBackendFactory<C extends Config> extends AbstractM
      * @throws MalformedURLException if an error occurs during the {@link URL} creation
      */
     @Nonnull
+    // TODO Add HTTPS support
     private static URL uriToUrl(URI uri) throws MalformedURLException {
         final String protocol = "http";
         final String delimiter = "_";
 
+        int port = isNull(uri.port()) ? -1 : Integer.parseInt(uri.port());
+
         String path = uri.segmentsList().stream()
                 .map(s -> s.replaceAll("-", delimiter))
-                .collect(Collectors.joining(delimiter));
+                .collect(Collectors.joining(delimiter, "/", Strings.EMPTY));
 
-        return new URL(protocol, uri.host(), isNull(uri.port()) ? -1 : Integer.parseInt(uri.port()), path);
+        return new URL(protocol, uri.host(), port, path);
     }
 
     @Nonnull
