@@ -127,6 +127,8 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     /**
      * Returns an empty {@code ContentsListIterator}.
      *
+     * @param <E> the type of elements in the iterator
+     *
      * @return an empty iterator
      */
     @Nonnull
@@ -136,7 +138,8 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     }
 
     /**
-     * Returns {@code true} if the {@code feature} must be included in the result, {@code false} if it should be ignored.
+     * Returns {@code true} if the {@code feature} must be included in the result, {@code false} if it should be
+     * ignored.
      *
      * @param feature the feature to test
      *
@@ -283,10 +286,9 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     }
 
     /**
-     * Prepares the result that will be returned at the next call to {@link #advance(IterationDirection)}.
-     * This method iterates over all features to retrieve the next value for the defined direction.
-     * If the previously returned feature was multi-valued, then this method iterates over all remaining values before
-     * analizing other features.
+     * Prepares the result that will be returned at the next call to {@link #advance(IterationDirection)}. This method
+     * iterates over all features to retrieve the next value for the defined direction. If the previously returned
+     * feature was multi-valued, then this method iterates over all remaining values before analizing other features.
      *
      * @param direction the iteration direction
      *
@@ -314,8 +316,8 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     }
 
     /**
-     * Prepares the result that will be returned at the next call to {@link #advance(IterationDirection)} for the specified
-     * {@code feature} in the defined direction.
+     * Prepares the result that will be returned at the next call to {@link #advance(IterationDirection)} for the
+     * specified {@code feature} in the defined direction.
      *
      * @param direction the iteration direction
      * @param feature   the feature to retrieve the next value
@@ -456,9 +458,8 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     }
 
     /**
-     * Analyzes the {@code feature} in order to prepare the value at the {@code expectedIndex}.
-     * The returned value can be either the size of the feature or the index of the element if the {@code expectedIndex}
-     * has been reached.
+     * Analyzes the {@code feature} in order to prepare the value at the {@code expectedIndex}. The returned value can
+     * be either the size of the feature or the index of the element if the {@code expectedIndex} has been reached.
      *
      * @param feature       the feature
      * @param expectedIndex the index to reach
@@ -508,9 +509,8 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
     }
 
     /**
-     * Filters {@link FeatureMap.Entry}es from the list.
-     * The returned map contains the index of included entries (sequential and ordered), associated with their real
-     * index in the list.
+     * Filters {@link FeatureMap.Entry}es from the list. The returned map contains the index of included entries
+     * (sequential and ordered), associated with their real index in the list.
      *
      * @param entries the list of entries
      *

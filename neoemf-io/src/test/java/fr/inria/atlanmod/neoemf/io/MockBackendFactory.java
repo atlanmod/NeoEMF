@@ -29,8 +29,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A mocked {@link BackendFactory} that always returns the same {@link Backend}.
  * <p>
  * <b>NOTE:</b> This class exists for binding a {@link Config} and {@link UriBuilder} to this {@link BackendFactory}.
- * You need to register the factory you want to use, with {@link BackendFactoryRegistry#register(String, BackendFactory)},
- * before any call to {@link BackendFactory#createBackend(URI, ImmutableConfig)}.
+ * You need to register the factory you want to use, with {@link BackendFactoryRegistry#register(String,
+ * BackendFactory)}, before any call to {@link BackendFactory#createBackend(URI, ImmutableConfig)}.
  */
 @ParametersAreNonnullByDefault
 public final class MockBackendFactory extends AbstractBackendFactory<MockBackendFactory.MockConfig> {

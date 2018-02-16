@@ -27,7 +27,7 @@ public interface ContainerMapper {
     /**
      * Retrieves the container for the specified {@code id}.
      *
-     * @param id the {@link Id} of the contained element
+     * @param id the {@link fr.inria.atlanmod.neoemf.core.Id} of the contained element
      *
      * @return an {@link Optional} containing the container, or {@link Optional#empty()} if the {@code id} has no
      * defined container.
@@ -40,7 +40,7 @@ public interface ContainerMapper {
     /**
      * Stores the {@code container} for the specified {@code id}.
      *
-     * @param id        the {@link Id} of the contained element
+     * @param id        the {@link fr.inria.atlanmod.neoemf.core.Id} of the contained element
      * @param container the containing element's container information to store
      *
      * @throws NullPointerException if the {@code id} is {@code null}
@@ -53,7 +53,7 @@ public interface ContainerMapper {
      * The container must be completely removed, so that a call to {@link #containerOf(Id)} returns {@link
      * Optional#empty()}.
      *
-     * @param id the {@link Id} of the contained element
+     * @param id the {@link fr.inria.atlanmod.neoemf.core.Id} of the contained element
      *
      * @throws NullPointerException if the {@code id} is {@code null}
      */

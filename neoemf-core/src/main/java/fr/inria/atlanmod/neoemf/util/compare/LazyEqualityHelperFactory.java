@@ -15,7 +15,8 @@ import org.eclipse.emf.compare.match.DefaultEqualityHelperFactory;
 import javax.annotation.Nonnull;
 
 /**
- * A {@link DefaultEqualityHelperFactory} that creates instances of {@link LazyEqualityHelper}.
+ * A {@link org.eclipse.emf.compare.match.DefaultEqualityHelperFactory} that creates instances of {@link
+ * LazyEqualityHelper}.
  *
  * @see LazyEqualityHelper
  */
@@ -31,7 +32,7 @@ public class LazyEqualityHelperFactory extends DefaultEqualityHelperFactory {
     /**
      * Constructs a new {@code LazyEqualityHelperFactory} using the given {@code cacheBuilder}.
      *
-     * @param cacheBuilder the {@link CacheBuilder} to use
+     * @param cacheBuilder the {@link com.google.common.cache.CacheBuilder} to use
      */
     public LazyEqualityHelperFactory(CacheBuilder<Object, Object> cacheBuilder) {
         super(cacheBuilder);

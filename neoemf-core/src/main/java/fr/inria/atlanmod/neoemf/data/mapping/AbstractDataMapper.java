@@ -8,8 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * An abstract {@link DataMapper}.
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractDataMapper implements DataMapper {
 }

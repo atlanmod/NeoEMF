@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 import javax.annotation.Nonnull;
 
 /**
- * Annotates an element that is bound to a {@link BackendFactory}.
+ * Annotates an element that is bound to a {@link fr.inria.atlanmod.neoemf.data.BackendFactory}.
  */
 @Inherited
 @Target(ElementType.TYPE)

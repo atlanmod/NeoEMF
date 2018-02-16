@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.core.internal;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.Storable;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -37,7 +36,7 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link List} representing a multi-valued feature which behaves as a proxy and that delegates its operations to the
- * associated {@link Store}.
+ * associated {@link fr.inria.atlanmod.neoemf.data.store.Store}.
  *
  * @param <E> the type of elements in this list
  *
@@ -66,6 +65,11 @@ public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
         this.storable = owner;
     }
 
+    /**
+     * TODO
+     *
+     * @return the store
+     */
     @Nonnull
     protected StoreAdapter eStore() {
         return storable.eStore();
@@ -90,10 +94,18 @@ public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
         }
     }
 
+    /**
+     * TODO
+     *
+     * @return
+     */
     protected boolean delegateIsSet() {
         return eStore().isSet(owner, eStructuralFeature);
     }
 
+    /**
+     * TODO
+     */
     protected void delegateUnset() {
         eStore().unset(owner, eStructuralFeature);
     }
@@ -240,12 +252,25 @@ public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
                 : new EcoreEList.UnmodifiableEList<>(owner, eStructuralFeature, data.length, data);
     }
 
+    /**
+     * TODO
+     *
+     * @return
+     */
     @Nonnull
     @SuppressWarnings("unchecked")
     protected List<E> delegateGetAll() {
         return List.class.cast(eStore().getAll(owner, eStructuralFeature));
     }
 
+    /**
+     * TODO
+     *
+     * @param index
+     * @param collection
+     *
+     * @return
+     */
     @Nonnegative
     protected int delegateAddAll(int index, Collection<? extends E> collection) {
         return eStore().addAll(owner, eStructuralFeature, index, collection);

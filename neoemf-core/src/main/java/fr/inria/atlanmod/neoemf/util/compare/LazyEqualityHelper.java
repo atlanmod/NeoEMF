@@ -16,7 +16,6 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.Match;
 import org.eclipse.emf.compare.utils.EqualityHelper;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +46,7 @@ class LazyEqualityHelper extends EqualityHelper {
     /**
      * Creates a new {@code LazyEqualityHelper} with the given {@code cache}.
      *
-     * @param uriCache the cache to be used for {@link EcoreUtil#getURI(EObject)} calls
+     * @param uriCache the cache to be used for {@link org.eclipse.emf.ecore.util.EcoreUtil#getURI(EObject)} calls
      */
     public LazyEqualityHelper(LoadingCache<EObject, URI> uriCache) {
         super(uriCache);

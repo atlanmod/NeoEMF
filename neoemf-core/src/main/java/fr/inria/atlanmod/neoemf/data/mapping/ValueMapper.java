@@ -42,8 +42,8 @@ public interface ValueMapper {
      * @param value   the value to set
      * @param <V>     the type of value
      *
-     * @return an {@link Optional} containing the previous value of the {@code feature}, or {@link Optional#empty()} if the
-     * feature has no value before
+     * @return an {@link Optional} containing the previous value of the {@code feature}, or {@link Optional#empty()} if
+     * the feature has no value before
      *
      * @throws NullPointerException if any parameter is {@code null}
      */

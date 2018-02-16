@@ -132,8 +132,8 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      * <p>
      * <b>NOTE:</b> This implementation is intended to configure a {@link fr.inria.atlanmod.neoemf.data.store.Store}'
      * chain. The created configuration is not associated with any {@link fr.inria.atlanmod.neoemf.data.BackendFactory},
-     * so it cannot be used to configure a {@link fr.inria.atlanmod.neoemf.data.Backend}.
-     * Use the specific implementation for this.
+     * so it cannot be used to configure a {@link fr.inria.atlanmod.neoemf.data.Backend}. Use the specific
+     * implementation for this.
      *
      * @return a new configuration
      */

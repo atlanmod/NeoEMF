@@ -13,8 +13,6 @@ import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.bind.BindingEngine;
-import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -34,11 +32,13 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * The registry that holds registered {@link URI} schemes with their associated {@link BackendFactory}.
+ * The registry that holds registered {@link org.eclipse.emf.common.util.URI} schemes with their associated {@link
+ * BackendFactory}.
  * <p>
- * This {@code BackendFactoryRegistry} is used for dynamically create {@link Store} and {@link Backend} when loading and
- * saving a {@link PersistentResource}. For this reason, a {@link BackendFactory} must be registered before using these
- * operations, with the {@link #register(String, BackendFactory)} method.
+ * This {@code BackendFactoryRegistry} is used for dynamically create {@link fr.inria.atlanmod.neoemf.data.store.Store}
+ * and {@link fr.inria.atlanmod.neoemf.data.Backend} when loading and saving a {@link
+ * fr.inria.atlanmod.neoemf.resource.PersistentResource}. For this reason, a {@link BackendFactory} must be registered
+ * before using these operations, with the {@link #register(String, BackendFactory)} method.
  *
  * @see PersistentResource#load(Map)
  * @see PersistentResource#save(Map)
@@ -75,7 +75,7 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Returns all registered {@link URI} schemes with their {@link BackendFactory}.
+     * Returns all registered URI schemes with their {@link BackendFactory}.
      *
      * @return an immutable map
      */
@@ -90,9 +90,9 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Returns the {@link BackendFactory} identified by the given {@link URI} {@code scheme}.
+     * Returns the {@link BackendFactory} identified by the given URI {@code scheme}.
      *
-     * @param scheme the {@link URI} scheme identifying the factory
+     * @param scheme the URI scheme identifying the factory
      *
      * @return the factory
      *
@@ -114,9 +114,9 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Checks that a {@link BackendFactory} is registered for the given {@link URI} {@code scheme}.
+     * Checks that a {@link BackendFactory} is registered for the given URI {@code scheme}.
      *
-     * @param scheme the {@link URI} scheme identifying the factory
+     * @param scheme the URI scheme identifying the factory
      *
      * @return {@code true} if a factory is registered for the {@code scheme}
      */
@@ -133,11 +133,11 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Registers a {@link BackendFactory} identified by the given {@link URI} {@code scheme}.
+     * Registers a {@link BackendFactory} identified by the given URI {@code scheme}.
      * <p>
-     * If the {@link URI} {@code scheme} is already registered, its value will be overridden by the {@code factory}.
+     * If the URI {@code scheme} is already registered, its value will be overridden by the {@code factory}.
      *
-     * @param scheme  the {@link URI} scheme identifying the factory
+     * @param scheme  the URI scheme identifying the factory
      * @param factory the factory
      *
      * @throws NullPointerException if any argument is {@code null}
@@ -156,8 +156,8 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Registers all {@link BackendFactory} with their {@link URI} scheme by using the {@link FactoryBinding}
-     * annotation.
+     * Registers all {@link BackendFactory} with their URI scheme by using the {@link
+     * fr.inria.atlanmod.neoemf.bind.FactoryBinding} annotation.
      * <p>
      * This method scan the full Java classpath to retrieve the annotated element.
      */
@@ -170,9 +170,9 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Unregisters a {@link BackendFactory} identified by the specified {@link URI} {@code scheme}.
+     * Unregisters a {@link BackendFactory} identified by the specified URI {@code scheme}.
      *
-     * @param scheme the {@link URI} scheme identifying the factory
+     * @param scheme the URI scheme identifying the factory
      *
      * @throws NullPointerException if any argument is {@code null}
      */

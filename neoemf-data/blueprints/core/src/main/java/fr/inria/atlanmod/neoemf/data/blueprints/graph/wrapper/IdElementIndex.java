@@ -20,7 +20,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * TODO
  * <p>
- * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdVertexIndex} and {@link com.tinkerpop.blueprints.util.wrappers.id.IdEdgeIndex}.
+ * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdVertexIndex} and {@link
+ * com.tinkerpop.blueprints.util.wrappers.id.IdEdgeIndex}.
  *
  * @param <T> the type of the base elements
  * @param <U> the type of this index, and the elements after mapping
@@ -37,7 +38,8 @@ class IdElementIndex<T extends Element, U extends T> extends AbstractBasedObject
     /**
      * Constructs a new {@code IdElementIndex}.
      *
-     * @param baseIndex the base index
+     * @param baseIndex   the base index
+     * @param mappingFunc
      */
     protected IdElementIndex(Index<T> baseIndex, Function<T, U> mappingFunc) {
         super(baseIndex);

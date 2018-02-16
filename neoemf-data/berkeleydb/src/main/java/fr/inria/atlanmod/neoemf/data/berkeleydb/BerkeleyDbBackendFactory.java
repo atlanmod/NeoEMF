@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link BackendFactory} that creates {@link BerkeleyDbBackend} instances.
+ * A {@link fr.inria.atlanmod.neoemf.data.BackendFactory} that creates {@link BerkeleyDbBackend} instances.
  */
 @ParametersAreNonnullByDefault
 public class BerkeleyDbBackendFactory extends AbstractBackendFactory<BerkeleyDbConfig> {

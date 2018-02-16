@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link Edge} representing the relation between an element and another.
+ * An {@link com.tinkerpop.blueprints.Edge} representing the relation between an element and another.
  */
 @ParametersAreNonnullByDefault
 public class ElementEdge extends IdEdge<ModelGraph> {

@@ -17,7 +17,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Store} that simply notifies its associated {@link Backend}, without any additional operation.
+ * A {@link Store} that simply notifies its associated {@link fr.inria.atlanmod.neoemf.data.Backend}, without any
+ * additional operation.
  * <p>
  * It corresponds to the tail of a {@link Store} chain and sets the default result for each method. These methods are
  * handled if the {@link Store} that is supposed to handle them has not been configured during the store chain

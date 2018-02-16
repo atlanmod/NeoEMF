@@ -11,7 +11,6 @@ package fr.inria.atlanmod.neoemf.core.internal;
 import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.commons.primitive.Booleans;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.util.EObjects;
 
 import org.eclipse.emf.ecore.EObject;
@@ -38,10 +37,11 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A read-only sequential {@link List} that delegates its operations to the associated {@link Store}.
+ * A read-only sequential {@link List} that delegates its operations to the associated {@link
+ * fr.inria.atlanmod.neoemf.data.store.Store}.
  * <p>
- * Instances of this class are created by {@link PersistentEObject#eContents()} and allows to access the content of a
- * {@link PersistentEObject} by lazily loading the elements.
+ * Instances of this class are created by {@link fr.inria.atlanmod.neoemf.core.PersistentEObject#eContents()} and allows
+ * to access the content of a {@link fr.inria.atlanmod.neoemf.core.PersistentEObject} by lazily loading the elements.
  *
  * @param <E> the type of elements in this list
  */
@@ -137,7 +137,8 @@ public class ContentsList<E extends EObject> extends AbstractSequentialInternalE
     }
 
     /**
-     * Returns {@code true} if the {@code feature} must be included in the result, {@code false} if it should be ignored.
+     * Returns {@code true} if the {@code feature} must be included in the result, {@code false} if it should be
+     * ignored.
      *
      * @param feature the feature to test
      *

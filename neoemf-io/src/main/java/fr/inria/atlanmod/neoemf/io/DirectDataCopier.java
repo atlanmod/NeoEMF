@@ -17,7 +17,8 @@ import java.io.IOException;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Copier} of {@link DataMapper} instances using the direct import/export.
+ * A {@link fr.inria.atlanmod.commons.function.Copier} of {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper}
+ * instances using the direct import/export.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically

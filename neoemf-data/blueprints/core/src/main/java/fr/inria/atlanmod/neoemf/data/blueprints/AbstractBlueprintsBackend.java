@@ -49,7 +49,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
     /**
      * Constructs a new {@code AbstractBlueprintsBackend} wrapping the provided {@code baseGraph}.
      *
-     * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
+     * @param baseGraph the base {@link com.tinkerpop.blueprints.KeyIndexableGraph} used to access the database
      *
      * @see BlueprintsBackendFactory
      */
@@ -65,7 +65,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      * This method is public for tool compatibility (see the <a href="https://github.com/atlanmod/Mogwai">Mogwaï</a>)
      * framework, NeoEMF consistency is not guaranteed if the graph is modified manually.
      *
-     * @return the underlying Blueprints {@link Graph}
+     * @return the Blueprints graph
      */
     @Nonnull
     public ModelGraph getGraph() {

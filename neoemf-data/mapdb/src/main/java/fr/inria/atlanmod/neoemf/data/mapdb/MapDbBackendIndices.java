@@ -42,7 +42,8 @@ class MapDbBackendIndices extends AbstractMapDbBackend implements ManyValueWithI
     /**
      * Constructs a new {@code MapDbBackendIndices} wrapping the provided {@code database}.
      *
-     * @param database the {@link DB} used to creates the used {@link HTreeMap}s and manage the database
+     * @param database the {@link org.mapdb.DB} used to creates the used {@link org.mapdb.HTreeMap}s and manage the
+     *                 database
      *
      * @see MapDbBackendFactory
      */

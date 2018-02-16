@@ -82,7 +82,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     /**
      * Constructs a new {@code AbstractMapDbBackend} wrapping the provided {@code database}.
      *
-     * @param database the {@link DB} used to create and manage {@link HTreeMap}s
+     * @param database the {@link org.mapdb.DB} used to create and manage {@link org.mapdb.HTreeMap}s
      *
      * @see MapDbBackendFactory
      */

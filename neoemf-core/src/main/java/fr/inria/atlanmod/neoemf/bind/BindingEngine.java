@@ -16,7 +16,6 @@ import fr.inria.atlanmod.commons.reflect.ReflectionException;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
-import org.eclipse.emf.common.util.URI;
 import org.osgi.framework.BundleContext;
 import org.reflections.Configuration;
 import org.reflections.Reflections;
@@ -80,7 +79,7 @@ public final class BindingEngine {
     }
 
     /**
-     * Adds a {@link BundleContext} to be scanned for binding.
+     * Adds a {@link org.osgi.framework.BundleContext} to be scanned for binding.
      * <p>
      * <b>NOTE:</b> This method is intended for internal use and should not be call in standard use.
      *
@@ -146,14 +145,14 @@ public final class BindingEngine {
     // region Annotation processing
 
     /**
-     * Retrieves the {@link URI} scheme for the speficied {@code type}.
+     * Retrieves the URI scheme for the speficied {@code type}.
      * <p>
-     * The {@code type} must be a sub-class of {@link BackendFactory}, or must be annotated with {@link
-     * FactoryBinding}.
+     * The {@code type} must be a sub-class of {@link fr.inria.atlanmod.neoemf.data.BackendFactory}, or must be
+     * annotated with {@link FactoryBinding}.
      *
      * @param type the type
      *
-     * @return the {@link URI} scheme
+     * @return the URI scheme
      *
      * @throws BindingException if no scheme is defined for this {@code type}
      */
@@ -163,11 +162,11 @@ public final class BindingEngine {
     }
 
     /**
-     * Retrieves the {@link URI} scheme for the specified {@code factory}.
+     * Retrieves the URI scheme for the specified {@code factory}.
      *
      * @param factory the factory
      *
-     * @return the {@link URI} scheme
+     * @return the URI scheme
      *
      * @throws BindingException if no scheme is defined for this {@code type}
      */
@@ -179,8 +178,8 @@ public final class BindingEngine {
     /**
      * Retrieves the name for the specified {@code type}.
      * <p>
-     * The {@code type} must be a sub-class of {@link BackendFactory}, or must be annotated with {@link
-     * FactoryBinding}.
+     * The {@code type} must be a sub-class of {@link fr.inria.atlanmod.neoemf.data.BackendFactory}, or must be
+     * annotated with {@link FactoryBinding}.
      *
      * @param type the type
      *
@@ -215,15 +214,17 @@ public final class BindingEngine {
     }
 
     /**
-     * Retrieves the {@link BackendFactory} associated to the {@code type}.
+     * Retrieves the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} associated to the {@code type}.
      * <p>
-     * The {@code type} <b>must</b> be annotated with {@link FactoryBinding}, or implements {@link BackendFactory}.
+     * The {@code type} <b>must</b> be annotated with {@link FactoryBinding}, or implements {@link
+     * fr.inria.atlanmod.neoemf.data.BackendFactory}.
      *
      * @param type the type of the instance to look for
      *
-     * @return a new instance of {@link BackendFactory}
+     * @return the instance of the {@link fr.inria.atlanmod.neoemf.data.BackendFactory}
      *
-     * @throws BindingException    if no instance of {@link BackendFactory} is found for the {@code type}
+     * @throws BindingException    if no instance of {@link fr.inria.atlanmod.neoemf.data.BackendFactory} is found for
+     *                             the {@code type}
      * @throws ReflectionException if an error occurs during the instantiation
      */
     @Nonnull
@@ -246,7 +247,7 @@ public final class BindingEngine {
     }
 
     /**
-     * Returns all {@link BackendFactory} instances that are visible in the classpath.
+     * Returns all {@link fr.inria.atlanmod.neoemf.data.BackendFactory} instances that are visible in the classpath.
      *
      * @return a set of initialized factories
      *
@@ -276,7 +277,8 @@ public final class BindingEngine {
      *
      * @return a new instance of the {@code type}
      *
-     * @throws BindingException    if no instance of {@code type} is found for the {@code value} by using the {@code valueMapping}
+     * @throws BindingException    if no instance of {@code type} is found for the {@code value} by using the {@code
+     *                             valueMapping}
      * @throws ReflectionException if an error occurs during the instantiation
      */
     @Nonnull

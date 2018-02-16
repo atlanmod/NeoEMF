@@ -26,7 +26,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
- * Static utility methods related to {@link EObject}s.
+ * Static utility methods related to {@link org.eclipse.emf.ecore.EObject}s.
  */
 @Static
 @ParametersAreNonnullByDefault

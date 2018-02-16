@@ -16,7 +16,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link DataMapper} that adds pre-processing and post-processing capabilities to data persistence.
+ * A {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper} that adds pre-processing and post-processing capabilities
+ * to data persistence.
  */
 @ParametersAreNonnullByDefault
 public interface Store extends DataMapper {

@@ -28,7 +28,8 @@ import static fr.inria.atlanmod.commons.Preconditions.checkGreaterThanOrEqualTo;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * An abstract {@link UriBuilder} that manages the assembly and the construction of {@link URI}s.
+ * An abstract {@link UriBuilder} that manages the assembly and the construction of {@link
+ * org.eclipse.emf.common.util.URI}s.
  */
 @Builder("builder")
 @ParametersAreNonnullByDefault
@@ -50,7 +51,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
     /**
      * Constructs a new {@code AbstractUriBuilder} with the given {@code scheme}.
      *
-     * @param scheme the scheme to identify the {@link BackendFactory} to use
+     * @param scheme the scheme to identify the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} to use
      */
     protected AbstractUriBuilder(String scheme) {
         this.scheme = Lazy.of(checkNotNull(scheme, "Cannot create URI without a valid scheme"));

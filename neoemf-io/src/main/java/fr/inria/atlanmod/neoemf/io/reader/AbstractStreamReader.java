@@ -164,7 +164,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     }
 
     /**
-     * Reads a {@link BasicNamespace} declaration.
+     * Reads a {@link fr.inria.atlanmod.neoemf.io.bean.BasicNamespace} declaration.
      *
      * @param prefix the prefix
      * @param uri    the URI associated with the {@code prefix}

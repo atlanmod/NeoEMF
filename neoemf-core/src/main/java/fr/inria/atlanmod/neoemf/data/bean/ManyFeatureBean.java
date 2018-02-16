@@ -20,8 +20,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * A simple representation of a multi-valued {@link EStructuralFeature} of a {@link PersistentEObject}. The
- * "multi-valued" characteristic is identified with a position.
+ * A simple representation of a multi-valued {@link org.eclipse.emf.ecore.EStructuralFeature} of a {@link
+ * fr.inria.atlanmod.neoemf.core.PersistentEObject}. The "multi-valued" characteristic is identified with a position.
  */
 @Immutable
 @ParametersAreNonnullByDefault
@@ -35,9 +35,9 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      * a simple representation of a feature of an object. The "multi-valued" characteristic is identified with the
      * {@code position}.
      *
-     * @param owner    the identifier of the {@link PersistentEObject} using the feature
-     * @param id       the identifier of the {@link EStructuralFeature} of the {@code owner}
-     * @param position the position of the {@link EStructuralFeature}
+     * @param owner    the identifier of the {@link fr.inria.atlanmod.neoemf.core.PersistentEObject} using the feature
+     * @param id       the identifier of the {@link org.eclipse.emf.ecore.EStructuralFeature} of the {@code owner}
+     * @param position the position of the {@link org.eclipse.emf.ecore.EStructuralFeature}
      *
      * @throws NullPointerException     if any argument is {@code null}
      * @throws IllegalArgumentException if the {@code position} is negative
@@ -51,10 +51,11 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      * <p>
      * This method behaves like: {@code from(PersistentEObject.from(owner), feature, position)}.
      *
-     * @param owner    the {@link InternalEObject} that will be adapted as {@link PersistentEObject} to have its
-     *                 identifier
-     * @param feature  the {@link EStructuralFeature} of the {@code owner} from which the name will be extracted
-     * @param position the position of the {@link EStructuralFeature}
+     * @param owner    the {@link org.eclipse.emf.ecore.InternalEObject} that will be adapted as {@link
+     *                 fr.inria.atlanmod.neoemf.core.PersistentEObject} to have its identifier
+     * @param feature  the {@link org.eclipse.emf.ecore.EStructuralFeature} of the {@code owner} from which the name
+     *                 will be extracted
+     * @param position the position of the {@link org.eclipse.emf.ecore.EStructuralFeature}
      *
      * @return a new {@code ManyFeatureBean}
      *
@@ -74,9 +75,11 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      * <p>
      * This method behaves like: {@code of(owner.id(), feature.getName(), position)}.
      *
-     * @param owner    the {@link PersistentEObject} from which the identifier will be extracted
-     * @param feature  the {@link EStructuralFeature} of the {@code owner} from which the name will be extracted
-     * @param position the position of the {@link EStructuralFeature}
+     * @param owner    the {@link fr.inria.atlanmod.neoemf.core.PersistentEObject} from which the identifier will be
+     *                 extracted
+     * @param feature  the {@link org.eclipse.emf.ecore.EStructuralFeature} of the {@code owner} from which the name
+     *                 will be extracted
+     * @param position the position of the {@link org.eclipse.emf.ecore.EStructuralFeature}
      *
      * @return a new {@code ManyFeatureBean}
      *
@@ -96,9 +99,9 @@ public class ManyFeatureBean extends AbstractFeatureBean {
      * simple representation of a feature of an object. The "multi-valued" characteristic is identified with the {@code
      * position}.
      *
-     * @param owner    the identifier of the {@link PersistentEObject}
-     * @param id       the identifier of the {@link EStructuralFeature} of the {@code owner}
-     * @param position the position of the {@link EStructuralFeature}
+     * @param owner    the identifier of the {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}
+     * @param id       the identifier of the {@link org.eclipse.emf.ecore.EStructuralFeature} of the {@code owner}
+     * @param position the position of the {@link org.eclipse.emf.ecore.EStructuralFeature}
      *
      * @return a new {@code ManyFeatureBean}
      *
@@ -111,8 +114,8 @@ public class ManyFeatureBean extends AbstractFeatureBean {
     }
 
     /**
-     * Creates a new {@link SingleFeatureBean} with the {@link Id} and the name of this {@code ManyFeatureBean}, without
-     * its position.
+     * Creates a new {@link SingleFeatureBean} with the {@link fr.inria.atlanmod.neoemf.core.Id} and the name of this
+     * {@code ManyFeatureBean}, without its position.
      *
      * @return a new {@link SingleFeatureBean}
      *

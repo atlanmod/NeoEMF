@@ -24,7 +24,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link BiConverter} that transforms the value of {@link EAttribute} instances.
+ * A {@link fr.inria.atlanmod.commons.function.BiConverter} that transforms the value of {@link
+ * org.eclipse.emf.ecore.EAttribute} instances.
  */
 @ParametersAreNonnullByDefault
 public class AttributeConverter implements BiConverter<Object, EAttribute, Object> {
@@ -38,13 +39,15 @@ public class AttributeConverter implements BiConverter<Object, EAttribute, Objec
     /**
      * Constructs a new {@code AttributeConverter} for the given {@code store}.
      *
-     * @param featureMapConverter the converter for {@link FeatureMap.Entry} instances
+     * @param featureMapConverter the converter for {@link org.eclipse.emf.ecore.util.FeatureMap.Entry} instances
      */
     public AttributeConverter(FeatureMapConverter featureMapConverter) {
         this.featureMapConverter = featureMapConverter;
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Converts an instance of the {@code attribute} to a string literal representation.
      *
      * @param value     the value of the attribute
@@ -76,6 +79,8 @@ public class AttributeConverter implements BiConverter<Object, EAttribute, Objec
 
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Creates an instance of the {@code attribute} from a string literal representation.
      *
      * @param value     the string literal representation of the value

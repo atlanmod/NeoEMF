@@ -51,7 +51,8 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
- * The builder that creates {@link Reader} and {@link Writer} instances.
+ * The builder that creates {@link fr.inria.atlanmod.neoemf.io.reader.Reader} and {@link
+ * fr.inria.atlanmod.neoemf.io.writer.Writer} instances.
  */
 @ParametersAreNonnullByDefault
 public final class Migrator<T> {
@@ -144,7 +145,7 @@ public final class Migrator<T> {
     }
 
     /**
-     * Creates a {@code Migrator} that reads a {@link DataMapper}.
+     * Creates a {@code Migrator} that reads a {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper}.
      *
      * @param mapper the mapper to read
      *
@@ -276,6 +277,8 @@ public final class Migrator<T> {
      * @param stream the file where to write
      *
      * @return this migrator (for chaining)
+     *
+     * @throws IOException if an I/O error occurs when writing
      */
     @Nonnull
     public Migrator<T> toXmi(@WillNotClose OutputStream stream) throws IOException {
@@ -329,6 +332,8 @@ public final class Migrator<T> {
 
     /**
      * Runs the migration.
+     *
+     * @throws IOException if an I/O error occurs when migrating
      */
     // TODO Handle constructor parameters
     @SuppressWarnings("JavaReflectionMemberAccess")

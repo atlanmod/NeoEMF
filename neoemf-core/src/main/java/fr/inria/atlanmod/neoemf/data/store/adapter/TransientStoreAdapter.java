@@ -28,11 +28,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * A {@link StoreAdapter}, bound to a {@link Resource.Internal}, that caches the rebuilt {@link PersistentEObject}s. Its
- * content is shared among all the dependencies that use it, i.e. each {@link Resource.Internal} has its own cache.
+ * A {@link StoreAdapter}, bound to a {@link org.eclipse.emf.ecore.resource.Resource.Internal}, that caches the rebuilt
+ * {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s. Its content is shared among all the dependencies that use
+ * it, i.e. each {@link org.eclipse.emf.ecore.resource.Resource.Internal} has its own cache.
  * <p>
- * This adapter is used in a transient context, when {@link PersistentEObject}s are not attached to a {@link
- * fr.inria.atlanmod.neoemf.resource.PersistentResource}.
+ * This adapter is used in a transient context, when {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s are not
+ * attached to a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}.
  *
  * @see PersistentEObject
  */
@@ -49,7 +50,8 @@ public class TransientStoreAdapter extends AbstractStoreAdapter {
     /**
      * Constructs a new {@code TransientStoreAdapter} on the given {@code store}.
      *
-     * @param store the inner store
+     * @param store    the inner store
+     * @param resource the resource to store and access
      */
     public TransientStoreAdapter(Store store, @Nullable Resource.Internal resource) {
         super(store, resource);

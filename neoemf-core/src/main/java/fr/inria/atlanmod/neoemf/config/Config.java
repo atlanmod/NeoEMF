@@ -142,6 +142,7 @@ public interface Config extends ImmutableConfig {
      *
      * @param key   the key to add
      * @param value the value of the {@code key}
+     * @param <V>   the type of the value
      *
      * @return this configuration (for chaining)
      *
@@ -235,7 +236,7 @@ public interface Config extends ImmutableConfig {
     /**
      * Adds the {@code log} feature, with a defined {@code level}, in this configuration.
      *
-     * @param level the logging {@link Level} to use
+     * @param level the logging {@link fr.inria.atlanmod.commons.log.Level} to use
      *
      * @return this configuration (for chaining)
      *

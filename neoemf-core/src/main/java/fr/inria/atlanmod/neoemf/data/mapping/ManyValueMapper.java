@@ -60,13 +60,13 @@ public interface ManyValueMapper extends ValueMapper {
      * @param value   the value to set
      * @param <V>     the type of value
      *
-     * @return an {@link Optional} containing the previous value of the {@code feature}, or {@link Optional#empty()} if the
-     * feature has no value before
+     * @return an {@link Optional} containing the previous value of the {@code feature}, or {@link Optional#empty()} if
+     * the feature has no value before
      *
      * @throws NoSuchElementException if the {@code feature} doesn't exist
      * @throws NullPointerException   if any parameter is {@code null}
-     * @implSpec This method is intended to modify an existing value. If the {@code feature} is not defined, implementations
-     * should not add the value, but throw a {@link NoSuchElementException}.
+     * @implSpec This method is intended to modify an existing value. If the {@code feature} is not defined,
+     * implementations should not add the value, but throw a {@link NoSuchElementException}.
      * @see #addValue(ManyFeatureBean, Object)
      * @see #appendValue(SingleFeatureBean, Object)
      */
@@ -174,8 +174,8 @@ public interface ManyValueMapper extends ValueMapper {
      *
      * @param feature the bean identifying the multi-valued attribute
      *
-     * @return an {@link Optional} containing the number of value of the {@code feature}, or {@link Optional#empty()} if the
-     * {@code feature} hasn't any value, or if {@code size == 0}.
+     * @return an {@link Optional} containing the number of value of the {@code feature}, or {@link Optional#empty()} if
+     * the {@code feature} hasn't any value, or if {@code size == 0}.
      *
      * @throws NullPointerException if the {@code feature} is {@code null}
      */

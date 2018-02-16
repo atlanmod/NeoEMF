@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link Store} wrapper that logs every calls in the {@link Log}.
+ * A {@link Store} wrapper that logs every calls in the {@link fr.inria.atlanmod.commons.log.Log}.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically

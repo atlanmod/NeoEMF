@@ -17,7 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.WillNotClose;
 
 /**
- * A {@link Notifier} able to read data from an {@link Object}.
+ * A {@link fr.inria.atlanmod.neoemf.io.Notifier} able to read data from an {@link Object}.
  *
  * @param <T> the type of the source
  */
@@ -25,7 +25,7 @@ import javax.annotation.WillNotClose;
 public interface Reader<T> extends Notifier<Handler> {
 
     /**
-     * Reads an {@link Object} and notifies registered {@link Handler}.
+     * Reads an {@link Object} and notifies registered {@link fr.inria.atlanmod.neoemf.io.Handler}.
      *
      * @param source the object to read
      *

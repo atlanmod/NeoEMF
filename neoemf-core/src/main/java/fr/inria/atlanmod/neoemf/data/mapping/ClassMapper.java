@@ -28,7 +28,7 @@ public interface ClassMapper {
     /**
      * Retrieves the meta-class for the specified {@code id}.
      *
-     * @param id the {@link Id} of the element
+     * @param id the {@link fr.inria.atlanmod.neoemf.core.Id} of the element
      *
      * @return an {@link Optional} containing the meta-class, or {@link Optional#empty()} if the {@code id} has no
      * defined meta-class.
@@ -41,7 +41,7 @@ public interface ClassMapper {
     /**
      * Stores the {@code metaClass} for the specified {@code id}.
      *
-     * @param id        the {@link Id} of the element
+     * @param id        the {@link fr.inria.atlanmod.neoemf.core.Id} of the element
      * @param metaClass the containing element's meta-class information to store
      *
      * @return {@code true} if the meta-class has been defined, {@code false} if the {@code id} already has a meta-class

@@ -32,8 +32,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * An {@link URLCollector} that analyzes a {@link BundleContext} to retrieve all {@link Bundle}s related to this one.
- * The {@link Bundle}s are located with their {@link URL} by using {@code org.eclipse.core.runtime.FileLocator#getBundleFile()}.
+ * An {@link URLCollector} that analyzes a {@link org.osgi.framework.BundleContext} to retrieve all {@link
+ * org.osgi.framework.Bundle}s related to this one. The {@link org.osgi.framework.Bundle}s are located with their {@link
+ * URL} by using {@code org.eclipse.core.runtime.FileLocator#getBundleFile()}.
  */
 @ParametersAreNonnullByDefault
 public class BundleContextCollector implements URLCollector {

@@ -42,8 +42,9 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * An abstract test-case about {@link DataMapper} and its implementations.
  * <p>
- * Because the behavior of attributes and references must be identical, these test-cases use {@link DataMapperRedirector}s
- * that redirect every calls according to a {@link RedirectionType} given as parameter by the {@link ArgumentsProvider}.
+ * Because the behavior of attributes and references must be identical, these test-cases use {@link
+ * DataMapperRedirector}s that redirect every calls according to a {@link RedirectionType} given as parameter by the
+ * {@link ArgumentsProvider}.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("ConstantConditions") // Test with `@Nonnull`

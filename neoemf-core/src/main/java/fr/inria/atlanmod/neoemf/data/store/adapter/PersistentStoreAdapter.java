@@ -21,7 +21,8 @@ import javax.annotation.concurrent.Immutable;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A {@link StoreAdapter} that caches the rebuilt {@link PersistentEObject}s.
+ * A {@link fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter} that caches the rebuilt {@link
+ * fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
  * <p>
  * This adapter can be used either in a transient context or in a persistent context, and is bound to a unique {@link
  * fr.inria.atlanmod.neoemf.resource.PersistentResource}.

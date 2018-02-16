@@ -16,7 +16,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A specific {@link VertexQuery} for querying a {@link ModelGraph} instance and its components.
+ * A specific {@link com.tinkerpop.blueprints.VertexQuery} for querying a {@link ModelGraph} instance and its
+ * components.
  */
 @ParametersAreNonnullByDefault
 public class ElementVertexQuery extends IdVertexQuery<ElementVertexQuery, ModelGraph> {

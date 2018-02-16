@@ -60,6 +60,8 @@ public class StatsRecordStore extends AbstractListenerStore {
 
     /**
      * Records the call of a method with a value.
+     *
+     * @param info information about the call
      */
     protected void record(CallInfo<?, ?, ?> info) {
         methodCallsAccumulator.computeIfAbsent(info.method(), s -> new AtomicLong()).incrementAndGet();

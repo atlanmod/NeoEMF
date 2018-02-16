@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The factory that creates {@link PersistentEObject} instances from {@link EClass}es.
+ * The factory that creates {@link PersistentEObject} instances from {@link org.eclipse.emf.ecore.EClass}es.
  */
 @Singleton
 @ParametersAreNonnullByDefault

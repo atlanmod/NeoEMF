@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link UriBuilder} that creates MapDB specific resource {@link org.eclipse.emf.common.util.URI}s.
+ * A {@link fr.inria.atlanmod.neoemf.util.UriBuilder} that creates MapDB specific resource URIs.
  *
  * @see MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
@@ -34,7 +34,7 @@ public class MapDbUri extends AbstractUriBuilder {
     }
 
     /**
-     * Creates a new {@link UriBuilder} with the pre-configured scheme.
+     * Creates a new {@link fr.inria.atlanmod.neoemf.util.UriBuilder} with the pre-configured scheme.
      *
      * @return a new builder
      */

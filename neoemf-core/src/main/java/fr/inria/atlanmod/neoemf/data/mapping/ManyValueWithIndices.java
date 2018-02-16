@@ -162,8 +162,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
      * Defines the {@code value} of the specified {@code feature} at a defined position.
      * <p>
      * This method behaves like {@link #valueFor(ManyFeatureBean, Object)}, without checking whether the multi-valued
-     * feature already exists, in order to replace it.
-     * If {@code value == null}, the feature is removed.
+     * feature already exists, in order to replace it. If {@code value == null}, the feature is removed.
      *
      * @param feature the bean identifying the multi-valued attribute
      * @param value   the value to set

@@ -29,7 +29,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link Processor} that analyses XPath references and transforms them in {@link Id}.
+ * A {@link Processor} that analyses XPath references and transforms them in {@link fr.inria.atlanmod.neoemf.core.Id}.
  */
 @ParametersAreNonnullByDefault
 public class XPathResolver extends AbstractProcessor<Handler> {

@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkState;
 
 /**
- * A {@link Writer} that persists data into a {@link DataMapper}.
+ * A {@link Writer} that persists data into a {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper}.
  */
 @ParametersAreNonnullByDefault
 public class DefaultMapperWriter extends AbstractWriter<DataMapper> {

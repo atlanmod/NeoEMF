@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.neoemf.bind.BindingEngine;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -19,18 +18,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A builder of {@link URI}s. Created {@link URI}s are used to locate a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource}
- * and select the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} to use for persistence.
+ * A builder of {@link org.eclipse.emf.common.util.URI}s. Created URIs are used to locate a {@link
+ * fr.inria.atlanmod.neoemf.resource.PersistentResource} and select the {@link fr.inria.atlanmod.neoemf.data.BackendFactory}
+ * to use for persistence.
  */
 @ParametersAreNonnullByDefault
 public interface UriBuilder {
 
     /**
-     * Creates a {@link URI} scheme from the specified {@code baseName}.
+     * Creates a URI scheme from the specified {@code baseName}.
      *
      * @param baseName the base name of the scheme
      *
-     * @return the {@link URI} scheme
+     * @return the URI scheme
      */
     @Nonnull
     static String createScheme(String baseName) {
@@ -63,26 +63,29 @@ public interface UriBuilder {
     }
 
     /**
-     * Checks that the {@link BackendFactory} associated to the created {@link URI} supports file-based storage.
+     * Checks that the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} associated to the created {@link
+     * org.eclipse.emf.common.util.URI} supports file-based storage.
      *
-     * @return {@code true} if file-based {@link URI}s are supported
+     * @return {@code true} if file-based URIs are supported
      */
     boolean supportsFile();
 
     /**
-     * Checks that the {@link BackendFactory} associated to the created {@link URI} supports server-based storage.
+     * Checks that the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} associated to the created {@link
+     * org.eclipse.emf.common.util.URI} supports server-based storage.
      *
-     * @return {@code true} if server-based {@link URI}s are supported
+     * @return {@code true} if server-based URIs are supported
      */
     boolean supportsServer();
 
     /**
-     * Creates a new {@code URI} from the given {@code uri}.
+     * Creates a new URI from the given {@code uri}.
      * <p>
-     * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link UriBuilder}.
-     * Its scheme must be registered in the {@link fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry}.
+     * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link
+     * fr.inria.atlanmod.neoemf.util.UriBuilder}. Its scheme must be registered in the {@link
+     * fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry}.
      *
-     * @param uri the base file-based {@link URI}
+     * @param uri the base file-based URI
      *
      * @return a new URI
      *
@@ -95,9 +98,9 @@ public interface UriBuilder {
     URI fromUri(URI uri);
 
     /**
-     * Creates a new {@code URI} from the given {@code file} descriptor.
+     * Creates a new URI from the given {@code file} descriptor.
      *
-     * @param filePath the path of the {@link File} to build a {@link URI} from
+     * @param filePath the path of the {@link File} to build a URI from
      *
      * @return a new URI
      *
@@ -108,9 +111,9 @@ public interface UriBuilder {
     URI fromFile(String filePath);
 
     /**
-     * Creates a new {@code URI} from the given {@code file} descriptor.
+     * Creates a new URI from the given {@code file} descriptor.
      *
-     * @param file the {@link File} to build a {@link URI} from
+     * @param file the {@link File} to build a URI from
      *
      * @return a new URI
      *
@@ -121,12 +124,12 @@ public interface UriBuilder {
     URI fromFile(File file);
 
     /**
-     * Creates a new {@code URI} from the {@code host}, {@code port}, and {@code model} by creating a hierarchical
-     * {@link URI} that references the distant model resource.
+     * Creates a new URI from the {@code host}, {@code port}, and {@code model} by creating a hierarchical URI that
+     * references the distant model resource.
      *
      * @param host  the address of the server (use {@code "localhost"} if the server is running locally)
      * @param port  the port of the server
-     * @param model a {@link URI} identifying the model in the database
+     * @param model a URI identifying the model in the database
      *
      * @return a new URI
      *
@@ -138,8 +141,8 @@ public interface UriBuilder {
     URI fromServer(String host, int port, URI model);
 
     /**
-     * Creates a new {@code URI} from the {@code host}, {@code port}, and {@code model} by creating a hierarchical
-     * {@link URI} that references the distant model resource.
+     * Creates a new URI from the {@code host}, {@code port}, and {@code model} by creating a hierarchical URI that
+     * references the distant model resource.
      *
      * @param host     the address of the server (use {@code "localhost"} if the server is running locally)
      * @param port     the port of the server

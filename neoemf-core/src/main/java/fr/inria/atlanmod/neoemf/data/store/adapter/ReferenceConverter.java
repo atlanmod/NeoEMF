@@ -12,8 +12,6 @@ import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
-import org.eclipse.emf.ecore.EReference;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,7 +19,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link Converter} that transforms the value of {@link EReference} instances.
+ * A {@link fr.inria.atlanmod.commons.function.Converter} that transforms the value of {@link
+ * org.eclipse.emf.ecore.EReference} instances.
  */
 @ParametersAreNonnullByDefault
 public class ReferenceConverter implements Converter<PersistentEObject, Id> {

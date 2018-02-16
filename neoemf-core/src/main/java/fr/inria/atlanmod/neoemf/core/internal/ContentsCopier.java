@@ -29,8 +29,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link Copier} that recursively copies the content related to a {@link PersistentEObject}, from a {@link
- * StoreAdapter} to another, by using the EMF methods.
+ * A {@link fr.inria.atlanmod.commons.function.Copier} that recursively copies the content related to a {@link
+ * fr.inria.atlanmod.neoemf.core.PersistentEObject}, from a {@link StoreAdapter} to another, by using the EMF methods.
  */
 @ParametersAreNonnullByDefault
 public final class ContentsCopier implements Copier<StoreAdapter> {

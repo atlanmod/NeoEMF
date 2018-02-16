@@ -22,7 +22,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * TODO
  * <p>
- * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdVertexIterable} and {@link com.tinkerpop.blueprints.util.wrappers.id.IdEdgeIterable}.
+ * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdVertexIterable} and {@link
+ * com.tinkerpop.blueprints.util.wrappers.id.IdEdgeIterable}.
  *
  * @param <T> the type of the base elements
  * @param <U> the type of this index, and the elements after mapping
@@ -40,6 +41,7 @@ class IdElementIterable<T extends Element, U extends T> extends AbstractBasedObj
      * Constructs a new {@code IdElementIterable}.
      *
      * @param baseIterable the base iterable
+     * @param mappingFunc
      */
     protected IdElementIterable(Iterable<T> baseIterable, Function<T, U> mappingFunc) {
         super(baseIterable);

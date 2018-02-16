@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A abstract {@link Processor} that delegates all methods to an internal {@link Processor}.
  *
- * @param <H> the type of notified {@link Handler}
+ * @param <H> the type of notified {@link fr.inria.atlanmod.neoemf.io.Handler}
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractProcessor<H extends Handler> extends AbstractNotifier<H> implements Processor {

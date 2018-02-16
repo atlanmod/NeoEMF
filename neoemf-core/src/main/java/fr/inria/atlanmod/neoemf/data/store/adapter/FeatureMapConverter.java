@@ -25,7 +25,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link BiConverter} that transforms the value of {@link FeatureMap.Entry} instances.
+ * A {@link fr.inria.atlanmod.commons.function.BiConverter} that transforms the value of {@link
+ * org.eclipse.emf.ecore.util.FeatureMap.Entry} instances.
  */
 @ParametersAreNonnullByDefault
 public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttribute, String> {
@@ -52,6 +53,8 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Converts an instance of {@link FeatureMap.Entry} to a string literal representation.
      * <p>
      * The {@code entry} is serialized as {@code featureName#value}, where {@code value} is the string representation of
@@ -87,6 +90,8 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Creates an instance of {@link FeatureMap.Entry} from a string literal representation.
      * <p>
      * The {@code entry} must be serialized as {@code featureName#value}.

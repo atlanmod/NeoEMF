@@ -23,7 +23,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A simple representation of a {@link EClass}.
+ * A simple representation of a {@link org.eclipse.emf.ecore.EClass}.
  */
 @ParametersAreNonnullByDefault
 public class BasicMetaclass extends AbstractNamedElement<BasicMetaclass> {
@@ -94,9 +94,9 @@ public class BasicMetaclass extends AbstractNamedElement<BasicMetaclass> {
     }
 
     /**
-     * Returns the {@link EClass} associated to this meta-class.
+     * Returns the {@link org.eclipse.emf.ecore.EClass} associated to this meta-class.
      *
-     * @return the {@link EClass}
+     * @return the {@link org.eclipse.emf.ecore.EClass}
      */
     @Nonnull
     public EClass eClass() {
@@ -104,9 +104,9 @@ public class BasicMetaclass extends AbstractNamedElement<BasicMetaclass> {
     }
 
     /**
-     * Defines the {@link EClass} associated to this meta-class.
+     * Defines the {@link org.eclipse.emf.ecore.EClass} associated to this meta-class.
      *
-     * @param eClass the {@link EClass}
+     * @param eClass the {@link org.eclipse.emf.ecore.EClass}
      *
      * @return this instance (for chaining)
      */

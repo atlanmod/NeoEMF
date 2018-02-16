@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A static factory that creates {@link Converter} instances related to {@link Id}s.
+ * A static factory that creates {@link fr.inria.atlanmod.commons.function.Converter} instances related to {@link Id}s.
  */
 @Static
 @ParametersAreNonnullByDefault
@@ -67,7 +67,8 @@ public final class IdConverters {
     }
 
     /**
-     * Returns the {@link Converter} to use a long representation instead of {@link Id}.
+     * Returns the {@link fr.inria.atlanmod.commons.function.Converter} to use a long representation instead of {@link
+     * Id}.
      *
      * @return a converter
      *
@@ -80,7 +81,8 @@ public final class IdConverters {
     }
 
     /**
-     * Returns the {@link Converter} to use a hexadecimal representation instead of {@link Id}.
+     * Returns the {@link fr.inria.atlanmod.commons.function.Converter} to use a hexadecimal representation instead of
+     * {@link Id}.
      *
      * @return a converter
      *

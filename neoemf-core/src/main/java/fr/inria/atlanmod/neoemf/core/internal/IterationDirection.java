@@ -22,8 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 enum IterationDirection implements IterationHelper {
 
     /**
-     * Undefined direction.
-     * All methods throw an {@link UnsupportedOperationException}.
+     * Undefined direction. All methods throw an {@link UnsupportedOperationException}.
      */
     UNDEFINED {
         @Override

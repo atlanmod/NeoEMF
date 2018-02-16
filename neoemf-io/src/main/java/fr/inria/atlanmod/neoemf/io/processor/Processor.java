@@ -13,7 +13,8 @@ import fr.inria.atlanmod.neoemf.io.Handler;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Handler} that pre-processes and post-processes received events, before notifying the next {@link Handler}.
+ * A {@link fr.inria.atlanmod.neoemf.io.Handler} that pre-processes and post-processes received events, before notifying
+ * the next {@link fr.inria.atlanmod.neoemf.io.Handler}.
  * <p>
  * It can add validation, redirection, cancellation, or data enhancement capabilities.
  * <p>

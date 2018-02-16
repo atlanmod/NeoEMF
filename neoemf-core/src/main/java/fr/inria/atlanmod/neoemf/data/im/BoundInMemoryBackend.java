@@ -38,7 +38,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link InMemoryBackend}, bound to a unique {@link Id}, that stores all elements in {@link Map}s.
+ * A {@link InMemoryBackend}, bound to a unique {@link fr.inria.atlanmod.neoemf.core.Id}, that stores all elements in
+ * {@link Map}s.
  */
 @ParametersAreNonnullByDefault
 public final class BoundInMemoryBackend extends AbstractInMemoryBackend {

@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A simple representation of a {@link EPackage}.
+ * A simple representation of a {@link org.eclipse.emf.ecore.EPackage}.
  */
 @ParametersAreNonnullByDefault
 public class BasicNamespace {
@@ -106,9 +106,9 @@ public class BasicNamespace {
     }
 
     /**
-     * Returns the {@link EPackage} associated to this namespace.
+     * Returns the {@link org.eclipse.emf.ecore.EPackage} associated to this namespace.
      *
-     * @return the {@link EPackage}
+     * @return the {@link org.eclipse.emf.ecore.EPackage}
      */
     @Nonnull
     public EPackage ePackage() {
@@ -116,9 +116,9 @@ public class BasicNamespace {
     }
 
     /**
-     * Defines the {@link EPackage} associated to this namespace.
+     * Defines the {@link org.eclipse.emf.ecore.EPackage} associated to this namespace.
      *
-     * @param ePackage the {@link EPackage}
+     * @param ePackage the {@link org.eclipse.emf.ecore.EPackage}
      *
      * @return this instance (for chaining)
      */

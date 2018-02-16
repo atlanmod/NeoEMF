@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.EAttribute;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A simple representation of a {@link EAttribute}
+ * A simple representation of a {@link org.eclipse.emf.ecore.EAttribute}
  */
 @ParametersAreNonnullByDefault
 public class BasicAttribute extends AbstractBasicFeature<BasicAttribute, EAttribute, Object> {

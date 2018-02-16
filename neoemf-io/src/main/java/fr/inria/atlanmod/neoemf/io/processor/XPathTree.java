@@ -30,9 +30,9 @@ import static java.util.Objects.nonNull;
 /**
  * A structure representing an XPath.
  * <p>
- * It takes the form of a tree that contains nodes: The XPath is updated for each addition/deletion of a node, and
- * only the nodes representing the current XPath are hold. This allows to treat an XPath without keeping all the
- * elements in memory.
+ * It takes the form of a tree that contains nodes: The XPath is updated for each addition/deletion of a node, and only
+ * the nodes representing the current XPath are hold. This allows to treat an XPath without keeping all the elements in
+ * memory.
  */
 @ParametersAreNonnullByDefault
 class XPathTree {
@@ -76,8 +76,8 @@ class XPathTree {
     }
 
     /**
-     * Creates or increments the node with the specified {@code name}. If a child node has already the {@code name},
-     * its index will be incremented, otherwise a new child will be added with {@code index = 0}.
+     * Creates or increments the node with the specified {@code name}. If a child node has already the {@code name}, its
+     * index will be incremented, otherwise a new child will be added with {@code index = 0}.
      *
      * @param name the name of the node
      *

@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.core.internal;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.Storable;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
 import org.eclipse.emf.common.util.ECollections;
@@ -36,7 +35,7 @@ import static java.util.Objects.isNull;
 
 /**
  * A {@link org.eclipse.emf.ecore.util.FeatureMap} representing a multi-valued feature which behaves as a proxy and that
- * delegates its operations to the associated {@link Store}.
+ * delegates its operations to the associated {@link fr.inria.atlanmod.neoemf.data.store.Store}.
  *
  * @see PersistentEObject#eStore()
  */
@@ -61,6 +60,11 @@ public class DirectStoreFeatureMap extends DelegatingFeatureMap {
         this.storable = owner;
     }
 
+    /**
+     * TODO
+     *
+     * @return the store
+     */
     @Nonnull
     protected StoreAdapter eStore() {
         return storable.eStore();
@@ -210,6 +214,11 @@ public class DirectStoreFeatureMap extends DelegatingFeatureMap {
                 : new EcoreEList.UnmodifiableEList<>(owner, eStructuralFeature, data.length, data);
     }
 
+    /**
+     * TODO
+     *
+     * @return
+     */
     @Nonnull
     @SuppressWarnings("unchecked")
     protected List<Entry> delegateGetAll() {

@@ -90,7 +90,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     }
 
     /**
-     * Creates a new in-memory cache to store {@link Id}s and their associated {@link PersistentEObject}.
+     * Creates a new in-memory cache to store {@link fr.inria.atlanmod.neoemf.core.Id}s and their associated {@link
+     * fr.inria.atlanmod.neoemf.core.PersistentEObject}.
      *
      * @return a new cache
      *
@@ -104,7 +105,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     }
 
     /**
-     * Returns the in-memory cache holding recently loaded {@link PersistentEObject}s.
+     * Returns the in-memory cache holding recently loaded {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}s.
      *
      * @return the cache
      */

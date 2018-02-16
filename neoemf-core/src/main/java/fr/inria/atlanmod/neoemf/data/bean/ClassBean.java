@@ -29,7 +29,7 @@ import javax.annotation.concurrent.Immutable;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A simple representation of a {@link EClass}.
+ * A simple representation of a {@link org.eclipse.emf.ecore.EClass}.
  */
 @Immutable
 @ParametersAreNonnullByDefault
@@ -58,10 +58,11 @@ public class ClassBean implements Serializable {
 
     /**
      * Constructs a new {@code ClassBean} with the given {@code name} and {@code uri}, which are used as a simple
-     * representation of a an {@link EClass}.
+     * representation of a an {@link org.eclipse.emf.ecore.EClass}.
      *
-     * @param name the name of the {@link EClass}
-     * @param uri  the literal representation of the {@link URI} of the {@link EClass}
+     * @param name the name of the {@link org.eclipse.emf.ecore.EClass}
+     * @param uri  the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link
+     *             org.eclipse.emf.ecore.EClass}
      */
     protected ClassBean(String name, String uri) {
         this.name = checkNotNull(name, "name");
@@ -86,12 +87,12 @@ public class ClassBean implements Serializable {
     }
 
     /**
-     * Creates a new {@code ClassBean} from the given {@code object}. The {@link EClass} will be found by calling the
-     * {@link PersistentEObject#eClass()} method.
+     * Creates a new {@code ClassBean} from the given {@code object}. The {@link org.eclipse.emf.ecore.EClass} will be
+     * found by calling the {@link fr.inria.atlanmod.neoemf.core.PersistentEObject#eClass()} method.
      * <p>
      * This method behaves like: {@code of(reference.getName(), reference.getEPackage().getNsURI())}.
      *
-     * @param object the object from which the {@link EClass} has to be retrieve with the {@link
+     * @param object the object from which the {@link org.eclipse.emf.ecore.EClass} has to be retrieve with the {@link
      *               PersistentEObject#eClass()} method
      *
      * @return a new {@code ClassBean}
@@ -109,7 +110,7 @@ public class ClassBean implements Serializable {
      * <p>
      * This method behaves like: {@code of(reference.getName(), reference.getEPackage().getNsURI())}.
      *
-     * @param eClass the {@link EClass}
+     * @param eClass the {@link org.eclipse.emf.ecore.EClass}
      *
      * @return a new {@code ClassBean}
      *
@@ -122,10 +123,11 @@ public class ClassBean implements Serializable {
 
     /**
      * Creates a new {@code ClassBean} with the given {@code name} and {@code uri}, which are used as a simple
-     * representation of a an {@link EClass}.
+     * representation of a an {@link org.eclipse.emf.ecore.EClass}.
      *
-     * @param name the name of the {@link EClass}
-     * @param uri  the literal representation of the {@link URI} of the {@link EClass}
+     * @param name the name of the {@link org.eclipse.emf.ecore.EClass}
+     * @param uri  the literal representation of the {@link org.eclipse.emf.common.util.URI} of the {@link
+     *             org.eclipse.emf.ecore.EClass}
      *
      * @return a new {@code ClassBean}
      *
@@ -147,7 +149,7 @@ public class ClassBean implements Serializable {
     }
 
     /**
-     * Returns the literal representation of the {@link URI} of this {@code ClassBean}.
+     * Returns the literal representation of the {@link org.eclipse.emf.common.util.URI} of this {@code ClassBean}.
      *
      * @return the URI
      */
@@ -209,7 +211,7 @@ public class ClassBean implements Serializable {
     }
 
     /**
-     * Retrieves the {@link EClass} corresponding to this {@code ClassBean}.
+     * Retrieves the {@link org.eclipse.emf.ecore.EClass} corresponding to this {@code ClassBean}.
      *
      * @return a class, or {@code null} if it cannot be found
      */

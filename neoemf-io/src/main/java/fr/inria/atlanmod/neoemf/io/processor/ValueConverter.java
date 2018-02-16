@@ -23,7 +23,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link BiConverter} that transforms the value of {@link EAttribute} instances.
+ * A {@link fr.inria.atlanmod.commons.function.BiConverter} that transforms the value of {@link
+ * org.eclipse.emf.ecore.EAttribute} instances.
  */
 @ParametersAreNonnullByDefault
 public class ValueConverter implements BiConverter<String, EAttribute, Object> {
@@ -41,6 +42,8 @@ public class ValueConverter implements BiConverter<String, EAttribute, Object> {
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Converts an instance of the {@code attribute} to a string literal representation.
      *
      * @param value     the value of the attribute
@@ -72,6 +75,8 @@ public class ValueConverter implements BiConverter<String, EAttribute, Object> {
 
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Creates an instance of the {@code attribute} from a string literal representation.
      *
      * @param value     the string literal representation of the value

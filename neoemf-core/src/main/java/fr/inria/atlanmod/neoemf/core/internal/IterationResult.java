@@ -80,6 +80,8 @@ class IterationResult<E> {
     /**
      * Returns an undefined {@code IterationResult}, i.e. not initialized.
      *
+     * @param <E> the type of the result
+     *
      * @return an undefined result
      *
      * @see #isInitialized()
@@ -94,6 +96,7 @@ class IterationResult<E> {
      * Returns an empty {@code IterationResult}.
      *
      * @param direction the iteration direction used to prepared this result
+     * @param <E>       the type of the result
      *
      * @return an empty result
      */

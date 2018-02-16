@@ -22,7 +22,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link TreeIterator} that iterates recursively over all the contents of an {@link Iterable} and its content.
+ * A {@link org.eclipse.emf.common.util.TreeIterator} that iterates recursively over all the contents of an {@link
+ * Iterable} and its content.
  *
  * @param <R> the type of the root
  * @param <E> the type of elements contained in the root

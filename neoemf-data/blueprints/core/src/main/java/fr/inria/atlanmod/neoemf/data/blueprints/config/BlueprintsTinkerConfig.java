@@ -64,7 +64,7 @@ public class BlueprintsTinkerConfig extends BaseBlueprintsConfig<BlueprintsTinke
     }
 
     /**
-     * Defines the given {@link TinkerGraph} {@code fileType} in this configuration.
+     * Defines the given {@link com.tinkerpop.blueprints.impls.tg.TinkerGraph} {@code fileType} in this configuration.
      *
      * @param fileType the graph type
      */

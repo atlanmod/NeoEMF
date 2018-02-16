@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A simple representation of a {@link EStructuralFeature}.
+ * A simple representation of a {@link org.eclipse.emf.ecore.EStructuralFeature}.
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, V>, F extends EStructuralFeature, V> extends AbstractNamedElement<T> {
@@ -168,9 +168,9 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
     }
 
     /**
-     * Returns the {@link EStructuralFeature} associated to this meta-class.
+     * Returns the {@link org.eclipse.emf.ecore.EStructuralFeature} associated to this feature.
      *
-     * @return the {@link EStructuralFeature}
+     * @return the {@link org.eclipse.emf.ecore.EStructuralFeature}
      */
     @Nonnull
     public F eFeature() {
@@ -178,9 +178,9 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
     }
 
     /**
-     * Defines the {@link EStructuralFeature} associated to this meta-class.
+     * Defines the {@link org.eclipse.emf.ecore.EStructuralFeature} associated to this feature.
      *
-     * @param eFeature the {@link EStructuralFeature}
+     * @param eFeature the {@link org.eclipse.emf.ecore.EStructuralFeature}
      *
      * @return this instance (for chaining)
      */

@@ -40,7 +40,8 @@ class DataMapperRedirector {
     private final RedirectionType type;
 
     /**
-     * Constructs a new {@code DataMapperRedirector} on the {@code delegate} mapper, with the given redirection {@code type}.
+     * Constructs a new {@code DataMapperRedirector} on the {@code delegate} mapper, with the given redirection {@code
+     * type}.
      *
      * @param delegate the delegated mapper where to execute queries
      * @param type     the type of redirection
@@ -51,7 +52,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#valueOf(SingleFeatureBean)} ou {@link DataMapper#referenceOf(SingleFeatureBean)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#valueOf(SingleFeatureBean)} ou {@link
+     * DataMapper#referenceOf(SingleFeatureBean)} according to the redirection type.
      *
      * @return the result
      */
@@ -66,7 +68,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#valueFor(SingleFeatureBean, Object)} ou {@link DataMapper#referenceFor(SingleFeatureBean, Id)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#valueFor(SingleFeatureBean, Object)} ou {@link
+     * DataMapper#referenceFor(SingleFeatureBean, Id)} according to the redirection type.
      *
      * @return the result
      */
@@ -80,7 +83,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#removeValue(SingleFeatureBean)} ou {@link DataMapper#removeReference(SingleFeatureBean)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#removeValue(SingleFeatureBean)} ou {@link
+     * DataMapper#removeReference(SingleFeatureBean)} according to the redirection type.
      */
     public void remove(SingleFeatureBean feature) {
         if (type == RedirectionType.ATTRIBUTE) {
@@ -92,7 +96,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#valueOf(ManyFeatureBean)} ou {@link DataMapper#referenceOf(ManyFeatureBean)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#valueOf(ManyFeatureBean)} ou {@link DataMapper#referenceOf(ManyFeatureBean)}
+     * according to the redirection type.
      *
      * @return the result
      */
@@ -107,7 +112,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#allValuesOf(SingleFeatureBean)} ou {@link DataMapper#allReferencesOf(SingleFeatureBean)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#allValuesOf(SingleFeatureBean)} ou {@link
+     * DataMapper#allReferencesOf(SingleFeatureBean)} according to the redirection type.
      *
      * @return the result
      */
@@ -122,7 +128,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#valueFor(ManyFeatureBean, Object)} ou {@link DataMapper#referenceFor(ManyFeatureBean, Id)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#valueFor(ManyFeatureBean, Object)} ou {@link
+     * DataMapper#referenceFor(ManyFeatureBean, Id)} according to the redirection type.
      *
      * @return the result
      */
@@ -137,7 +144,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#addValue(ManyFeatureBean, Object)} ou {@link DataMapper#addReference(ManyFeatureBean, Id)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#addValue(ManyFeatureBean, Object)} ou {@link
+     * DataMapper#addReference(ManyFeatureBean, Id)} according to the redirection type.
      */
     public <V> void add(ManyFeatureBean feature, V value) {
         if (type == RedirectionType.ATTRIBUTE) {
@@ -149,7 +157,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#addAllValues(ManyFeatureBean, List)} ou {@link DataMapper#addAllReferences(ManyFeatureBean, List)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#addAllValues(ManyFeatureBean, List)} ou {@link
+     * DataMapper#addAllReferences(ManyFeatureBean, List)} according to the redirection type.
      */
     public <V> void addAll(ManyFeatureBean feature, List<? extends V> values) {
         if (type == RedirectionType.ATTRIBUTE) {
@@ -161,7 +170,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#appendValue(SingleFeatureBean, Object)} ou {@link DataMapper#appendReference(SingleFeatureBean, Id)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#appendValue(SingleFeatureBean, Object)} ou {@link
+     * DataMapper#appendReference(SingleFeatureBean, Id)} according to the redirection type.
      *
      * @return the result
      */
@@ -176,7 +186,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#appendAllValues(SingleFeatureBean, List)} ou {@link DataMapper#appendAllReferences(SingleFeatureBean, List)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#appendAllValues(SingleFeatureBean, List)} ou {@link
+     * DataMapper#appendAllReferences(SingleFeatureBean, List)} according to the redirection type.
      *
      * @return the result
      */
@@ -191,7 +202,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#removeValue(ManyFeatureBean)} ou {@link DataMapper#removeReference(ManyFeatureBean)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#removeValue(ManyFeatureBean)} ou {@link
+     * DataMapper#removeReference(ManyFeatureBean)} according to the redirection type.
      *
      * @return the result
      */
@@ -206,7 +218,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#removeAllValues(SingleFeatureBean)} ou {@link DataMapper#removeAllReferences(SingleFeatureBean)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#removeAllValues(SingleFeatureBean)} ou {@link
+     * DataMapper#removeAllReferences(SingleFeatureBean)} according to the redirection type.
      */
     public void removeAll(SingleFeatureBean feature) {
         if (type == RedirectionType.ATTRIBUTE) {
@@ -218,7 +231,8 @@ class DataMapperRedirector {
     }
 
     /**
-     * Redirects the call to {@link DataMapper#sizeOfValue(SingleFeatureBean)} ou {@link DataMapper#sizeOfReference(SingleFeatureBean)} according to the redirection type.
+     * Redirects the call to {@link DataMapper#sizeOfValue(SingleFeatureBean)} ou {@link
+     * DataMapper#sizeOfReference(SingleFeatureBean)} according to the redirection type.
      *
      * @return the result
      */

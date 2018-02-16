@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link Vertex} representing a meta-class.
+ * A {@link com.tinkerpop.blueprints.Vertex} representing a meta-class.
  */
 @ParametersAreNonnullByDefault
 public class ClassVertex extends IdVertex<ModelGraph> {

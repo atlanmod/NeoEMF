@@ -85,6 +85,8 @@ final class ConfigFile {
      * @param directory the properties directory to load, or its base directory
      *
      * @return a new configuration
+     *
+     * @throws java.io.IOException if an I/O error occurs when loading the configuration
      */
     @Nonnull
     public static ConfigFile load(Path directory) throws IOException {
@@ -93,6 +95,8 @@ final class ConfigFile {
 
     /**
      * Saves this configuration.
+     *
+     * @throws java.io.IOException if an I/O error occurs when saving the configuration
      */
     public void save() throws IOException {
         if (!Files.exists(file)) {

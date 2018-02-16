@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.core.internal;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -21,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link java.util.Map} representing a multi-valued feature which behaves as a proxy and that delegates its
- * operations to the associated {@link Store}.
+ * operations to the associated {@link fr.inria.atlanmod.neoemf.data.store.Store}.
  *
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values

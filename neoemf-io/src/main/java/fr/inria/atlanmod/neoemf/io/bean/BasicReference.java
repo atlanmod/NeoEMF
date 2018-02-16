@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.EReference;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A simple representation of a {@link EReference}.
+ * A simple representation of a {@link org.eclipse.emf.ecore.EReference}.
  */
 @ParametersAreNonnullByDefault
 public class BasicReference extends AbstractBasicFeature<BasicReference, EReference, Id> {

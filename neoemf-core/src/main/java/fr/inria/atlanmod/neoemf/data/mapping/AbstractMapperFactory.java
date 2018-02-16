@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.data.mapping;
 
 import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +18,8 @@ import java.util.stream.IntStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static java.util.Objects.nonNull;
 
 /**
  * An abstract factory that helps the creation of {@link DataMapper} instances.
@@ -31,17 +32,18 @@ public abstract class AbstractMapperFactory {
      *
      * @param typeName   the name of the type to instantiate
      * @param parameters the parameters of the constructor
+     * @param <T>        the type of the data mapper
      *
-     * @return a new instance of {@link Store}
+     * @return a new instance of {@link DataMapper}
      *
      * @throws InvalidDataMapperException if an error occurs during the instantiation
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    protected final <T> T createMapper(String typeName, Object... parameters) {
+    protected final <T extends DataMapper> T createMapper(String typeName, Object... parameters) {
         try {
             ClassLoader currentClassLoader = getClass().getClassLoader();
-            Class<? extends DataMapper> type = (Class<? extends DataMapper>) Class.forName(typeName, true, currentClassLoader);
+            Class<T> type = (Class<T>) Class.forName(typeName, true, currentClassLoader);
 
             return createMapper(type, parameters);
         }
@@ -58,22 +60,23 @@ public abstract class AbstractMapperFactory {
      *
      * @param type       the type to instantiate
      * @param parameters the parameters of the constructor
+     * @param <T>        the type of the data mapper
      *
-     * @return a new instance of {@link Store}
+     * @return a new instance of {@link DataMapper}
      *
      * @throws InvalidDataMapperException if an error occurs during the instantiation
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    protected final <T> T createMapper(Class<? extends DataMapper> type, Object... parameters) {
+    protected final <T extends DataMapper> T createMapper(Class<T> type, Object... parameters) {
         try {
             Class<?>[] types = Arrays.stream(parameters)
                     .map(Object::getClass)
                     .toArray(Class<?>[]::new);
 
-            Constructor<?> constructor = findConstructor(type, types);
+            Constructor<T> constructor = findConstructor(type, types);
 
-            return (T) constructor.newInstance(parameters);
+            return constructor.newInstance(parameters);
         }
         catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw Throwables.wrap(e, InvalidDataMapperException.class);
@@ -85,19 +88,21 @@ public abstract class AbstractMapperFactory {
      *
      * @param type           the type where to find the constructor
      * @param parameterTypes the declared parameter types of the constructor
+     * @param <T>            the type of the class and its constructors
      *
      * @return the constructor
      *
      * @throws NoSuchMethodException if the constructor cannot be found with the given arguments
      */
     @Nonnull
-    private Constructor<?> findConstructor(Class<?> type, Class<?>... parameterTypes) throws NoSuchMethodException {
-        return Arrays.stream(type.getDeclaredConstructors())
+    @SuppressWarnings("unchecked")
+    private <T> Constructor<T> findConstructor(Class<T> type, Class<?>... parameterTypes) throws NoSuchMethodException {
+        return (Constructor<T>) Arrays.stream(type.getDeclaredConstructors())
                 .peek(c -> c.setAccessible(true))
                 .filter(c -> c.getParameterCount() == parameterTypes.length)
                 .filter(c -> checkConstructor(c, parameterTypes))
                 .findAny()
-                .orElseThrow(() -> new NoSuchMethodException(type.getName() + ".<init>" + argumentTypesToString(parameterTypes)));
+                .orElseThrow(() -> new NoSuchMethodException(String.format("%s.<init>%s", type.getName(), argumentTypesToString(parameterTypes))));
     }
 
     /**
@@ -121,10 +126,10 @@ public abstract class AbstractMapperFactory {
      * @return a formatted string
      */
     @Nonnull
-    private String argumentTypesToString(@Nullable Class<?>[] argTypes) {
+    private String argumentTypesToString(@Nullable Class<?>... argTypes) {
         StringBuilder sb = new StringBuilder();
         sb.append("(");
-        if (argTypes != null) {
+        if (nonNull(argTypes)) {
             for (int i = 0; i < argTypes.length; i++) {
                 if (i > 0) {
                     sb.append(", ");

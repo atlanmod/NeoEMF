@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.resource.internal;
 
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.DefaultPersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
@@ -32,8 +31,8 @@ import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link List} representing the content of the root of a {@link PersistentResource}, that delegates its operations to
- * the associated {@link Store}.
+ * A {@link java.util.List} representing the content of the root of a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource},
+ * that delegates its operations to the associated {@link fr.inria.atlanmod.neoemf.data.store.Store}.
  *
  * @see RootObject
  * @see RootContentsReference
@@ -52,6 +51,8 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
 
     /**
      * Constructs a new {@code RootContentsList}.
+     *
+     * @param resource TODO
      */
     public RootContentsList(DefaultPersistentResource resource) {
         super(new RootObject(resource), new RootContentsReference());

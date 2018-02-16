@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.isNull;
 
 /**
- * An {@link Edge} representing the relation between an element and its container.
+ * An {@link com.tinkerpop.blueprints.Edge} representing the relation between an element and its container.
  */
 @ParametersAreNonnullByDefault
 public class ContainingEdge extends IdEdge<ModelGraph> {

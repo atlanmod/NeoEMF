@@ -151,6 +151,8 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
 
     /**
      * Writes the start of a document, including the general header.
+     *
+     * @throws IOException if an I/O error occurs when writing
      */
     protected abstract void writeStartDocument() throws IOException;
 
@@ -158,6 +160,8 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
      * Writes the start of an element {@code name}
      *
      * @param name the name of the element
+     *
+     * @throws IOException if an I/O error occurs when writing
      */
     protected abstract void writeStartElement(String name) throws IOException;
 
@@ -166,6 +170,8 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
      *
      * @param prefix the prefix of the namespace
      * @param uri    the URI of the namespace
+     *
+     * @throws IOException if an I/O error occurs when writing
      */
     protected abstract void writeNamespace(String prefix, String uri) throws IOException;
 
@@ -174,6 +180,8 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
      *
      * @param name  the name of the attribute
      * @param value the value of the attribute
+     *
+     * @throws IOException if an I/O error occurs when writing
      */
     protected abstract void writeAttribute(String name, String value) throws IOException;
 
@@ -181,19 +189,30 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
      * Writes characters.
      *
      * @param characters the characters
+     *
+     * @throws IOException if an I/O error occurs when writing
      */
     protected abstract void writeCharacters(String characters) throws IOException;
 
     /**
      * Writes the end of the current element.
+     *
+     * @throws IOException if an I/O error occurs when writing
      */
     protected abstract void writeEndElement() throws IOException;
 
     /**
      * Writes the end of the document and finalizes the migration.
+     *
+     * @throws IOException if an I/O error occurs when writing
      */
     protected abstract void writeEndDocument() throws IOException;
 
+    /**
+     * TODO
+     *
+     * @param e the exception to handle
+     */
     private void handleException(IOException e) {
         throw Throwables.wrap(e, RuntimeException.class);
     }

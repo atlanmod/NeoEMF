@@ -56,6 +56,9 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
     @Nonnull
     private final ChronicleMap<SingleFeatureBean, Object> features;
 
+    /**
+     * Constructs a new {@code DefaultInMemoryBackend}.
+     */
     public DefaultInMemoryBackend() {
         final int id = COUNTER.getAndIncrement();
         final String prefix = "default/";

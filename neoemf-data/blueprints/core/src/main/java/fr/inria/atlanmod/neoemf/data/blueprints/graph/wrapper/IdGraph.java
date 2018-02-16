@@ -600,12 +600,14 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     }
 
     /**
-     * Returns the index, from the graph, by its name and index class.
-     * An index is unique up to name.
-     * If no such index exists, it will be created.
+     * Returns the index, from the graph, by its name and index class. An index is unique up to name. If no such index
+     * exists, it will be created.
      *
-     * @param indexName  the name of the manual index
-     * @param indexClass the element class that this index is indexing
+     * @param indexName   the name of the manual index
+     * @param indexClass  the element class that this index is indexing
+     * @param mappingFunc
+     * @param <T>
+     * @param <U>
      *
      * @return the index
      *

@@ -39,7 +39,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The default implementation of a {@link Reader} that reads data from a {@link DataMapper}.
+ * The default implementation of a {@link Reader} that reads data from a {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper}.
  */
 @ParametersAreNonnullByDefault
 public class DefaultMapperReader extends AbstractReader<DataMapper> {

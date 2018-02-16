@@ -44,7 +44,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     /**
      * Constructs a new {@code DefaultBlueprintsBackend} wrapping the provided {@code baseGraph}.
      *
-     * @param baseGraph the base {@link KeyIndexableGraph} used to access the database
+     * @param baseGraph the base {@link com.tinkerpop.blueprints.KeyIndexableGraph} used to access the database
      *
      * @see BlueprintsBackendFactory
      */
@@ -139,6 +139,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Nonnull
+    @Override
     public <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
         checkNotNull(feature, "feature");
         checkNotNull(value, "value");

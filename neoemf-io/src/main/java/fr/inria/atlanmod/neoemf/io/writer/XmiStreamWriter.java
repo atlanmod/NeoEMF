@@ -41,6 +41,8 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
      * Constructs a new {@code XmiStreamWriter} on the given {@code stream}.
      *
      * @param stream the output stream to write
+     *
+     * @throws IOException if an I/O error occurs when writing
      */
     public XmiStreamWriter(OutputStream stream) throws IOException {
         super(stream);
@@ -141,6 +143,11 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
         }
     }
 
+    /**
+     * TODO
+     *
+     * @param e the exception to handle
+     */
     private void handleException(XMLStreamException e) throws IOException {
         throw Throwables.wrap(e, IOException.class);
     }

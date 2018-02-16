@@ -301,6 +301,11 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
         }
     }
 
+    /**
+     * TODO
+     *
+     * @param e the exception to handle
+     */
     private void handleException(IOException e) {
         throw Throwables.wrap(e, RuntimeException.class);
     }

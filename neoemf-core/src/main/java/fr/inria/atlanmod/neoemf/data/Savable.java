@@ -19,6 +19,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface Savable extends Closeable {
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Cleanly closes this manager, clear all data in-memory and releases any system resources associated with it. All
      * modifications are saved before closing.
      * <p>

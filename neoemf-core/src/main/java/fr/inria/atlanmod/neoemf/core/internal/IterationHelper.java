@@ -22,9 +22,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 interface IterationHelper {
 
     /**
-     * Returns {@code true} if the {@code iterator} has more elements when traversing the list in the defined direction.
+     * Returns {@code true} if the {@code iterator} has more elements when traversing the list in the defined
+     * direction.
      *
      * @param iterator an iterator
+     * @param <E>      the type of elements in the iterator
      *
      * @return {@code true} if the {@code iterator} has more elements
      *
@@ -37,6 +39,7 @@ interface IterationHelper {
      * Returns the next element in the {@code iterator} when traversing the list in the defined direction.
      *
      * @param iterator an iterator
+     * @param <E>      the type of elements in the iterator
      *
      * @return the next element
      *
@@ -50,6 +53,7 @@ interface IterationHelper {
      * Moves back the {@code iterator}. This is the reverse operation of {@link #advance(ListIterator)}.
      *
      * @param iterator an iterator
+     * @param <E>      the type of elements in the iterator
      */
     <E> void reverse(ListIterator<E> iterator);
 

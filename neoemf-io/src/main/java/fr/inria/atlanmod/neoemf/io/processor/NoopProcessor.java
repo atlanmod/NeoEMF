@@ -13,7 +13,8 @@ import fr.inria.atlanmod.neoemf.io.writer.Writer;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Processor} that simply notifies registered {@link Writer} of events, without any additional operation.
+ * A {@link Processor} that simply notifies registered {@link fr.inria.atlanmod.neoemf.io.writer.Writer} of events,
+ * without any additional operation.
  */
 @ParametersAreNonnullByDefault
 public final class NoopProcessor extends AbstractProcessor<Writer> implements Processor {

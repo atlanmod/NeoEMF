@@ -11,9 +11,8 @@
  * <p>
  * This package defines the {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri} class, that extends {@link
  * fr.inria.atlanmod.neoemf.util.UriBuilder} to create HBase specific URIs. {@link
- * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri}s are convenience wrappers of EMF {@link
- * org.eclipse.emf.common.util.URI}s that set a dedicated protocol that is parsed by NeoEMF to create the appropriate
- * database.
+ * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri}s are convenience wrappers of EMF URIs that set a dedicated
+ * protocol that is parsed by NeoEMF to create the appropriate database.
  * <p>
  * {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri}s are created using the following code. The {@link
  * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri} allows to easily set the address and port of the remote HBase

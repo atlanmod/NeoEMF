@@ -21,7 +21,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link BackendFactory} that create {@link DefaultInMemoryBackend} instances.
+ * A {@link fr.inria.atlanmod.neoemf.data.BackendFactory} that create {@link fr.inria.atlanmod.neoemf.data.im.InMemoryBackend}
+ * instances.
  */
 @ParametersAreNonnullByDefault
 public class InMemoryBackendFactory extends AbstractBackendFactory<InMemoryConfig> {

@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Vertex} representing an element that can have a meta-class and a container.
+ * A {@link com.tinkerpop.blueprints.Vertex} representing an element that can have a meta-class and a container.
  */
 @ParametersAreNonnullByDefault
 public class ElementVertex extends IdVertex<ModelGraph> {
@@ -136,8 +136,8 @@ public class ElementVertex extends IdVertex<ModelGraph> {
     }
 
     /**
-     * Defines the meta-class vertex from the specified {@code bean}.
-     * If the meta-class is already defined, then this method does nothing.
+     * Defines the meta-class vertex from the specified {@code bean}. If the meta-class is already defined, then this
+     * method does nothing.
      *
      * @param bean the simple representation of the meta-class vertex
      *
@@ -325,8 +325,8 @@ public class ElementVertex extends IdVertex<ModelGraph> {
     }
 
     /**
-     * Replaces the current value of the {@code feature} at the defined {@code position}.
-     * If the current value does not exist, then the new {@code value} is not defined and this method does nothing.
+     * Replaces the current value of the {@code feature} at the defined {@code position}. If the current value does not
+     * exist, then the new {@code value} is not defined and this method does nothing.
      *
      * @param feature  the feature
      * @param position the position of the value
@@ -349,7 +349,8 @@ public class ElementVertex extends IdVertex<ModelGraph> {
     }
 
     /**
-     * Moves the current value of the specified {@code feature} from the {@code sourceIndex} to the {@code targetIndex}.
+     * Moves the current value of the specified {@code feature} from the {@code sourceIndex} to the {@code
+     * targetIndex}.
      *
      * @param feature     the feature
      * @param sourceIndex the current position of the value to move
@@ -379,6 +380,7 @@ public class ElementVertex extends IdVertex<ModelGraph> {
      * TODO
      *
      * @param feature
+     *
      * @return
      */
     @Nonnull
@@ -393,6 +395,7 @@ public class ElementVertex extends IdVertex<ModelGraph> {
      *
      * @param feature
      * @param reference
+     *
      * @return
      */
     @Nonnull
@@ -426,6 +429,7 @@ public class ElementVertex extends IdVertex<ModelGraph> {
      *
      * @param feature
      * @param position
+     *
      * @return
      */
     @Nonnull
@@ -439,6 +443,7 @@ public class ElementVertex extends IdVertex<ModelGraph> {
      * TODO
      *
      * @param feature
+     *
      * @return
      */
     @Nonnull
@@ -454,6 +459,7 @@ public class ElementVertex extends IdVertex<ModelGraph> {
      * @param feature
      * @param startPosition
      * @param endPosition
+     *
      * @return
      */
     @Nonnull
@@ -482,6 +488,7 @@ public class ElementVertex extends IdVertex<ModelGraph> {
      * @param feature
      * @param position
      * @param reference
+     *
      * @return
      */
     @Nonnull

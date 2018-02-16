@@ -34,8 +34,8 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param feature the bean identifying the multi-valued reference
      *
-     * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the feature hasn't any reference
-     * or doesn't exist
+     * @return an {@link Optional} containing the reference, or {@link Optional#empty()} if the feature hasn't any
+     * reference or doesn't exist
      *
      * @throws NullPointerException if the {@code feature} is {@code null}
      */
@@ -60,13 +60,13 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @param feature   the bean identifying the multi-valued reference
      * @param reference the reference to set
      *
-     * @return an {@link Optional} containing the previous reference of the {@code feature}, or {@link Optional#empty()} if
-     * the feature has no reference before
+     * @return an {@link Optional} containing the previous reference of the {@code feature}, or {@link Optional#empty()}
+     * if the feature has no reference before
      *
      * @throws NoSuchElementException if the {@code feature} doesn't exist
      * @throws NullPointerException   if any parameter is {@code null}
-     * @implSpec This method is intended to modify an existing value. If the {@code feature} is not defined, implementations
-     * should not add the value, but throw a {@link NoSuchElementException}.
+     * @implSpec This method is intended to modify an existing value. If the {@code feature} is not defined,
+     * implementations should not add the value, but throw a {@link NoSuchElementException}.
      * @see #addReference(ManyFeatureBean, Id)
      * @see #appendReference(SingleFeatureBean, Id)
      */
@@ -168,8 +168,8 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param feature the bean identifying the multi-valued reference
      *
-     * @return an {@link Optional} containing the number of reference of the {@code feature}, or {@link Optional#empty()} if
-     * the {@code feature} hasn't any reference
+     * @return an {@link Optional} containing the number of reference of the {@code feature}, or {@link
+     * Optional#empty()} if the {@code feature} hasn't any reference
      *
      * @throws NullPointerException if the {@code feature} is {@code null}
      */

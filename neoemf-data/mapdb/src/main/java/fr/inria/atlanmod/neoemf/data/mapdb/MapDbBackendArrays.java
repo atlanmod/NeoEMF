@@ -25,8 +25,8 @@ class MapDbBackendArrays extends AbstractMapDbBackend implements ManyValueWithAr
     /**
      * Constructs a new {@code MapDbBackendArrays} wrapping the provided {@code db}.
      *
-     * @param db the {@link DB} used to creates the used {@link java.util.concurrent.ConcurrentMap}s and manage the
-     *           database
+     * @param db the {@link org.mapdb.DB} used to creates the used {@link java.util.concurrent.ConcurrentMap}s and
+     *           manage the database
      *
      * @see MapDbBackendFactory
      */

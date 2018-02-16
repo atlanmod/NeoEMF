@@ -52,10 +52,11 @@ import static java.util.Objects.nonNull;
 /**
  * The default implementation of a {@link PersistentEObject}.
  * <p>
- * This class extends {@link MinimalEStoreEObjectImpl} that delegates {@link EStructuralFeature} accesses to an
- * underlying {@link Store} that interacts with the database used to store the model.
+ * This class extends {@link org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl} that delegates {@link
+ * org.eclipse.emf.ecore.EStructuralFeature} accesses to an underlying {@link fr.inria.atlanmod.neoemf.data.store.Store}
+ * that interacts with the database used to store the model.
  * <p>
- * {@link DefaultPersistentEObject}s is backend-agnostic, and is as an EMF-level element wrapper in all existing
+ * {@code DefaultPersistentEObject}s are backend-agnostic, and are as an EMF-level element wrapper in all existing
  * database implementations.
  *
  * @see TransientStoreAdapter

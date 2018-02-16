@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The factory that creates {@link Serializer} instances.
+ * The factory that creates {@link fr.inria.atlanmod.commons.io.serializer.Serializer} instances.
  */
 @Singleton
 @ParametersAreNonnullByDefault
@@ -64,7 +64,8 @@ public class BeanSerializerFactory extends SerializerFactory {
     }
 
     /**
-     * Gets the {@link Serializer} for {@link Id}s.
+     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.Serializer} for {@link
+     * fr.inria.atlanmod.neoemf.core.Id}s.
      *
      * @return a serializer
      */
@@ -74,7 +75,8 @@ public class BeanSerializerFactory extends SerializerFactory {
     }
 
     /**
-     * Gets the {@link Serializer} for {@link ClassBean}s.
+     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.Serializer} for {@link
+     * fr.inria.atlanmod.neoemf.data.bean.ClassBean}s.
      *
      * @return a serializer
      */
@@ -84,7 +86,8 @@ public class BeanSerializerFactory extends SerializerFactory {
     }
 
     /**
-     * Gets the {@link Serializer} for {@link SingleFeatureBean}s.
+     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.Serializer} for {@link
+     * fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean}s.
      *
      * @return a serializer
      */
@@ -94,7 +97,8 @@ public class BeanSerializerFactory extends SerializerFactory {
     }
 
     /**
-     * Gets the {@link Serializer} for {@link ManyFeatureBean}s.
+     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.Serializer} for {@link
+     * fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean}s.
      *
      * @return a serializer
      */

@@ -82,8 +82,8 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     /**
      * Creates a new {@code AbstractBerkeleyDbBackend} with the configuration of the databases.
      *
-     * @param environment    the database environment used to create and manage {@link Database}s
-     * @param databaseConfig the configuration of the created {@link Database}s
+     * @param environment    the database environment used to create and manage {@link com.sleepycat.je.Database}s
+     * @param databaseConfig the configuration of the created {@link com.sleepycat.je.Database}s
      */
     protected AbstractBerkeleyDbBackend(Environment environment, DatabaseConfig databaseConfig) {
         checkNotNull(environment, "environment");
@@ -331,6 +331,11 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
         to.sync();
     }
 
+    /**
+     * TODO
+     *
+     * @param e the exception to handle
+     */
     private void handleException(IOException e) {
         throw Throwables.wrap(e, RuntimeException.class);
     }

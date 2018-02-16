@@ -10,8 +10,6 @@ package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.data.store.Store;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -22,10 +20,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A factory of {@link Backend} and {@link Store}.
+ * A factory that creates {@link Backend} instances.
  * <p>
- * The creation can be configured using {@link PersistentResource#save(Map)} and {@link PersistentResource#load(Map)}
- * option maps.
+ * The creation can be configured using {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#save(Map)} and
+ * {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#load(Map)} option maps.
  * <p>
  * For reflection reasons, each instance of {@code BackendFactory} <b>must</b> have a static field {@code NAME},
  * representing the name of the created {@link Backend} instances.

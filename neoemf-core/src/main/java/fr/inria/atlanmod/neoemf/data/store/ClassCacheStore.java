@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Store} wrapper that caches {@link ClassBean}s.
+ * A {@link Store} wrapper that caches {@link fr.inria.atlanmod.neoemf.data.bean.ClassBean}s.
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically

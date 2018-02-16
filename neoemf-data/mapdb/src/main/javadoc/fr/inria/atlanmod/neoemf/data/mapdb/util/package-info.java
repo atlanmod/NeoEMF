@@ -11,9 +11,8 @@
  * <p>
  * This package defines the {@link fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI} class, that extends {@link
  * fr.inria.atlanmod.neoemf.util.URIBuilder} to create MapDB specific URIs. {@link
- * fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI}s are convenience wrappers of EMF {@link
- * org.eclipse.emf.common.util.URI}s that set a dedicated protocol that is parsed by NeoEMF to create the appropriate
- * database.
+ * fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI}s are convenience wrappers of EMF URIs that set a dedicated
+ * protocol that is parsed by NeoEMF to create the appropriate database.
  * <p>
  * {@link fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI}s are created using the following code:
  * <pre>{@code

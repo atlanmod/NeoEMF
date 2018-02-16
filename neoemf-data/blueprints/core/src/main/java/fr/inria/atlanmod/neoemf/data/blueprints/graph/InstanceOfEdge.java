@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link Edge} representing the relation between an element and its meta-class.
+ * An {@link com.tinkerpop.blueprints.Edge} representing the relation between an element and its meta-class.
  */
 @ParametersAreNonnullByDefault
 public class InstanceOfEdge extends IdEdge<ModelGraph> {

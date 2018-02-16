@@ -51,10 +51,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The default implementation of a {@link PersistentResource} that contains {@link PersistentEObject}.
+ * The default implementation of a {@link PersistentResource} that contains {@link
+ * fr.inria.atlanmod.neoemf.core.PersistentEObject}.
  * <p>
- * {@link DefaultPersistentResource}s is backend-agnostic and only delegates model element operations to its internal
- * {@link Store} which is responsible of database access.
+ * {@code DefaultPersistentResource}s are backend-agnostic and only delegate model element operations to their internal
+ * {@link fr.inria.atlanmod.neoemf.data.store.Store} which is responsible of database access.
  *
  * @see PersistentStoreAdapter
  */
@@ -76,7 +77,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     /**
      * Constructs a new {@code DefaultPersistentResource} with the given {@code uri}.
      *
-     * @param uri the {@link URI} of the resource
+     * @param uri the URI of the resource
      */
     public DefaultPersistentResource(URI uri) {
         super(uri);

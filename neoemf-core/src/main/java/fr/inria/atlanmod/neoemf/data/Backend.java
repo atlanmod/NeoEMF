@@ -13,8 +13,9 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link DataMapper} that stores all elements in a database and provides specific methods for communicating with the
- * database that it uses. Each {@code Backend} manage one single instance of a database.
+ * A {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper} that stores all elements in a database and provides
+ * specific methods for communicating with the database that it uses. Each {@code Backend} manage one single instance of
+ * a database.
  */
 @ParametersAreNonnullByDefault
 public interface Backend extends DataMapper {

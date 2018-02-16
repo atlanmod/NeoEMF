@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link BackendFactory} that creates {@link MapDbBackend} instances.
+ * A {@link fr.inria.atlanmod.neoemf.data.BackendFactory} that creates {@link MapDbBackend} instances.
  */
 @ParametersAreNonnullByDefault
 public class MapDbBackendFactory extends AbstractBackendFactory<MapDbConfig> {

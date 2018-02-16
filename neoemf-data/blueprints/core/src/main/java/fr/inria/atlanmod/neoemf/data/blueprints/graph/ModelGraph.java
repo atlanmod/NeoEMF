@@ -43,7 +43,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link Graph} representing a meta-model.
+ * An {@link com.tinkerpop.blueprints.Graph} representing a meta-model.
  */
 @ParametersAreNonnullByDefault
 public class ModelGraph extends IdGraph<ModelGraph> implements Copiable<ModelGraph> {
@@ -121,7 +121,8 @@ public class ModelGraph extends IdGraph<ModelGraph> implements Copiable<ModelGra
     }
 
     /**
-     * Returns the converter to use a primitive representation instead of a complete {@link Id}.
+     * Returns the converter to use a primitive representation instead of a complete {@link
+     * fr.inria.atlanmod.neoemf.core.Id}.
      *
      * @return the id converter
      */
@@ -146,8 +147,8 @@ public class ModelGraph extends IdGraph<ModelGraph> implements Copiable<ModelGra
      *
      * @param id the identifier of the vertex to retrieve from the graph
      *
-     * @return an {@link Optional} containing the vertex referenced by the provided identifier, or
-     * {@link Optional#empty()} when no such vertex exists
+     * @return an {@link Optional} containing the vertex referenced by the provided identifier, or {@link
+     * Optional#empty()} when no such vertex exists
      *
      * @see #getVertex(Object)
      * @see Converter#convert(Object)
@@ -159,8 +160,8 @@ public class ModelGraph extends IdGraph<ModelGraph> implements Copiable<ModelGra
     }
 
     /**
-     * Returns the vertex referenced by the provided {@code id}.
-     * If no such vertex exists, it will be created and added to the graph.
+     * Returns the vertex referenced by the provided {@code id}. If no such vertex exists, it will be created and added
+     * to the graph.
      *
      * @param id the identifier of the vertex to retrieve, or create, from the graph
      *
@@ -258,8 +259,8 @@ public class ModelGraph extends IdGraph<ModelGraph> implements Copiable<ModelGra
     }
 
     /**
-     * Updates the meta-classes index with the specified {@code classVertex}.
-     * If the index already contains the vertex then this method does nothing.
+     * Updates the meta-classes index with the specified {@code classVertex}. If the index already contains the vertex
+     * then this method does nothing.
      *
      * @param classVertex the meta-class vertex to index
      */

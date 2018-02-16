@@ -13,7 +13,7 @@ import fr.inria.atlanmod.neoemf.io.Handler;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Handler} that converts received notifications in write operations.
+ * A {@link fr.inria.atlanmod.neoemf.io.Handler} that converts received notifications in write operations.
  */
 @ParametersAreNonnullByDefault
 public interface Writer extends Handler {
