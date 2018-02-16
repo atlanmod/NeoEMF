@@ -43,16 +43,16 @@ generate() {
     mvn -q -B -f plugins/eclipse package
 
     # Check the generation
-    if ! [ -d "$outputDir" ]; then
+    if ! [ -d ${outputDir} ]; then
         skip "No $TYPE has been generated"
     fi
 
-    cp -Rfp "$outputDir/"* "$1/"
+    cp -Rfp ${outputDir}/* $1
 }
 
 # Clone the publication branch
 cloneBranch() {
-    if ! [ -d "$1" ]; then
+    if ! [ -d $1 ]; then
         e "Cloning '$1' branch..."
 
         git config --global user.email "travis@travis-ci.org"
@@ -66,13 +66,13 @@ mergeIntoBranch() {
     e "Merging $TYPE..."
 
     # Remove existing artifacts
-    if [ -d "$2" ]; then
-        git rm --quiet -rf "$2/"
+    if [ -d $2 ]; then
+        git rm --quiet -rf $2
     fi
 
     # Copy new artifacts
-    mkdir -p "$2"
-    cp -Rfp "$1/"* "$2/"
+    mkdir -p $2
+    cp -Rfp $1/* $2
 
     git add -Af
 
@@ -105,11 +105,11 @@ main() {
     generate ${tmpDir}
 
     # Working in the home directory
-    cd "$HOME"
+    cd $HOME
     cloneBranch ${branch}
 
     # Working in branch directory
-    cd "$branch"
+    cd ${branch}
     mergeIntoBranch ${tmpDir} ${branchOutputDir}
     publish ${branch}
 }
