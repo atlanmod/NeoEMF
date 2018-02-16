@@ -23,18 +23,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.isNull;
 
 /**
- * An {@link IdVertex} representing a meta-class.
+ * A {@link Vertex} representing a meta-class.
  */
 @ParametersAreNonnullByDefault
 public class ClassVertex extends IdVertex<ModelGraph> {
 
     /**
-     * The property key used to define the name of meta-class {@link Vertex}s.
+     * The property key used to define the name of meta-class vertices.
      */
     protected static final String PROPERTY_NAME = "_in";
 
     /**
-     * The property key used to define the URI of meta-class {@link Vertex}s.
+     * The property key used to define the URI of meta-class vertices.
      */
     protected static final String PROPERTY_URI = "_iu";
 
@@ -79,7 +79,7 @@ public class ClassVertex extends IdVertex<ModelGraph> {
      * @param graph the graph that owns the vertex
      * @param bean  the simple representation of the meta-class
      *
-     * @return a new meta-class vertex
+     * @return the meta-class vertex that has been added in the graph
      */
     @Nonnull
     protected static ClassVertex create(ModelGraph graph, ClassBean bean) {
@@ -97,7 +97,9 @@ public class ClassVertex extends IdVertex<ModelGraph> {
      * @param graph the graph that owns the vertex
      * @param bean  the simple representation of the meta-class
      *
-     * @return a new meta-class vertex
+     * @return the meta-class vertex that has been found or added in the graph
+     *
+     * @see #create(ModelGraph, ClassBean)
      */
     @Nonnull
     protected static ClassVertex getOrCreate(ModelGraph graph, ClassBean bean) {
@@ -175,9 +177,9 @@ public class ClassVertex extends IdVertex<ModelGraph> {
     }
 
     /**
-     * Returns all elements that are instance of the represented meta-class.
+     * Returns all vertices that are instance of the represented meta-class.
      *
-     * @return a stream of vertices
+     * @return all vertices that are instance of the represented meta-class
      */
     @Nonnull
     public Iterable<ElementVertex> getAllInstancesOf() {

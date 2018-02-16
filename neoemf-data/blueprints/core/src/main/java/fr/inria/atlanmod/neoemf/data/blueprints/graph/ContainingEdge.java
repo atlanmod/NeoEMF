@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.isNull;
 
 /**
- * An {@link IdEdge} representing the relation between an element and its container.
+ * An {@link Edge} representing the relation between an element and its container.
  */
 @ParametersAreNonnullByDefault
 public class ContainingEdge extends IdEdge<ModelGraph> {
@@ -32,7 +32,7 @@ public class ContainingEdge extends IdEdge<ModelGraph> {
     protected static final String LABEL = "_c";
 
     /**
-     * The property key used to define the name of the the opposite containing feature in container {@link Edge}s.
+     * The property key used to define the name of the opposite containing feature in container edges.
      */
     protected static final String PROPERTY_FID = "_cn";
 
@@ -66,7 +66,7 @@ public class ContainingEdge extends IdEdge<ModelGraph> {
      * @param containment the containment vertex
      * @param bean        the simple representation of the container
      *
-     * @return a new containing edge
+     * @return the containing edge that has been added in the graph
      */
     @Nonnull
     protected static ContainingEdge create(ModelGraph graph, ElementVertex containment, SingleFeatureBean bean) {

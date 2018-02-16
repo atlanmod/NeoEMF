@@ -16,7 +16,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 /**
  * An object based on another, owned by an {@link IdGraph}.
  *
- * @param <T>
+ * @param <T> the type of the base element
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractBasedObject<T> {

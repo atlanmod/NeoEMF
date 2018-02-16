@@ -20,10 +20,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 
 /**
+ * TODO
+ * <p>
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdElement}.
  *
- * @param <E>
- * @param <G>
+ * @param <E> the type of the base element
+ * @param <G> the type of the graph that owns this element
  */
 @ParametersAreNonnullByDefault
 public abstract class IdElement<E extends Element, G extends IdGraph<G>> extends AbstractGraphBasedObject<E, G> implements Element {

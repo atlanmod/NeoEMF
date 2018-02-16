@@ -29,7 +29,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link ManyReferenceMapper} that provides a default behavior to use {@link M} instead of a set of {@link Id} for
+ * A {@link ManyReferenceMapper} that provides a default behavior to use {@code M} instead of a set of {@link Id} for
  * multi-valued references.
  * <p>
  * This mapper merges the multi-valued references into a single value.

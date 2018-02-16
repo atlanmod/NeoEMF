@@ -12,6 +12,13 @@ import com.tinkerpop.blueprints.GraphQuery;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * TODO
+ * <p>
+ * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.WrappedGraphQuery}.
+ *
+ * @param <G> the type of the graph where to execute the query
+ */
 @ParametersAreNonnullByDefault
 public class IdGraphQuery<G extends IdGraph<G>> extends AbstractIdQuery<IdGraphQuery<G>, GraphQuery, G> implements GraphQuery {
 

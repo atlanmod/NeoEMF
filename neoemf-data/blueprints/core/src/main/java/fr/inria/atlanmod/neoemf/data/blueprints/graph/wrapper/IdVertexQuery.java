@@ -15,6 +15,14 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * TODO
+ * <p>
+ * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.WrapperVertexQuery}.
+ *
+ * @param <Q> the "self"-type of this query
+ * @param <G> the type of the graph where to execute the query
+ */
 @ParametersAreNonnullByDefault
 public class IdVertexQuery<Q extends IdVertexQuery<Q, G>, G extends IdGraph<G>> extends AbstractIdQuery<Q, VertexQuery, G> implements VertexQuery {
 

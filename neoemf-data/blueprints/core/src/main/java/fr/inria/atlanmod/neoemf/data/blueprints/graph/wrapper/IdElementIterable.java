@@ -20,14 +20,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * @param <T>
- * @param <U>
+ * TODO
+ * <p>
+ * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdVertexIterable} and {@link com.tinkerpop.blueprints.util.wrappers.id.IdEdgeIterable}.
+ *
+ * @param <T> the type of the base elements
+ * @param <U> the type of this index, and the elements after mapping
  */
 @ParametersAreNonnullByDefault
 class IdElementIterable<T extends Element, U extends T> extends AbstractBasedObject<Iterable<T>> implements CloseableIterable<U> {
 
     /**
-     *
+     * TODO
      */
     @Nonnull
     private final Function<T, U> mappingFunc;

@@ -17,10 +17,19 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.collect.MoreIterables.firstElement;
 
-public class AbstractIdQuery<Q extends AbstractIdQuery<Q, T, G>, T extends Query, G extends IdGraph<G>> extends AbstractGraphBasedObject<T, G> implements Query {
+/**
+ * TODO
+ *
+ * @param <Q> the "self"-type of this query
+ * @param <T> the type of the base query
+ * @param <G> the type of the graph where to execute the query
+ */
+@ParametersAreNonnullByDefault
+public abstract class AbstractIdQuery<Q extends AbstractIdQuery<Q, T, G>, T extends Query, G extends IdGraph<G>> extends AbstractGraphBasedObject<T, G> implements Query {
 
     /**
      * Constructs a new {@code AbstractIdQuery}.
@@ -101,28 +110,69 @@ public class AbstractIdQuery<Q extends AbstractIdQuery<Q, T, G>, T extends Query
         return vertices(IdVertex::new);
     }
 
+    // region Internal
+
+    /**
+     * Execute the query and return the matching edges.
+     *
+     * @param mappingFunc
+     * @param <E>         the type of the expected edges
+     *
+     * @return the unfiltered incident edges
+     */
     @Nonnull
     public <E extends Edge> Iterable<E> edges(BiFunction<Edge, G, E> mappingFunc) {
         return new IdElementIterable<>(base.edges(), e -> mappingFunc.apply(e, graph));
     }
 
+    /**
+     * Execute the query and return the matching edge.
+     *
+     * @param mappingFunc
+     * @param <E>         the type of the expected edge
+     *
+     * @return the only unfiltered incident edge
+     */
     @Nonnull
     public <E extends Edge> Optional<E> edge(BiFunction<Edge, G, E> mappingFunc) {
         return firstElement(edges(mappingFunc));
     }
 
+    /**
+     * Execute the query and return the vertices on the other end of the matching edges.
+     *
+     * @param mappingFunc
+     * @param <V>         the type of the expected vertices
+     *
+     * @return the unfiltered adjacent vertices
+     */
     @Nonnull
     public <V extends Vertex> Iterable<V> vertices(BiFunction<Vertex, G, V> mappingFunc) {
         return new IdElementIterable<>(base.vertices(), v -> mappingFunc.apply(v, graph));
     }
 
+    /**
+     * Execute the query and return the vertex on the other end of the matching edge.
+     *
+     * @param mappingFunc
+     * @param <V>         the type of the expected vertex
+     *
+     * @return the only unfiltered adjacent vertex
+     */
     @Nonnull
     public <V extends Vertex> Optional<V> vertex(BiFunction<Vertex, G, V> mappingFunc) {
         return firstElement(vertices(mappingFunc));
     }
 
+    // endregion
+
+    /**
+     * Returns this instance, casted as a {@code T}.
+     *
+     * @return this instance
+     */
     @SuppressWarnings("unchecked")
-    protected Q me() {
+    protected final Q me() {
         return (Q) this;
     }
 }

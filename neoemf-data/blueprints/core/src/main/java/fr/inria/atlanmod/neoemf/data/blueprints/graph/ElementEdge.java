@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link IdEdge} representing the relation between an element and another.
+ * An {@link Edge} representing the relation between an element and another.
  */
 @ParametersAreNonnullByDefault
 public class ElementEdge extends IdEdge<ModelGraph> {
@@ -69,7 +69,7 @@ public class ElementEdge extends IdEdge<ModelGraph> {
      * @param referenced  the identifier of the referenced vertex
      * @param label       the label to identify the relation
      *
-     * @return a new element edge
+     * @return the element edge that has been added in the graph
      */
     @Nonnull
     protected static ElementEdge create(ModelGraph graph, ElementVertex referencing, Id referenced, String label) {
@@ -86,7 +86,7 @@ public class ElementEdge extends IdEdge<ModelGraph> {
      * @param label       the label to identify the relation
      * @param position    the index of the relation for the referencing vertex (for multi-valud references)
      *
-     * @return a new element edge
+     * @return the element edge that has been added in the graph
      */
     @Nonnull
     protected static ElementEdge create(ModelGraph graph, ElementVertex referencing, Id referenced, String label, @Nonnegative int position) {

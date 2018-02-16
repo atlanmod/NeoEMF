@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link IdVertex} representing an element that can have a meta-class and a container.
+ * A {@link Vertex} representing an element that can have a meta-class and a container.
  */
 @ParametersAreNonnullByDefault
 public class ElementVertex extends IdVertex<ModelGraph> {
@@ -375,6 +375,12 @@ public class ElementVertex extends IdVertex<ModelGraph> {
 
     // region References
 
+    /**
+     * TODO
+     *
+     * @param feature
+     * @return
+     */
     @Nonnull
     public Optional<ElementVertex> getReference(FeatureBean feature) {
         final String label = format(feature);
@@ -382,6 +388,13 @@ public class ElementVertex extends IdVertex<ModelGraph> {
         return getVertex(Direction.OUT, label, ElementVertex::from);
     }
 
+    /**
+     * TODO
+     *
+     * @param feature
+     * @param reference
+     * @return
+     */
     @Nonnull
     public Optional<ElementVertex> setReference(FeatureBean feature, Id reference) {
         final String label = format(feature);
@@ -397,12 +410,24 @@ public class ElementVertex extends IdVertex<ModelGraph> {
         return oldReference;
     }
 
+    /**
+     * TODO
+     *
+     * @param feature
+     */
     public void removeReferences(FeatureBean feature) {
         final String label = format(feature);
 
         getEdges(Direction.OUT, label).forEach(Edge::remove);
     }
 
+    /**
+     * TODO
+     *
+     * @param feature
+     * @param position
+     * @return
+     */
     @Nonnull
     public Optional<ElementVertex> getReference(FeatureBean feature, @Nonnegative int position) {
         final String label = format(feature);
@@ -410,6 +435,12 @@ public class ElementVertex extends IdVertex<ModelGraph> {
         return query().labels(label).direction(Direction.OUT).hasPosition(position).vertex(ElementVertex::from);
     }
 
+    /**
+     * TODO
+     *
+     * @param feature
+     * @return
+     */
     @Nonnull
     public Iterable<ElementEdge> getReferenceEdges(FeatureBean feature) {
         final String label = format(feature);
@@ -417,6 +448,14 @@ public class ElementVertex extends IdVertex<ModelGraph> {
         return getEdges(Direction.OUT, toArray(label), ElementEdge::from);
     }
 
+    /**
+     * TODO
+     *
+     * @param feature
+     * @param startPosition
+     * @param endPosition
+     * @return
+     */
     @Nonnull
     public Iterable<ElementEdge> getReferenceEdges(FeatureBean feature, int startPosition, int endPosition) {
         final String label = format(feature);
@@ -424,12 +463,27 @@ public class ElementVertex extends IdVertex<ModelGraph> {
         return query().labels(label).direction(Direction.OUT).hasPositionBetween(startPosition, endPosition).edges(ElementEdge::from);
     }
 
+    /**
+     * TODO
+     *
+     * @param feature
+     * @param position
+     * @param reference
+     */
     public void setReference(FeatureBean feature, @Nonnegative int position, Id reference) {
         final String label = format(feature);
 
         ElementEdge.create(graph, this, reference, label, position);
     }
 
+    /**
+     * TODO
+     *
+     * @param feature
+     * @param position
+     * @param reference
+     * @return
+     */
     @Nonnull
     public Optional<ElementVertex> replaceReference(FeatureBean feature, @Nonnegative int position, Id reference) {
         final String label = format(feature);

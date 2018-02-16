@@ -16,10 +16,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A specific {@link IdVertexQuery} for querying a {@link ModelGraph} instance and its components.
+ * A specific {@link VertexQuery} for querying a {@link ModelGraph} instance and its components.
  */
 @ParametersAreNonnullByDefault
-class ElementVertexQuery extends IdVertexQuery<ElementVertexQuery, ModelGraph> {
+public class ElementVertexQuery extends IdVertexQuery<ElementVertexQuery, ModelGraph> {
 
     /**
      * Constructs a new {@code IdVertexQuery}.

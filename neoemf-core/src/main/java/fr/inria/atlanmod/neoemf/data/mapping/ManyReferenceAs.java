@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link ManyReferenceMapper} that provides a default behavior to use {@link M} instead of {@link Id} for
+ * A {@link ManyReferenceMapper} that provides a default behavior to use {@code M} instead of {@link Id} for
  * multi-valued references.
  *
  * @param <M> the type of the references after mapping

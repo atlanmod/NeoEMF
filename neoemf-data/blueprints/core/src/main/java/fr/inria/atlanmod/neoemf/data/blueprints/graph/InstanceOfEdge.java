@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link IdEdge} representing the relation between an element and its meta-class.
+ * An {@link Edge} representing the relation between an element and its meta-class.
  */
 @ParametersAreNonnullByDefault
 public class InstanceOfEdge extends IdEdge<ModelGraph> {
@@ -57,7 +57,7 @@ public class InstanceOfEdge extends IdEdge<ModelGraph> {
      * @param instance  the instance vertex
      * @param metaClass the meta-class vertex
      *
-     * @return a new instance-of edge
+     * @return the instance-of edge that has been added in the graph
      */
     @Nonnull
     protected static InstanceOfEdge create(ModelGraph graph, ElementVertex instance, ClassVertex metaClass) {

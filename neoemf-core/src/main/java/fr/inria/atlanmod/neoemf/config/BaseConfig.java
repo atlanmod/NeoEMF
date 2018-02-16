@@ -384,7 +384,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     // endregion
 
     /**
-     * Returns this instance, casted as a {@link C}.
+     * Returns this instance, casted as a {@code C}.
      *
      * @return this instance
      */

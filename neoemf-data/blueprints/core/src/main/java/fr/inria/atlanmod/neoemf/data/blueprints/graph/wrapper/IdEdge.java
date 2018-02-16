@@ -19,9 +19,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
+ * TODO
+ * <p>
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdEdge}.
  *
- * @param <G>
+ * @param <G> the type of the graph that owns this edge
  */
 @ParametersAreNonnullByDefault
 public class IdEdge<G extends IdGraph<G>> extends IdElement<Edge, G> implements Edge {
@@ -59,6 +61,15 @@ public class IdEdge<G extends IdGraph<G>> extends IdElement<Edge, G> implements 
 
     // region Internal
 
+    /**
+     * TODO
+     *
+     * @param direction
+     * @param mappingFunc
+     * @param <E>
+     *
+     * @return
+     */
     @Nonnull
     public <E extends Vertex> E getVertex(Direction direction, BiFunction<Vertex, G, E> mappingFunc) {
         return mappingFunc.apply(base.getVertex(direction), graph);

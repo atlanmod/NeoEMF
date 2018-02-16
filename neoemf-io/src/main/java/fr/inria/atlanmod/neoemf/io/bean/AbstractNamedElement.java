@@ -26,13 +26,13 @@ public abstract class AbstractNamedElement<T extends AbstractNamedElement<T>> {
     private String name;
 
     /**
-     * Returns this instance, casted as a {@link T}.
+     * Returns this instance, casted as a {@code T}.
      *
      * @return this instance
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    protected T me() {
+    protected final T me() {
         return (T) this;
     }
 

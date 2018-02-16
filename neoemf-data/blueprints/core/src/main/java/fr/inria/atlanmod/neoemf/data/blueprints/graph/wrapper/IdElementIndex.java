@@ -18,14 +18,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * @param <T>
- * @param <U>
+ * TODO
+ * <p>
+ * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdVertexIndex} and {@link com.tinkerpop.blueprints.util.wrappers.id.IdEdgeIndex}.
+ *
+ * @param <T> the type of the base elements
+ * @param <U> the type of this index, and the elements after mapping
  */
 @ParametersAreNonnullByDefault
 class IdElementIndex<T extends Element, U extends T> extends AbstractBasedObject<Index<T>> implements Index<U> {
 
     /**
-     *
+     * TODO
      */
     @Nonnull
     private final Function<T, U> mappingFunc;

@@ -14,7 +14,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An {@link AbstractBasedObject} owned by an {@link IdGraph}.
  *
- * @param <G>
+ * @param <T> the type of the base element
+ * @param <G> the type of the graph that owns this element
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractGraphBasedObject<T, G extends IdGraph<G>> extends AbstractBasedObject<T> {

@@ -24,7 +24,7 @@ import static fr.inria.atlanmod.commons.collect.MoreIterables.firstElement;
 /**
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdVertex}.
  *
- * @param <G>
+ * @param <G> the type of the graph that owns this vertex
  */
 @ParametersAreNonnullByDefault
 public class IdVertex<G extends IdGraph<G>> extends IdElement<Vertex, G> implements Vertex {
@@ -106,26 +106,76 @@ public class IdVertex<G extends IdGraph<G>> extends IdElement<Vertex, G> impleme
 
     // region Internal
 
+    /**
+     * TODO
+     *
+     * @param direction
+     * @param label
+     * @param mappingFunc
+     * @param <E>
+     *
+     * @return
+     */
     @Nonnull
     public <E extends Edge> Optional<E> getEdge(Direction direction, String label, BiFunction<Edge, G, E> mappingFunc) {
         return firstElement(getEdges(direction, new String[]{label}, mappingFunc));
     }
 
+    /**
+     * TODO
+     *
+     * @param direction
+     * @param label
+     * @param mappingFunc
+     * @param <V>
+     *
+     * @return
+     */
     @Nonnull
     public <V extends Vertex> Optional<V> getVertex(Direction direction, String label, BiFunction<Vertex, G, V> mappingFunc) {
         return firstElement(getVertices(direction, new String[]{label}, mappingFunc));
     }
 
+    /**
+     * TODO
+     *
+     * @param direction
+     * @param labels
+     * @param mappingFunc
+     * @param <E>
+     *
+     * @return
+     */
     @Nonnull
     public <E extends Edge> Iterable<E> getEdges(Direction direction, String[] labels, BiFunction<Edge, G, E> mappingFunc) {
         return new IdElementIterable<>(base.getEdges(direction, labels), e -> mappingFunc.apply(e, graph));
     }
 
+    /**
+     * TODO
+     *
+     * @param direction
+     * @param labels
+     * @param mappingFunc
+     * @param <V>
+     *
+     * @return
+     */
     @Nonnull
     public <V extends Vertex> Iterable<V> getVertices(Direction direction, String[] labels, BiFunction<Vertex, G, V> mappingFunc) {
         return new IdElementIterable<>(base.getVertices(direction, labels), v -> mappingFunc.apply(v, graph));
     }
 
+    /**
+     * TODO
+     *
+     * @param label
+     * @param vertex
+     * @param mappingFunc
+     * @param <E>
+     *
+     * @return
+     */
     @Nonnull
     public <E extends Edge> E addEdge(String label, Vertex vertex, BiFunction<Edge, G, E> mappingFunc) {
         return graph.addEdge(null, this, vertex, label, mappingFunc);

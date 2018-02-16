@@ -39,9 +39,11 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
+ * TODO
+ * <p>
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdGraph}.
  *
- * @param <G>
+ * @param <G> the "self"-type of this graph
  */
 @ParametersAreNonnullByDefault
 public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableGraph>, KeyIndexableGraph, IndexableGraph, TransactionalGraph {
@@ -385,6 +387,17 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
 
     // region Internal
 
+    /**
+     * TODO
+     *
+     * @param id
+     * @param mappingFunc
+     * @param <V>
+     *
+     * @return
+     *
+     * @see #addVertex(Object)
+     */
     @Nonnull
     public <V extends Vertex> V addVertex(@Nullable Object id, BiFunction<Vertex, G, V> mappingFunc) {
         final Vertex base = baseGraph.addVertex(null);
@@ -397,6 +410,17 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
         return mappingFunc.apply(base, me());
     }
 
+    /**
+     * TODO
+     *
+     * @param id
+     * @param mappingFunc
+     * @param <V>
+     *
+     * @return
+     *
+     * @see #getVertex(Object)
+     */
     @Nonnull
     public <V extends Vertex> Optional<V> getVertex(Object id, BiFunction<Vertex, G, V> mappingFunc) {
         checkNotNull(id, "id");
@@ -408,11 +432,33 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
         return vertex.map(v -> mappingFunc.apply(v, me()));
     }
 
+    /**
+     * TODO
+     *
+     * @param mappingFunc
+     * @param <V>
+     *
+     * @return
+     *
+     * @see #getVertices()
+     */
     @Nonnull
     public <V extends Vertex> Iterable<V> getVertices(BiFunction<Vertex, G, V> mappingFunc) {
         return new IdElementIterable<>(baseGraph.getVertices(), v -> mappingFunc.apply(v, me()));
     }
 
+    /**
+     * TODO
+     *
+     * @param key
+     * @param value
+     * @param mappingFunc
+     * @param <V>
+     *
+     * @return
+     *
+     * @see #getVertices(String, Object)
+     */
     @Nonnull
     public <V extends Vertex> Iterable<V> getVertices(String key, Object value, BiFunction<Vertex, G, V> mappingFunc) {
         checkIndexableKey(key, Vertex.class);
@@ -420,6 +466,20 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
         return new IdElementIterable<>(baseGraph.getVertices(key, value), v -> mappingFunc.apply(v, me()));
     }
 
+    /**
+     * TODO
+     *
+     * @param id
+     * @param outVertex
+     * @param inVertex
+     * @param label
+     * @param mappingFunc
+     * @param <E>
+     *
+     * @return
+     *
+     * @see #addEdge(Object, Vertex, Vertex, String)
+     */
     @Nonnull
     public <E extends Edge> E addEdge(@Nullable Object id, Vertex outVertex, Vertex inVertex, String label, BiFunction<Edge, G, E> mappingFunc) {
         checkNativeElement(outVertex);
@@ -435,6 +495,17 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
         return mappingFunc.apply(base, me());
     }
 
+    /**
+     * TODO
+     *
+     * @param id
+     * @param mappingFunc
+     * @param <E>
+     *
+     * @return
+     *
+     * @see #getEdge(Object)
+     */
     @Nonnull
     public <E extends Edge> Optional<E> getEdge(Object id, BiFunction<Edge, G, E> mappingFunc) {
         checkNotNull(id, "id");
@@ -446,11 +517,33 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
         return edge.map(e -> mappingFunc.apply(e, me()));
     }
 
+    /**
+     * TODO
+     *
+     * @param mappingFunc
+     * @param <E>
+     *
+     * @return
+     *
+     * @see #getEdges()
+     */
     @Nonnull
     public <E extends Edge> Iterable<E> getEdges(BiFunction<Edge, G, E> mappingFunc) {
         return new IdElementIterable<>(baseGraph.getEdges(), e -> mappingFunc.apply(e, me()));
     }
 
+    /**
+     * TODO
+     *
+     * @param key
+     * @param value
+     * @param mappingFunc
+     * @param <E>
+     *
+     * @return
+     *
+     * @see #getEdges(String, Object)
+     */
     @Nonnull
     public <E extends Edge> Iterable<E> getEdges(String key, Object value, BiFunction<Edge, G, E> mappingFunc) {
         checkIndexableKey(key, Edge.class);
@@ -458,6 +551,19 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
         return new IdElementIterable<>(baseGraph.getEdges(key, value), e -> mappingFunc.apply(e, me()));
     }
 
+    /**
+     * TODO
+     *
+     * @param indexName
+     * @param indexClass
+     * @param mappingFunc
+     * @param <T>
+     * @param <U>
+     *
+     * @return
+     *
+     * @see #createIndex(String, Class, Parameter[])
+     */
     @Nonnull
     public <T extends Element, U extends T> Index<U> createIndex(String indexName, Class<T> indexClass, BiFunction<T, G, U> mappingFunc) {
         checkIndexableGraph();
@@ -468,6 +574,19 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
         return new IdElementIndex<>(baseIndex, e -> mappingFunc.apply(e, me()));
     }
 
+    /**
+     * TODO
+     *
+     * @param indexName
+     * @param indexClass
+     * @param mappingFunc
+     * @param <T>
+     * @param <U>
+     *
+     * @return
+     *
+     * @see #getIndex(String, Class)
+     */
     @Nullable
     public <T extends Element, U extends T> Index<U> getIndex(String indexName, Class<T> indexClass, BiFunction<T, G, U> mappingFunc) {
         checkIndexableGraph();
@@ -501,6 +620,11 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
 
     // endregion
 
+    /**
+     * Returns this instance, casted as a {@code G}.
+     *
+     * @return this instance
+     */
     @SuppressWarnings("unchecked")
     private G me() {
         return (G) this;

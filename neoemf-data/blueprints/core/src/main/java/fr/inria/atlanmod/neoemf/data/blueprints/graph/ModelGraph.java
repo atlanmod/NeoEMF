@@ -43,7 +43,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link IdGraph} representing a meta-model.
+ * An {@link Graph} representing a meta-model.
  */
 @ParametersAreNonnullByDefault
 public class ModelGraph extends IdGraph<ModelGraph> implements Copiable<ModelGraph> {
