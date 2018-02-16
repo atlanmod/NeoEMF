@@ -9,23 +9,16 @@
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-import com.mongodb.MongoException;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
-
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.Collection;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.net.URL;
 
 /**
  * A {@link BackendFactory} that creates {@link MongoDbBackend} instances.
@@ -65,10 +58,12 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
     {
         final boolean isReadOnly = config.isReadOnly();
 
+        String databaseName = url.getPath();
+
         //This will not throw any exception even if the connection failed
         //due to MongoDb driver's asynchronous nature
         MongoClient client = new MongoClient(config.getHost(), config.getPort());
-        MongoDatabase database = client.getDatabase(config.getDatabaseName());
+        MongoDatabase database = client.getDatabase(databaseName);
 
         return createMapper(config.getMapping(), config, client, database);
 

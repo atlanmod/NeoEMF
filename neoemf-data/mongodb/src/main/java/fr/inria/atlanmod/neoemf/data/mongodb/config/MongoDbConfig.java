@@ -25,17 +25,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class MongoDbConfig extends BaseConfig<MongoDbConfig> {
 
-    private String host = "localhost";
-    private int port = 27017;
-    private String databaseName = "neoemf";
-
-    /**
-     * @return the database name to use
-     */
-    public String getDatabaseName()
-    {
-        return databaseName;
-    }
+    //TODO Parse host and port from configuration file (~/.neoemf/config/mongodb)
+    private String host;
+    private int port;
 
     /**
      * @return the MongoDb server host
@@ -59,7 +51,8 @@ public class MongoDbConfig extends BaseConfig<MongoDbConfig> {
     protected MongoDbConfig() {
         withDefault();
 
-        // TODO Declare all default values
+        this.host = "localhost";
+        this.port = 27017;
     }
 
     /**
@@ -82,6 +75,4 @@ public class MongoDbConfig extends BaseConfig<MongoDbConfig> {
     }
 
     // TODO Add mapping declarations
-
-    // TODO Add methods specific to your database
 }

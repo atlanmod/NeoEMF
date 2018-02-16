@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
+import org.bson.Document;
 
 import java.io.IOException;
 import java.util.Optional;
