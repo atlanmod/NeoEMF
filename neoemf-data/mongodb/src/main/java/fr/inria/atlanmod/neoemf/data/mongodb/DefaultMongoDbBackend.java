@@ -48,11 +48,6 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         super(config, client, database);
     }
 
-    @Override
-    protected void internalSave() throws IOException {
-        //Nothing to do, save is automatic
-    }
-
     //region Single-valued attributes
 
     @Nonnull
