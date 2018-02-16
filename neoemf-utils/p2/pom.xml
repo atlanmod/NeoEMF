@@ -19,7 +19,7 @@
     </description>
 
     <properties>
-        <tycho-plugin.version>1.0.0</tycho-plugin.version>
+        <tycho-plugin.version>1.1.0</tycho-plugin.version>
     </properties>
 
     <repositories>
@@ -66,6 +66,14 @@
 
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-packaging-plugin</artifactId>
+                <configuration>
+                    <strictVersions>false</strictVersions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-source-plugin</artifactId>
                 <executions>
                     <execution>
@@ -106,7 +114,7 @@
                 <version>3.1.0</version>
                 <configuration>
                     <descriptors>
-                        <descriptor>repackaged.xml</descriptor>
+                        <descriptor>src/main/assembly/repackaged.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>
@@ -147,9 +155,6 @@
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-packaging-plugin</artifactId>
                     <version>${tycho-plugin.version}</version>
-                    <configuration>
-                        <strictVersions>false</strictVersions>
-                    </configuration>
                 </plugin>
 
                 <plugin>

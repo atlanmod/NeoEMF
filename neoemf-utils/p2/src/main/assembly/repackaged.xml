@@ -7,7 +7,7 @@
     <fileSets>
         <fileSet>
             <directory>${project.build.directory}/dependency/</directory>
-            <outputDirectory />
+            <outputDirectory>/</outputDirectory>
 
             <useDefaultExcludes>true</useDefaultExcludes>
 
@@ -16,6 +16,9 @@
                 <exclude>META-INF/*.SF</exclude>
                 <exclude>META-INF/*.DSA</exclude>
                 <exclude>META-INF/*.RSA</exclude>
+
+                <!-- Exclude Maven properties -->
+                <exclude>META-INF/maven/**</exclude>
 
                 <!-- Exclude unnecessary files -->
                 <exclude>**.profile</exclude>

@@ -40,7 +40,7 @@ generate() {
 
     local outputDir=plugins/eclipse/update/target/repository
 
-    mvn -B -q -f plugins/eclipse install &> /dev/null
+    mvn -B -f plugins/eclipse package
 
     # Check the generation
     if ! [ -d "$outputDir" ]; then

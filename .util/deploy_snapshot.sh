@@ -45,7 +45,7 @@ checkBuildInfo() {
 deploy() {
     e "Publishing $TYPE..."
 
-    mvn -B -q clean source:jar-no-fork javadoc:jar install deploy --settings=".util/settings.xml" -DskipTests
+    mvn -B clean source:jar-no-fork javadoc:jar install deploy --settings=".util/settings.xml" -DskipTests
 
     e "$TYPE published"
 }
