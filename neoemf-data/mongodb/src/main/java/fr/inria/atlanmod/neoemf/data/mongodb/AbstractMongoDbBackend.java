@@ -60,22 +60,31 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         this.mongoDatabase = database;
 
         //Create and get the needed collections
-        if (!hasCollection(mongoDatabase, INSTANCES_COLLECTION_NAME))
-            mongoDatabase.createCollection(INSTANCES_COLLECTION_NAME);
+        this.instancesCollection = getOrCreateCollection(INSTANCES_COLLECTION_NAME);
+    }
 
-        this.instancesCollection = mongoDatabase.getCollection(INSTANCES_COLLECTION_NAME);
+    /**
+     * Gets a collection and creates it if needed
+     * @param name the name of the collection
+     * @return the corresponding {@link MongoCollection} instance
+     */
+    private MongoCollection getOrCreateCollection(String name)
+    {
+        if (!hasCollection(name))
+            this.mongoDatabase.createCollection(name);
+
+        return this.mongoDatabase.getCollection(name);
     }
 
 
     /**
-     * Checks if a MongoDatabase has a certain collection
-     * @param db the database to check the collection on
+     * Checks if the database has a certain collection
      * @param collection the collection name
      * @return true if the database contains the collection, false otherwise
      */
-    private boolean hasCollection(MongoDatabase db, String collection)
+    private boolean hasCollection(String collection)
     {
-        for (String c : db.listCollectionNames())
+        for (String c : this.mongoDatabase.listCollectionNames())
         {
             if (c.equals(collection))
                 return true;
