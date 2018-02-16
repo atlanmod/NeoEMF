@@ -40,7 +40,7 @@ generate() {
 
     local outputDir=plugins/eclipse/update/target/repository
 
-    mvn -B -f plugins/eclipse package
+    mvn -q -B -f plugins/eclipse package
 
     # Check the generation
     if ! [ -d "$outputDir" ]; then
@@ -73,7 +73,6 @@ mergeIntoBranch() {
     # Copy new artifacts
     mkdir -p "$2"
     cp -Rfp "$1/"* "$2/"
-    cp "updatesite/index.html" "$2/index.html"
 
     git add -Af
 

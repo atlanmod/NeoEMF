@@ -38,7 +38,7 @@ checkBuildInfo() {
 generate() {
     e "Generating $TYPE..."
 
-    mvn -B javadoc:javadoc javadoc:aggregate -DreportOutputDirectory=$1 -P "deploy-javadoc"
+    mvn -q -B javadoc:javadoc javadoc:aggregate -DreportOutputDirectory=$1 -P "deploy-javadoc"
 
     # Check the generation
     if ! [ -d "$1" ]; then
