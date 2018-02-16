@@ -27,13 +27,11 @@ public interface MongoDbBackend extends Backend {
 
     @Override
     default boolean isPersistent() {
-        // TODO Implement this method
         return true;
     }
 
     @Override
     default boolean isDistributed() {
-        // TODO Implement this method
         return false;
     }
 }

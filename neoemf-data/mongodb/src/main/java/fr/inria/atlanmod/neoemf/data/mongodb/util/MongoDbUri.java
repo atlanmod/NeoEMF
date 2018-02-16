@@ -47,13 +47,11 @@ public class MongoDbUri extends AbstractUriBuilder {
 
     @Override
     public boolean supportsFile() {
-        // TODO Implement this method
-        return true;
+        return false;
     }
 
     @Override
     public boolean supportsServer() {
-        // TODO Implement this method
         return true;
     }
 }

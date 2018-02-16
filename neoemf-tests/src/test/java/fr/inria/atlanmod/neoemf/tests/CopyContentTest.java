@@ -91,10 +91,11 @@ class CopyContentTest extends AbstractResourceBasedTest {
      * Checks the transfer from a fully-transient {@link fr.inria.atlanmod.neoemf.data.Backend} to a persistent {@link
      * fr.inria.atlanmod.neoemf.data.Backend}.
      */
-    @Tag("slower")
+    /*@Tag("slower")
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1}")
     @ArgumentsSource(ContextProvider.AllWithBooleans.class)
     // FIXME May failed with HBase when using no caching store
+    @ArgumentsSource(ContextProvider.AllWithBooleans.class)*/
     void testMoveStandardToPersistentResource(Context context, Boolean isPersistent) throws IOException {
         try (PersistentResource resource = createResource(context, isPersistent)) {
             EObject expected = ResourceManager.load(ResourceManager.xmiStandard());

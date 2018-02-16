@@ -15,9 +15,12 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 
 import fr.inria.atlanmod.neoemf.data.mongodb.MongoDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import org.eclipse.emf.common.util.URI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.File;
 
 /**
  * A specific {@link Context} for the MongoDb implementation.
