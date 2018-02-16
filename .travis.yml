@@ -39,11 +39,11 @@ after_success:
   # Publish code coverage in CodeCov
   - bash <(curl -s https://codecov.io/bash)
 
-  # Deploy snapshot in Maven central
-  - bash .util/deploy_snapshot.sh
-
   # Publish Javadoc in Github
   - bash .util/publish_javadoc.sh
+
+  # Deploy snapshot in Maven central
+  - bash .util/deploy_snapshot.sh
 
   # Publish update-site of Eclipse plugin in Github
   - bash .util/publish_plugin.sh
