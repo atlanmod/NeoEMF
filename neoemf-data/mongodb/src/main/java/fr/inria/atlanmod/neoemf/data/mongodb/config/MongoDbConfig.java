@@ -25,6 +25,34 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class MongoDbConfig extends BaseConfig<MongoDbConfig> {
 
+    private String host = "localhost";
+    private int port = 27017;
+    private String databaseName = "neoemf";
+
+    /**
+     * @return the database name to use
+     */
+    public String getDatabaseName()
+    {
+        return databaseName;
+    }
+
+    /**
+     * @return the MongoDb server host
+     */
+    public String getHost()
+    {
+        return host;
+    }
+
+    /**
+     * @return the MongoDb server port
+     */
+    public int getPort()
+    {
+        return port;
+    }
+
     /**
      * Constructs a new {@code MongoDbConfig}.
      */

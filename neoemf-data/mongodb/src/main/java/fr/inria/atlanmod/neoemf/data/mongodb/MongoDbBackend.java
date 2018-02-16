@@ -8,6 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.neoemf.data.Backend;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -24,6 +26,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface MongoDbBackend extends Backend {
+
+    /**
+     * Sets the MongoDb database to use for this backend
+     * @param db the MongoDatabase
+     */
+    void setMongoDatabase(MongoDatabase db);
+
+    /**
+     * Sets the MongoDb client to use for this backend
+     * @param client the MongoClient
+     */
+    void setMongoClient(MongoClient client);
 
     @Override
     default boolean isPersistent() {

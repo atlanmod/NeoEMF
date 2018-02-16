@@ -8,6 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -33,6 +35,10 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 @ParametersAreNonnullByDefault
 class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
+    private MongoDatabase mongoDatabase;
+    private MongoClient mongoClient;
+
+
     /**
      * Constructs a new {@code DefaultMongoDbBackend}.
      *
@@ -46,7 +52,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
     @Override
     protected void internalClose() throws IOException {
-        //TODO implement this method
+        this.mongoClient.close();
     }
 
     @Override
@@ -274,6 +280,16 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("sizeOfReference");
+    }
+
+    @Override
+    public void setMongoDatabase(MongoDatabase db) {
+        this.mongoDatabase = db;
+    }
+
+    @Override
+    public void setMongoClient(MongoClient client) {
+        this.mongoClient = client;
     }
 
     //endregion

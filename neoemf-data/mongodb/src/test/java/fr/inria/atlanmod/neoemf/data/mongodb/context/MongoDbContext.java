@@ -28,8 +28,14 @@ import java.io.IOException;
  * A specific {@link Context} for the MongoDb implementation.
  */
 @ParametersAreNonnullByDefault
-public abstract class MongoDbContext extends AbstractContext {
+public class MongoDbContext extends AbstractContext {
 
+    public MongoDbContext()
+    {
+        this.config = MongoDbConfig.newConfig();
+    }
+
+    private MongoDbConfig config;
     /**
      * Creates a new {@code MongoDbContext}.
      *
@@ -37,13 +43,13 @@ public abstract class MongoDbContext extends AbstractContext {
      */
     @Nonnull
     public static Context getDefault() {
-        return new MongoDbContext() {
-            @Nonnull
-            @Override
-            public ImmutableConfig config() {
-                return MongoDbConfig.newConfig();
-            }
-        };
+        return new MongoDbContext();
+    }
+
+    @Nonnull
+    @Override
+    public ImmutableConfig config() {
+        return config;
     }
 
     @Nonnull
@@ -61,7 +67,6 @@ public abstract class MongoDbContext extends AbstractContext {
     @Nonnull
     @Override
     public URI createUri(File file) {
-        //TODO Move server host and port to config ?
-        return UriBuilder.forScheme(uriScheme()).fromServer("locahost", 27017, file.getName());
+        return UriBuilder.forScheme(uriScheme()).fromServer(this.config.getHost(), this.config.getPort(), file.getName());
     }
 }

@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
+import com.mongodb.MongoException;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
@@ -62,17 +63,15 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
     {
         final boolean isReadOnly = config.isReadOnly();
 
-        // TODO Start/Create the database
+        //This will not throw any exception even if the connection failed
+        //due to MongoDb driver's asynchronous nature
+        MongoClient client = new MongoClient(config.getHost(), config.getPort());
+        MongoDatabase database = client.getDatabase(config.getDatabaseName());
 
-        //TODO Move this to MongoDbConfig / use url in parameters
-        final MongoClientURI mongoClientURI = new MongoClientURI("mongodb://localhost:27017");
-        final String databaseName = "neoemf-ter";
+        MongoDbBackend backend = createMapper(config.getMapping());
+        backend.setMongoDatabase(database);
 
-        MongoClient client = new MongoClient(mongoClientURI);
-
-        MongoDatabase database = client.getDatabase(databaseName);
-
-        return createMapper(config.getMapping());
+        return backend;
     }
 
     /**
