@@ -37,22 +37,6 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         // TODO Implement this constructor
     }
 
-    @Override
-    public void save() {
-        // TODO Implement this method
-    }
-
-    @Override
-    protected void innerClose() {
-        // TODO Implement this method
-    }
-
-    @Override
-    protected void innerCopyTo(DataMapper target) {
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("innerCopyTo");
-    }
-
     @Nonnull
     @Override
     public Optional<SingleFeatureBean> containerOf(Id id) {

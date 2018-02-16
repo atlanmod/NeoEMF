@@ -17,10 +17,12 @@ import fr.inria.atlanmod.neoemf.data.mongodb.MongoDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
 import org.eclipse.emf.common.util.URI;
+import shaded.org.apache.http.client.utils.URIBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * A specific {@link Context} for the MongoDb implementation.
@@ -29,7 +31,7 @@ import java.io.File;
 public abstract class MongoDbContext extends AbstractContext {
 
     /**
-     * Creates a new {@code BerkeleyDbContext}.
+     * Creates a new {@code MongoDbContext}.
      *
      * @return a new context.
      */
@@ -54,5 +56,12 @@ public abstract class MongoDbContext extends AbstractContext {
     @Override
     public BackendFactory factory() {
         return MongoDbBackendFactory.getInstance();
+    }
+
+    @Nonnull
+    @Override
+    public URI createUri(File file) {
+        //TODO Move server host and port to config ?
+        return UriBuilder.forScheme(uriScheme()).fromServer("locahost", 27017, file.getName());
     }
 }

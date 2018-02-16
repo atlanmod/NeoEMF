@@ -13,6 +13,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -41,6 +42,16 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         super();
 
         // TODO Implement this constructor
+    }
+
+    @Override
+    protected void internalClose() throws IOException {
+        //TODO implement this method
+    }
+
+    @Override
+    protected void internalSave() throws IOException {
+        //TODO implement this method
     }
 
     //region Single-valued attributes
