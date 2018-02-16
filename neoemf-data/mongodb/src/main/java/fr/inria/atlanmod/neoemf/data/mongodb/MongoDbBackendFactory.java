@@ -39,11 +39,6 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
     private static final String NAME = "mongodb";
 
     /**
-     * The name of the collection containing the instances
-     */
-    private static final String INSTANCES_COLLECTION_NAME = "instances";
-
-    /**
      * Constructs a new {@code MongoDbBackendFactory}.
      */
     protected MongoDbBackendFactory() {
@@ -75,32 +70,8 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
         MongoClient client = new MongoClient(config.getHost(), config.getPort());
         MongoDatabase database = client.getDatabase(config.getDatabaseName());
 
-        //Create and get the needed collections
+        return createMapper(config.getMapping(), config, client, database);
 
-        if (!hasCollection(database, INSTANCES_COLLECTION_NAME))
-            database.createCollection(INSTANCES_COLLECTION_NAME);
-
-        MongoCollection instancesCollection = database.getCollection(INSTANCES_COLLECTION_NAME);
-
-        return createMapper(config.getMapping(), client, database, instancesCollection);
-
-    }
-
-    /**
-     * Checks if a MongoDatabase has a certain collection
-     * @param db the database to check the collection on
-     * @param collection the collection name
-     * @return true if the database contains the collection, false otherwise
-     */
-    private boolean hasCollection(MongoDatabase db, String collection)
-    {
-        for (String c : db.listCollectionNames())
-        {
-            if (c.equals(collection))
-                return true;
-        }
-
-        return false;
     }
 
     /**

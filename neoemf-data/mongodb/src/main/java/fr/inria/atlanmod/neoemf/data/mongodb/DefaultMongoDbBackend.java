@@ -15,6 +15,9 @@ import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,32 +39,18 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 @ParametersAreNonnullByDefault
 class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
-    private MongoDatabase mongoDatabase;
-    private MongoClient mongoClient;
-    private MongoCollection instancesCollection;
-
-
     /**
      * Constructs a new {@code DefaultMongoDbBackend}.
      *
      * @see MongoDbBackendFactory
      */
-    protected DefaultMongoDbBackend(MongoClient client, MongoDatabase database, MongoCollection instancesCollection) {
-        super();
-
-        this.mongoClient = client;
-        this.mongoDatabase = database;
-        this.instancesCollection = instancesCollection;
-    }
-
-    @Override
-    protected void internalClose() throws IOException {
-        this.mongoClient.close();
+    protected DefaultMongoDbBackend(MongoDbConfig config, MongoClient client, MongoDatabase database) {
+        super(config, client, database);
     }
 
     @Override
     protected void internalSave() throws IOException {
-        //TODO implement this method
+        //Nothing to do, save is automatic
     }
 
     //region Single-valued attributes
