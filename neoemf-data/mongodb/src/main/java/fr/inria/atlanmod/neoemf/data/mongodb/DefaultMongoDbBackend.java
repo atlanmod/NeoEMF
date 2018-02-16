@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -37,6 +38,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
     private MongoDatabase mongoDatabase;
     private MongoClient mongoClient;
+    private MongoCollection instancesCollection;
 
 
     /**
@@ -44,10 +46,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
      *
      * @see MongoDbBackendFactory
      */
-    protected DefaultMongoDbBackend() {
+    protected DefaultMongoDbBackend(MongoClient client, MongoDatabase database, MongoCollection instancesCollection) {
         super();
 
-        // TODO Implement this constructor
+        this.mongoClient = client;
+        this.mongoDatabase = database;
+        this.instancesCollection = instancesCollection;
     }
 
     @Override
@@ -280,16 +284,6 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("sizeOfReference");
-    }
-
-    @Override
-    public void setMongoDatabase(MongoDatabase db) {
-        this.mongoDatabase = db;
-    }
-
-    @Override
-    public void setMongoClient(MongoClient client) {
-        this.mongoClient = client;
     }
 
     //endregion

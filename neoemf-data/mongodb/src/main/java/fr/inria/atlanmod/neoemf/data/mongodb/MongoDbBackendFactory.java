@@ -11,6 +11,7 @@ package fr.inria.atlanmod.neoemf.data.mongodb;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.MongoException;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
@@ -21,6 +22,7 @@ import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Collection;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -35,6 +37,11 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
      * The literal description of the factory.
      */
     private static final String NAME = "mongodb";
+
+    /**
+     * The name of the collection containing the instances
+     */
+    private static final String INSTANCES_COLLECTION_NAME = "instances";
 
     /**
      * Constructs a new {@code MongoDbBackendFactory}.
@@ -68,10 +75,32 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
         MongoClient client = new MongoClient(config.getHost(), config.getPort());
         MongoDatabase database = client.getDatabase(config.getDatabaseName());
 
-        MongoDbBackend backend = createMapper(config.getMapping());
-        backend.setMongoDatabase(database);
+        //Create and get the needed collections
 
-        return backend;
+        if (!hasCollection(database, INSTANCES_COLLECTION_NAME))
+            database.createCollection(INSTANCES_COLLECTION_NAME);
+
+        MongoCollection instancesCollection = database.getCollection(INSTANCES_COLLECTION_NAME);
+
+        return createMapper(config.getMapping(), client, database, instancesCollection);
+
+    }
+
+    /**
+     * Checks if a MongoDatabase has a certain collection
+     * @param db the database to check the collection on
+     * @param collection the collection name
+     * @return true if the database contains the collection, false otherwise
+     */
+    private boolean hasCollection(MongoDatabase db, String collection)
+    {
+        for (String c : db.listCollectionNames())
+        {
+            if (c.equals(collection))
+                return true;
+        }
+
+        return false;
     }
 
     /**
