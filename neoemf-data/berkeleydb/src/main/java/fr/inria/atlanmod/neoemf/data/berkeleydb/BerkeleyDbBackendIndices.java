@@ -55,14 +55,14 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     }
 
     @Override
-    protected void innerClose() {
+    protected void internalClose() {
         manyFeatures.close();
-        super.innerClose();
+        super.internalClose();
     }
 
     @Override
-    protected void innerCopyTo(DataMapper target) {
-        super.innerCopyTo(target);
+    protected void internalCopyTo(DataMapper target) {
+        super.internalCopyTo(target);
 
         BerkeleyDbBackendIndices to = BerkeleyDbBackendIndices.class.cast(target);
         this.copy(manyFeatures, to.manyFeatures);
@@ -70,21 +70,21 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueOf(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return get(manyFeatures, key, SERIALIZER_FACTORY.forManyFeature(), SERIALIZER_FACTORY.forAny());
+        return get(manyFeatures, feature, SERIALIZER_FACTORY.forManyFeature(), SERIALIZER_FACTORY.forAny());
     }
 
     @Override
-    public <V> void innerValueFor(ManyFeatureBean key, @Nullable V value) {
-        checkNotNull(key, "key");
+    public <V> void valueForNullable(ManyFeatureBean feature, @Nullable V value) {
+        checkNotNull(feature, "feature");
 
         if (nonNull(value)) {
-            put(manyFeatures, key, value, SERIALIZER_FACTORY.forManyFeature(), SERIALIZER_FACTORY.forAny());
+            put(manyFeatures, feature, value, SERIALIZER_FACTORY.forManyFeature(), SERIALIZER_FACTORY.forAny());
         }
         else {
-            delete(manyFeatures, key, SERIALIZER_FACTORY.forManyFeature());
+            delete(manyFeatures, feature, SERIALIZER_FACTORY.forManyFeature());
         }
     }
 }

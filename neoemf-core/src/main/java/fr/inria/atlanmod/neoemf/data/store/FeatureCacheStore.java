@@ -44,194 +44,194 @@ public class FeatureCacheStore extends AbstractCacheStore<FeatureBean, Object> {
     @Nonnull
     @Override
     @SuppressWarnings("unchecked")
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        return Optional.ofNullable((V) cache.get(key, k -> super.valueOf(SingleFeatureBean.class.cast(k)).orElse(null)));
+    public <V> Optional<V> valueOf(SingleFeatureBean feature) {
+        return Optional.ofNullable((V) cache.get(feature, k -> super.valueOf(SingleFeatureBean.class.cast(k)).orElse(null)));
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        cache.put(key, value);
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        cache.put(feature, value);
 
-        return super.valueFor(key, value);
+        return super.valueFor(feature, value);
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        cache.invalidate(key);
+    public void removeValue(SingleFeatureBean feature) {
+        cache.invalidate(feature);
 
-        super.removeValue(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
-        return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(SingleFeatureBean.class.cast(k)).orElse(null))));
+        super.removeValue(feature);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        cache.put(key, reference);
+    public Optional<Id> referenceOf(SingleFeatureBean feature) {
+        return Optional.ofNullable(Id.class.cast(cache.get(feature, k -> super.referenceOf(SingleFeatureBean.class.cast(k)).orElse(null))));
+    }
 
-        return super.referenceFor(key, reference);
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(SingleFeatureBean feature, Id reference) {
+        cache.put(feature, reference);
+
+        return super.referenceFor(feature, reference);
     }
 
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        cache.invalidate(key);
+    public void removeReference(SingleFeatureBean feature) {
+        cache.invalidate(feature);
 
-        super.removeReference(key);
+        super.removeReference(feature);
     }
 
     @Nonnull
     @Override
     @SuppressWarnings("unchecked")
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        return Optional.ofNullable((V) cache.get(key, k -> super.valueOf(ManyFeatureBean.class.cast(k)).orElse(null)));
+    public <V> Optional<V> valueOf(ManyFeatureBean feature) {
+        return Optional.ofNullable((V) cache.get(feature, k -> super.valueOf(ManyFeatureBean.class.cast(k)).orElse(null)));
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        cache.put(key, value);
+    public <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
+        cache.put(feature, value);
 
-        return super.valueFor(key, value);
+        return super.valueFor(feature, value);
     }
 
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        cache.put(key, value);
+    public <V> void addValue(ManyFeatureBean feature, V value) {
+        cache.put(feature, value);
 
-        IntStream.range(key.position() + 1, sizeOfValue(key.withoutPosition()).orElseGet(() -> key.position() + 1))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+        IntStream.range(feature.position() + 1, sizeOfValue(feature.withoutPosition()).orElseGet(() -> feature.position() + 1))
+                .forEachOrdered(i -> cache.invalidate(feature.withPosition(i)));
 
-        super.addValue(key, value);
+        super.addValue(feature, value);
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        int firstPosition = key.position();
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+        int firstPosition = feature.position();
 
-        IntStream.range(0, collection.size())
-                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
+        IntStream.range(0, values.size())
+                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), values.get(i)));
 
-        IntStream.range(firstPosition + collection.size(), sizeOfValue(key.withoutPosition()).orElseGet(() -> firstPosition + collection.size()))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+        IntStream.range(firstPosition + values.size(), sizeOfValue(feature.withoutPosition()).orElseGet(() -> firstPosition + values.size()))
+                .forEachOrdered(i -> cache.invalidate(feature.withPosition(i)));
 
-        super.addAllValues(key, collection);
+        super.addAllValues(feature, values);
     }
 
     @Nonnegative
     @Override
-    public <V> int appendValue(SingleFeatureBean key, V value) {
-        int position = super.appendValue(key, value);
+    public <V> int appendValue(SingleFeatureBean feature, V value) {
+        int position = super.appendValue(feature, value);
 
-        cache.put(key.withPosition(position), value);
+        cache.put(feature.withPosition(position), value);
 
         return position;
     }
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        int firstPosition = super.appendAllValues(key, collection);
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
+        int firstPosition = super.appendAllValues(feature, values);
 
-        IntStream.range(0, collection.size())
-                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
+        IntStream.range(0, values.size())
+                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), values.get(i)));
 
         return firstPosition;
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        IntStream.range(key.position(), sizeOfValue(key.withoutPosition()).orElseGet(key::position))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+    public <V> Optional<V> removeValue(ManyFeatureBean feature) {
+        IntStream.range(feature.position(), sizeOfValue(feature.withoutPosition()).orElseGet(feature::position))
+                .forEachOrdered(i -> cache.invalidate(feature.withPosition(i)));
 
-        return super.removeValue(key);
+        return super.removeValue(feature);
     }
 
     @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+    public void removeAllValues(SingleFeatureBean feature) {
+        IntStream.range(0, sizeOfValue(feature).orElse(0))
+                .forEachOrdered(i -> cache.invalidate(feature.withPosition(i)));
 
-        super.removeAllValues(key);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(ManyFeatureBean key) {
-        return Optional.ofNullable(Id.class.cast(cache.get(key, k -> super.referenceOf(ManyFeatureBean.class.cast(k)).orElse(null))));
+        super.removeAllValues(feature);
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        cache.put(key, reference);
+    public Optional<Id> referenceOf(ManyFeatureBean feature) {
+        return Optional.ofNullable(Id.class.cast(cache.get(feature, k -> super.referenceOf(ManyFeatureBean.class.cast(k)).orElse(null))));
+    }
 
-        return super.referenceFor(key, reference);
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(ManyFeatureBean feature, Id reference) {
+        cache.put(feature, reference);
+
+        return super.referenceFor(feature, reference);
     }
 
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
-        cache.put(key, reference);
+    public void addReference(ManyFeatureBean feature, Id reference) {
+        cache.put(feature, reference);
 
-        IntStream.range(key.position() + 1, sizeOfReference(key.withoutPosition()).orElseGet(() -> key.position() + 1))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+        IntStream.range(feature.position() + 1, sizeOfReference(feature.withoutPosition()).orElseGet(() -> feature.position() + 1))
+                .forEachOrdered(i -> cache.invalidate(feature.withPosition(i)));
 
-        super.addReference(key, reference);
+        super.addReference(feature, reference);
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        int firstPosition = key.position();
+    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+        int firstPosition = feature.position();
 
-        IntStream.range(0, collection.size())
-                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
+        IntStream.range(0, references.size())
+                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), references.get(i)));
 
-        IntStream.range(firstPosition + collection.size(), sizeOfReference(key.withoutPosition()).orElseGet(() -> firstPosition + collection.size()))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+        IntStream.range(firstPosition + references.size(), sizeOfReference(feature.withoutPosition()).orElseGet(() -> firstPosition + references.size()))
+                .forEachOrdered(i -> cache.invalidate(feature.withPosition(i)));
 
-        super.addAllReferences(key, collection);
+        super.addAllReferences(feature, references);
     }
 
     @Nonnegative
     @Override
-    public int appendReference(SingleFeatureBean key, Id reference) {
-        int position = super.appendReference(key, reference);
+    public int appendReference(SingleFeatureBean feature, Id reference) {
+        int position = super.appendReference(feature, reference);
 
-        cache.put(key.withPosition(position), reference);
+        cache.put(feature.withPosition(position), reference);
 
         return position;
     }
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        int firstPosition = super.appendAllReferences(key, collection);
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
+        int firstPosition = super.appendAllReferences(feature, references);
 
-        IntStream.range(0, collection.size())
-                .forEach(i -> cache.put(key.withPosition(firstPosition + i), collection.get(i)));
+        IntStream.range(0, references.size())
+                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), references.get(i)));
 
         return firstPosition;
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        IntStream.range(key.position(), sizeOfReference(key.withoutPosition()).orElseGet(key::position))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+    public Optional<Id> removeReference(ManyFeatureBean feature) {
+        IntStream.range(feature.position(), sizeOfReference(feature.withoutPosition()).orElseGet(feature::position))
+                .forEachOrdered(i -> cache.invalidate(feature.withPosition(i)));
 
-        return super.removeReference(key);
+        return super.removeReference(feature);
     }
 
     @Override
-    public void removeAllReferences(SingleFeatureBean key) {
-        IntStream.range(0, sizeOfReference(key).orElse(0))
-                .forEach(i -> cache.invalidate(key.withPosition(i)));
+    public void removeAllReferences(SingleFeatureBean feature) {
+        IntStream.range(0, sizeOfReference(feature).orElse(0))
+                .forEachOrdered(i -> cache.invalidate(feature.withPosition(i)));
 
-        super.removeAllReferences(key);
+        super.removeAllReferences(feature);
     }
 }

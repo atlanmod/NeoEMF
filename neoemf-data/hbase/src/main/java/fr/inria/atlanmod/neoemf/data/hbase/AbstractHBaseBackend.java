@@ -88,9 +88,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
      * A converter to use {@code byte[]} instead of {@link Id}.
      */
     @Nonnull
-    private static final Converter<Id, byte[]> AS_BYTES = Converter.from(
-            id -> Strings.toBytes(IdConverters.withHexString().convert(id)),
-            bs -> IdConverters.withHexString().revert(Bytes.toString(bs)));
+    private static final Converter<Id, byte[]> AS_BYTES = Converter.compose(IdConverters.withHexString(), Converter.from(Strings::toBytes, Bytes::toString));
 
     /**
      * The HBase table used to access the model.
@@ -110,13 +108,13 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     }
 
     @Override
-    public void save() {
-        // TODO Implement this method
+    protected void internalClose() throws IOException {
+        table.close();
     }
 
     @Override
-    protected void innerClose() throws IOException {
-        table.close();
+    public void internalSave() {
+        // TODO Implement this method
     }
 
     @Nonnull
@@ -242,18 +240,18 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         try {
-            Get get = new Get(AS_BYTES.convert(key.owner()));
+            Get get = new Get(AS_BYTES.convert(feature.owner()));
             Result result = table.get(get);
 
             if (result.isEmpty()) {
                 return Optional.empty();
             }
 
-            byte[] byteValue = result.getValue(FAMILY_PROPERTY, Ints.toBytes(key.id()));
+            byte[] byteValue = result.getValue(FAMILY_PROPERTY, Ints.toBytes(feature.id()));
 
             if (isNull(byteValue)) {
                 return Optional.empty();
@@ -269,15 +267,15 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        Optional<V> previousValue = valueOf(key);
+        Optional<V> previousValue = valueOf(feature);
 
         try {
-            Put put = new Put(AS_BYTES.convert(key.owner()))
-                    .addColumn(FAMILY_PROPERTY, Ints.toBytes(key.id()), SERIALIZER_FACTORY.<V>forAny().serialize(value));
+            Put put = new Put(AS_BYTES.convert(feature.owner()))
+                    .addColumn(FAMILY_PROPERTY, Ints.toBytes(feature.id()), SERIALIZER_FACTORY.<V>forAny().serialize(value));
 
             table.put(put);
         }
@@ -289,12 +287,12 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeValue(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         try {
-            Delete delete = new Delete(AS_BYTES.convert(key.owner()))
-                    .addColumns(FAMILY_PROPERTY, Ints.toBytes(key.id()));
+            Delete delete = new Delete(AS_BYTES.convert(feature.owner()))
+                    .addColumns(FAMILY_PROPERTY, Ints.toBytes(feature.id()));
 
             table.delete(delete);
         }

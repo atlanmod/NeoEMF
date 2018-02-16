@@ -47,6 +47,11 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
     private V value;
 
     /**
+     * The string representation of the value of this feature.
+     */
+    private String rawValue;
+
+    /**
      * The {@link EStructuralFeature} associated to this feature.
      */
     private F eFeature;
@@ -135,6 +140,29 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
      */
     public T value(V value) {
         this.value = value;
+        this.rawValue = null;
+
+        return me();
+    }
+
+    /**
+     * Returns the string representation of the value of this feature.
+     *
+     * @return the string representation of the value of this feature
+     */
+    public String rawValue() {
+        return rawValue;
+    }
+
+    /**
+     * Defines the string representation of the value of this feature.
+     *
+     * @param rawValue the string representation of the value of this feature
+     *
+     * @return this instance (for chaining)
+     */
+    public T rawValue(String rawValue) {
+        this.rawValue = rawValue;
 
         return me();
     }

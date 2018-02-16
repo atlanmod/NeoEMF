@@ -32,77 +32,77 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
 
     @Nonnull
     @Override
-    default Optional<Id> referenceOf(ManyFeatureBean key) {
+    default Optional<Id> referenceOf(ManyFeatureBean feature) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>valueOf(key)
+        return this.<M>valueOf(feature)
                 .map(converter::revert);
     }
 
     @Nonnull
     @Override
-    default Stream<Id> allReferencesOf(SingleFeatureBean key) {
+    default Stream<Id> allReferencesOf(SingleFeatureBean feature) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>allValuesOf(key)
+        return this.<M>allValuesOf(feature)
                 .map(converter::revert);
     }
 
     @Nonnull
     @Override
-    default Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    default Optional<Id> referenceFor(ManyFeatureBean feature, Id reference) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.valueFor(key, converter.convert(reference))
+        return this.valueFor(feature, converter.convert(reference))
                 .map(converter::revert);
     }
 
     @Override
-    default void addReference(ManyFeatureBean key, Id reference) {
+    default void addReference(ManyFeatureBean feature, Id reference) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        this.addValue(key, converter.convert(reference));
+        this.addValue(feature, converter.convert(reference));
     }
 
     @Override
-    default void addAllReferences(ManyFeatureBean key, List<Id> collection) {
+    default void addAllReferences(ManyFeatureBean feature, List<Id> references) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        this.addAllValues(key, collection.stream().map(converter::convert).collect(Collectors.toList()));
+        this.addAllValues(feature, references.stream().map(converter::convert).collect(Collectors.toList()));
     }
 
     @Override
-    default int appendReference(SingleFeatureBean key, Id reference) {
+    default int appendReference(SingleFeatureBean feature, Id reference) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.appendValue(key, converter.convert(reference));
+        return this.appendValue(feature, converter.convert(reference));
     }
 
     @Override
-    default int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
+    default int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.appendAllValues(key, collection.stream().map(converter::convert).collect(Collectors.toList()));
+        return this.appendAllValues(feature, references.stream().map(converter::convert).collect(Collectors.toList()));
     }
 
     @Nonnull
     @Override
-    default Optional<Id> removeReference(ManyFeatureBean key) {
+    default Optional<Id> removeReference(ManyFeatureBean feature) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.<M>removeValue(key)
+        return this.<M>removeValue(feature)
                 .map(converter::revert);
     }
 
     @Override
-    default void removeAllReferences(SingleFeatureBean key) {
-        this.removeAllValues(key);
+    default void removeAllReferences(SingleFeatureBean feature) {
+        this.removeAllValues(feature);
     }
 
     @Nonnull
     @Override
-    default Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        return this.sizeOfValue(key);
+    default Optional<Integer> sizeOfReference(SingleFeatureBean feature) {
+        return this.sizeOfValue(feature);
     }
 
     /**

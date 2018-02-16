@@ -93,12 +93,12 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
             int event = reader.next();
 
             if (event == XMLStreamReader.START_ELEMENT) {
-                IntStream.range(0, reader.getNamespaceCount()).forEach(i ->
+                IntStream.range(0, reader.getNamespaceCount()).forEachOrdered(i ->
                         readNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i)));
 
                 readStartElement(reader.getNamespaceURI(), reader.getLocalName());
 
-                IntStream.range(0, reader.getAttributeCount()).forEach(i ->
+                IntStream.range(0, reader.getAttributeCount()).forEachOrdered(i ->
                         readAttribute(reader.getAttributePrefix(i), reader.getAttributeLocalName(i), reader.getAttributeValue(i)));
 
                 flushCurrentElement();

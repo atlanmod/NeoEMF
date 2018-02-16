@@ -26,7 +26,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -39,8 +41,8 @@ import static java.util.Objects.isNull;
  * @see PersistentEObject#eStore()
  */
 @ParametersAreNonnullByDefault
-// TODO Synchronize modifications from `LazyStoreList`
-public class LazyStoreFeatureMap extends DelegatingFeatureMap {
+// Synchronize modifications from `DirectStoreList`
+public class DirectStoreFeatureMap extends DelegatingFeatureMap {
 
     /**
      * The object that holds the store.
@@ -49,12 +51,12 @@ public class LazyStoreFeatureMap extends DelegatingFeatureMap {
     private final transient Storable storable;
 
     /**
-     * Constructs a new {@code LazyStoreFeatureMap}.
+     * Constructs a new {@code DirectStoreFeatureMap}.
      *
      * @param owner   the owner the {@code feature}
      * @param feature the feature associated with this list
      */
-    public LazyStoreFeatureMap(PersistentEObject owner, EStructuralFeature feature) {
+    public DirectStoreFeatureMap(PersistentEObject owner, EStructuralFeature feature) {
         super(owner, feature);
         this.storable = owner;
     }
@@ -64,7 +66,7 @@ public class LazyStoreFeatureMap extends DelegatingFeatureMap {
         return storable.eStore();
     }
 
-    // region Delegating methods (identical to LazyStoreList)
+    // region Delegating methods (identical to DirectStoreList)
 
     @Override
     protected List<Entry> delegateList() {
@@ -72,6 +74,7 @@ public class LazyStoreFeatureMap extends DelegatingFeatureMap {
     }
 
     @Override
+    @Nonnegative
     protected int delegateSize() {
         return eStore().size(owner, eStructuralFeature);
     }
@@ -82,12 +85,12 @@ public class LazyStoreFeatureMap extends DelegatingFeatureMap {
     }
 
     @Override
-    protected boolean delegateContains(Object object) {
+    protected boolean delegateContains(@Nullable Object object) {
         return eStore().contains(owner, eStructuralFeature, object);
     }
 
     @Override
-    protected boolean delegateContainsAll(Collection<?> collection) {
+    protected boolean delegateContainsAll(@Nullable Collection<?> collection) {
         if (isNull(collection) || collection.isEmpty()) {
             return false;
         }
@@ -96,16 +99,18 @@ public class LazyStoreFeatureMap extends DelegatingFeatureMap {
             return contains(collection.iterator().next());
         }
 
-        return eStore().getAll(owner, eStructuralFeature).containsAll(collection);
+        return delegateGetAll().containsAll(collection);
     }
 
     @Override
-    protected int delegateIndexOf(Object object) {
+    @Nonnegative
+    protected int delegateIndexOf(@Nullable Object object) {
         return eStore().indexOf(owner, eStructuralFeature, object);
     }
 
     @Override
-    protected int delegateLastIndexOf(Object object) {
+    @Nonnegative
+    protected int delegateLastIndexOf(@Nullable Object object) {
         return eStore().lastIndexOf(owner, eStructuralFeature, object);
     }
 
@@ -120,11 +125,13 @@ public class LazyStoreFeatureMap extends DelegatingFeatureMap {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected Entry delegateGet(int index) {
         return (Entry) eStore().get(owner, eStructuralFeature, index);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected Entry delegateSet(int index, Entry object) {
         return (Entry) eStore().set(owner, eStructuralFeature, index, object);
     }
@@ -140,6 +147,7 @@ public class LazyStoreFeatureMap extends DelegatingFeatureMap {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected Entry delegateRemove(int index) {
         return (Entry) eStore().remove(owner, eStructuralFeature, index);
     }
@@ -150,13 +158,14 @@ public class LazyStoreFeatureMap extends DelegatingFeatureMap {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected Entry delegateMove(int targetIndex, int sourceIndex) {
         return (Entry) eStore().move(owner, eStructuralFeature, targetIndex, sourceIndex);
     }
 
     @Override
     // FIXME Does not resolve
-    protected boolean delegateEquals(Object object) {
+    protected boolean delegateEquals(@Nullable Object object) {
         if (object == this) {
             return true;
         }
@@ -166,8 +175,7 @@ public class LazyStoreFeatureMap extends DelegatingFeatureMap {
         }
 
         List<?> list = List.class.cast(object);
-        return list.size() == delegateSize()
-                && list.equals(eStore().getAll(owner, eStructuralFeature));
+        return list.size() == delegateSize() && list.equals(delegateGetAll());
     }
 
     @Override
@@ -177,7 +185,7 @@ public class LazyStoreFeatureMap extends DelegatingFeatureMap {
 
     @Override
     protected String delegateToString() {
-        return eStore().getAll(owner, eStructuralFeature)
+        return delegateGetAll()
                 .stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", ", "[", "]"));
@@ -195,16 +203,22 @@ public class LazyStoreFeatureMap extends DelegatingFeatureMap {
 
     @Override
     protected List<Entry> delegateBasicList() {
-        Object[] data = eStore().toArray(owner, eStructuralFeature);
+        final Object[] data = delegateToArray();
 
         return data.length == 0
                 ? ECollections.emptyEList()
                 : new EcoreEList.UnmodifiableEList<>(owner, eStructuralFeature, data.length, data);
     }
 
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    protected List<Entry> delegateGetAll() {
+        return List.class.cast(eStore().getAll(owner, eStructuralFeature));
+    }
+
     // endregion
 
-    // region Iterators (identical to LazyStoreList)
+    // region Iterators (identical to DirectStoreList)
 
     @Nonnull
     @Override

@@ -37,7 +37,7 @@
 
         <!-- Neo4j -->
 
-        <Logger name="org.neo4j" level="DEBUG" additivity="false">
+        <Logger name="org.neo4j" level="ERROR" additivity="false">
             <AppenderRef ref="Console" />
         </Logger>
 

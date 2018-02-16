@@ -97,12 +97,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     }
 
     @Override
-    public void save() {
-        // Do nothing: data are automatically saved
-    }
-
-    @Override
-    protected void innerClose() {
+    protected void internalClose() {
         containers.close();
         instances.close();
         features.close();
@@ -111,7 +106,12 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
     }
 
     @Override
-    protected void innerCopyTo(DataMapper target) {
+    public void internalSave() {
+        // Do nothing: data are automatically saved
+    }
+
+    @Override
+    protected void internalCopyTo(DataMapper target) {
         AbstractBerkeleyDbBackend to = AbstractBerkeleyDbBackend.class.cast(target);
 
         copy(containers, to.containers);
@@ -183,28 +183,28 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return get(features, key, SERIALIZER_FACTORY.forSingleFeature(), SERIALIZER_FACTORY.forAny());
+        return get(features, feature, SERIALIZER_FACTORY.forSingleFeature(), SERIALIZER_FACTORY.forAny());
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        Optional<V> previousValue = valueOf(key);
-        put(features, key, value, SERIALIZER_FACTORY.forSingleFeature(), SERIALIZER_FACTORY.forAny());
+        Optional<V> previousValue = valueOf(feature);
+        put(features, feature, value, SERIALIZER_FACTORY.forSingleFeature(), SERIALIZER_FACTORY.forAny());
         return previousValue;
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeValue(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        delete(features, key, SERIALIZER_FACTORY.forSingleFeature());
+        delete(features, feature, SERIALIZER_FACTORY.forSingleFeature());
     }
 
     @Nonnull

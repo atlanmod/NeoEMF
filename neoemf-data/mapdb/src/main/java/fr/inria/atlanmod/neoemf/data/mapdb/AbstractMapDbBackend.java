@@ -109,20 +109,20 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     }
 
     @Override
-    public void save() {
+    protected void internalClose() {
+        database.close();
+    }
+
+    @Override
+    public void internalSave() {
         if (!database.isClosed()) {
             database.commit();
         }
     }
 
     @Override
-    protected void innerClose() {
-        database.close();
-    }
-
-    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    protected void innerCopyTo(DataMapper target) {
+    protected void internalCopyTo(DataMapper target) {
         AbstractMapDbBackend to = AbstractMapDbBackend.class.cast(target);
 
         for (Map.Entry<String, Object> entry : database.getAll().entrySet()) {
@@ -189,26 +189,26 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return get(singleFeatures, key);
+        return get(singleFeatures, feature);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        return put(singleFeatures, key, value);
+        return put(singleFeatures, feature, value);
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeValue(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        delete(singleFeatures, key);
+        delete(singleFeatures, feature);
     }
 
     @Nonnull

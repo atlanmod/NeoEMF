@@ -31,6 +31,7 @@ They are presented as several interfaces and each have their responsibility:
 -   __\[NEW\]__ A generic `DefaultTransientBackend` has been created to handle transient elements in memory:
                 Custom `TransientBackend`s are no longer necessary, but this requires the `neoemf-io` module to transfer the transient content to a `PersistentBackend`
 -   __\[NEW\]__ `URI`s are now created with builders instead of static methods
+-   __\[UPD\]__ Complete optimization of all existing database adapters
 -   __\[UPD\]__ `Backend`s are auto-closed when the JVM is shutting-down
 -   __\[UPD\]__ `StoreAdapter` become the only `EStore` implementation, and provides a bridge between EMF and `DataMapper`s
 -   __\[UPD\]__ All `Backend`s and `Store`s inherit from the `DataMapper` architecture
@@ -75,9 +76,9 @@ They are presented as several interfaces and each have their responsibility:
 -   __\[UPD\]__ `Adapter`s are configured with the `a` parameter (previously `b`)
 
 ### Miscellaneous
--   __\[NEW\]__ `FeatureMap` support
+-   __\[NEW\]__ `FeatureMap` support (still not supported by the `neoemf-io` module)
 -   __\[NEW\]__ Some methods use `Optional` instead of a comparison to `null`
--   __\[UPD\]__ `EList` and `EMap` implementations are inner classes in `DefaultPersistentEObject`
+-   __\[UPD\]__ Complete review of EMF collections to handle massive iterations
 -   __\[FIX\]__ Issue #11: The `LoggingStoreDecorator` now use a dedicated `Logger` for its associated `Backend`
 -   __\[FIX\]__ Issue #12: The stores are updated according to the EMF calls, so that the backends are always synchronized.
                 There is no longer custom processing during `set()` and `add()`
@@ -109,14 +110,14 @@ They are presented as several interfaces and each have their responsibility:
 -   __\[UPD\]__ `ContainerValue` has been merged with `SingleFeatureBean`
 
 ### Dependencies
--   __\[NEW\]__ `chronicle-map` : `3.14.4`
+-   __\[NEW\]__ `chronicle-map` : `3.14.5`
 -   __\[NEW\]__ `org.reflections` : `0.9.9`
--   __\[UPD\]__ `cglib` : `3.2.4` to `3.2.5`
+-   __\[UPD\]__ `cglib` : `3.2.4` to `3.2.6`
 -   __\[UPD\]__ `log4j` : `2.7` to `2.8.2`
 -   __\[UPD\]__ `org.neo4j` : `1.9.6` to `2.1.8` (include `blueprints-neo4j-graph` to `blueprints-neo4j2-graph`)
--   __\[DEL\]__ `junit`: No longer needed, managed by `atlanmod:commons-core` (`5.0.2+`)
--   __\[DEL\]__ `assertj` : No longer needed, managed by `atlanmod:commons-core` (`3.8.0+`)
--   __\[DEL\]__ `mockito` : No longer needed, managed by `atlanmod:commons-core` (`2.12.0+`)
+-   __\[DEL\]__ `junit`: No longer needed, managed by `atlanmod:commons-core` (`5.0.3+`)
+-   __\[DEL\]__ `assertj` : No longer needed, managed by `atlanmod:commons-core` (`3.9.0+`)
+-   __\[DEL\]__ `mockito` : No longer needed, managed by `atlanmod:commons-core` (`2.13.0+`)
 -   __\[DEL\]__ `caffeine` : No longer needed, managed by `atlanmod:commons-core` (`2.6.0+`)
 -   __\[DEL\]__ `guava` : No longer needed
 -   __\[DEL\]__ `commons-collections4` : No longer needed

@@ -44,131 +44,132 @@ public interface ManyValueWithIndices extends ManyValueMapper {
 
     @Nonnull
     @Override
-    default <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        final int size = sizeOfValue(key).orElse(0);
-        final Iterator<V> iter = new SizedIterator<>(size, i -> this.<V>valueOf(key.withPosition(i)).orElse(null));
+    default <V> Stream<V> allValuesOf(SingleFeatureBean feature) {
+        final int size = sizeOfValue(feature).orElse(0);
+        final Iterator<V> iter = new SizedIterator<>(size, i -> this.<V>valueOf(feature.withPosition(i)).orElse(null));
 
         return MoreIterables.stream(() -> iter);
     }
 
     @Nonnull
     @Override
-    default <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    default <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        Optional<V> previousValue = valueOf(key);
+        Optional<V> previousValue = valueOf(feature);
         if (!previousValue.isPresent()) {
             throw new NoSuchElementException();
         }
 
-        innerValueFor(key, value);
+        valueForNullable(feature, value);
 
         return previousValue;
     }
 
     @Override
-    default <V> void addValue(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    default <V> void addValue(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        int size = sizeOfValue(key.withoutPosition()).orElse(0);
-        checkPositionIndex(key.position(), size);
+        int size = sizeOfValue(feature.withoutPosition()).orElse(0);
+        checkPositionIndex(feature.position(), size);
 
-        for (int i = size - 1; i >= key.position(); i--) {
-            innerValueFor(key.withPosition(i + 1), valueOf(key.withPosition(i)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+        for (int i = size - 1; i >= feature.position(); i--) {
+            valueForNullable(feature.withPosition(i + 1), valueOf(feature.withPosition(i)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         }
 
-        sizeForValue(key.withoutPosition(), size + 1);
+        sizeForValue(feature.withoutPosition(), size + 1);
 
-        innerValueFor(key, value);
+        valueForNullable(feature, value);
     }
 
     @Override
-    default <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
-        checkNotContainsNull(collection);
+    default <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+        checkNotNull(feature, "feature");
+        checkNotNull(values, "values");
+        checkNotContainsNull(values, "values");
 
-        int firstPosition = key.position();
+        int firstPosition = feature.position();
 
-        IntStream.range(0, collection.size())
-                .forEach(i -> addValue(key.withPosition(firstPosition + i), collection.get(i)));
+        IntStream.range(0, values.size())
+                .forEachOrdered(i -> addValue(feature.withPosition(firstPosition + i), values.get(i)));
     }
 
     @Nonnull
     @Override
-    default <V> Optional<V> removeValue(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    default <V> Optional<V> removeValue(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        int size = sizeOfValue(key.withoutPosition()).orElse(0);
+        int size = sizeOfValue(feature.withoutPosition()).orElse(0);
         if (size == 0) {
             return Optional.empty();
         }
 
-        Optional<V> previousValue = valueOf(key);
+        Optional<V> previousValue = valueOf(feature);
 
-        for (int i = key.position(); i < size - 1; i++) {
-            innerValueFor(key.withPosition(i), valueOf(key.withPosition(i + 1)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+        for (int i = feature.position(); i < size - 1; i++) {
+            valueForNullable(feature.withPosition(i), valueOf(feature.withPosition(i + 1)).<IllegalStateException>orElseThrow(IllegalStateException::new));
         }
 
-        innerValueFor(key.withPosition(size - 1), null);
+        valueForNullable(feature.withPosition(size - 1), null);
 
-        sizeForValue(key.withoutPosition(), size - 1);
+        sizeForValue(feature.withoutPosition(), size - 1);
 
         return previousValue;
     }
 
     @Override
-    default void removeAllValues(SingleFeatureBean key) {
-        IntStream.range(0, sizeOfValue(key).orElse(0))
-                .forEach(i -> innerValueFor(key.withPosition(i), null));
+    default void removeAllValues(SingleFeatureBean feature) {
+        IntStream.range(0, sizeOfValue(feature).orElse(0))
+                .forEachOrdered(i -> valueForNullable(feature.withPosition(i), null));
 
-        removeValue(key);
+        removeValue(feature);
     }
 
     @Nonnull
     @Nonnegative
     @Override
-    default Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    default Optional<Integer> sizeOfValue(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        return this.<Integer>valueOf(key)
+        return this.<Integer>valueOf(feature)
                 .filter(s -> s > 0);
     }
 
     /**
-     * Defines the number of values of the specified {@code key}.
+     * Defines the number of values of the specified {@code feature}.
      *
-     * @param key  the key identifying the multi-valued attribute
-     * @param size the number of values
+     * @param feature the bean identifying the multi-valued attribute
+     * @param size    the number of values
      *
-     * @throws NullPointerException     if the {@code key} is {@code null}
+     * @throws NullPointerException     if the {@code feature} is {@code null}
      * @throws IllegalArgumentException if {@code size < 0}
      */
-    default void sizeForValue(SingleFeatureBean key, @Nonnegative int size) {
-        checkNotNull(key, "key");
+    default void sizeForValue(SingleFeatureBean feature, @Nonnegative int size) {
+        checkNotNull(feature, "feature");
         checkGreaterThanOrEqualTo(size, 0, "size (%d) must not be negative", size);
 
         if (size > 0) {
-            valueFor(key, size);
+            valueFor(feature, size);
         }
         else {
-            removeValue(key);
+            removeValue(feature);
         }
     }
 
     /**
-     * Defines the {@code value} of the specified {@code key} at a defined position.
+     * Defines the {@code value} of the specified {@code feature} at a defined position.
      * <p>
-     * This method behaves like: {@link #valueFor(ManyFeatureBean, Object)}, without checking whether the multi-valued
-     * feature already exists, in order to replace it. If {@code value == null}, the key is removed.
+     * This method behaves like {@link #valueFor(ManyFeatureBean, Object)}, without checking whether the multi-valued
+     * feature already exists, in order to replace it.
+     * If {@code value == null}, the feature is removed.
      *
-     * @param key   the key identifying the multi-valued attribute
-     * @param value the value to set
-     * @param <V>   the type of value
+     * @param feature the bean identifying the multi-valued attribute
+     * @param value   the value to set
+     * @param <V>     the type of value
      *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @throws NullPointerException if the {@code feature} is {@code null}
      */
-    <V> void innerValueFor(ManyFeatureBean key, @Nullable V value);
+    <V> void valueForNullable(ManyFeatureBean feature, @Nullable V value);
 }

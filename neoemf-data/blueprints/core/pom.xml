@@ -76,6 +76,7 @@
                             *
                         </DynamicImport-Package>
                         <Export-Package>
+                            !fr.inria.atlanmod.neoemf.data.blueprints.*.internal.*,
                             fr.inria.atlanmod.neoemf.data.blueprints.*
                         </Export-Package>
                         <_exportcontents>

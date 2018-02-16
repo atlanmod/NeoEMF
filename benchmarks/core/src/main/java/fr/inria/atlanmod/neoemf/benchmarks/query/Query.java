@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.query;
 
 import org.eclipse.emf.ecore.resource.Resource;
 
-import java.util.function.Function;
+import javax.annotation.Nonnull;
 
 /**
  * A query to execute on the content of a {@link Resource}.
@@ -18,5 +18,15 @@ import java.util.function.Function;
  * @param <V> the result type of method {@code call}
  */
 @FunctionalInterface
-public interface Query<V> extends Function<Resource, V> {
+public interface Query<V> {
+
+    /**
+     * Executes this query on the given {@code resource}.
+     *
+     * @param resource the resource where to execute this query
+     *
+     * @return the result of the query
+     */
+    @Nonnull
+    V executeOn(Resource resource);
 }

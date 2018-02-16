@@ -36,24 +36,36 @@ import javax.annotation.ParametersAreNonnullByDefault;
 class DefaultHBaseBackend extends AbstractHBaseBackend implements ReferenceAs<String>, ManyValueWithArrays, ManyReferenceMergedAs<String> {
 
     /**
-     * The {@link String} used to delimit multi-valued references.
-     */
-    @Nonnull
-    private static final String DELIMITER = ";";
-
-    /**
      * The {@link Converter} used to convert multi-valued references.
      */
     @Nonnull
-    private static final Converter<List<Id>, String> MANY_AS_HEXAS = Converter.from(
-            rs -> rs.stream()
-                    .map(r -> Optional.ofNullable(r).map(IdConverters.withHexString()::convert).orElse(null))
+    private static final Converter<List<Id>, String> MANY_AS_HEXAS = new Converter<List<Id>, String>() {
+
+        /**
+         * The {@link String} used to delimit multi-valued references.
+         */
+        @Nonnull
+        private static final String DELIMITER = ";";
+
+        @Nonnull
+        private final Converter<Id, String> baseConverter = IdConverters.withHexString();
+
+        @Override
+        public String convert(List<Id> ids) {
+            return ids.stream()
+                    .map(r -> Optional.ofNullable(r).map(baseConverter::convert).orElse(null))
                     .map(Strings::nullToEmpty)
-                    .collect(Collectors.joining(DELIMITER)),
-            r -> Arrays.stream(r.split(DELIMITER))
+                    .collect(Collectors.joining(DELIMITER));
+        }
+
+        @Override
+        public List<Id> revert(String s) {
+            return Arrays.stream(s.split(DELIMITER))
                     .map(Strings::emptyToNull)
-                    .map(IdConverters.withHexString()::revert)
-                    .collect(Collectors.toList()));
+                    .map(baseConverter::revert)
+                    .collect(Collectors.toList());
+        }
+    };
 
     /**
      * Constructs a new {@code HBaseBackendArrays} on the given {@code table}.

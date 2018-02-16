@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.commons.cache.CacheBuilder;
 import fr.inria.atlanmod.commons.collect.MoreStreams;
@@ -44,12 +43,9 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkElementIndex;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@code StoreAdapter}.
@@ -94,17 +90,34 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     }
 
     /**
-     * Creates a new cache to store {@link Id}s and their associated {@link PersistentEObject}.
+     * Creates a new in-memory cache to store {@link Id}s and their associated {@link PersistentEObject}.
      *
      * @return a new cache
      *
-     * @see #cache()
+     * @see #getCache()
      */
     @Nonnull
     protected static Cache<Id, PersistentEObject> createCache() {
         return CacheBuilder.builder()
                 .softValues()
                 .build();
+    }
+
+    /**
+     * Returns the in-memory cache holding recently loaded {@link PersistentEObject}s.
+     *
+     * @return the cache
+     */
+    @Nonnull
+    protected abstract Cache<Id, PersistentEObject> getCache();
+
+    /**
+     * Refreshes the {@code object} with its {@link Id} in the cache, only it does not already exist.
+     *
+     * @param object the object to refresh
+     */
+    private void refresh(PersistentEObject object) {
+        getCache().putIfAbsent(refConverter.convert(object), object);
     }
 
     @Override
@@ -140,15 +153,10 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     public final PersistentEObject resolve(Id id) {
         checkNotNull(id, "id");
 
-        PersistentEObject object = cache().get(id, k ->
-                resolveInstanceOf(k)
-                        .map(c -> PersistenceFactory.getInstance().create(c, k))
-                        .<IllegalStateException>orElseThrow(IllegalStateException::new)); // Should never happen
+        PersistentEObject object = getCache().get(id, this::rebuild);
 
-        Resource.Internal currentResource = resource();
-        if (nonNull(currentResource)) {
-            object.resource(currentResource);
-        }
+        // Define the resource of the object
+        Optional.ofNullable(resource).ifPresent(object::resource);
 
         return object;
     }
@@ -159,22 +167,18 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         checkNotNull(internalObject, "internalObject");
         checkNotNull(feature, "feature");
 
-        if (checkIndices() && feature.isMany()) {
-            checkElementIndex(index, size(internalObject, feature));
-        }
-
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             Optional<Object> value;
             if (!feature.isMany()) {
-                value = store.valueOf(key);
+                value = store.valueOf(bean);
             }
             else {
-                value = store.valueOf(key.withPosition(index));
+                value = store.valueOf(bean.withPosition(index));
             }
 
             return value
@@ -184,10 +188,10 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         else {
             Optional<Id> reference;
             if (!feature.isMany()) {
-                reference = store.referenceOf(key);
+                reference = store.referenceOf(bean);
             }
             else {
-                reference = store.referenceOf(key.withPosition(index));
+                reference = store.referenceOf(bean.withPosition(index));
             }
 
             return reference
@@ -208,28 +212,18 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             return previousValue;
         }
 
-        if (checkIndices() && feature.isMany()) {
-            try {
-                checkElementIndex(index, size(internalObject, feature));
-            }
-            catch (IndexOutOfBoundsException e) {
-                // This method must throw a NoSuchException, not an IndexOutOfBoundException
-                throw Throwables.wrap(e, NoSuchElementException.class);
-            }
-        }
-
         PersistentEObject object = PersistentEObject.from(internalObject);
         updateInstanceOf(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             Optional<Object> previousValue;
             if (!feature.isMany()) {
-                previousValue = store.valueFor(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
+                previousValue = store.valueFor(bean, attrConverter.convert(value, EObjects.asAttribute(feature)));
             }
             else {
-                previousValue = store.valueFor(key.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature)));
+                previousValue = store.valueFor(bean.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature)));
             }
 
             return previousValue
@@ -242,10 +236,10 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
             Optional<Id> previousReference;
             if (!feature.isMany()) {
-                previousReference = store.referenceFor(key, refConverter.convert(referencedObject));
+                previousReference = store.referenceFor(bean, refConverter.convert(referencedObject));
             }
             else {
-                previousReference = store.referenceFor(key.withPosition(index), refConverter.convert(referencedObject));
+                previousReference = store.referenceFor(bean.withPosition(index), refConverter.convert(referencedObject));
             }
 
             return previousReference
@@ -262,22 +256,22 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             if (!feature.isMany()) {
-                return store.valueOf(key).isPresent();
+                return store.valueOf(bean).isPresent();
             }
             else {
-                return store.sizeOfValue(key).isPresent();
+                return store.sizeOfValue(bean).isPresent();
             }
         }
         else {
             if (!feature.isMany()) {
-                return store.referenceOf(key).isPresent();
+                return store.referenceOf(bean).isPresent();
             }
             else {
-                return store.sizeOfReference(key).isPresent();
+                return store.sizeOfReference(bean).isPresent();
             }
         }
     }
@@ -290,22 +284,22 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             if (!feature.isMany()) {
-                store.removeValue(key);
+                store.removeValue(bean);
             }
             else {
-                store.removeAllValues(key);
+                store.removeAllValues(bean);
             }
         }
         else {
             if (!feature.isMany()) {
-                store.removeReference(key);
+                store.removeReference(bean);
             }
             else {
-                store.removeAllReferences(key);
+                store.removeAllReferences(bean);
             }
         }
     }
@@ -331,14 +325,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         Optional<Integer> size;
         if (EObjects.isAttribute(feature)) {
-            size = store.sizeOfValue(key);
+            size = store.sizeOfValue(bean);
         }
         else {
-            size = store.sizeOfReference(key);
+            size = store.sizeOfReference(bean);
         }
         return size.orElse(0);
     }
@@ -357,13 +351,13 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
-            return store.allValuesOf(key).anyMatch(attrConverter.convert(value, EObjects.asAttribute(feature))::equals);
+            return store.allValuesOf(bean).anyMatch(attrConverter.convert(value, EObjects.asAttribute(feature))::equals);
         }
         else {
-            return store.allReferencesOf(key).anyMatch(refConverter.convert(PersistentEObject.from(value))::equals);
+            return store.allReferencesOf(bean).anyMatch(refConverter.convert(PersistentEObject.from(value))::equals);
         }
     }
 
@@ -381,14 +375,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         Optional<Integer> index;
         if (EObjects.isAttribute(feature)) {
-            index = MoreStreams.indexOf(store.allValuesOf(key), attrConverter.convert(value, EObjects.asAttribute(feature)));
+            index = MoreStreams.indexOf(store.allValuesOf(bean), attrConverter.convert(value, EObjects.asAttribute(feature)));
         }
         else {
-            index = MoreStreams.indexOf(store.allReferencesOf(key), refConverter.convert(PersistentEObject.from(value)));
+            index = MoreStreams.indexOf(store.allReferencesOf(bean), refConverter.convert(PersistentEObject.from(value)));
         }
         return index.orElse(EStore.NO_INDEX);
     }
@@ -407,14 +401,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         Optional<Integer> index;
         if (EObjects.isAttribute(feature)) {
-            index = MoreStreams.lastIndexOf(store.allValuesOf(key), attrConverter.convert(value, EObjects.asAttribute(feature)));
+            index = MoreStreams.lastIndexOf(store.allValuesOf(bean), attrConverter.convert(value, EObjects.asAttribute(feature)));
         }
         else {
-            index = MoreStreams.lastIndexOf(store.allReferencesOf(key), refConverter.convert(PersistentEObject.from(value)));
+            index = MoreStreams.lastIndexOf(store.allReferencesOf(bean), refConverter.convert(PersistentEObject.from(value)));
         }
         return index.orElse(EStore.NO_INDEX);
     }
@@ -427,21 +421,17 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         checkState(feature.isMany(), "Cannot compute add() of a single-valued feature");
 
-        if (checkIndices() && index != EStore.NO_INDEX) {
-            checkPositionIndex(index, size(internalObject, feature));
-        }
-
         PersistentEObject object = PersistentEObject.from(internalObject);
         updateInstanceOf(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             if (index == EStore.NO_INDEX) {
-                store.appendValue(key, attrConverter.convert(value, EObjects.asAttribute(feature)));
+                store.appendValue(bean, attrConverter.convert(value, EObjects.asAttribute(feature)));
             }
             else {
-                store.addValue(key.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature)));
+                store.addValue(bean.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature)));
             }
         }
         else {
@@ -449,10 +439,10 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             updateInstanceOf(referencedObject);
 
             if (index == EStore.NO_INDEX) {
-                store.appendReference(key, refConverter.convert(referencedObject));
+                store.appendReference(bean, refConverter.convert(referencedObject));
             }
             else {
-                store.addReference(key.withPosition(index), refConverter.convert(referencedObject));
+                store.addReference(bean.withPosition(index), refConverter.convert(referencedObject));
             }
         }
     }
@@ -465,22 +455,18 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         checkState(feature.isMany(), "Cannot compute remove() of a single-valued feature");
 
-        if (checkIndices()) {
-            checkElementIndex(index, size(internalObject, feature));
-        }
-
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
 
-        ManyFeatureBean key = ManyFeatureBean.from(object, feature, index);
+        ManyFeatureBean bean = ManyFeatureBean.from(object, feature, index);
 
         if (EObjects.isAttribute(feature)) {
-            return store.removeValue(key)
+            return store.removeValue(bean)
                     .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
                     .orElse(null);
         }
         else {
-            return store.removeReference(key)
+            return store.removeReference(bean)
                     .map(refConverter::revert)
                     .orElse(null);
         }
@@ -488,12 +474,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public final Object move(InternalEObject internalObject, EStructuralFeature feature, @Nonnegative int targetIndex, @Nonnegative int sourceIndex) {
-        if (checkIndices()) {
-            checkElementIndex(targetIndex, size(internalObject, feature));
-        }
-
         Object moved = remove(internalObject, feature, sourceIndex);
-        checkState(nonNull(moved), "inconsistency issue");
+        checkNotNull(moved, "inconsistency issue");
 
         add(internalObject, feature, targetIndex, moved);
 
@@ -510,13 +492,13 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
-            store.removeAllValues(key);
+            store.removeAllValues(bean);
         }
         else {
-            store.removeAllReferences(key);
+            store.removeAllReferences(bean);
         }
     }
 
@@ -578,17 +560,17 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
         refresh(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             Stream<Object> stream;
             if (!feature.isMany()) {
-                stream = store.valueOf(key)
+                stream = store.valueOf(bean)
                         .map(Stream::of)
                         .orElseGet(Stream::empty);
             }
             else {
-                stream = store.allValuesOf(key);
+                stream = store.allValuesOf(bean);
             }
 
             EAttribute attribute = EObjects.asAttribute(feature);
@@ -600,12 +582,12 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         else {
             Stream<Id> stream;
             if (!feature.isMany()) {
-                stream = store.referenceOf(key)
+                stream = store.referenceOf(bean)
                         .map(Stream::of)
                         .orElseGet(Stream::empty);
             }
             else {
-                stream = store.allReferencesOf(key);
+                stream = store.allReferencesOf(bean);
             }
 
             return stream
@@ -638,7 +620,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         PersistentEObject object = PersistentEObject.from(internalObject);
         updateInstanceOf(object);
 
-        SingleFeatureBean key = SingleFeatureBean.from(object, feature);
+        SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         if (EObjects.isAttribute(feature)) {
             EAttribute attribute = EObjects.asAttribute(feature);
@@ -648,10 +630,10 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                     .collect(Collectors.toList());
 
             if (index == NO_INDEX) {
-                return store.appendAllValues(key, valuesToAdd);
+                return store.appendAllValues(bean, valuesToAdd);
             }
             else {
-                store.addAllValues(key.withPosition(index), valuesToAdd);
+                store.addAllValues(bean.withPosition(index), valuesToAdd);
                 return index;
             }
         }
@@ -663,19 +645,13 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                     .collect(Collectors.toList());
 
             if (index == NO_INDEX) {
-                return store.appendAllReferences(key, referencesToAdd);
+                return store.appendAllReferences(bean, referencesToAdd);
             }
             else {
-                store.addAllReferences(key.withPosition(index), referencesToAdd);
+                store.addAllReferences(bean.withPosition(index), referencesToAdd);
                 return index;
             }
         }
-    }
-
-    @Override
-    // TODO Implement this method
-    public void removeAll(InternalEObject internalObject, EStructuralFeature feature, Collection<?> values) {
-        throw Throwables.notImplementedYet("removeAll");
     }
 
     @Override
@@ -683,11 +659,11 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         updateInstanceOf(object);
         updateInstanceOf(container);
 
-        Id objectId = refConverter.convert(object);
-        Optional<SingleFeatureBean> containerDesc = store.containerOf(objectId);
+        final Id id = refConverter.convert(object);
+        Optional<SingleFeatureBean> containerDesc = store.containerOf(id);
 
         if (!containerDesc.isPresent() || !Objects.equals(containerDesc.get().owner(), refConverter.convert(container))) {
-            store.containerFor(objectId, SingleFeatureBean.from(container, containerReference));
+            store.containerFor(id, SingleFeatureBean.from(container, containerReference));
         }
     }
 
@@ -712,14 +688,14 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Override
     public void updateInstanceOf(PersistentEObject object) {
-        Id objectId = refConverter.convert(object);
+        final Id id = refConverter.convert(object);
 
         // If the object is already present in the cache, then the meta-class is defined
-        if (cache().contains(objectId)) {
+        if (getCache().contains(id)) {
             return;
         }
 
-        store.metaClassFor(objectId, ClassBean.from(object));
+        store.metaClassFor(id, ClassBean.from(object));
         refresh(object);
     }
 
@@ -729,31 +705,15 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     }
 
     /**
-     * Returns the in-memory cache holding recently loaded {@link PersistentEObject}s.
+     * Rebuilds the {@link PersistentEObject} from the specified {@code id}.
      *
-     * @return the cache
+     * @param id the identifier of the object to rebuild
+     *
+     * @return the object
      */
     @Nonnull
-    protected abstract Cache<Id, PersistentEObject> cache();
-
-    /**
-     * Refreshes the {@code object} with its {@link Id} in the cache, only it does not already exist.
-     *
-     * @param object the object to refresh
-     */
-    private void refresh(PersistentEObject object) {
-        cache().putIfAbsent(refConverter.convert(object), object);
-    }
-
-    /**
-     * Returns {@code true} if all indices must be checked.
-     * <p>
-     * <b>NOTE: </b> When {@code true}, indices will be compared with {@link #size(InternalEObject, EStructuralFeature)}
-     * which can cause an important performance loss.
-     *
-     * @return {@code true} if all indices must be checked
-     */
-    protected boolean checkIndices() {
-        return false;
+    private PersistentEObject rebuild(Id id) {
+        final EClass eClass = resolveInstanceOf(id).<IllegalStateException>orElseThrow(IllegalStateException::new); // Should never happen
+        return PersistenceFactory.getInstance().create(eClass, id);
     }
 }

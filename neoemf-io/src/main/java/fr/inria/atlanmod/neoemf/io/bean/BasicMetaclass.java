@@ -11,6 +11,7 @@ package fr.inria.atlanmod.neoemf.io.bean;
 import fr.inria.atlanmod.commons.LazyReference;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ public class BasicMetaclass extends AbstractNamedElement<BasicMetaclass> {
      * The instance of the default meta-class.
      */
     @Nonnull
-    private static final BasicMetaclass DEFAULT = new BasicMetaclass(BasicNamespace.getDefault(), "EObject");
+    private static final BasicMetaclass DEFAULT = new BasicMetaclass(BasicNamespace.getDefault(), EObject.class.getSimpleName());
 
     /**
      * The namespace of this meta-class.

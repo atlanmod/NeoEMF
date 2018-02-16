@@ -55,6 +55,17 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
     @Nonnull
     String ROOT_REFERENCE_NAME = "eContents";
 
+    /**
+     * Checks that the {@code resource} is persistent.
+     *
+     * @param resource the resource to test
+     *
+     * @return {@code true} if the resource is persistent
+     */
+    static boolean isPersistent(Resource resource) {
+        return PersistentResource.class.isInstance(resource);
+    }
+
     @Override
     void close();
 

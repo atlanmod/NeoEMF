@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -9,10 +9,20 @@
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
-import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactoryAse15;
+import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactoryASE;
 import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadOnlyRunnerState;
 
+import org.eclipse.gmt.modisco.java.ClassDeclaration;
+import org.eclipse.gmt.modisco.java.MethodDeclaration;
+import org.eclipse.gmt.modisco.java.NamedElement;
+import org.eclipse.gmt.modisco.java.Statement;
+import org.eclipse.gmt.modisco.java.TextElement;
+import org.eclipse.gmt.modisco.java.Type;
+import org.eclipse.gmt.modisco.java.TypeAccess;
 import org.openjdk.jmh.annotations.Benchmark;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * A {@link Runner} that provides benchmark methods for read-only queries.
@@ -20,70 +30,70 @@ import org.openjdk.jmh.annotations.Benchmark;
 public class ReadOnlyRunner extends Runner {
 
     @Benchmark
-    public long traverse(ReadOnlyRunnerState state) {
-        return QueryFactory.queryCountAllElements().apply(state.resource());
+    public Long traverse(ReadOnlyRunnerState state) {
+        return QueryFactory.countAllElements().executeOn(state.resource());
     }
 
     @Benchmark
-    public int classDeclarationAttributes(ReadOnlyRunnerState state) {
-        return QueryFactory.queryClassDeclarationAttributes().apply(state.resource());
+    public Map<String, Iterable<NamedElement>> classDeclarationAttributes(ReadOnlyRunnerState state) {
+        return QueryFactory.getClassFields().executeOn(state.resource());
     }
 
     @Benchmark
-    public int grabats(ReadOnlyRunnerState state) {
-        return QueryFactory.queryGrabats().apply(state.resource());
+    public Collection<ClassDeclaration> grabats(ReadOnlyRunnerState state) {
+        return QueryFactory.grabats().executeOn(state.resource());
     }
 
     @Benchmark
-    public int invisibleMethodDeclarations(ReadOnlyRunnerState state) {
-        return QueryFactory.queryInvisibleMethodDeclarations().apply(state.resource());
+    public Collection<MethodDeclaration> invisibleMethodDeclarations(ReadOnlyRunnerState state) {
+        return QueryFactory.getInvisibleMethods().executeOn(state.resource());
     }
 
     @Benchmark
-    public int orphanNonPrimitiveTypes(ReadOnlyRunnerState state) {
-        return QueryFactory.queryOrphanNonPrimitivesTypes().apply(state.resource());
+    public Collection<Type> orphanNonPrimitiveTypes(ReadOnlyRunnerState state) {
+        return QueryFactory.getOrphanNonPrimitiveTypes().executeOn(state.resource());
     }
 
     @Benchmark
-    public int thrownExceptionsPerPackage(ReadOnlyRunnerState state) {
-        return QueryFactory.queryThrownExceptionsPerPackage().apply(state.resource());
+    public Map<String, Iterable<TypeAccess>> thrownExceptionsPerPackage(ReadOnlyRunnerState state) {
+        return QueryFactory.getThrownExceptionsPerPackage().executeOn(state.resource());
     }
 
     @Benchmark
-    public int unusedMethodsWithList(ReadOnlyRunnerState state) {
-        return QueryFactory.queryUnusedMethodsWithList().apply(state.resource());
+    public Collection<MethodDeclaration> unusedMethodsWithList(ReadOnlyRunnerState state) {
+        return QueryFactory.getUnusedMethodsWithList().executeOn(state.resource());
     }
 
     @Benchmark
-    public int unusedMethodsWithLoop(ReadOnlyRunnerState state) {
-        return QueryFactory.queryUnusedMethodsWithLoop().apply(state.resource());
+    public Collection<MethodDeclaration> unusedMethodsWithLoop(ReadOnlyRunnerState state) {
+        return QueryFactory.getUnusedMethodsWithLoop().executeOn(state.resource());
     }
 
     // region ASE 2015
 
     @Benchmark
-    public int ase15CommentsTagContent(ReadOnlyRunnerState state) {
-        return QueryFactoryAse15.queryCommentsTagContent().apply(state.resource());
+    public Collection<TextElement> ase15CommentsTagContent(ReadOnlyRunnerState state) {
+        return QueryFactoryASE.getTagComments().executeOn(state.resource());
     }
 
     @Benchmark
-    public int ase15Grabats(ReadOnlyRunnerState state) {
-        return QueryFactoryAse15.queryGrabats().apply(state.resource());
+    public Collection<ClassDeclaration> ase15Grabats(ReadOnlyRunnerState state) {
+        return QueryFactoryASE.grabats().executeOn(state.resource());
     }
 
     @Benchmark
-    public int ase15SpecificInvisibleMethodDeclarations(ReadOnlyRunnerState state) {
-        return QueryFactoryAse15.querySpecificInvisibleMethodDeclarations().apply(state.resource());
+    public Collection<MethodDeclaration> ase15SpecificInvisibleMethodDeclarations(ReadOnlyRunnerState state) {
+        return QueryFactoryASE.getInvisibleMethodsSpecific().executeOn(state.resource());
     }
 
     @Benchmark
-    public int ase15ThrownExceptions(ReadOnlyRunnerState state) {
-        return QueryFactoryAse15.queryThrownExceptions().apply(state.resource());
+    public Collection<TypeAccess> ase15ThrownExceptions(ReadOnlyRunnerState state) {
+        return QueryFactoryASE.getThrownExceptions().executeOn(state.resource());
     }
 
     @Benchmark
-    public int ase15BranchStatements(ReadOnlyRunnerState state) {
-        return QueryFactoryAse15.queryBranchStatements().apply(state.resource());
+    public Collection<Statement> ase15BranchStatements(ReadOnlyRunnerState state) {
+        return QueryFactoryASE.getBranchStatements().executeOn(state.resource());
     }
 
     //endregion

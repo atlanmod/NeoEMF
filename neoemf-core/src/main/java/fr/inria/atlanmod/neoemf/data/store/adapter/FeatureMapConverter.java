@@ -69,12 +69,12 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
     @Nonnull
     @Override
     public String convert(FeatureMap.Entry entry, @SuppressWarnings("unused") EAttribute attribute) {
-        EStructuralFeature innerFeature = entry.getEStructuralFeature();
+        EStructuralFeature entryFeature = entry.getEStructuralFeature();
         String value;
 
-        if (EObjects.isAttribute(innerFeature)) {
-            EAttribute innerAttribute = EObjects.asAttribute(innerFeature);
-            value = EcoreUtil.convertToString(innerAttribute.getEAttributeType(), entry.getValue());
+        if (EObjects.isAttribute(entryFeature)) {
+            EAttribute entryAttribute = EObjects.asAttribute(entryFeature);
+            value = EcoreUtil.convertToString(entryAttribute.getEAttributeType(), entry.getValue());
         }
         else {
             PersistentEObject referencedObject = PersistentEObject.from(entry.getValue());
@@ -83,7 +83,7 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
             value = referencedObject.id().toHexString();
         }
 
-        return innerFeature.getName() + FEATURE_MAP_DELIMITER + value;
+        return entryFeature.getName() + FEATURE_MAP_DELIMITER + value;
     }
 
     /**
@@ -105,18 +105,18 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
         String[] splitValues = entry.split(FEATURE_MAP_DELIMITER, 2);
 
         EClass metaClass = attribute.getEContainingClass();
-        EStructuralFeature innerFeature = metaClass.getEStructuralFeature(splitValues[0]);
+        EStructuralFeature entryFeature = metaClass.getEStructuralFeature(splitValues[0]);
 
         Object value;
 
-        if (EObjects.isAttribute(innerFeature)) {
-            EAttribute innerAttribute = EObjects.asAttribute(innerFeature);
-            value = EcoreUtil.createFromString(innerAttribute.getEAttributeType(), splitValues[1]);
+        if (EObjects.isAttribute(entryFeature)) {
+            EAttribute entryAttribute = EObjects.asAttribute(entryFeature);
+            value = EcoreUtil.createFromString(entryAttribute.getEAttributeType(), splitValues[1]);
         }
         else {
             value = store.resolve(Id.getProvider().fromHexString(splitValues[1]));
         }
 
-        return FeatureMapUtil.createEntry(innerFeature, value);
+        return FeatureMapUtil.createEntry(entryFeature, value);
     }
 }

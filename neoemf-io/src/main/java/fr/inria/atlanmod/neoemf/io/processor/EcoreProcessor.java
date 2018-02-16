@@ -27,6 +27,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -94,7 +95,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         else {
             // Otherwise redirect to the reference handler
             BasicReference reference = new BasicReference()
-                    .rawValue(String.class.cast(attribute.value()));
+                    .rawValue(attribute.rawValue());
 
             processReference(reference, EObjects.asReference(eFeature));
         }
@@ -200,7 +201,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             }
             else {
                 ePackage = parentEClass.getEPackage();
-                ns = BasicNamespace.Registry.getInstance().getFromUri(ePackage.getNsURI());
+                ns = BasicNamespace.Registry.getInstance().getByUri(ePackage.getNsURI());
                 ns.ePackage(ePackage);
                 element.metaClass(new BasicMetaclass(ns));
             }
@@ -275,7 +276,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         attribute.owner(parentElement.id())
                 .id(parentEClass.getFeatureID(eAttribute))
                 .eFeature(eAttribute)
-                .value(ValueConverter.INSTANCE.convert(String.class.cast(attribute.value()), eAttribute));
+                .value(ValueConverter.INSTANCE.convert(attribute.rawValue(), eAttribute));
 
         notifyAttribute(attribute);
     }
@@ -311,14 +312,16 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @param eReference the associated EMF reference
      */
     private void processRawReference(BasicReference reference, EReference eReference) {
+        final Function<String, BasicReference> createFunc = s -> new BasicReference()
+                .owner(reference.owner())
+                .id(reference.id())
+                .eFeature(eReference)
+                .rawValue(s);
+
         Arrays.stream(reference.rawValue().split(Strings.SPACE))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
-                .map(s -> new BasicReference()
-                        .owner(reference.owner())
-                        .id(reference.id())
-                        .eFeature(eReference)
-                        .rawValue(s))
+                .map(createFunc)
                 .forEach(this::notifyReference);
     }
 

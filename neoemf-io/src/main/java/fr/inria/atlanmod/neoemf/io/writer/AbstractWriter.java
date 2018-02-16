@@ -15,10 +15,10 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -102,7 +102,7 @@ public abstract class AbstractWriter<T> implements Writer {
         }
         else {
             flushLastFeature(attribute.id());
-            manyAttributesAccumulator.computeIfAbsent(attribute, a -> new ArrayList<>()).add(attribute.value());
+            manyAttributesAccumulator.computeIfAbsent(attribute, a -> new LinkedList<>()).add(attribute.value());
         }
     }
 
@@ -118,7 +118,7 @@ public abstract class AbstractWriter<T> implements Writer {
         }
         else {
             flushLastFeature(reference.id());
-            manyReferencesAccumulator.computeIfAbsent(reference, r -> new ArrayList<>()).add(reference.value());
+            manyReferencesAccumulator.computeIfAbsent(reference, r -> new LinkedList<>()).add(reference.value());
         }
     }
 

@@ -119,7 +119,7 @@ class StoreAdapterTest extends AbstractTest {
 
             @Nonnull
             @Override
-            protected Cache<Id, PersistentEObject> cache() {
+            protected Cache<Id, PersistentEObject> getCache() {
                 return CacheBuilder.empty();
             }
         };

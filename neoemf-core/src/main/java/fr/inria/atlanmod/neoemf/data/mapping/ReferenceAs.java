@@ -27,25 +27,25 @@ public interface ReferenceAs<M> extends ValueMapper, ReferenceMapper {
 
     @Nonnull
     @Override
-    default Optional<Id> referenceOf(SingleFeatureBean key) {
+    default Optional<Id> referenceOf(SingleFeatureBean feature) {
         Converter<Id, M> converter = referenceConverter();
 
-        return this.<M>valueOf(key)
+        return this.<M>valueOf(feature)
                 .map(converter::revert);
     }
 
     @Nonnull
     @Override
-    default Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
+    default Optional<Id> referenceFor(SingleFeatureBean feature, Id reference) {
         Converter<Id, M> converter = referenceConverter();
 
-        return this.valueFor(key, converter.convert(reference))
+        return this.valueFor(feature, converter.convert(reference))
                 .map(converter::revert);
     }
 
     @Override
-    default void removeReference(SingleFeatureBean key) {
-        this.removeValue(key);
+    default void removeReference(SingleFeatureBean feature) {
+        this.removeValue(feature);
     }
 
     /**

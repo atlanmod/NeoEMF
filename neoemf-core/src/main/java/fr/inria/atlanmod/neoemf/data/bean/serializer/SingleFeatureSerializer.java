@@ -31,9 +31,9 @@ final class SingleFeatureSerializer extends AbstractSerializer<SingleFeatureBean
     private static final long serialVersionUID = -6425763366179041775L;
 
     @Override
-    public void serialize(SingleFeatureBean key, @WillNotClose DataOutput out) throws IOException {
-        out.writeLong(key.owner().toLong());
-        out.writeInt(key.id());
+    public void serialize(SingleFeatureBean feature, @WillNotClose DataOutput out) throws IOException {
+        out.writeLong(feature.owner().toLong());
+        out.writeInt(feature.id());
     }
 
     @Nonnull

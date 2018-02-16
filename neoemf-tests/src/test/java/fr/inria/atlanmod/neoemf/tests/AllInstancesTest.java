@@ -121,12 +121,12 @@ class AllInstancesTest extends AbstractResourceBasedTest {
         Tree rootTree = EFACTORY.createTree();
         rootTree.setName("RootTree");
 
-        IntStream.range(0, 5).forEach(i -> {
+        IntStream.range(0, 5).forEachOrdered(i -> {
             Tree tree = EFACTORY.createTree();
             tree.setName("Tree" + i);
             rootTree.getChildren().add(tree);
 
-            IntStream.range(0, 10).forEach(j -> {
+            IntStream.range(0, 10).forEachOrdered(j -> {
                 Node physicalNode = EFACTORY.createPhysicalNode();
                 physicalNode.setLabel("Physical" + i + '-' + j);
                 tree.getNodes().add(physicalNode);

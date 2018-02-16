@@ -25,10 +25,6 @@
 	<module>mongodb</module>
     </modules>
 
-    <properties>
-        <project.rootdir>${project.basedir}/..</project.rootdir>
-    </properties>
-
     <dependencies>
 
         <!-- Commons -->

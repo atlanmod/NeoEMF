@@ -29,80 +29,80 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 public interface ManyValueMapper extends ValueMapper {
 
     /**
-     * Retrieves the value of the specified {@code key} at a defined position.
+     * Retrieves the value of the specified {@code feature} at a defined position.
      *
-     * @param key the key identifying the multi-valued attribute
+     * @param feature the bean identifying the multi-valued attribute
      *
-     * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the key hasn't any value or
+     * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the feature hasn't any value or
      * doesn't exist
      *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @throws NullPointerException if the {@code feature} is {@code null}
      */
     @Nonnull
-    <V> Optional<V> valueOf(ManyFeatureBean key);
+    <V> Optional<V> valueOf(ManyFeatureBean feature);
 
     /**
-     * Retrieves all values of the specified {@code key}.
+     * Retrieves all values of the specified {@code feature}.
      *
-     * @param key the key identifying the multi-valued attribute
+     * @param feature the bean identifying the multi-valued attribute
      *
      * @return an immutable ordered {@link Stream} over all values
      *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @throws NullPointerException if the {@code feature} is {@code null}
      */
     @Nonnull
-    <V> Stream<V> allValuesOf(SingleFeatureBean key);
+    <V> Stream<V> allValuesOf(SingleFeatureBean feature);
 
     /**
-     * Defines the {@code value} of the specified {@code key} at a defined position.
+     * Defines the {@code value} of the specified {@code feature} at a defined position.
      *
-     * @param key   the key identifying the multi-valued attribute
-     * @param value the value to set
-     * @param <V>   the type of value
+     * @param feature the bean identifying the multi-valued attribute
+     * @param value   the value to set
+     * @param <V>     the type of value
      *
-     * @return an {@link Optional} containing the previous value of the {@code key}, or {@link Optional#empty()} if the
-     * key has no value before
+     * @return an {@link Optional} containing the previous value of the {@code feature}, or {@link Optional#empty()} if the
+     * feature has no value before
      *
-     * @throws NoSuchElementException if the {@code key} doesn't exist
+     * @throws NoSuchElementException if the {@code feature} doesn't exist
      * @throws NullPointerException   if any parameter is {@code null}
-     * @implSpec This method is intended to modify an existing value. If the {@code key} is not defined, implementations
+     * @implSpec This method is intended to modify an existing value. If the {@code feature} is not defined, implementations
      * should not add the value, but throw a {@link NoSuchElementException}.
      * @see #addValue(ManyFeatureBean, Object)
      * @see #appendValue(SingleFeatureBean, Object)
      */
     @Nonnull
-    <V> Optional<V> valueFor(ManyFeatureBean key, V value);
+    <V> Optional<V> valueFor(ManyFeatureBean feature, V value);
 
     /**
-     * Adds the {@code value} to the specified {@code key} at a defined position.
+     * Adds the {@code value} to the specified {@code feature} at a defined position.
      *
-     * @param key   the key identifying the multi-valued attribute
-     * @param value the value to add
-     * @param <V>   the type of value
+     * @param feature the bean identifying the multi-valued attribute
+     * @param value   the value to add
+     * @param <V>     the type of value
      *
      * @throws NullPointerException      if any parameter is {@code null}
-     * @throws IndexOutOfBoundsException if {@code key#position() > size}
+     * @throws IndexOutOfBoundsException if {@code feature#position() > size}
      */
-    <V> void addValue(ManyFeatureBean key, V value);
+    <V> void addValue(ManyFeatureBean feature, V value);
 
     /**
-     * Adds all the {@code collection} to the specified {@code key} from the position of the {@code key}.
+     * Adds all the {@code values} to the specified {@code feature} from the position of the {@code feature}.
      *
-     * @param key        the key identifying the multi-valued attribute
-     * @param collection the values to add
-     * @param <V>        the type of value
+     * @param feature the bean identifying the multi-valued attribute
+     * @param values  the values to add
+     * @param <V>     the type of value
      *
      * @throws NullPointerException      if any parameter is {@code null}
-     * @throws IndexOutOfBoundsException if {@code key#position() > size}
+     * @throws IndexOutOfBoundsException if {@code feature#position() > size}
      */
-    <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection);
+    <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values);
 
     /**
-     * Adds the {@code value} to the specified {@code key} at the last position.
+     * Adds the {@code value} to the specified {@code feature} at the last position.
      *
-     * @param key   the key identifying the multi-valued attribute
-     * @param value the value to add
-     * @param <V>   the type of value
+     * @param feature the bean identifying the multi-valued attribute
+     * @param value   the value to add
+     * @param <V>     the type of value
      *
      * @return the position to which the value was added
      *
@@ -110,23 +110,23 @@ public interface ManyValueMapper extends ValueMapper {
      * @see #addValue(ManyFeatureBean, Object)
      */
     @Nonnegative
-    default <V> int appendValue(SingleFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    default <V> int appendValue(SingleFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        int position = sizeOfValue(key).orElse(0);
+        int position = sizeOfValue(feature).orElse(0);
 
-        addValue(key.withPosition(position), value);
+        addValue(feature.withPosition(position), value);
 
         return position;
     }
 
     /**
-     * Adds all the {@code collection} to the specified {@code key} from the last position.
+     * Adds all the {@code values} to the specified {@code feature} from the last position.
      *
-     * @param key        the key identifying the multi-valued attribute
-     * @param collection the values to add
-     * @param <V>        the type of collection
+     * @param feature the bean identifying the multi-valued attribute
+     * @param values  the values to add
+     * @param <V>     the type of values
      *
      * @return the position to which the first value was added
      *
@@ -135,51 +135,51 @@ public interface ManyValueMapper extends ValueMapper {
      * @see #appendValue(SingleFeatureBean, Object)
      */
     @Nonnegative
-    default <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key, "key");
-        checkNotNull(collection, "collection");
+    default <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
+        checkNotNull(feature, "feature");
+        checkNotNull(values, "values");
 
-        int firstPosition = sizeOfValue(key).orElse(0);
+        int firstPosition = sizeOfValue(feature).orElse(0);
 
-        addAllValues(key.withPosition(firstPosition), collection);
+        addAllValues(feature.withPosition(firstPosition), values);
 
         return firstPosition;
     }
 
     /**
-     * Removes the value of the specified {@code key} at a defined position.
+     * Removes the value of the specified {@code feature} at a defined position.
      *
-     * @param key the key identifying the multi-valued attribute
-     * @param <V> the type of value
+     * @param feature the bean identifying the multi-valued attribute
+     * @param <V>     the type of value
      *
-     * @return an {@link Optional} containing the removed value, or {@link Optional#empty()} if the key has no value
+     * @return an {@link Optional} containing the removed value, or {@link Optional#empty()} if the feature has no value
      * before
      *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @throws NullPointerException if the {@code feature} is {@code null}
      */
     @Nonnull
-    <V> Optional<V> removeValue(ManyFeatureBean key);
+    <V> Optional<V> removeValue(ManyFeatureBean feature);
 
     /**
-     * Removes all values of the specified {@code key}.
+     * Removes all values of the specified {@code feature}.
      *
-     * @param key the key identifying the multi-valued attribute
+     * @param feature the bean identifying the multi-valued attribute
      *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @throws NullPointerException if the {@code feature} is {@code null}
      */
-    void removeAllValues(SingleFeatureBean key);
+    void removeAllValues(SingleFeatureBean feature);
 
     /**
-     * Returns the number of value of the specified {@code key}.
+     * Returns the number of value of the specified {@code feature}.
      *
-     * @param key the key identifying the multi-valued attribute
+     * @param feature the bean identifying the multi-valued attribute
      *
-     * @return an {@link Optional} containing the number of value of the {@code key}, or {@link Optional#empty()} if the
-     * {@code key} hasn't any value, or if {@code size == 0}.
+     * @return an {@link Optional} containing the number of value of the {@code feature}, or {@link Optional#empty()} if the
+     * {@code feature} hasn't any value, or if {@code size == 0}.
      *
-     * @throws NullPointerException if the {@code key} is {@code null}
+     * @throws NullPointerException if the {@code feature} is {@code null}
      */
     @Nonnull
     @Nonnegative
-    Optional<Integer> sizeOfValue(SingleFeatureBean key);
+    Optional<Integer> sizeOfValue(SingleFeatureBean feature);
 }

@@ -69,11 +69,11 @@ class ContentsListTest extends AbstractResourceBasedTest {
             List<EObject> eContents = tree.eContents();
             assertThat(eContents).hasSize(TREES_COUNT + NODES_COUNT);
 
-            IntStream.range(0, NODES_COUNT).forEach(i ->
+            IntStream.range(0, NODES_COUNT).forEachOrdered(i ->
                     assertThat(eContents.get(i)).isEqualTo(treeNodes.get(i))
             );
 
-            IntStream.range(0, TREES_COUNT).forEach(i ->
+            IntStream.range(0, TREES_COUNT).forEachOrdered(i ->
                     assertThat(eContents.get(i + NODES_COUNT)).isEqualTo(treeChildren.get(i))
             );
         }
@@ -118,14 +118,14 @@ class ContentsListTest extends AbstractResourceBasedTest {
         tree.setName("Tree0");
         tree.setParent(rootTree);
 
-        IntStream.range(0, NODES_COUNT).forEach(i -> {
+        IntStream.range(0, NODES_COUNT).forEachOrdered(i -> {
             Node node = EFACTORY.createPhysicalNode();
             node.setLabel("Node0-" + i);
             tree.getNodes().add(node);
             treeNodes.add(node);
         });
 
-        IntStream.range(0, TREES_COUNT).forEach(i -> {
+        IntStream.range(0, TREES_COUNT).forEachOrdered(i -> {
             Tree subTree = EFACTORY.createTree();
             subTree.setName("Tree0-" + i);
             tree.getChildren().add(subTree);

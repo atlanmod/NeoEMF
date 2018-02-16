@@ -12,7 +12,6 @@ import fr.inria.atlanmod.neoemf.core.Id;
 
 import org.eclipse.emf.ecore.EReference;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -25,11 +24,6 @@ public class BasicReference extends AbstractBasicFeature<BasicReference, ERefere
      * Whether this reference is a containment.
      */
     private boolean isContainment = false;
-
-    /**
-     * The string representation of the identifier of the referenced element(s).
-     */
-    private String rawValue;
 
     /**
      * Returns {@code true} if this reference is a containment.
@@ -57,28 +51,5 @@ public class BasicReference extends AbstractBasicFeature<BasicReference, ERefere
     public BasicReference eFeature(EReference eFeature) {
         return super.eFeature(eFeature)
                 .isContainment(eFeature.isContainment());
-    }
-
-    /**
-     * Returns the string representation of the identifier of the referenced element(s). If the reference is
-     * multi-valued, they will be delimited by a space character.
-     *
-     * @return the string representation of the identifier of the referenced element(s)
-     */
-    public String rawValue() {
-        return rawValue;
-    }
-
-    /**
-     * Defines the string representation of the identifier of the referenced element(s).
-     *
-     * @param rawValue the string representation of the identifier of the referenced element(s)
-     *
-     * @return this instance (for chaining)
-     */
-    public BasicReference rawValue(@Nullable String rawValue) {
-        this.rawValue = rawValue;
-
-        return me();
     }
 }

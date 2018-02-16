@@ -29,11 +29,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.LazyStoreList}.
+ * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.DirectStoreList}.
  */
 // TODO Add missing methods
 @ParametersAreNonnullByDefault
-class LazyStoreListTest extends AbstractResourceBasedTest {
+class StoreListTest extends AbstractResourceBasedTest {
 
     @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; count = {2}")
     @ArgumentsSource(ContextProvider.AllWithBooleansAndIntegers.class)
@@ -63,7 +63,7 @@ class LazyStoreListTest extends AbstractResourceBasedTest {
         PrimaryObject primary = EFACTORY.createPrimaryObject();
         primary.setName("Model");
 
-        IntStream.rangeClosed(0, count).forEach(i -> {
+        IntStream.rangeClosed(0, count).forEachOrdered(i -> {
             TargetObject target = EFACTORY.createTargetObject();
             target.setName("target" + i);
             targets.add(target);

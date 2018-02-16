@@ -105,102 +105,102 @@ public class AutoSaveStore extends AbstractStore {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        return thenIncrementAndSave(() -> super.valueFor(key, value), 1);
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        return thenIncrementAndSave(() -> super.valueFor(feature, value), 1);
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.removeValue(key), 1);
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        return thenIncrementAndSave(() -> super.referenceFor(key, reference), 1);
-    }
-
-    @Override
-    public void removeReference(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.removeReference(key), 1);
+    public void removeValue(SingleFeatureBean feature) {
+        thenIncrementAndSave(() -> super.removeValue(feature), 1);
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        return thenIncrementAndSave(() -> super.valueFor(key, value), 1);
+    public Optional<Id> referenceFor(SingleFeatureBean feature, Id reference) {
+        return thenIncrementAndSave(() -> super.referenceFor(feature, reference), 1);
     }
 
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        thenIncrementAndSave(() -> super.addValue(key, value), 1);
+    public void removeReference(SingleFeatureBean feature) {
+        thenIncrementAndSave(() -> super.removeReference(feature), 1);
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
+        return thenIncrementAndSave(() -> super.valueFor(feature, value), 1);
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        thenIncrementAndSave(() -> super.addAllValues(key, collection), collection.size());
+    public <V> void addValue(ManyFeatureBean feature, V value) {
+        thenIncrementAndSave(() -> super.addValue(feature, value), 1);
+    }
+
+    @Override
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+        thenIncrementAndSave(() -> super.addAllValues(feature, values), values.size());
     }
 
     @Nonnegative
     @Override
-    public <V> int appendValue(SingleFeatureBean key, V value) {
-        return thenIncrementAndSave(() -> super.appendValue(key, value), 1);
+    public <V> int appendValue(SingleFeatureBean feature, V value) {
+        return thenIncrementAndSave(() -> super.appendValue(feature, value), 1);
     }
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
-        return thenIncrementAndSave(() -> super.appendAllValues(key, collection), collection.size());
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
+        return thenIncrementAndSave(() -> super.appendAllValues(feature, values), values.size());
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        return thenIncrementAndSave(() -> super.removeValue(key), 1);
+    public <V> Optional<V> removeValue(ManyFeatureBean feature) {
+        return thenIncrementAndSave(() -> super.removeValue(feature), 1);
     }
 
     @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.removeAllValues(key), sizeOfValue(key).orElse(0));
+    public void removeAllValues(SingleFeatureBean feature) {
+        thenIncrementAndSave(() -> super.removeAllValues(feature), sizeOfValue(feature).orElse(0));
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        return thenIncrementAndSave(() -> super.referenceFor(key, reference), 1);
+    public Optional<Id> referenceFor(ManyFeatureBean feature, Id reference) {
+        return thenIncrementAndSave(() -> super.referenceFor(feature, reference), 1);
     }
 
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
-        thenIncrementAndSave(() -> super.addReference(key, reference), 1);
+    public void addReference(ManyFeatureBean feature, Id reference) {
+        thenIncrementAndSave(() -> super.addReference(feature, reference), 1);
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        thenIncrementAndSave(() -> super.addAllReferences(key, collection), collection.size());
+    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+        thenIncrementAndSave(() -> super.addAllReferences(feature, references), references.size());
     }
 
     @Nonnegative
     @Override
-    public int appendReference(SingleFeatureBean key, Id reference) {
-        return thenIncrementAndSave(() -> super.appendReference(key, reference), 1);
+    public int appendReference(SingleFeatureBean feature, Id reference) {
+        return thenIncrementAndSave(() -> super.appendReference(feature, reference), 1);
     }
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
-        return thenIncrementAndSave(() -> super.appendAllReferences(key, collection), collection.size());
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
+        return thenIncrementAndSave(() -> super.appendAllReferences(feature, references), references.size());
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        return thenIncrementAndSave(() -> super.removeReference(key), 1);
+    public Optional<Id> removeReference(ManyFeatureBean feature) {
+        return thenIncrementAndSave(() -> super.removeReference(feature), 1);
     }
 
     @Override
-    public void removeAllReferences(SingleFeatureBean key) {
-        thenIncrementAndSave(() -> super.removeAllReferences(key), sizeOfReference(key).orElse(0));
+    public void removeAllReferences(SingleFeatureBean feature) {
+        thenIncrementAndSave(() -> super.removeAllReferences(feature), sizeOfReference(feature).orElse(0));
     }
 
     /**

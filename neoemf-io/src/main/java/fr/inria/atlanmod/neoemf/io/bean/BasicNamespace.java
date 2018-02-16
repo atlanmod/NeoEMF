@@ -11,8 +11,10 @@ package fr.inria.atlanmod.neoemf.io.bean;
 import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EcorePackage;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,7 +38,7 @@ public class BasicNamespace {
      * The instance of the default {@code BasicNamespace}.
      */
     @Nonnull
-    private static final BasicNamespace DEFAULT = new BasicNamespace("ecore", "http://www.eclipse.org/emf/2002/Ecore");
+    private static final BasicNamespace DEFAULT = Registry.getInstance().register(EcorePackage.eINSTANCE);
 
     /**
      * The prefix of this namespace.
@@ -54,11 +56,7 @@ public class BasicNamespace {
      * The {@link EPackage} associated to this namespace.
      */
     @Nonnull
-    private LazyReference<EPackage> ePackage = LazyReference.soft(() -> {
-        EPackage p = EPackage.Registry.INSTANCE.getEPackage(uri());
-        checkNotNull(p, "EPackage %s is not registered.", uri());
-        return p;
-    });
+    private LazyReference<EPackage> ePackage;
 
     /**
      * Constructs a new {@code BasicNamespace} with the given {@code prefix} and {@code uri}.
@@ -69,6 +67,12 @@ public class BasicNamespace {
     private BasicNamespace(String prefix, String uri) {
         this.prefix = prefix;
         this.uri = uri;
+
+        this.ePackage = LazyReference.soft(() -> {
+            EPackage p = EPackage.Registry.INSTANCE.getEPackage(uri());
+            checkNotNull(p, "EPackage %s is not registered.", uri());
+            return p;
+        });
     }
 
     /**
@@ -186,6 +190,7 @@ public class BasicNamespace {
          * @return a immutable collection
          */
         @Nonnull
+        @VisibleForTesting
         public Iterable<String> getPrefixes() {
             return Collections.unmodifiableSet(namespacesByPrefix.keySet());
         }
@@ -199,7 +204,7 @@ public class BasicNamespace {
          * @return a {@code BasicNamespace} identified by the given {@code prefix}, or {@code null} if no namespace is
          * registered with this {@code prefix}
          */
-        public BasicNamespace getFromPrefix(@Nullable String prefix) {
+        public BasicNamespace getByPrefix(@Nullable String prefix) {
             return Optional.ofNullable(prefix)
                     .map(namespacesByPrefix::get)
                     .orElse(null);
@@ -214,7 +219,7 @@ public class BasicNamespace {
          * @return a {@code BasicNamespace} identified by the given {@code uri}, or {@code null} if no namespace is
          * registered with this {@code uri}.
          */
-        public BasicNamespace getFromUri(@Nullable String uri) {
+        public BasicNamespace getByUri(@Nullable String uri) {
             return Optional.ofNullable(uri)
                     .map(v -> namespacesByUri.get(uri))
                     .orElse(null);

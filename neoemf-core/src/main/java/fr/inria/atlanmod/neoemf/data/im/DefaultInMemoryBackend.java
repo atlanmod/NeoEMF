@@ -88,7 +88,7 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
     }
 
     @Override
-    protected void innerClose() {
+    protected void internalClose() {
         containers.clear();
         containers.close();
 

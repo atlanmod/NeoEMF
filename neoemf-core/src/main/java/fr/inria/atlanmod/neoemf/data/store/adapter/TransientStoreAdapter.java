@@ -57,6 +57,12 @@ public class TransientStoreAdapter extends AbstractStoreAdapter {
         this.holder = SharedHolder.forResource(resource);
     }
 
+    @Nonnull
+    @Override
+    protected Cache<Id, PersistentEObject> getCache() {
+        return holder.cache;
+    }
+
     @Override
     public void close() {
         holder.close();
@@ -75,12 +81,6 @@ public class TransientStoreAdapter extends AbstractStoreAdapter {
 
         this.holder = SharedHolder.forResource(resource);
         super.resource(resource);
-    }
-
-    @Nonnull
-    @Override
-    protected Cache<Id, PersistentEObject> cache() {
-        return holder.cache();
     }
 
     /**
@@ -133,15 +133,6 @@ public class TransientStoreAdapter extends AbstractStoreAdapter {
             SharedHolder holder = REGISTRY.computeIfAbsent(resource, SharedHolder::new);
             holder.dependencies.incrementAndGet();
             return holder;
-        }
-
-        /**
-         * Returns the cache of this holder.
-         *
-         * @return the cache
-         */
-        public Cache<Id, PersistentEObject> cache() {
-            return cache;
         }
 
         @Override

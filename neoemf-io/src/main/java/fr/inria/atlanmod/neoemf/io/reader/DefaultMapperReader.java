@@ -131,16 +131,16 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                 .flatMap(f -> {
                     Stream<Id> containmentStream = Stream.empty();
 
-                    SingleFeatureBean key = SingleFeatureBean.of(id, eClass.getFeatureID(f));
+                    SingleFeatureBean bean = SingleFeatureBean.of(id, eClass.getFeatureID(f));
 
                     if (EObjects.isAttribute(f)) {
                         EAttribute eAttribute = EObjects.asAttribute(f);
 
                         if (!f.isMany()) {
-                            mapper.valueOf(key).ifPresent(v -> createAttribute(key, eAttribute, v));
+                            mapper.valueOf(bean).ifPresent(v -> createAttribute(bean, eAttribute, v));
                         }
                         else {
-                            mapper.allValuesOf(key).forEach(v -> createAttribute(key, eAttribute, v));
+                            mapper.allValuesOf(bean).forEach(v -> createAttribute(bean, eAttribute, v));
                         }
                     }
                     else {
@@ -148,16 +148,16 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                         boolean isContainment = eReference.isContainment();
 
                         if (!f.isMany()) {
-                            Optional<Id> reference = mapper.referenceOf(key)
-                                    .map(r -> createReference(key, eReference, r));
+                            Optional<Id> reference = mapper.referenceOf(bean)
+                                    .map(r -> createReference(bean, eReference, r));
 
                             if (isContainment) {
                                 containmentStream = reference.map(Stream::of).orElseGet(Stream::empty);
                             }
                         }
                         else {
-                            List<Id> references = mapper.allReferencesOf(key)
-                                    .map(r -> createReference(key, eReference, r))
+                            List<Id> references = mapper.allReferencesOf(bean)
+                                    .map(r -> createReference(bean, eReference, r))
                                     .filter(Objects::nonNull)
                                     .collect(Collectors.toList());
 
@@ -180,14 +180,14 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     /**
      * Creates and notifies a new attribute.
      *
-     * @param key        the owner of the attribute
+     * @param feature    the owner of the attribute
      * @param eAttribute the associated EMF attribute
      * @param value      the value of the attribute
      */
-    private void createAttribute(SingleFeatureBean key, EAttribute eAttribute, Object value) {
+    private void createAttribute(SingleFeatureBean feature, EAttribute eAttribute, Object value) {
         BasicAttribute attribute = new BasicAttribute()
-                .owner(key.owner())
-                .id(key.id())
+                .owner(feature.owner())
+                .id(feature.id())
                 .eFeature(eAttribute)
                 .value(value);
 
@@ -197,17 +197,17 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     /**
      * Creates and notify a new reference.
      *
-     * @param key        the owner of the reference
+     * @param feature    the owner of the reference
      * @param eReference the associated EMF reference
      * @param value      the value of the reference
      *
      * @return the identifier of the referenced element if the reference is a containment, {@code null} otherwise
      */
     @Nullable
-    private Id createReference(SingleFeatureBean key, EReference eReference, Id value) {
+    private Id createReference(SingleFeatureBean feature, EReference eReference, Id value) {
         BasicReference reference = new BasicReference()
-                .owner(key.owner())
-                .id(key.id())
+                .owner(feature.owner())
+                .id(feature.id())
                 .eFeature(eReference)
                 .value(value);
 

@@ -22,40 +22,40 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface ValueMapper {
 
     /**
-     * Retrieves the value of the specified {@code key}.
+     * Retrieves the value of the specified {@code feature}.
      *
-     * @param key the key identifying the value
-     * @param <V> the type of value
+     * @param feature the bean identifying the value
+     * @param <V>     the type of value
      *
-     * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the key hasn't any value or
+     * @return an {@link Optional} containing the value, or {@link Optional#empty()} if the feature hasn't any value or
      * doesn't exist
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    <V> Optional<V> valueOf(SingleFeatureBean key);
+    <V> Optional<V> valueOf(SingleFeatureBean feature);
 
     /**
-     * Defines the {@code value} of the specified {@code key}.
+     * Defines the {@code value} of the specified {@code feature}.
      *
-     * @param key   the key identifying the value
-     * @param value the value to set
-     * @param <V>   the type of value
+     * @param feature the bean identifying the value
+     * @param value   the value to set
+     * @param <V>     the type of value
      *
-     * @return an {@link Optional} containing the previous value of the {@code key}, or {@link Optional#empty()} if the
-     * key has no value before
+     * @return an {@link Optional} containing the previous value of the {@code feature}, or {@link Optional#empty()} if the
+     * feature has no value before
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
     @Nonnull
-    <V> Optional<V> valueFor(SingleFeatureBean key, V value);
+    <V> Optional<V> valueFor(SingleFeatureBean feature, V value);
 
     /**
-     * Removes the value of the specified {@code key}.
+     * Removes the value of the specified {@code feature}.
      *
-     * @param key the key identifying the value
+     * @param feature the bean identifying the value
      *
      * @throws NullPointerException if any parameter is {@code null}
      */
-    void removeValue(SingleFeatureBean key);
+    void removeValue(SingleFeatureBean feature);
 }

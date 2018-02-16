@@ -111,9 +111,6 @@
     </developers>
 
     <properties>
-        <project.rootdir>${project.basedir}</project.rootdir>
-        <sonar.jacoco.reportPaths>${project.rootdir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
-
         <argLine.global>-XX:+UseConcMarkSweepGC</argLine.global>
 
         <commons.version>1.0.2-SNAPSHOT</commons.version>
@@ -208,8 +205,6 @@
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.7.9</version>
                     <configuration>
-                        <destFile>${sonar.jacoco.reportPaths}</destFile>
-                        <append>true</append>
                         <excludes>
                             <exclude>**/tests/*</exclude>
                         </excludes>

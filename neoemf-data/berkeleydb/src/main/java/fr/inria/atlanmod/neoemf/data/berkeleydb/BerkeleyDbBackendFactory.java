@@ -69,13 +69,13 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory<BerkeleyDbC
                 .setAllowCreate(!isReadOnly)
                 .setReadOnly(isReadOnly);
 
-        Environment environment = new Environment(directory.toFile(), environmentConfig);
-
         DatabaseConfig databaseConfig = new DatabaseConfig()
                 .setAllowCreate(!isReadOnly)
                 .setReadOnly(isReadOnly)
                 .setSortedDuplicates(false)
                 .setDeferredWrite(true);
+
+        Environment environment = new Environment(directory.toFile(), environmentConfig);
 
         return createMapper(config.getMapping(), environment, databaseConfig);
     }

@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
@@ -42,14 +44,7 @@ import static java.util.Objects.isNull;
  * @see PersistentEObject#eStore()
  */
 @ParametersAreNonnullByDefault
-// TODO Use a local cache (Lazy<List<Object>>) to avoid atomic operations.
-// Only when the resource is NOT distributed, and when the full load is beneficial !
-// - Retrieve all values first (getAll)
-// - Cache them
-// - Execute operations on the cache
-// Think to update the cached values on write operations (only if the local cache is loaded (Lazy#ifLoaded))
-// Think to adapt the immutable list returned by #delegateList()
-public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
+public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 2630358403343923944L;
@@ -61,12 +56,12 @@ public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
     private final transient Storable storable;
 
     /**
-     * Constructs a new {@code LazyStoreList}.
+     * Constructs a new {@code DirectStoreList}.
      *
      * @param owner   the owner the {@code feature}
      * @param feature the feature associated with this list
      */
-    public LazyStoreList(PersistentEObject owner, EStructuralFeature feature) {
+    public DirectStoreList(PersistentEObject owner, EStructuralFeature feature) {
         super(owner, feature);
         this.storable = owner;
     }
@@ -109,6 +104,7 @@ public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
     }
 
     @Override
+    @Nonnegative
     protected int delegateSize() {
         return eStore().size(owner, eStructuralFeature);
     }
@@ -119,12 +115,12 @@ public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
     }
 
     @Override
-    protected boolean delegateContains(Object object) {
+    protected boolean delegateContains(@Nullable Object object) {
         return eStore().contains(owner, eStructuralFeature, object);
     }
 
     @Override
-    protected boolean delegateContainsAll(Collection<?> collection) {
+    protected boolean delegateContainsAll(@Nullable Collection<?> collection) {
         if (isNull(collection) || collection.isEmpty()) {
             return false;
         }
@@ -133,16 +129,18 @@ public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
             return contains(collection.iterator().next());
         }
 
-        return eStore().getAll(owner, eStructuralFeature).containsAll(collection);
+        return delegateGetAll().containsAll(collection);
     }
 
     @Override
-    protected int delegateIndexOf(Object object) {
+    @Nonnegative
+    protected int delegateIndexOf(@Nullable Object object) {
         return eStore().indexOf(owner, eStructuralFeature, object);
     }
 
     @Override
-    protected int delegateLastIndexOf(Object object) {
+    @Nonnegative
+    protected int delegateLastIndexOf(@Nullable Object object) {
         return eStore().lastIndexOf(owner, eStructuralFeature, object);
     }
 
@@ -169,12 +167,12 @@ public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
     }
 
     @Override
-    protected void delegateAdd(Object object) {
+    protected void delegateAdd(E object) {
         delegateAdd(InternalEObject.EStore.NO_INDEX, object);
     }
 
     @Override
-    protected void delegateAdd(int index, Object object) {
+    protected void delegateAdd(int index, E object) {
         eStore().add(owner, eStructuralFeature, index, object);
     }
 
@@ -197,7 +195,7 @@ public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
 
     @Override
     // FIXME Does not resolve
-    protected boolean delegateEquals(Object object) {
+    protected boolean delegateEquals(@Nullable Object object) {
         if (object == this) {
             return true;
         }
@@ -207,8 +205,7 @@ public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
         }
 
         List<?> list = List.class.cast(object);
-        return list.size() == delegateSize()
-                && list.equals(eStore().getAll(owner, eStructuralFeature));
+        return list.size() == delegateSize() && list.equals(delegateGetAll());
     }
 
     @Override
@@ -218,7 +215,7 @@ public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
 
     @Override
     protected String delegateToString() {
-        return eStore().getAll(owner, eStructuralFeature)
+        return delegateGetAll()
                 .stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(", ", "[", "]"));
@@ -236,11 +233,22 @@ public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
 
     @Override
     protected List<E> delegateBasicList() {
-        final Object[] data = eStore().toArray(owner, eStructuralFeature);
+        final Object[] data = delegateToArray();
 
         return data.length == 0
                 ? ECollections.emptyEList()
                 : new EcoreEList.UnmodifiableEList<>(owner, eStructuralFeature, data.length, data);
+    }
+
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    protected List<E> delegateGetAll() {
+        return List.class.cast(eStore().getAll(owner, eStructuralFeature));
+    }
+
+    @Nonnegative
+    protected int delegateAddAll(int index, Collection<? extends E> collection) {
+        return eStore().addAll(owner, eStructuralFeature, index, collection);
     }
 
     // endregion
@@ -318,7 +326,7 @@ public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
                 .map(e -> validate(index, e))
                 .collect(Collectors.toList());
 
-        int firstIndex = eStore().addAll(owner, eStructuralFeature, index, validatedCollection);
+        int firstIndex = delegateAddAll(index, validatedCollection);
 
         for (E object : validatedCollection) {
             didAdd(firstIndex, object);
@@ -357,7 +365,7 @@ public class LazyStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
                 .map(e -> validate(start, e))
                 .collect(Collectors.toList());
 
-        int firstIndex = eStore().addAll(owner, eStructuralFeature, index, validatedCollection);
+        int firstIndex = delegateAddAll(index, validatedCollection);
 
         for (E object : validatedCollection) {
             didAdd(firstIndex, object);

@@ -101,145 +101,145 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
+    public <V> Optional<V> valueOf(SingleFeatureBean feature) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
         throw e.get();
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        throw e.get();
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
+    public void removeValue(SingleFeatureBean feature) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        throw e.get();
-    }
-
-    @Override
-    public void removeReference(SingleFeatureBean key) {
+    public Optional<Id> referenceOf(SingleFeatureBean feature) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
+    public Optional<Id> referenceFor(SingleFeatureBean feature, Id reference) {
+        throw e.get();
+    }
+
+    @Override
+    public void removeReference(SingleFeatureBean feature) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
+    public <V> Optional<V> valueOf(ManyFeatureBean feature) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        throw e.get();
-    }
-
-    @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        throw e.get();
-    }
-
-    @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        throw e.get();
-    }
-
-    @Override
-    public <V> int appendValue(SingleFeatureBean key, V value) {
-        throw e.get();
-    }
-
-    @Override
-    public <V> int appendAllValues(SingleFeatureBean key, List<? extends V> collection) {
+    public <V> Stream<V> allValuesOf(SingleFeatureBean feature) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
+    public <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
         throw e.get();
     }
 
     @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        throw e.get();
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        throw e.get();
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceOf(ManyFeatureBean key) {
-        throw e.get();
-    }
-
-    @Nonnull
-    @Override
-    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
-        throw e.get();
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
+    public <V> void addValue(ManyFeatureBean feature, V value) {
         throw e.get();
     }
 
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
         throw e.get();
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
+    public <V> int appendValue(SingleFeatureBean feature, V value) {
         throw e.get();
     }
 
     @Override
-    public int appendReference(SingleFeatureBean key, Id reference) {
-        throw e.get();
-    }
-
-    @Override
-    public int appendAllReferences(SingleFeatureBean key, List<Id> collection) {
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
+    public <V> Optional<V> removeValue(ManyFeatureBean feature) {
         throw e.get();
     }
 
     @Override
-    public void removeAllReferences(SingleFeatureBean key) {
+    public void removeAllValues(SingleFeatureBean feature) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
+    public Optional<Integer> sizeOfValue(SingleFeatureBean feature) {
+        throw e.get();
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceOf(ManyFeatureBean feature) {
+        throw e.get();
+    }
+
+    @Nonnull
+    @Override
+    public Stream<Id> allReferencesOf(SingleFeatureBean feature) {
+        throw e.get();
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(ManyFeatureBean feature, Id reference) {
+        throw e.get();
+    }
+
+    @Override
+    public void addReference(ManyFeatureBean feature, Id reference) {
+        throw e.get();
+    }
+
+    @Override
+    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+        throw e.get();
+    }
+
+    @Override
+    public int appendReference(SingleFeatureBean feature, Id reference) {
+        throw e.get();
+    }
+
+    @Override
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
+        throw e.get();
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> removeReference(ManyFeatureBean feature) {
+        throw e.get();
+    }
+
+    @Override
+    public void removeAllReferences(SingleFeatureBean feature) {
+        throw e.get();
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Integer> sizeOfReference(SingleFeatureBean feature) {
         throw e.get();
     }
 }
