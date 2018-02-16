@@ -1,0 +1,70 @@
+<body>
+<h1>NeoEMF : A Multi-Database Model Persistence Framework.</h1>
+<div>
+    <p>
+        The figure below describes the integration of NeoEMF in the <a href="https://eclipse.org/modeling/emf/">Eclipse
+        Modeling Framework (EMF)</a> ecosystem, the most popular modeling framework nowadays.
+    </p>
+    <div style="text-align: center;">
+        <img src="http://www.neoemf.com/static/img/doc/overview.png" alt="NeoEMF Architecture Overview">
+    </div>
+</div>
+<div>
+    <h3>EMF Behavior</h3>
+    <p>
+        Modelers typically access a model using <i>Model-based Tools</i>, which provide high-level modeling features
+        such as a graphical interface, interactive console, or query editor.
+
+        These features internally rely on EMF's <i>Model Access API</i> to navigate models, perform CRUD operations,
+        check constraints, etc.
+    </p>
+    <p>
+        At its core, EMF delegates the operations to a persistence manager using its <i>Persistence API</i>, which is in
+        charge of the (de)serialization of the model.
+    </p>
+
+    <h3>NeoEMF Behavior</h3>
+    <p>
+        The NeoEMF <i>core</i> component is defined at this level, and can be registered as a persistence manager for
+        EMF, replacing, for instance, the default XMI persistence manager.
+        This design makes NeoEMF both transparent to the client-application and EMF itself, that simply delegates the
+        calls without taking care of the actual storage.
+    </p>
+    <p>
+        Once the NeoEMF <i>core</i> component has received the request of the modeling operation to perform, it forwards
+        the operation to the appropriate database driver (<i>MapDB</i>, <i>Blueprints</i>, or <i>HBase</i>), which is in
+        charge of handling the low-level representation of the model.
+        These connectors translate modeling operations into <i>Backend API</i> calls, store the results, and reify
+        database records into EMF <i>EObjects</i> when needed.
+    </p>
+    <p>
+        NeoEMF also embeds a set of default caching strategies that are used to improve performance of client
+        applications, and can be configured transparently at the EMF API level.
+    </p>
+    <p>
+        Each backend is provided in a dedicated Eclipse plugin. you can navigate through the documentation to have a
+        complete overview of backend-specific classes and how they interact with the <i>core</i> component.
+    </p>
+
+    <h4>Provided Adapters</h4>
+    <p>
+        NeoEMF provides 5 database adapters for now:
+    </p>
+    <ul>
+        <li>
+            Blueprints
+            <ul>
+                <li><b>TinkerGraph</b>: The default graph database</li>
+                <li><b>Neo4j</b>: A graph-based database</li>
+            </ul>
+        </li>
+        <li><b>BerkeleyDB</b>: A map-based database</li>
+        <li><b>MapDB</b>: Another map-based database</li>
+        <li><b>HBase</b>: A distributed column-based database</li>
+    </ul>
+</div>
+<p>
+    Sources are available on <a href="https://github.com/atlanmod/NeoEMF">GitHub</a>.
+    Further informations can be found on <a href="http://www.neoemf.com">NeoEMF</a> website.
+</p>
+</body>

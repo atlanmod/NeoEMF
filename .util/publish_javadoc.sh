@@ -1,73 +1,113 @@
 #!/bin/bash
 
-SLUG="atlanmod/NeoEMF"
 JDK="oraclejdk8"
-BRANCH="master"
-OS="linux"
 
-API_DIR="doc"
-ROOT_API_DIR="releases/snapshot"
-TEMP_DIR="$HOME/$API_DIR"
+TYPE="Javadoc"
 
-if [ "$TRAVIS_REPO_SLUG" != "$SLUG" ]; then
-  echo "Skipping Javadoc publication: wrong repository. Expected '$SLUG' but was '$TRAVIS_REPO_SLUG'."
-elif [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
-  echo "Skipping Javadoc publication: wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'."
-elif [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo "Skipping Javadoc publication: was pull request."
-elif [ "$TRAVIS_BRANCH" != "$BRANCH" ]; then
-  echo "Skipping Javadoc publication: wrong branch. Expected '$BRANCH' but was '$TRAVIS_BRANCH'."
-elif [ "$TRAVIS_OS_NAME" != "$OS" ]; then
-  echo "Skipping Javadoc publication: wrong OS. Expected '$OS' but was '$TRAVIS_OS_NAME'."
-else
-    echo -e "Generating Javadoc..."
+# Print a message
+e() {
+    echo -e "$1"
+}
 
-    mvn -B -q javadoc:javadoc javadoc:aggregate -P "deploy-javadoc" &> /dev/null
+# Skip the publication with the reason
+skip() {
+    local skipMessage="Skipping $TYPE publication"
 
-    if ! [ -d target/site/apidocs ]; then
-        echo -e "Skipping Javadoc publication: no Javadoc has been generated."
-        exit
+    if [ $# -ne 0 ]; then
+        skipMessage="$skipMessage: $1"
     fi
 
-    echo -e "Copying Javadoc..."
+    e "$skipMessage"
+    exit 1
+}
 
-    cp -rf target/site/apidocs ${TEMP_DIR}
-    cd $HOME
+# Check that the context is valid for publication
+checkBuildInfo() {
+    if [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
+        skip "Wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'"
+    elif [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+        skip "Was pull request"
+    elif [ "$TRAVIS_BRANCH" != "master" ]; then
+        skip "Wrong branch. Expected 'master' but was '$TRAVIS_BRANCH'"
+    elif [ "$TRAVIS_OS_NAME" != "linux" ]; then
+        skip "Wrong OS. Expected 'linux' but was '$TRAVIS_OS_NAME'"
+    fi
+}
 
-    if ! [ -d "gh-pages" ]; then
-        echo -e "Cloning 'gh-pages' branch..."
+# Generate artifacts
+generate() {
+    e "Generating $TYPE..."
+
+    mvn -B -q javadoc:javadoc javadoc:aggregate -DreportOutputDirectory="$(dirname $1)" -P "deploy-javadoc" &> /dev/null
+
+    # Check the generation
+    if ! [ -d "$1" ]; then
+        skip "No $TYPE has been generated"
+    fi
+}
+
+# Clone the publication branch
+cloneBranch() {
+    if ! [ -d "$1" ]; then
+        e "Cloning '$1' branch..."
 
         git config --global user.email "travis@travis-ci.org"
         git config --global user.name "travis-ci"
-        git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} gh-pages
+        git clone --quiet --branch=$1 https://${GH_TOKEN}@github.com/${TRAVIS_REPO_SLUG} $1
+    fi
+}
+
+# Merge the resulting artifacts, and replace the existing ones
+mergeIntoBranch() {
+    e "Merging $TYPE..."
+
+    # Remove existing artifacts
+    if [ -d "$2" ]; then
+        git rm --quiet -rf "$2/"
     fi
 
-    echo -e "Merging Javadoc..."
-
-    cd gh-pages
-
-    mkdir -p ${ROOT_API_DIR}
-    cd ${ROOT_API_DIR}
-
-    if [ -d "$API_DIR" ]; then
-        git rm --quiet -rf ${API_DIR}
-    fi
-
-    cp -rf ${TEMP_DIR} ${API_DIR}
+    # Copy new artifacts
+    mkdir -p "$2"
+    cp -Rfp "$1/"* "$2/"
 
     git add -Af
 
-    echo -e "Checking for differences..."
-
+    # Check differences
     if [ -z "$(git status --porcelain)" ]; then
-        echo -e "Skipping Javadoc publication: no change."
-        exit
+        skip "No change"
     fi
+}
 
-    echo -e "Publishing Javadoc..."
+# Publish artifacts
+publish() {
+    local commitMessage="[auto] update the $TYPE from Travis #$TRAVIS_BUILD_NUMBER"
 
-    git commit --quiet -m "[auto] update the Javadoc from Travis build $TRAVIS_BUILD_NUMBER"
-    git push --quiet -f origin gh-pages
+    e "Publishing $TYPE..."
 
-    echo -e "Javadoc published."
-fi
+    git commit --quiet -m "$commitMessage"
+    git push --quiet -f origin $1
+
+    e "$TYPE published"
+}
+
+main() {
+    local tmpDir=${HOME}/apidocs
+
+    local branch="gh-pages"
+    local branchOutputDir=releases/snapshot/doc
+
+    # Working in the build directory
+    checkBuildInfo
+    generate ${tmpDir}
+
+    # Working in the home directory
+    cd "$HOME"
+    cloneBranch ${branch}
+
+    # Working in branch directory
+    cd "$branch"
+    mergeIntoBranch ${tmpDir} ${branchOutputDir}
+    publish ${branch}
+}
+
+main

@@ -1,23 +1,12 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.eclipse.ui;
-
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
 
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
@@ -33,18 +22,37 @@ public class NeoUIPlugin extends AbstractUIPlugin {
      */
     public static final String PLUGIN_ID = "fr.inria.atlanmod.neoemf.eclipse.ui";
 
-    private static final ILogListener logListener = (status, listener) -> {
+    /**
+     * The NeoEMF ID.
+     */
+    public static final String CORE_ID = "fr.inria.atlanmod.neoemf.core";
+
+    /**
+     * The global logger listener that handles all logging events, and eventually transforms them into a UI callback.
+     */
+    private static final ILogListener LOG_LISTENER = (status, listener) -> {
         if (status.matches(IStatus.ERROR)) {
             StatusManager.getManager().handle(status, StatusManager.BLOCK);
         }
     };
 
+    /**
+     * The shared instance of this plug-in.
+     */
     private static NeoUIPlugin SHARED_INSTANCE;
 
+    /**
+     * Constructs a new {@code NeoUIPlugin}.
+     */
     public NeoUIPlugin() {
         SHARED_INSTANCE = this;
     }
 
+    /**
+     * Returns the shared instance of this plug-in.
+     *
+     * @return the shared instance
+     */
     public static NeoUIPlugin getDefault() {
         return SHARED_INSTANCE;
     }
@@ -60,37 +68,20 @@ public class NeoUIPlugin extends AbstractUIPlugin {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
-    /**
-     * Registers all instances of {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} in the
-     * {@link PersistenceBackendFactoryRegistry}.
-     * <p/>
-     * Needed because auto-registration doesn't work if only static {@link String} are accessed before resource loading.
-     * This happens when an Eclipse instance is loaded with an opened NeoEMF editor (only {@link BlueprintsURI#SCHEME}
-     * is accessed).
-     */
-    private static void registerFactories() {
-        if (!PersistenceBackendFactoryRegistry.isRegistered(BlueprintsURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-        }
-        if (!PersistenceBackendFactoryRegistry.isRegistered(MapDbURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbPersistenceBackendFactory.getInstance());
-        }
-        if (!PersistenceBackendFactoryRegistry.isRegistered(BerkeleyDbURI.SCHEME)) {
-            PersistenceBackendFactoryRegistry.register(BerkeleyDbURI.SCHEME, BerkeleyDbPersistenceBackendFactory.getInstance());
-        }
-    }
-
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        getLog().addLogListener(logListener);
-        registerFactories();
-        MetamodelRegistry.getInstance();
+
+        getLog().addLogListener(LOG_LISTENER);
+
+        // Initialize the metamodel registry
+        MetamodelRegistry.getInstance().registerAll();
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        getLog().removeLogListener(logListener);
+        getLog().removeLogListener(LOG_LISTENER);
+
         super.stop(context);
     }
 }

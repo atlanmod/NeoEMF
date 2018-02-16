@@ -1,41 +1,47 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
+import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.annotation.Nonnegative;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link Processor} that counts the number of different element.
+ * A {@link Processor} that counts the number of different element.
  */
-public class CounterProcessor extends AbstractProcessor {
+@ParametersAreNonnullByDefault
+public class CounterProcessor extends AbstractProcessor<Handler> {
 
     /**
      * The current number of element.
      */
-    private long elementCount;
+    @Nonnegative
+    private final AtomicLong elementCount = new AtomicLong();
 
     /**
      * The current number of attribute.
      */
-    private long attributeCount;
+    @Nonnegative
+    private final AtomicLong attributeCount = new AtomicLong();
 
     /**
      * The current number of reference.
      */
-    private long referenceCount;
+    @Nonnegative
+    private final AtomicLong referenceCount = new AtomicLong();
 
     /**
      * Constructs a new {@code CounterProcessor} with the given {@code handler}.
@@ -44,38 +50,35 @@ public class CounterProcessor extends AbstractProcessor {
      */
     public CounterProcessor(Handler handler) {
         super(handler);
-        this.elementCount = 0;
-        this.attributeCount = 0;
-        this.referenceCount = 0;
     }
 
     @Override
-    public void handleStartElement(Element element) {
-        elementCount++;
+    public void onStartElement(BasicElement element) {
+        elementCount.incrementAndGet();
 
-        super.handleStartElement(element);
+        notifyStartElement(element);
     }
 
     @Override
-    public void handleAttribute(Attribute attribute) {
-        attributeCount++;
+    public void onAttribute(BasicAttribute attribute) {
+        attributeCount.incrementAndGet();
 
-        super.handleAttribute(attribute);
+        notifyAttribute(attribute);
     }
 
     @Override
-    public void handleReference(Reference reference) {
-        referenceCount++;
+    public void onReference(BasicReference reference) {
+        referenceCount.incrementAndGet();
 
-        super.handleReference(reference);
+        notifyReference(reference);
     }
 
     @Override
-    public void handleEndDocument() {
-        NeoLogger.info("Elements   : {0}", elementCount);
-        NeoLogger.info("Attributes : {0}", attributeCount);
-        NeoLogger.info("References : {0}", referenceCount);
+    public void onComplete() {
+        Log.info("Elements   : {0,number,#}", elementCount);
+        Log.info("Attributes : {0,number,#}", attributeCount);
+        Log.info("References : {0,number,#}", referenceCount);
 
-        super.handleEndDocument();
+        notifyComplete();
     }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -18,10 +17,23 @@
 
     <properties>
         <generated-sources.location>${project.basedir}/src/test/java-gen/</generated-sources.location>
-        <models.location>${project.basedir}/src/test/resources/gen</models.location>
+        <models.location>${project.basedir}/src/test/resources/model/</models.location>
+
+        <!-- Must be sync with `neoemf-hbase` module -->
+        <hbase.version>1.3.1</hbase.version>
+        <hadoop.version>2.8.2</hadoop.version>
+
+        <xtext.version>2.13.0</xtext.version>
     </properties>
 
     <dependencies>
+
+        <!-- Commons -->
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.commons</groupId>
+            <artifactId>commons-core</artifactId>
+        </dependency>
 
         <!-- EMF -->
 
@@ -35,7 +47,7 @@
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
 
-        <!-- Code generation -->
+        <!-- EMF: Code generation -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
@@ -45,18 +57,72 @@
         <!-- Test -->
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>fr.inria.atlanmod.commons</groupId>
+            <artifactId>commons-core</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Test: HBase -->
+
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-testing-util</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-auth</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -72,30 +138,50 @@
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-blueprints-core</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-blueprints-neo4j</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-mapdb</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-berkeleydb</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-hbase</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-io</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency><!-- Used by `reflections` : Required for bundle analysis in an OSGi context -->
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-utils</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -140,15 +226,122 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-hbase</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-io</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- EMF: Code generation -->
+
+            <dependency>
+                <groupId>org.eclipse.emf</groupId>
+                <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
+                <version>1.1.100</version>
+            </dependency>
+
+            <!-- Test: Database -->
+
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-testing-util</artifactId>
+                <version>${hbase.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-common</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-hdfs</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-hdfs</artifactId>
+                <version>${hadoop.version}</version>
+                <type>test-jar</type>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-auth</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -164,8 +357,10 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
+                        <id>add-gen-source</id>
                         <goals>
                             <goal>add-test-source</goal>
                         </goals>
@@ -181,6 +376,7 @@
             <plugin>
                 <groupId>org.eclipse.xtext</groupId>
                 <artifactId>xtext-maven-plugin</artifactId>
+                <version>${xtext.version}</version>
                 <executions>
                     <execution>
                         <phase>generate-test-sources</phase>
@@ -211,6 +407,17 @@
                     </sourceRoots>
                 </configuration>
                 <dependencies>
+
+                    <!-- Eclipse -->
+
+                    <dependency>
+                        <groupId>org.eclipse.core</groupId>
+                        <artifactId>org.eclipse.core.resources</artifactId>
+                        <version>3.7.100</version>
+                    </dependency>
+
+                    <!-- Xtext -->
+
                     <dependency>
                         <groupId>org.eclipse.text</groupId>
                         <artifactId>org.eclipse.text</artifactId>
@@ -218,10 +425,50 @@
                     </dependency>
 
                     <dependency>
-                        <groupId>org.eclipse.emf</groupId>
-                        <artifactId>org.eclipse.emf.codegen.ecore.xtext</artifactId>
-                        <version>1.2.0</version>
+                        <groupId>org.eclipse.xtext</groupId>
+                        <artifactId>org.eclipse.xtext.ecore</artifactId>
+                        <version>${xtext.version}</version>
                     </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.xtext</groupId>
+                        <artifactId>org.eclipse.xtext.builder.standalone</artifactId>
+                        <version>${xtext.version}</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.xtext</groupId>
+                        <artifactId>org.eclipse.xtext.generator</artifactId>
+                        <version>${xtext.version}</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.xtext</groupId>
+                        <artifactId>org.eclipse.xtext.xtext.generator</artifactId>
+                        <version>${xtext.version}</version>
+                    </dependency>
+
+                    <!-- EMF: Ecore -->
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.common</artifactId>
+                        <version>${emf.version}</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.ecore</artifactId>
+                        <version>${emf.version}</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+                        <version>${emf.version}</version>
+                    </dependency>
+
+                    <!-- EMF: Xcore -->
 
                     <dependency>
                         <groupId>org.eclipse.emf</groupId>
@@ -234,8 +481,29 @@
                         <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
                         <version>1.1.100</version>
                     </dependency>
+
+                    <!-- EMF: CodeGen -->
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.codegen</artifactId>
+                        <version>2.11.0</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.codegen.ecore</artifactId>
+                        <version>${emf.version}</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.eclipse.emf</groupId>
+                        <artifactId>org.eclipse.emf.codegen.ecore.xtext</artifactId>
+                        <version>1.2.0</version>
+                    </dependency>
                 </dependencies>
             </plugin>
+
         </plugins>
     </build>
 

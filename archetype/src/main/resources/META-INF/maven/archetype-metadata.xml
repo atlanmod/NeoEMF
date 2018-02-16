@@ -1,0 +1,40 @@
+<archetype-descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0" xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd" name="neoemf-archetype-extension">
+
+    <requiredProperties>
+
+        <!-- The name of the database; also used as class name prefix -->
+        <requiredProperty key="databaseName">
+            <validationRegex>[A-Z][a-zA-Z]+</validationRegex>
+        </requiredProperty>
+
+    </requiredProperties>
+
+    <fileSets>
+
+        <!-- Sources -->
+        <fileSet filtered="true" packaged="true" encoding="utf-8">
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+
+         <!-- Javadoc resources -->
+        <fileSet filtered="true" packaged="true" encoding="utf-8">
+            <directory>src/main/javadoc</directory>
+            <includes>
+                <include>**/package-info.java</include>
+            </includes>
+        </fileSet>
+
+        <!-- Test sources -->
+        <fileSet filtered="true" packaged="true" encoding="utf-8">
+            <directory>src/test/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
+
+</archetype-descriptor>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="sample" nsURI="http://www.neoemf.com/tests/sample" nsPrefix="sample">
+  <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+    <details key="modelDirectory" value="/fr.inria.atlanmod.neoemf.tests.sample/src"/>
+    <details key="rootExtendsInterface" value="fr.inria.atlanmod.neoemf.core.PersistentEObject"/>
+    <details key="rootExtendsClass" value="fr.inria.atlanmod.neoemf.core.DefaultPersistentEObject"/>
+    <details key="importerID" value="fr.inria.atlanmod.neoemf.eclipse.ui.importer.NeoModelImporter"/>
+    <details key="bundleManifest" value="false"/>
+    <details key="reflectiveDelegation" value="true"/>
+    <details key="featureDelegation" value="Reflective"/>
+    <details key="basePackage" value="fr.inria.atlanmod.neoemf.tests"/>
+  </eAnnotations>
+  <eClassifiers xsi:type="ecore:EEnum" name="SomeKind">
+    <eLiterals name="one"/>
+    <eLiterals name="Two" value="1" literal="two"/>
+    <eLiterals name="Three" value="3" literal="Three-is-Three"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="SomeType" instanceClassName="java.lang.String"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Uri" instanceClassName="org.eclipse.emf.common.util.URI"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ETypes">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="values" upperBound="-1"
+        eType="#//TypeMap" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="valuesWithReferences" upperBound="-1"
+        eType="#//TypeMapReference" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stringValues" upperBound="-1"
+        eType="#//StringMap" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="dataTypeValues" upperBound="-1"
+        eType="#//DataTypeMap" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="uris" upperBound="-1" eType="#//Uri"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StringMap" instanceClassName="java.util.Map$Entry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TypeMap" instanceClassName="java.util.Map$Entry">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="key" eType="#//Type" containment="true"
+        resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//Value"
+        containment="true" resolveProxies="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TypeMapReference" instanceClassName="java.util.Map$Entry">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="key" eType="#//PrimaryObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//TargetObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataTypeMap" instanceClassName="java.util.Map$Entry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" unique="false" eType="#//SomeType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Type">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Value">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PrimaryObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="kind" unique="false" eType="#//SomeKind"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unsettableAttribute" unique="false"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unsettableAttributeWithDefault"
+        unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="junit" unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="unsettableReference" eType="#//TargetObject"
+        unsettable="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="singleReference" eType="#//TargetObject"
+        resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="manyReferences" upperBound="-1"
+        eType="#//TargetObject" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="singleContainmentReference"
+        eType="#//TargetObject" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="manyContainmentReferences"
+        upperBound="-1" eType="#//TargetObject" containment="true" resolveProxies="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="featureMapReferenceCollection"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="group"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="featureMapReferenceType1"
+        upperBound="-1" eType="#//TargetObject" volatile="true" transient="true" derived="true"
+        resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="group" value="#featureMapReferenceCollection"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="featureMapReferenceType2"
+        upperBound="-1" eType="#//TargetObject" volatile="true" transient="true" derived="true"
+        containment="true" resolveProxies="false">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="group" value="#featureMapReferenceCollection"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="featureMapAttributeCollection"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFeatureMapEntry">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="kind" value="group"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="featureMapAttributeType1"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        volatile="true" transient="true" derived="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="group" value="#featureMapAttributeCollection"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="featureMapAttributeType2"
+        upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        volatile="true" transient="true" derived="true">
+      <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+        <details key="group" value="#featureMapAttributeCollection"/>
+      </eAnnotations>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TargetObject">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="singleAttribute" unique="false"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="manyAttributes" upperBound="-1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="singleReference" eType="#//PrimaryObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="manyReferences" upperBound="-1"
+        eType="#//PrimaryObject" resolveProxies="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Tree">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="nodes" upperBound="-1"
+        eType="#//Node" containment="true" resolveProxies="false" eOpposite="#//Node/tree"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//Tree"
+        eOpposite="#//Tree/children"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="children" upperBound="-1"
+        eType="#//Tree" containment="true" resolveProxies="false" eOpposite="#//Tree/parent"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="manyReference" upperBound="-1"
+        eType="#//Comment"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Node" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="children" upperBound="-1"
+        eType="#//Node" containment="true" resolveProxies="false" eOpposite="#//Node/parent"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="childrenProxies" upperBound="-1"
+        eType="#//Node" containment="true" resolveProxies="false" eOpposite="#//Node/parentProxy"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//Node"
+        eOpposite="#//Node/children"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="parentProxy" eType="#//Node"
+        eOpposite="#//Node/childrenProxies"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tree" eType="#//Tree" eOpposite="#//Tree/nodes"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="manyContainmentReference"
+        upperBound="-1" eType="#//Comment" containment="true" resolveProxies="false"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhysicalNode" eSuperTypes="#//Node"/>
+  <eClassifiers xsi:type="ecore:EClass" name="RemoteNode" eSuperTypes="#//PhysicalNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LocalNode" eSuperTypes="#//PhysicalNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="VirtualNode" eSuperTypes="#//Node"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Comment">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="content" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+</ecore:EPackage>

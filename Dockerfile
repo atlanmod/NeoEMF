@@ -1,67 +1,50 @@
 #
-# Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
 #
-# Contributors:
-#     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+# All rights reserved. This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License v2.0 which accompanies
+# this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# This Source Code may also be made available under the following Secondary
+# Licenses when the conditions for such availability set forth in the Eclipse
+# Public License, v. 2.0 are satisfied: GNU General Public License, version 3.
 #
 
 #
 # USAGE:
 #
-# docker build -t neoemf .
-# docker run -v {LOCAL_DIR}:/root/ws neoemf [parameters] init
-# docker run -v {LOCAL_DIR}:/root/ws neoemf [parameters] [options]
+# docker build -t neoemf-local .
+# docker run --rm -v {LOCAL_DIR}:/root/ws neoemf [parameters] init
+# docker run --rm -v {LOCAL_DIR}:/root/ws neoemf [parameters] [options] regex
+#
+# If you want profiling with JProfiler: define the port binding (8849) and add the following parameter:
+# -jvmArgsPrepend -agentpath:/usr/local/jprofiler/bin/linux-x64/libjprofilerti.so=nowait,port=8849
+#
+# If you want JSON results, add the following parameter (parent directories must exist):
+# -rf json -rff /root/ws/benchmarks/results/${FILENAME}
 #
 
-FROM debian:latest
+FROM maven:alpine
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_TERSE true
-
-# The default base directory for storing models
 ENV NEOEMF_HOME /root/ws
+VOLUME $NEOEMF_HOME
 
+# Build project & benchmarks
+WORKDIR /tmp/neoemf
+COPY . .
+RUN mvn -B install -DskipTests -pl !neoemf-data/hbase,!neoemf-tests  \
+ && mvn -B package -DskipTests -f benchmarks/pom.xml -Duberjar.directory=/root/ \
+ && rm -rf /root/.m2/* /tmp/*
+
+# Install JProfiler agent
+RUN wget https://download-keycdn.ej-technologies.com/jprofiler/jprofiler_linux_10_0_4.tar.gz -P /tmp/ \
+ && tar -xzf /tmp/jprofiler_linux_10_0_4.tar.gz -C /usr/local \
+ && mv /usr/local/jprofiler10.0.4 /usr/local/jprofiler \
+ && rm /tmp/jprofiler_linux_10_0_4.tar.gz
+
+EXPOSE 8849
+
+# Configure container
 WORKDIR /root
-
-# Install common dependency (required by 'add-apt-repository')
-RUN apt-get update -qq \
- && apt-get install -q --no-install-recommends -y \
-    software-properties-common \
-
-# Add the JDK8 repository
- && add-apt-repository -y 'deb http://ppa.launchpad.net/webupd8team/java/ubuntu xenial main' \
- && apt-get update -qq \
-
-# Auto-accept the Oracle JDK license
- && echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | /usr/bin/debconf-set-selections \
-
-# Install JDK8 & build tool
- && apt-get install -q --no-install-recommends -y --allow-unauthenticated \
-    oracle-java8-installer \
-    oracle-java8-set-default \
-    maven \
-
-# Clean the apt cache
- && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# Copy the project
-ADD . src
-
-# Build the main project
-RUN mvn -B install -DskipTests -Dmaven.javadoc.skip=true -f src/pom.xml
-
-# Build benchmarks
-RUN mvn -B package -DskipTests -Dmaven.javadoc.skip=true -f src/benchmarks/pom.xml
-
-# Move the resulting artifacts
-RUN mv -f src/benchmarks/core/target/exec/* . \
-
-# Remove build files
- && rm -rf src .m2 /tmp/* /var/tmp/*
-
 CMD ["-help"]
 ENTRYPOINT ["java", "-jar", "benchmarks.jar"]

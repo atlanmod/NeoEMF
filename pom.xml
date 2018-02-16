@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fr.inria.atlanmod.commons</groupId>
+        <artifactId>commons</artifactId>
+        <version>1.0.2-SNAPSHOT</version>
+    </parent>
 
     <groupId>fr.inria.atlanmod.neoemf</groupId>
     <artifactId>neoemf</artifactId>
@@ -14,11 +19,6 @@
 
     <url>www.neoemf.com</url>
     <inceptionYear>2013</inceptionYear>
-
-    <organization>
-        <name>Atlanmod INRIA LINA Mines Nantes</name>
-        <url>http://www.emn.fr/z-info/atlanmod/index.php/Main_Page</url>
-    </organization>
 
     <scm>
         <connection>scm:git:https://github.com/atlanmod/NeoEMF.git</connection>
@@ -36,32 +36,20 @@
         <url>https://travis-ci.org/atlanmod/NeoEMF</url>
     </ciManagement>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
-    </distributionManagement>
-
     <licenses>
         <license>
-            <name>Eclipse Public License - v 1.0</name>
-            <url>http://www.eclipse.org/legal/epl-v10.html</url>
+            <name>Eclipse Public License v2.0</name>
+            <url>https://www.eclipse.org/legal/epl-2.0/</url>
+            <distribution>repo</distribution>
         </license>
     </licenses>
-
-    <prerequisites>
-        <maven>3.3.9</maven>
-    </prerequisites>
 
     <modules>
         <module>neoemf-core</module>
         <module>neoemf-data</module>
         <module>neoemf-io</module>
+        <module>neoemf-utils</module>
+        <module>neoemf-utils/p2</module>
         <module>neoemf-tests</module>
     </modules>
 
@@ -123,90 +111,21 @@
     </developers>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <argLine /> <!-- Keep it empty -->
-        <argLine.global>-Xms256m -Xmx2g -XX:+UseConcMarkSweepGC</argLine.global>
+        <argLine.global>-XX:+UseConcMarkSweepGC</argLine.global>
 
-        <caffeine.version>2.3.5</caffeine.version>
-
-        <commons-collections.version>4.1</commons-collections.version>
-        <commons-configuration.version>1.10</commons-configuration.version>
-        <commons-io.version>2.5</commons-io.version>
-        <commons-lang.version>3.5</commons-lang.version>
-        <guava.version>15.0</guava.version>
-        <osgi.version>6.0.0</osgi.version>
-
+        <commons.version>1.0.2-SNAPSHOT</commons.version>
         <emf.version>2.12.0</emf.version>
-        <ecore.version>2.12.0</ecore.version>
-        <xcore.version>1.1.100</xcore.version>
-
-        <javax-annotations.version>3.0.1</javax-annotations.version>
-
-        <assertj.version>3.6.1</assertj.version>
-        <junit.version>4.12</junit.version>
-        <mockito.version>1.10.19</mockito.version>
-        <cglib-nodep.version>3.2.4</cglib-nodep.version>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>${javax-annotations.version}</version>
-            <optional>true</optional><!-- needed only for annotations -->
-        </dependency>
-    </dependencies>
 
     <dependencyManagement>
         <dependencies>
 
-            <!-- Cache -->
+            <!-- Commons -->
 
             <dependency>
-                <groupId>com.github.ben-manes.caffeine</groupId>
-                <artifactId>caffeine</artifactId>
-                <version>${caffeine.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-nodep</artifactId>
-                <version>${cglib-nodep.version}</version>
-            </dependency>
-
-            <!-- Common -->
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-collections4</artifactId>
-                <version>${commons-collections.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-configuration</groupId>
-                <artifactId>commons-configuration</artifactId>
-                <version>${commons-configuration.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-lang3</artifactId>
-                <version>${commons-lang.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
+                <groupId>fr.inria.atlanmod.commons</groupId>
+                <artifactId>commons-core</artifactId>
+                <version>${commons.version}</version>
             </dependency>
 
             <!-- EMF -->
@@ -220,157 +139,60 @@
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore</artifactId>
-                <version>${ecore.version}</version>
+                <version>${emf.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
-                <version>${ecore.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.emf</groupId>
-                <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
-                <version>${xcore.version}</version>
+                <version>${emf.version}</version>
             </dependency>
 
             <!-- Test -->
 
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
+                <groupId>fr.inria.atlanmod.commons</groupId>
+                <artifactId>commons-core</artifactId>
+                <version>${commons.version}</version>
+                <type>test-jar</type>
                 <scope>test</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>${assertj.version}</version>
-                <scope>test</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
-        <defaultGoal>package</defaultGoal>
-
-        <resources>
-            <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
-                <excludes>
-                    <exclude>**/.empty</exclude>
-					<!-- EMFCompare is not needed for now, it can only be used in an Eclipse
-						context and thus it is set as an optional dependency in the generated MANIFEST -->
-                    <exclude>org.eclipse.emf.compare_3.4.0.201611041634.jar</exclude>
-                </excludes>
-            </resource>
-        </resources>
-
-        <testResources>
-            <testResource>
-                <directory>${project.basedir}/src/test/resources</directory>
-                <excludes>
-                    <exclude>**/.empty</exclude>
-                </excludes>
-            </testResource>
-        </testResources>
-
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>parse-version</goal>
-                        </goals>
-                        <configuration>
-                            <propertyPrefix>osgi</propertyPrefix>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>1.12</version>
-                </plugin>
 
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.3.0</version>
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
                             <Bundle-Version>
-                                <!-- Properties ${osgi.XXX} : Created by build-helper-maven-plugin:parse-version -->
-                                ${osgi.majorVersion}.${osgi.minorVersion}.${osgi.incrementalVersion}.${maven.build.timestamp}
+                                1.0.3.${maven.build.timestamp}
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package />
-                            <!-- Don't put <DynamicImport-Package>*</DynamicImport-Package> here, it breaks Neo4j
-                                 internal class loading (in particular caches are not recognized anymore) -->
                             <Embed-Dependency>
-                                <!-- org.eclipse.osgi dependencies should not be part of the Embed-Dependency tag,
-                                     otherwise it creates conflicts with running osgi version (these dependencies are
-                                     only needed when running the plugins in an eclipse-based environment) -->
                                 *;
                                 scope=compile|runtime;
                                 type=!pom;
-                                artifactId=!jsr305;
-                                groupId=!static-import;
-                                groupId=!${project.groupId}|org.eclipse.emf|org.osgi
+                                groupId=!${project.groupId}|org.eclipse.emf
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
+                            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                         </instructions>
                     </configuration>
                 </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-changes-plugin</artifactId>
-                    <version>2.12.1</version>
-                    <configuration>
-                        <failOnError>false</failOnError>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.0.0</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>3.7.0</version>
                     <configuration>
                         <compilerArgs>
                             <!--<arg>-Xlint:all</arg>-->
@@ -379,27 +201,9 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.2</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.10</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>2.5.2</version>
-                </plugin>
-
-                <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.7.201606060606</version>
+                    <version>0.7.9</version>
                     <configuration>
                         <excludes>
                             <exclude>**/tests/*</exclude>
@@ -408,30 +212,12 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
-                    <configuration>
-                        <skipIfEmpty>true</skipIfEmpty>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <!-- "deploy-javadoc" profile comes in addition to this configuration -->
+                    <!-- `deploy-javadoc` profile comes in addition to this configuration -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.10.4</version>
+                    <version>3.0.0-M1</version>
                     <configuration>
-                        <additionalparam>-Xdoclint:none</additionalparam>
-                        <failOnError>false</failOnError>
-                        <quiet>true</quiet>
-                        <notimestamp>true</notimestamp>
-                        <nosince>true</nosince>
-                        <author>false</author>
-                        <sourceFileExcludes><!-- Exclude bundle activators -->
-                            <sourceFileExclude>**/AbstractActivator.java</sourceFileExclude>
-                            <sourceFileExclude>**/Activator.java</sourceFileExclude>
-                        </sourceFileExcludes>
+                        <overview>overview.html</overview>
                         <groups>
                             <group>
                                 <title>Core</title>
@@ -440,6 +226,10 @@
                             <group>
                                 <title>I/O</title>
                                 <packages>fr.inria.atlanmod.neoemf.io*</packages>
+                            </group>
+                            <group>
+                                <title>In-memory (default)</title>
+                                <packages>fr.inria.atlanmod.neoemf.data.im*</packages>
                             </group>
                             <group>
                                 <title>Blueprints</title>
@@ -462,178 +252,112 @@
                                 <packages>fr.inria.atlanmod.neoemf.data.hbase*</packages>
                             </group>
                         </groups>
-                        <tags>
-                            <tag>
-                                <name>note</name>
-                                <placement>a</placement>
-                                <head>Note:</head>
-                            </tag>
-                            <tag>
-                                <name>future</name>
-                                <placement>a</placement>
-                                <head>In Future:</head>
-                            </tag>
-                        </tags>
                     </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.0.1</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>clirr-maven-plugin</artifactId>
+                            <version>2.8</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
                     <configuration>
-                        <!-- Property @{argLine} : created by jacoco:prepare-agent -->
-                        <argLine>@{argLine} ${argLine.global}</argLine>
-                        <!-- '/tmp' directory doesn't exist in Windows : think to comment this line before commit -->
-                        <!--<argLine>-Djava.io.tmpdir=/tmp/</argLine>-->
-                        <failIfNoTests>false</failIfNoTests>
+                        <properties>
+                            <excludeTags>slowest</excludeTags>
+                        </properties>
                     </configuration>
                 </plugin>
 
-                <plugin> <!-- Disable by default -->
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.6</version>
-                    <configuration>
-                        <skip>true</skip>
-                        <skipDeploy>true</skipDeploy>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.eclipse.xtext</groupId>
-                    <artifactId>xtext-maven-plugin</artifactId>
-                    <version>2.9.2</version>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>
 
     <profiles>
-        <!-- A profile to manage Javadoc dependencies (EMF, OSGi,...) -->
+
+        <!-- A profile to manage Javadoc dependencies (EMF,...) -->
         <profile>
             <id>deploy-javadoc</id>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
             <dependencies>
+
+                <dependency>
+                    <groupId>fr.inria.atlanmod.commons</groupId>
+                    <artifactId>commons-core</artifactId>
+                    <version>${commons.version}</version>
+                </dependency>
+
                 <dependency>
                     <groupId>org.eclipse.emf</groupId>
                     <artifactId>org.eclipse.emf.common</artifactId>
                     <version>${emf.version}</version>
                 </dependency>
+
                 <dependency>
                     <groupId>org.eclipse.emf</groupId>
                     <artifactId>org.eclipse.emf.ecore</artifactId>
-                    <version>${ecore.version}</version>
+                    <version>${emf.version}</version>
                 </dependency>
-                <dependency>
-                    <groupId>org.osgi</groupId>
-                    <artifactId>org.osgi.core</artifactId>
-                    <version>${osgi.version}</version>
-                </dependency>
+
             </dependencies>
             <build>
                 <pluginManagement>
                     <plugins>
+
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-javadoc-plugin</artifactId>
-                            <version>2.10.4</version>
+                            <version>3.0.0-M1</version>
                             <configuration>
                                 <includeDependencySources>true</includeDependencySources>
                                 <dependencySourceIncludes>
+                                    <dependencySourceInclude>fr.inria.atlanmod.commons:*</dependencySourceInclude>
                                     <dependencySourceInclude>org.eclipse.emf:*</dependencySourceInclude>
-                                    <dependencySourceInclude>org.osgi:*</dependencySourceInclude>
                                 </dependencySourceIncludes>
                                 <excludePackageNames>
-                                    fr.inria.atlanmod.neoemf.data.berkeleydb*; <!-- Experimental functionality -->
+                                    fr.inria.atlanmod.commons*;
                                     fr.inria.atlanmod.neoemf.tests*;
                                     org.eclipse.emf*;
-                                    org.osgi*;
+                                    javax.annotation*;
                                 </excludePackageNames>
                                 <detectLinks>true</detectLinks>
                                 <links>
-                                    <!-- Common -->
-                                    <link>https://google.github.io/guava/releases/20.0/api/docs/</link>
-                                    <link>https://commons.apache.org/proper/commons-io/javadocs/api-release/</link>
-                                    <link>https://commons.apache.org/proper/commons-configuration/javadocs/v1.10/apidocs/</link>
-                                    <link>https://commons.apache.org/proper/commons-lang/javadocs/api-release/</link>
-                                    <link>https://commons.apache.org/proper/commons-collections/javadocs/api-release/</link>
-                                    <link>https://osgi.org/javadoc/r6/core/</link>
-
-                                    <!-- EMF -->
+                                    <link>https://atlanmod.github.io/Commons/releases/latest/doc/</link>
                                     <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
-
-                                    <!-- Back-end implementations -->
-                                    <link>http://www.tinkerpop.com/docs/javadocs/blueprints/2.6.0/</link>   <!-- Blueprints -->
-                                    <link>https://docs.oracle.com/cd/E17277_02/html/java/</link>            <!-- BerkeleyDB -->
-                                    <link>http://www.mapdb.org/javadoc/latest/mapdb/</link>                 <!-- MapDB -->
-                                    <link>https://hbase.apache.org/1.2/apidocs/</link>                      <!-- HBase -->
-                                    <link>https://hadoop.apache.org/docs/r2.7.3/api/</link>                 <!-- Hadoop -->
                                 </links>
                             </configuration>
                         </plugin>
+
                     </plugins>
                 </pluginManagement>
             </build>
         </profile>
-        <!-- A profile to deploy artifacts on OSS Sonartype -->
+
+        <!-- A profile to use snapshots -->
         <profile>
-            <id>deploy-artifacts</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>3.0.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.4</version>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+            <id>allow-snapshots</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>ossrh-snapshots</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                    <releases>
+                        <enabled>false</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                        <checksumPolicy>ignore</checksumPolicy>
+                    </snapshots>
+                </repository>
+            </repositories>
         </profile>
     </profiles>
 

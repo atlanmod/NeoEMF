@@ -1,18 +1,12 @@
-language: java
-
 os: linux
+sudo: false
+dist: trusty
 
+language: java
 jdk: oraclejdk8
-
-branches:
-  except:
-    - gh-pages
-  only:
-    - /.*/
 
 env:
   global:
-    - JAVA_OPTS="-Xms256m -Xmx2g"
     # GH_TOKEN
     - secure: Mc7Pm9YGZiw3jr2NKBtIVozgC+iyrJ6F7V3UvpGPWQgn/IbJ6AM5YBSwvOk2P+jZI9k1vIgsrWIIKfu/1NYoJ5MC1mk94942ZNC+DJW1n+thgJ84xyLc4wXD8sYCdofWGcSrLYNZQpXkpbSuL8gVYk4iMQ8tI+jIoxRye1fgfYiBle2W3Pt/e4g0OGD339+ghSoKgBduM91elZmqFvf25CXYPcPtqZaXapmor9wBZyf8j7HLZsXLg2paA0Owpbn+WSdzFxKTvT3vn7ZY/iB6O80KYZTM/CcpzONdEEQUkMGc2bKfOVQ1lgqCbZyjbSyp8eTA43m949o+WOujhYQxqfZkg/1FPB5urIf+VF4o+hFFF/zZ8bJ6zPvD8MA7E4i3/LpNP7uNVndv6p8ijfm6fbuNe2MaK19yUQqMbriFlY6KfVy+o0yrc9InNoEFP+cbRMIoTVY/wIL5OIf06AE1RG7hNW7/jd8Nh4yuGLCgL87QybTxu37Jeho/K1XHZ2y7xi+6B3vbajvRpUgvyks/C0nnrpip5cnwS89XhEb/dj7rPvanfRiUUmoWxJKKEYut257SkP8AMxgUwc4TJb+GAsT7EyruToFsft4zzAXvejd6HM1QjAcq/96BbY8f6n+LnAHyKmwJbbLis0SxlmFMeyCeCJwcXmqzN7Axd/76gR4=
     # CI_DEPLOY_USERNAME
@@ -20,23 +14,39 @@ env:
     # CI_DEPLOY_PASSWORD
     - secure: FbSKxzPkjTrkom1EAjqbOKfSLmeWDfUj6FZks5pmTvdO6bFX641HRPOkWQ7o3p0QnXTWIl3KaT6PLCdRlVmIdepHbHjJt1x1HTuD/j82aOxUl1JUhiG3WFWE2V4tOuvABE8eRyvE1uGJ5Ik0F5BXy1QYwlWpbO9VORA3Kz4Xm6yu/kroH2EQlRxJN4LtM6ufDeimfU3LmbSSPs54Et3e45GNzbAw0KmupOvphfr5sJd3xpS3vQMtdHbVlCoDu0/F9ntEgBzwrOphX7rpo90MOU2j8dakAGGMku1DddPEuOckCkn0KjYfcvBwETJWd09my6L3BFCyto3doaYpjv361/GYc5508eYLmGom+AQVybhXTVOzIDn8gdr7UkvgJgeown8STMiiTKfq7HmJ3vTXpNrAXzS6Oa9la2OFa+wW54hs+nABfsPLNkIuaC9X5FXt8X356OgAOv0GUn3EiofMXH928dIXb3kftnF9Y+oS7OE+mwnbp5SfrOOp3TF8v0E3fOuWs/Wfe1QWuDu3+xa7wXfMLLxBb6HqsUV5A4/DaCqwcH4/tMge3PVWJ56jWIpzL33On7wMuzaRnxjbuO6brL3ywLWgXJnuGv2FVfe3CYpLLgT4zstspM/oftREBQlAQffpYQMiaSRuqm+rMbQuXpH2Fi+AO7jA2ENiQBkOk98=
 
-before_install:
-  # Replace 'nexus.codehaus.org' from '.m2/settings.xml' in Travis (see https://github.com/travis-ci/travis-ci/issues/4629#issuecomment-131214465)
-  - sed -i.bak -e 's|https://nexus.codehaus.org/snapshots/|https://oss.sonatype.org/content/repositories/codehaus-snapshots/|g' ~/.m2/settings.xml
+#addons:
+#  sonarcloud:
+#    organization: atlanmod
+#    token:
+#      secure: UxzN9mjAfVsvkNu9uMoJyLH6nM5jrAA+ubEWicUJ3TK4PwH/P05V4MG2eiRU6VZmeazBFAIOD9dgEhQjKu8vpsd16T8QMBoowsugP4L/uYXullV5RP+u+0zdrXl78yQL7ndlyvLlEIjQ6cnxPY5Fs8+yTnWXAau2+ls6lJhUlwJtNmQei2aEWEG6RHnGZ16PcGmSuyO2kZVv9bsui47FekkEdx2l0zzNOIxTq6qazl5jaMfnSui0njl2odk2A40BeVdBsdyn6yDLfzH8ScBBXpEMBLuE2KRctNc8IMprCyJ+ZdcNo7C5xw9je90RWG9YGHTcIEhx5OanrejZoBmMa3Xp2pKPDMnn5bG5pK2p6h7pj+6KPfpkR02PiRbO2fluksUypklWTZolwVXS/Z8IEcitN0k1r5pg4VJ2hI7g7P8YkKB3mybUgfPt/u7UxY/z+tjTNPblI6c+kRSXTzwdMSP+vhq0J2Uv/wuP3k/TV0wl37rHF3Rj4yhsU4zrQBx0JUYfeLFtYpg8/DzuZtvPwR1jDBMA1zfhMAoo/Mvzkcu1sj8sFUSZ9DweSUO8RBWt1nFiIBsSQhsVC+oxSiDnM/3gH28CEU+oaGnQhBbt6pc+23IchiTdd5G8szRlwr075hBJMeYBLjC6jwxKZRj8YCvsOrEyOtbsmf7tKUofhVQ=
+#    github_token:
+#      secure: eWigAAzroYCg6Q6WPAy+FjT0jLJHZ9+QZbsBobKvF/Gwv2nBLw7BkN10oY2cv6dx+a3jGJrLM0xbHCzxsas4Dq/WKFabDa/lku/FgmxOTyzDtlhY5Sf30C+6zn9Cr520iCVlprAOghs+iJjO74rrvZ8jaMl1abOB14BAkZ8UXmcbyT98W03z4WQikCnAOZiLa7UCo9Lbtoz5Wk5DH8pLXWFdv/EerCNWUAfnKKVYCOTCe1f2wdFKsFtc+qjGiuxLAA9QCEWCTxRjHDUnbdJu32/sOyhYUgQkfVx8SXpfTrDcwLvJZesVsLf9G3Bjr/6MmEih9r5uEE7J1q44uICWhgigOSWtnuGyeDlIJ7bq5W1ktrwXWbki196Y94YjNtafKdEnmKFQ6rF5L7+U3I9o1ku0p3zjtotLCPI+1/L7J9IXphPNQxEriSaCN3EXrozt96Yan3rbjwxEVvILURVQu2m4N/6VnUb1XeY+oi8vGeC67NVDQi1HE0RF/JObapGmmDyKlwMOQSsOUcalAZlSk+17LPVGcdTLmBPUrDhbybM72zy1TycO5UIPj7jhu2kOBFQq1yLtKikvgXlV5wlh2BOevBQvONRK8cXZkGqtYg/zuNZ+I2EK/0ZSJ82x5bNIDH+UFJ3BD5G4IZMS93Y+9a52FKKVpsG1caHLnWBtdb0=
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+
+install:
+  # Resolve all dependencies
+  - mvn -B -V -q -DskipTests install
 
 script:
-  # Build and test with code coverage
-  - mvn -B jacoco:prepare-agent install jacoco:report jacoco:report-aggregate
+  # Build and test with code coverage (add `verify sonar:sonar` to enable the Sonar analysis)
+  - mvn -B jacoco:prepare-agent test jacoco:report jacoco:report-aggregate
 
 after_success:
   # Publish code coverage in CodeCov
   - bash <(curl -s https://codecov.io/bash)
+
+  # Deploy snapshot in Maven central
+  - bash .util/deploy_snapshot.sh
+
   # Publish Javadoc in Github
   - bash .util/publish_javadoc.sh
-  # Publish snapshot in Maven central
-  - bash .util/publish_snapshot.sh
-  # Publish update-site in Github
-  - bash .util/publish_eclipse.sh
+
+  # Publish update-site of Eclipse plugin in Github
+  - bash .util/publish_plugin.sh
 
 notifications:
   slack:

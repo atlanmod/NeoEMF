@@ -1,8 +1,5 @@
 <?xml version="1.0"?>
-<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         name="NeoEMF rulesets"
-         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
-         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd" name="NeoEMF rulesets">
 
     <description>
         This ruleset checks NeoEMF code for bad stuff.
@@ -19,9 +16,7 @@
     <rule ref="rulesets/java/braces.xml" />
 
     <rule ref="rulesets/java/codesize.xml">
-        <properties>
-            <property name="maxmethods" value="30" />
-        </properties>
+        <exclude name="TooManyMethods" />
     </rule>
 
     <rule ref="rulesets/java/finalizers.xml" />
@@ -31,12 +26,11 @@
     <rule ref="rulesets/java/migrating.xml" />
 
     <rule ref="rulesets/java/naming.xml">
-        <properties>
-            <property name="minimum" value="30" />
-        </properties>
         <exclude name="ShortClassName" />
         <exclude name="ShortMethodName" />
         <exclude name="ShortVariable" />
+        <exclude name="LongVariable" />
+        <exclude name="AvoidFieldNameMatchingMethodName" />
     </rule>
 
     <rule ref="rulesets/java/optimizations.xml">
@@ -44,7 +38,11 @@
         <exclude name="MethodArgumentCouldBeFinal" />
     </rule>
 
-    <rule ref="rulesets/java/strictexception.xml" />
+    <rule ref="rulesets/java/strictexception.xml">
+        <exclude name="AvoidCatchingGenericException" />
+        <exclude name="AvoidThrowingNullPointerException" />
+        <exclude name="AvoidThrowingRawExceptionTypes" />
+    </rule>
 
     <rule ref="rulesets/java/strings.xml" />
 
@@ -53,4 +51,5 @@
     <rule ref="rulesets/java/unusedcode.xml">
         <exclude name="UnusedFormalParameter" />
     </rule>
+
 </ruleset>

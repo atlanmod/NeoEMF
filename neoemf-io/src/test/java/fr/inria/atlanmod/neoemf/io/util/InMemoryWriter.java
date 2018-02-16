@@ -1,0 +1,131 @@
+/*
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ *
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
+ */
+
+package fr.inria.atlanmod.neoemf.io.util;
+
+import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
+import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.writer.Writer;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static fr.inria.atlanmod.commons.Preconditions.checkEqualTo;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
+
+/**
+ * A {@link Writer} that stores all elements in {@link java.util.Collection}s.
+ */
+@ParametersAreNonnullByDefault
+public final class InMemoryWriter implements Writer {
+
+    /**
+     * A map that holds the identifier of all elements.
+     */
+    private final Map<Id, InMemoryElement> identifiers;
+
+    /**
+     * A LIFO that holds the current path, from the root to the current element.
+     */
+    private final Deque<InMemoryElement> previousElements;
+
+    /**
+     * The root element.
+     */
+    private InMemoryElement root;
+
+    /**
+     * Constructs a new {@code InMemoryWriter}.
+     */
+    public InMemoryWriter() {
+        this.identifiers = new HashMap<>();
+        this.previousElements = new ArrayDeque<>();
+    }
+
+    /**
+     * Returns the root element.
+     *
+     * @return the root element
+     */
+    public InMemoryElement getRoot() {
+        return root;
+    }
+
+    @Override
+    public void onInitialize() {
+        // Do nothing
+    }
+
+    @Override
+    public void onStartElement(BasicElement element) {
+        InMemoryElement e = new InMemoryElement(element);
+
+        if (previousElements.isEmpty()) {
+            root = e;
+        }
+        else {
+            previousElements.getLast().children().add(e);
+        }
+
+        Optional.ofNullable(element.id()).ifPresent(v -> identifiers.put(element.id(), e));
+
+        previousElements.addLast(e);
+    }
+
+    @Override
+    public void onAttribute(BasicAttribute attribute) {
+        if (isNull(attribute.owner()) || attribute.owner().equals(previousElements.getLast().id())) {
+            previousElements.getLast().attributes().add(attribute);
+        }
+        else {
+            InMemoryElement e = identifiers.get(attribute.owner());
+            checkNotNull(e, "identifiers.get(%s)", attribute.owner());
+            checkEqualTo(e.id(), attribute.owner(), "%s is not owner of this attribute (%s)", e.id(), attribute.owner());
+
+            e.attributes().add(attribute);
+        }
+    }
+
+    @Override
+    public void onReference(BasicReference reference) {
+        if (isNull(reference.owner()) || reference.owner().equals(previousElements.getLast().id())) {
+            previousElements.getLast().references().add(reference);
+        }
+        else {
+            InMemoryElement e = identifiers.get(reference.owner());
+            checkNotNull(e, "identifiers.get(%s)", reference.owner());
+            checkEqualTo(e.id(), reference.owner(), "%s is not the owner of this reference (%s)", e.id(), reference.owner());
+
+            e.references().add(reference);
+        }
+    }
+
+    @Override
+    public void onCharacters(String characters) {
+        // Do nothing
+    }
+
+    @Override
+    public void onEndElement() {
+        previousElements.removeLast();
+    }
+
+    @Override
+    public void onComplete() {
+        previousElements.clear();
+        identifiers.clear();
+    }
+}

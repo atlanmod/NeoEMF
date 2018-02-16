@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>neoemf-data</artifactId>
+        <version>1.0.3-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>neoemf-data-mapdb</artifactId>
+
+    <packaging>bundle</packaging>
+
+    <name>NeoEMF Data MapDB</name>
+    <description>MapDB extension of the core component.</description>
+
+    <properties>
+        <mapdb.version>3.0.5</mapdb.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- Database -->
+
+        <dependency>
+            <groupId>org.mapdb</groupId>
+            <artifactId>mapdb</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- Database -->
+
+            <dependency>
+                <groupId>org.mapdb</groupId>
+                <artifactId>mapdb</artifactId>
+                <version>${mapdb.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.data.mapdb</Bundle-SymbolicName>
+                        <Export-Package>
+                            fr.inria.atlanmod.neoemf.data.mapdb.*
+                        </Export-Package>
+                        <Require-Bundle>
+                            ${project.groupId}.core
+                        </Require-Bundle>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

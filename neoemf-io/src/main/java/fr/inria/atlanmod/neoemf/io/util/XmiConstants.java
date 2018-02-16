@@ -1,63 +1,101 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.io.util;
 
+import fr.inria.atlanmod.commons.Throwables;
+import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.commons.primitive.Strings;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 
 /**
  * A utility class that contains all the constants used in an XMI file.
  */
-public interface XmiConstants extends XmlConstants {
+@Static
+@ParametersAreNonnullByDefault
+public final class XmiConstants {
+
+    /**
+     * The default encoding of XML files.
+     */
+    public static final String ENCODING = "utf-8";
+
+    /**
+     * The default version of XML files.
+     */
+    public static final String VERSION = "1.0";
+
+    /**
+     * The namespace prefix of XSI.
+     */
+    public static final String XSI_NS = "xsi";
+
+    /**
+     * The attribute key representing a {@code null} element.
+     */
+    public static final String TYPE = "type";
+
+    /**
+     * The attribute key representing a link to another document.
+     */
+    public static final String HREF = "href";
 
     /**
      * The namespace prefix of XMI.
      */
-    String XMI_NS = "xmi";
+    public static final String XMI_NS = "xmi";
 
     /**
      * The namespace URI of XMI.
      */
-    String XMI_URI = "http://www.omg.org/XMI";
+    public static final String XMI_URI = "http://www.omg.org/XMI";
 
     /**
      * The attribute key representing the identifier of an element.
      */
-    String XMI_ID = format(XMI_NS, "id");
+    public static final String XMI_ID = format(XMI_NS, "id");
 
     /**
      * The attribute key representing a reference to an identified element.
      *
      * @see #XMI_ID
      */
-    String XMI_IDREF = format(XMI_NS, "idref");
+    public static final String XMI_IDREF = format(XMI_NS, "idref");
 
     /**
-     * The attribute key representing the metaclass of an element.
+     * The default attribute key representing the meta-class of an element.
      */
-    String XMI_XSI_TYPE = format("(" + XMI_NS + "|" + XSI_NS + ")", TYPE);
+    public static final String XMI_TYPE = format(XMI_NS, TYPE);
+
+    /**
+     * The attribute key representing the meta-class of an element.
+     */
+    public static final String XMI_XSI_TYPE = format('(' + XMI_NS + '|' + XSI_NS + ')', TYPE);
 
     /**
      * The attribute key representing the version of the parsed XMI file.
      */
-    String XMI_VERSION_ATTR = format(XMI_NS, "version");
+    public static final String XMI_VERSION_ATTR = format(XMI_NS, "version");
 
     /**
-     * The attribute key representing a name of an element.
+     * The default XMI version.
      */
-    String NAME = "name";
+    public static final String XMI_VERSION = "2.0";
+
+    private XmiConstants() {
+        throw Throwables.notInstantiableClass(getClass());
+    }
 
     /**
      * Formats a prefixed value as {@code "prefix:value"}. If the {@code prefix} is {@code null}, the returned value
@@ -69,9 +107,9 @@ public interface XmiConstants extends XmlConstants {
      * @return the formatted value as {@code "prefix:value"}
      */
     @Nonnull
-    static String format(@Nullable String prefix, @Nonnull String value) {
-        checkNotNull(value);
+    public static String format(@Nullable String prefix, String value) {
+        checkNotNull(value, "value");
 
-        return (isNull(prefix) ? "" : prefix + ':') + value;
+        return (isNull(prefix) ? Strings.EMPTY : prefix + ':') + value;
     }
 }

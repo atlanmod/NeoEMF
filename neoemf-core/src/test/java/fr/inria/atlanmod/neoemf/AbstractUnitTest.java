@@ -1,64 +1,44 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.neoemf.context.ContextualTest;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.commons.AbstractFileBasedTest;
+import fr.inria.atlanmod.neoemf.context.Context;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
-import java.io.File;
-import java.io.IOException;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
- * An abstract {@link ContextualTest} that initializes {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory}
- * in the {@link PersistenceBackendFactoryRegistry} and holds the temporary file.
+ * An abstract contextual test-case that initializes the {@link fr.inria.atlanmod.neoemf.context.Context} and holds the
+ * temporary file.
  */
-public abstract class AbstractUnitTest extends AbstractTest implements ContextualTest {
+@ParametersAreNonnullByDefault
+public abstract class AbstractUnitTest extends AbstractFileBasedTest {
 
     /**
-     * The current temporary file.
-     */
-    private File file;
-
-    /**
-     * Returns the current temporary file.
+     * Returns the current {@link Context}.
      *
-     * @return a {@link File}
+     * @return the current {@link Context}.
      */
-    protected File file() {
-        return file;
-    }
+    @Nonnull
+    protected abstract Context context();
 
     /**
-     * Registers the current {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} from the current
-     * {@link fr.inria.atlanmod.neoemf.context.Context} in the {@link PersistenceBackendFactoryRegistry} and initialize the
-     * {@link #file}.
-     *
-     * @throws IOException if an I/O error occurs
+     * Initialize the current context.
      */
-    @Before
-    public final void registerFactories() throws IOException {
-        PersistenceBackendFactoryRegistry.register(context().uriScheme(), context().persistenceBackendFactory());
-        file = workspace.newFile(context().name());
-    }
-
-    /**
-     * Unregisters the current {@link fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory} from the
-     * {@link PersistenceBackendFactoryRegistry}.
-     */
-    @After
-    public final void unregisterFactories() {
-        PersistenceBackendFactoryRegistry.unregisterAll();
+    @BeforeEach
+    void initContext() {
+        context().init();
+        assumeTrue(context().isInitialized(), "The context has not been initialized");
     }
 }

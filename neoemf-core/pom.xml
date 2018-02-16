@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -14,69 +14,70 @@
 
     <name>NeoEMF Core</name>
     <description>
-        NeoEMF core components. Specialize the standard EMF classes and provide abstract classes for dedicated backend
-        extensions. (The core component can not be used in a standalone context, it needs at least one persistence
-        solution to work properly).
+        NeoEMF core component.
+        Specialize the standard EMF classes and provide abstract classes for dedicated backend extensions.
     </description>
 
     <properties>
-        <cglib-nodep.version>3.2.4</cglib-nodep.version>
-        <log4j.version>2.7</log4j.version>
+        <chronicle-map.version>3.14.5</chronicle-map.version>
+        <chronicle-bytes.version>1.10.9</chronicle-bytes.version>
+
+        <log4j.version>2.8.2</log4j.version><!-- 2.9.0+ : compatibility issue with maven-bundle-plugin (JDK9) -->
+
+        <cglib.version>3.2.6</cglib.version>
+        <reflections.version>0.9.9</reflections.version><!-- 0.9.9+ : compatibility issue with Guava/HBase (15.0) -->
     </properties>
 
     <dependencies>
 
-        <!-- Cache -->
+        <!-- Commons -->
 
         <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
+            <groupId>fr.inria.atlanmod.commons</groupId>
+            <artifactId>commons-core</artifactId>
         </dependency>
 
-        <!-- Proxy -->
+        <!-- Database -->
+
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-map</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.openhft</groupId>
+            <artifactId>chronicle-bytes</artifactId>
+        </dependency>
+
+        <!-- Reflection -->
 
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
         </dependency>
 
-        <!-- Common -->
-
         <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+        </dependency>
+
+        <dependency><!-- Used by `reflections` : Required for bundle analysis in an OSGi context -->
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
+            <artifactId>commons-vfs2</artifactId>
+            <version>2.2</version><!-- == 2.0 with bugfixes -->
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Logging -->
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
+            <artifactId>log4j-core</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
+            <artifactId>log4j-jul</artifactId>
         </dependency>
 
         <dependency>
@@ -91,7 +92,7 @@
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-jul</artifactId>
+            <artifactId>log4j-1.2-api</artifactId>
         </dependency>
 
         <!-- EMF -->
@@ -105,61 +106,95 @@
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore</artifactId>
         </dependency>
-        
-        <!-- Temporary fix: unable to resolve EMFCompare maven dependency -->
+
+        <!-- OSGi -->
+
         <dependency>
-		    <groupId>static-import</groupId>
-		    <artifactId>emf.compare</artifactId>
-		    <version>1.0</version>
-		    <scope>system</scope>
-		    <systemPath>${project.basedir}/src/main/resources/org.eclipse.emf.compare_3.4.0.201611041634.jar</systemPath>
-		</dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Test -->
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>fr.inria.atlanmod.commons</groupId>
+            <artifactId>commons-core</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
+            <artifactId>mockito-core</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
         </dependency>
+
+        <!-- Internal -->
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-utils</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+            <type>pom</type>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
 
-            <!-- Proxy -->
+            <!-- Database -->
+
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>chronicle-map</artifactId>
+                <version>${chronicle-map.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.openhft</groupId>
+                <artifactId>chronicle-bytes</artifactId>
+                <version>${chronicle-bytes.version}</version>
+            </dependency>
+
+            <!-- Reflection -->
 
             <dependency>
                 <groupId>cglib</groupId>
                 <artifactId>cglib-nodep</artifactId>
-                <version>${cglib-nodep.version}</version>
+                <version>${cglib.version}</version>
             </dependency>
 
-            <!-- Common -->
-
             <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.core</artifactId>
-                <version>${osgi.version}</version>
-                <optional>true</optional>
+                <groupId>org.reflections</groupId>
+                <artifactId>reflections</artifactId>
+                <version>${reflections.version}</version>
+                <exclusions>
+                    <exclusion> <!-- Should be optional -->
+                        <groupId>com.google.code.findbugs</groupId>
+                        <artifactId>annotations</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- Logging -->
-
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-api</artifactId>
-                <version>${log4j.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
@@ -168,52 +203,66 @@
                 <scope>runtime</scope>
             </dependency>
 
-            <dependency>
+            <dependency> <!-- Bridge for Java Logging -->
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-jul</artifactId>
+                <version>${log4j.version}</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <dependency> <!-- Bridge for SLF4J -->
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-slf4j-impl</artifactId>
                 <version>${log4j.version}</version>
                 <scope>runtime</scope>
             </dependency>
 
-            <dependency>
+            <dependency> <!-- Bridge for Apache Commons Logging -->
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-jcl</artifactId>
                 <version>${log4j.version}</version>
                 <scope>runtime</scope>
             </dependency>
 
-            <dependency>
+            <dependency> <!-- Bridge for Log4j v1.X -->
                 <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-jul</artifactId>
+                <artifactId>log4j-1.2-api</artifactId>
                 <version>${log4j.version}</version>
                 <scope>runtime</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>
-                            ${project.groupId}.core
-                        </Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${project.groupId}.core</Bundle-SymbolicName>
+                        <DynamicImport-Package>
+                            *
+                        </DynamicImport-Package>
                         <Export-Package>
+                            !fr.inria.atlanmod.neoemf.*.internal.*,
                             fr.inria.atlanmod.neoemf.*
                         </Export-Package>
-                        <_exportcontents>
-                        </_exportcontents>
+                        <Import-Package>
+                            com.google.common.cache;resolution:=optional
+                        </Import-Package>
                         <Require-Bundle>
+                            fr.inria.atlanmod.commons;visibility:=reexport,
                             org.eclipse.emf.ecore;visibility:=reexport,
-                            org.eclipse.emf.compare;resolution:=optional,
-                            org.eclipse.core.runtime
+                            org.eclipse.emf.compare;resolution:=optional
                         </Require-Bundle>
+                        <Bundle-Activator>fr.inria.atlanmod.neoemf.util.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

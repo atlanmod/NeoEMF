@@ -1,103 +1,54 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.data.blueprints.context;
 
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.store.DirectWriteBlueprintsStore;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
+import fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
-
-import java.io.File;
-import java.io.IOException;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A specific {@link Context} for the Blueprints implementation.
  */
-public class BlueprintsContext implements Context {
+@ParametersAreNonnullByDefault
+public abstract class BlueprintsContext extends AbstractContext {
 
     /**
-     * The name of this context.
-     */
-    public static final String NAME = "Tinker";
-
-    /**
-     * Constructs a new {@code BlueprintsContext}.
-     */
-    protected BlueprintsContext() {
-    }
-
-    /**
-     * Returns the instance of this class.
+     * Creates a new {@code BlueprintsContext} with a mapping with indices.
      *
-     * @return the instance of this class.
+     * @return a new context.
      */
-    public static Context get() {
-        return Holder.INSTANCE;
+    @Nonnull
+    public static Context getDefault() {
+        return new BlueprintsContext() {
+            @Nonnull
+            @Override
+            public ImmutableConfig config() {
+                return BlueprintsTinkerConfig.newConfig();
+            }
+        };
     }
 
+    @Nonnull
     @Override
     public String name() {
-        return NAME;
+        return "Tinker";
     }
 
+    @Nonnull
     @Override
-    public String uriScheme() {
-        return BlueprintsURI.SCHEME;
-    }
-
-    @Override
-    public URI createURI(URI uri) {
-        return BlueprintsURI.createURI(uri);
-    }
-
-    @Override
-    public URI createFileURI(File file) {
-        return BlueprintsURI.createFileURI(file);
-    }
-
-    @Override
-    public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsResourceBuilder(ePackage).persistent().file(file).build();
-    }
-
-    @Override
-    public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsResourceBuilder(ePackage).file(file).build();
-    }
-
-    @Override
-    public PersistenceBackendFactory persistenceBackendFactory() {
-        return BlueprintsPersistenceBackendFactory.getInstance();
-    }
-
-    @Override
-    public Class<? extends DirectWriteStore> directWriteClass() {
-        return DirectWriteBlueprintsStore.class;
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    private static class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        private static final Context INSTANCE = new BlueprintsContext();
+    public BackendFactory factory() {
+        return BlueprintsBackendFactory.getInstance();
     }
 }

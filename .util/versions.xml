@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0" xsi:schemaLocation="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0 http://www.mojohaus.org/versions-maven-plugin/xsd/rule-2.0.0.xsd" comparisonMethod="maven">
+
+    <ignoreVersions> <!-- Ignore ALPHA and BETA versions -->
+        <ignoreVersion type="regex">.*-[aA]lpha(-?\d+)?</ignoreVersion>
+        <ignoreVersion type="regex">.*-[bB]eta(-?\d+)?</ignoreVersion>
+        <ignoreVersion type="regex">.*-rc(-?\d+)?</ignoreVersion>
+        <ignoreVersion type="regex">.*-android</ignoreVersion>
+    </ignoreVersions>
+
+</ruleset>

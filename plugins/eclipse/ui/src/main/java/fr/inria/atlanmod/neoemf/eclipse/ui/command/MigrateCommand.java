@@ -1,18 +1,15 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
-import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoImporter;
-import fr.inria.atlanmod.neoemf.eclipse.ui.migrator.NeoImporterUtil;
+import fr.inria.atlanmod.neoemf.eclipse.ui.importer.GenModels;
+import fr.inria.atlanmod.neoemf.eclipse.ui.importer.NeoModelImporter;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -23,9 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -35,65 +30,85 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import java.util.Map;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
+/**
+ * A {@link org.eclipse.core.commands.IHandler} that migrates a model to another.
+ */
 public class MigrateCommand extends AbstractHandler {
 
-    private ISelection selection;
+    /**
+     * The current selection.
+     */
+    private ISelection currentFile;
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-        ISelectionService service = window.getSelectionService();
-        selection = service.getSelection();
+        currentFile = HandlerUtil.getActiveWorkbenchWindowChecked(event)
+                .getSelectionService()
+                .getSelection();
 
         new MigrateJob().schedule();
 
         return null;
     }
 
-    private IFile getFile() {
-        if (selection instanceof IStructuredSelection) {
-            Object element = ((IStructuredSelection) selection).getFirstElement();
-            if (element instanceof IFile) {
-                IFile file = (IFile) element;
-                if (Objects.equals("genmodel", file.getFileExtension())) {
-                    return file;
-                }
-            }
-        }
-        return null;
+    /**
+     * Retrieves the current {@link IFile} from the {@link #currentFile}.
+     *
+     * @return an {@link Optional} containing the file, or {@link Optional#empty()} if the selection does not represents
+     * a file
+     */
+    private Optional<IFile> currentFile() {
+        return Optional.ofNullable(currentFile)
+                .filter(IStructuredSelection.class::isInstance)
+                .map(IStructuredSelection.class::cast)
+                .map(IStructuredSelection::getFirstElement)
+                .filter(IFile.class::isInstance)
+                .map(IFile.class::cast)
+                .filter(selected -> Objects.equals("genmodel", selected.getFileExtension()));
     }
 
-    private GenModel getGenModel(IFile file) {
+    /**
+     * Retrieves the {@link GenModel} from the specified {@code file}.
+     *
+     * @param file the genmodel file
+     *
+     * @return an {@link Optional} containing the {@link GenModel}, or {@link Optional#empty()} if the {@code file} does
+     * not contains a generator model
+     */
+    private Optional<GenModel> genModelFrom(IFile file) {
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        Map<String, Object> map = resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap();
-        map.put("*", new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry()
+                .getExtensionToFactoryMap()
+                .put("*", new XMIResourceFactoryImpl());
 
         URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), false);
         Resource resource = resourceSet.getResource(uri, true);
 
-        EList<EObject> contents = resource.getContents();
-        if (!contents.isEmpty()) {
-            EObject object = contents.get(0);
-            if (object instanceof GenModel) {
-                return (GenModel) object;
-            }
-        }
-        return null;
+        return Optional.ofNullable(resource.getContents())
+                .filter(c -> !c.isEmpty())
+                .map(c -> c.get(0))
+                .filter(GenModel.class::isInstance)
+                .map(GenModel.class::cast);
     }
 
+    /**
+     * A {@link Job} that migrates a model to another.
+     */
     private class MigrateJob extends Job {
 
+        /**
+         * Constructs a new {@code MigrateJob}.
+         */
         public MigrateJob() {
             super("Migrating EMF model");
         }
@@ -101,53 +116,52 @@ public class MigrateCommand extends AbstractHandler {
         @Override
         protected IStatus run(IProgressMonitor monitor) {
             try {
-                IFile file = getFile();
-                if (isNull(file)) {
-                    showMessage("The selected element is not a *.genmodel file.", true);
-                }
-                else {
-                    GenModel genModel = getGenModel(file);
-                    if (isNull(genModel)) {
-                        showMessage("The selected file does not contain a generator model.", true);
-                    }
-                    else {
-                        String msg = NeoImporterUtil.adjustGenModel(genModel);
-                        if (isNull(msg)) {
-                            showMessage("The selected generator model was already migrated.", false);
+                Optional<IFile> file = currentFile();
+                if (file.isPresent()) {
+                    Optional<GenModel> genModel = genModelFrom(file.get());
+                    if (genModel.isPresent()) {
+                        String msg = GenModels.adjust(genModel.get());
+                        if (nonNull(msg)) {
+                            genModel.get().eResource().save(Collections.emptyMap());
+                            showMessage("The selected generator model has been migrated:\n" + msg, false);
                         }
                         else {
-                            genModel.eResource().save(null);
-                            showMessage("The selected generator model has been migrated:" + "\n\n" + msg, false);
+                            showMessage("The selected generator model was already migrated.", false);
                         }
                     }
+                    else {
+                        showMessage("The selected file does not contain a generator model.", true);
+                    }
+                }
+                else {
+                    showMessage("The selected element is not a *.genmodel file.", true);
                 }
             }
-            catch (Exception ex) {
-                return new Status(IStatus.ERROR, NeoImporter.IMPORTER_ID, "Problem while migrating EMF model", ex);
+            catch (Exception e) {
+                return new Status(IStatus.ERROR, NeoModelImporter.IMPORTER_ID, "Problem while migrating EMF model", e);
             }
 
             return Status.OK_STATUS;
         }
 
-        private void showMessage(final String msg, final boolean error) {
-            try {
-                final Display display = PlatformUI.getWorkbench().getDisplay();
-                display.syncExec(() -> {
-                    try {
-                        final Shell shell = new Shell(display);
-                        if (error) {
-                            MessageDialog.openError(shell, "NeoEMF Migrator", msg);
-                        }
-                        else {
-                            MessageDialog.openInformation(shell, "NeoEMF Migrator", msg);
-                        }
-                    }
-                    catch (RuntimeException ignore) {
-                    }
-                });
-            }
-            catch (RuntimeException ignore) {
-            }
+        /**
+         * Displays a {@code message}.
+         *
+         * @param msg   the message to display
+         * @param error {@code true} if the message is an error
+         */
+        private void showMessage(String msg, boolean error) {
+            Display display = PlatformUI.getWorkbench().getDisplay();
+
+            display.syncExec(() -> {
+                Shell shell = new Shell(display);
+                if (error) {
+                    MessageDialog.openError(shell, "NeoEMF Migrator", msg);
+                }
+                else {
+                    MessageDialog.openInformation(shell, "NeoEMF Migrator", msg);
+                }
+            });
         }
     }
 }

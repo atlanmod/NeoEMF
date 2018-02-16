@@ -1,44 +1,48 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
+import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * An object that notifies registered {@link Handler}s of events during an I/O process, such as import or export.
+ * An object that notifies registered {@link Handler}s of events during an I/O process.
  *
- * @param <T> the type of handlers
+ * @param <H> the type of handlers
  *
  * @see Handler
  */
-public interface Notifier<T extends Handler> {
+@ParametersAreNonnullByDefault
+public interface Notifier<H extends Handler> {
 
     /**
-     * Returns the {@link Handler} that will be notified by this {@code Notifier}.
+     * Returns the {@link Handler}s that will be notified by this {@code Notifier}.
      *
      * @return the handler to notify
      */
-    Iterable<T> next();
+    @Nonnull
+    Iterable<H> next();
 
     /**
-     * Notifies all registered handlers of the start of a document.
+     * Notifies all registered handlers of the start of a task.
      *
-     * @see #notifyEndDocument()
-     * @see Handler#handleStartDocument()
+     * @see #notifyComplete()
+     * @see Handler#onInitialize()
      */
-    default void notifyStartDocument() {
-        next().forEach(Handler::handleStartDocument);
+    default void notifyInitialize() {
+        next().forEach(Handler::onInitialize);
     }
 
     /**
@@ -47,10 +51,12 @@ public interface Notifier<T extends Handler> {
      * @param element the element of the new element
      *
      * @see #notifyEndElement()
-     * @see Handler#handleStartElement(Element)
+     * @see Handler#onStartElement(BasicElement)
      */
-    default void notifyStartElement(Element element) {
-        next().forEach(h -> h.handleStartElement(element));
+    default void notifyStartElement(BasicElement element) {
+        checkNotNull(element, "element");
+
+        next().forEach(h -> h.onStartElement(element));
     }
 
     /**
@@ -58,10 +64,12 @@ public interface Notifier<T extends Handler> {
      *
      * @param attribute the new attribute
      *
-     * @see Handler#handleAttribute(Attribute)
+     * @see Handler#onAttribute(BasicAttribute)
      */
-    default void notifyAttribute(Attribute attribute) {
-        next().forEach(h -> h.handleAttribute(attribute));
+    default void notifyAttribute(BasicAttribute attribute) {
+        checkNotNull(attribute, "attribute");
+
+        next().forEach(h -> h.onAttribute(attribute));
     }
 
     /**
@@ -69,10 +77,12 @@ public interface Notifier<T extends Handler> {
      *
      * @param reference the new reference
      *
-     * @see Handler#handleReference(Reference)
+     * @see Handler#onReference(BasicReference)
      */
-    default void notifyReference(Reference reference) {
-        next().forEach(h -> h.handleReference(reference));
+    default void notifyReference(BasicReference reference) {
+        checkNotNull(reference, "reference");
+
+        next().forEach(h -> h.onReference(reference));
     }
 
     /**
@@ -80,29 +90,31 @@ public interface Notifier<T extends Handler> {
      *
      * @param characters the new characters
      *
-     * @see Handler#handleCharacters(String)
+     * @see Handler#onCharacters(String)
      */
     default void notifyCharacters(String characters) {
-        next().forEach(h -> h.handleCharacters(characters));
+        checkNotNull(characters, "characters");
+
+        next().forEach(h -> h.onCharacters(characters));
     }
 
     /**
      * Notifies all registered handlers of the end of the current element.
      *
-     * @see #notifyStartElement(Element)
-     * @see Handler#handleEndElement()
+     * @see #notifyStartElement(BasicElement)
+     * @see Handler#onEndElement()
      */
     default void notifyEndElement() {
-        next().forEach(Handler::handleEndElement);
+        next().forEach(Handler::onEndElement);
     }
 
     /**
-     * Notifies all registered handlers of the end of the current document.
+     * Notifies all registered handlers of the end of the current task.
      *
-     * @see #notifyStartDocument()
-     * @see Handler#handleEndDocument()
+     * @see #notifyInitialize()
+     * @see Handler#onComplete()
      */
-    default void notifyEndDocument() {
-        next().forEach(Handler::handleEndDocument);
+    default void notifyComplete() {
+        next().forEach(Handler::onComplete);
     }
 }

@@ -1,12 +1,9 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.io.reader;
@@ -15,22 +12,25 @@ import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.Notifier;
 
 import java.io.IOException;
-import java.io.InputStream;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import javax.annotation.WillNotClose;
 
 /**
- * An {@link Notifier} that reads data from a file.
- * <p>
- * It correspond to the head of the parsing process in case of an import.
+ * A {@link fr.inria.atlanmod.neoemf.io.Notifier} able to read data from an {@link Object}.
+ *
+ * @param <T> the type of the source
  */
-public interface Reader extends Notifier<Handler> {
+@ParametersAreNonnullByDefault
+public interface Reader<T> extends Notifier<Handler> {
 
     /**
-     * Reads a stream and notifies registered {@link Handler}.
+     * Reads an {@link Object} and notifies registered {@link fr.inria.atlanmod.neoemf.io.Handler}.
      *
-     * @param stream the stream to read
+     * @param source the object to read
      *
      * @throws IllegalArgumentException if this reader hasn't any handler
      * @throws IOException              if an error occurred during the I/O process
      */
-    void read(InputStream stream) throws IOException;
+    void read(@WillNotClose T source) throws IOException;
 }

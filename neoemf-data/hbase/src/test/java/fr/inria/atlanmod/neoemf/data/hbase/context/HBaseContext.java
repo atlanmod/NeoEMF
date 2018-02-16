@@ -1,103 +1,82 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.data.hbase.context;
 
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.hbase.store.DirectWriteHBaseStore;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
-import java.io.IOException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A specific {@link Context} for the HBase implementation.
  */
-public class HBaseContext implements Context {
+@ParametersAreNonnullByDefault
+public abstract class HBaseContext extends AbstractContext {
 
     /**
-     * The name of this context.
-     */
-    public static final String NAME = "HBase";
-
-    /**
-     * Constructs a new {@code HBaseContext}.
-     */
-    protected HBaseContext() {
-    }
-
-    /**
-     * Returns the instance of this class.
+     * Creates a new {@code HBaseContext} with a mapping with arrays and strings.
      *
-     * @return the instance of this class.
+     * @return a new context.
      */
-    public static Context get() {
-        return Holder.INSTANCE;
+    @Nonnull
+    public static Context getDefault() {
+        return new HBaseContext() {
+            @Nonnull
+            @Override
+            public ImmutableConfig config() {
+                return HBaseConfig.newConfig();
+            }
+        };
     }
 
+    @Override
+    public boolean isInitialized() {
+        return HBaseCluster.isInitialized();
+    }
+
+    @Override
+    public Context init() {
+        HBaseCluster.init();
+        return this;
+    }
+
+    @Nonnull
     @Override
     public String name() {
-        return NAME;
+        return "HBase";
     }
 
+    @Nonnull
     @Override
-    public String uriScheme() {
-        return HBaseURI.SCHEME;
+    public BackendFactory factory() {
+        return HBaseBackendFactory.getInstance();
     }
 
+    @Nonnull
     @Override
-    public URI createURI(URI uri) {
-        return HBaseURI.createURI(uri);
+    public URI createUri(URI uri) {
+        return UriBuilder.forScheme(uriScheme()).fromServer(HBaseCluster.host(), HBaseCluster.port(), uri);
     }
 
+    @Nonnull
     @Override
-    public URI createFileURI(File file) {
-        return HBaseURI.createFileURI(file);
-    }
-
-    @Override
-    public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public PersistenceBackendFactory persistenceBackendFactory() {
-        return HBasePersistenceBackendFactory.getInstance();
-    }
-
-    @Override
-    public Class<? extends DirectWriteStore> directWriteClass() {
-        return DirectWriteHBaseStore.class;
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    private static class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        private static final Context INSTANCE = new HBaseContext();
+    public URI createUri(File file) {
+        return UriBuilder.forScheme(uriScheme()).fromServer(HBaseCluster.host(), HBaseCluster.port(), file.getName());
     }
 }

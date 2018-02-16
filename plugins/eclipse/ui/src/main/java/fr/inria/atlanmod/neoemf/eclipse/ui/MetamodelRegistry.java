@@ -1,268 +1,294 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.eclipse.ui;
 
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.commons.collect.MoreIterables;
+import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.commons.primitive.Strings;
+import fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.emf.ecore.util.BasicExtendedMetaData;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.emf.ecore.xmi.impl.EcoreResourceFactoryImpl;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Objects;
-import java.util.StringTokenizer;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public class MetamodelRegistry {
+/**
+ * A registry that manage metamodels.
+ * <p>
+ * The metamodels are added by using the {@link RegisterMetamodelAction} extension point on {@code *.ecore} files.
+ * <p>
+ * These metamodels are saved in the {@link NeoUIPlugin} store.
+ */
+public final class MetamodelRegistry {
 
+    /**
+     * The key used to indentify the saved metamodels in the store.
+     */
     private static final String STORE_KEY = "metamodels";
+
+    /**
+     * The delimiter used between each metamodels.
+     */
     private static final String STORE_DELIMITER = ";";
 
-    private final HashMap<String, List<EPackage>> managedMetamodels;
+    /**
+     * A map that holds all registered metamodels, identified by the name of the file where they can be found.
+     */
+    private final HashMap<String, Set<EPackage>> managedMetamodels = new HashMap<>();
 
+    /**
+     * Constructs a new {@code Registry}.
+     */
     private MetamodelRegistry() {
-        this.managedMetamodels = new HashMap<>();
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("ecore", new EcoreResourceFactoryImpl());
+        EPackage.Registry.INSTANCE.put(EcorePackage.eINSTANCE.getNsURI(), EcorePackage.eINSTANCE);
 
-        registerMetamodels();
-        initChangeListener();
-    }
-
-    public static MetamodelRegistry getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    private static void setDataTypesInstanceClasses(Resource metamodel) {
-        Iterable<EObject> allContents = metamodel::getAllContents;
-        for (EObject eObject : allContents) {
-            if (eObject instanceof EDataType) {
-                EDataType eDataType = (EDataType) eObject;
-                String instanceClass = "";
-
-                if (Objects.equals(eDataType.getName(), String.class.getSimpleName())) {
-                    instanceClass = String.class.getName();
-                }
-                else if (Objects.equals(eDataType.getName(), Boolean.class.getSimpleName())) {
-                    instanceClass = Boolean.class.getName();
-                }
-                else if (Objects.equals(eDataType.getName(), Integer.class.getSimpleName())) {
-                    instanceClass = Integer.class.getName();
-                }
-                else if (Objects.equals(eDataType.getName(), Float.class.getSimpleName())) {
-                    instanceClass = Float.class.getName();
-                }
-                else if (Objects.equals(eDataType.getName(), Double.class.getSimpleName())) {
-                    instanceClass = Double.class.getName();
-                }
-
-                if (!instanceClass.trim().isEmpty()) {
-                    eDataType.setInstanceClassName(instanceClass);
-                }
-            }
-        }
-    }
-
-    private void initChangeListener() {
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IResourceChangeListener listener = event -> {
-
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(event -> {
             if (event.getType() != IResourceChangeEvent.POST_CHANGE) {
                 return;
             }
 
-            IResourceDelta rootDelta = event.getDelta();
-
-            final ArrayList<IResourceDelta> changed = new ArrayList<>();
-            IResourceDeltaVisitor visitor = delta -> {
-                changed.add(delta);
-                return true;
-            };
+            Set<IResourceDelta> changed = new HashSet<>();
 
             try {
-                rootDelta.accept(visitor);
+                event.getDelta().accept(changed::add);
+
+                Set<String> metamodels = load();
+                changed.forEach(delta -> {
+                    String metamodel = delta.getResource().getFullPath().toOSString();
+
+                    if (metamodels.contains(metamodel)) {
+                        if (delta.getKind() == IResourceDelta.REMOVED) {
+                            unregister(metamodel);
+
+                            Optional.ofNullable(delta.getMovedToPath()).ifPresent(p -> register(p.toOSString()));
+                        }
+                        else {
+                            register(metamodel);
+                        }
+                    }
+                });
             }
             catch (CoreException e) {
-                NeoLogger.error(e);
+                Log.error(e);
             }
-
-            if (changed.isEmpty()) {
-                return;
-            }
-
-            for (IResourceDelta delta : changed) {
-                String metamodel = delta.getResource().getFullPath().toOSString();
-                List<String> metamodels = getMetamodels();
-                if (metamodels.contains(metamodel)) {
-                    if (delta.getKind() == IResourceDelta.REMOVED) {
-                        removeMetamodel(metamodel);
-                        if (delta.getMovedToPath() != null) {
-                            try {
-                                addMetamodel(delta.getMovedToPath().toOSString());
-                            }
-                            catch (Exception e) {
-                                NeoLogger.error(e);
-                            }
-                        }
-                    }
-                    else {
-                        try {
-                            registerMetamodel(metamodel);
-                        }
-                        catch (Exception e) {
-                            NeoLogger.error(e);
-                        }
-                    }
-                }
-            }
-        };
-        workspace.addResourceChangeListener(listener);
+        });
     }
 
-    public void addMetamodel(String fileName) throws Exception {
-        registerMetamodel(fileName);
-        List<String> metamodels = getMetamodels();
-        if (!metamodels.contains(fileName)) {
-            metamodels.add(fileName);
-            setMetamodels(metamodels);
+    /**
+     * Returns the instance of this class.
+     *
+     * @return the instance of this class
+     */
+    public static MetamodelRegistry getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    /**
+     * Adds all metamodels associated to the given {@code file}.
+     *
+     * @param file the file to register
+     *
+     * @see #register(String, boolean)
+     */
+    public void register(String file) {
+        register(file, true);
+    }
+
+    /**
+     * Removes all metamodels associated to the given {@code file}.
+     *
+     * @param file the file to unregister
+     */
+    public void unregister(String file) {
+        Optional.ofNullable(managedMetamodels.remove(file))
+                .ifPresent(ps -> ps.forEach(p -> EPackage.Registry.INSTANCE.remove(p.getNsURI())));
+
+        Set<String> metamodels = load();
+        if (metamodels.remove(file)) {
+            save(metamodels);
         }
     }
 
-    public void removeMetamodel(String fileName) {
-        List<EPackage> ePackages = managedMetamodels.get(fileName);
+    /**
+     * Loads all previously saved metamodels from the {@link NeoUIPlugin} store.
+     *
+     * @return the previously saved metamodels
+     *
+     * @see #save(Set)
+     */
+    private Set<String> load() {
+        String value = NeoUIPlugin.getDefault().getPreferenceStore().getString(STORE_KEY);
 
-        if (ePackages == null) {
+        Log.debug("Loaded from preferences: {0}", value);
+
+        return Arrays.stream(value.split(STORE_DELIMITER))
+                .filter(Objects::nonNull)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Saves the {@code metamodels} in the {@link NeoUIPlugin} store.
+     *
+     * @param metamodels the metamodels to save
+     *
+     * @see #load()
+     */
+    private void save(Set<String> metamodels) {
+        String value = metamodels.stream()
+                .filter(Objects::nonNull)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.joining(STORE_DELIMITER));
+
+        Log.debug("Saved into preferences:  {0}", value);
+
+        NeoUIPlugin.getDefault().getPreferenceStore().setValue(STORE_KEY, value);
+    }
+
+    /**
+     * Register all previously saved metamodels.
+     *
+     * @see #load()
+     * @see #register(String)
+     */
+    public void registerAll() {
+        load().forEach(this::register);
+    }
+
+    /**
+     * Register a metamodel from the given {@code file} to the {@link EPackage.Registry#INSTANCE}.
+     *
+     * @param file the file of the resource to register
+     * @param save {@code true} if the metamodel have to be saved after loading
+     *
+     * @see #register(URI, EPackage.Registry)
+     */
+    private void register(String file, boolean save) {
+        if (isNull(file) || file.isEmpty()) {
             return;
         }
 
-        for (EPackage ePackage : ePackages) {
-            EPackage.Registry.INSTANCE.remove(ePackage.getNsURI());
-        }
+        try {
+            URI uri = URI.createPlatformResourceURI(file, true);
+            Set<EPackage> packages = register(uri, EPackage.Registry.INSTANCE);
+            managedMetamodels.put(file, packages);
 
-        managedMetamodels.remove(fileName);
-        List<String> metamodels = getMetamodels();
-        metamodels.remove(fileName);
-        setMetamodels(metamodels);
-    }
+            Log.info("{0,number,#} EPackages registered from {1}", packages.size(), file);
 
-    private List<String> getMetamodels() {
-        List<String> metamodels = new ArrayList<>();
-        String value = NeoUIPlugin.getDefault().getPreferenceStore().getString(STORE_KEY);
-        StringTokenizer st = new StringTokenizer(value, STORE_DELIMITER);
-        while (st.hasMoreTokens()) {
-            metamodels.add(st.nextToken());
-        }
-        return metamodels;
-    }
-
-    private void setMetamodels(List<String> metamodels) {
-        StringBuilder sb = new StringBuilder();
-        Iterator<String> iterator = metamodels.listIterator();
-        while (iterator.hasNext()) {
-            sb.append(iterator.next());
-            if (iterator.hasNext()) {
-                sb.append(STORE_DELIMITER);
+            if (save) {
+                Set<String> metamodels = load();
+                if (metamodels.add(file)) {
+                    save(metamodels);
+                }
             }
         }
-        NeoUIPlugin.getDefault().getPreferenceStore().setValue(STORE_KEY, sb.toString());
-    }
+        catch (Exception e) {
+            Log.warn("Failed to register EPackages from {0}", file);
 
-    private void registerMetamodels() {
-        for (String metamodel : getMetamodels()) {
-            try {
-                registerMetamodel(metamodel);
-            }
-            catch (Exception e) {
-                NeoLogger.error(e);
-            }
+            // Clean the registry: the resource probably no longer exist
+            unregister(file);
         }
     }
 
-    private void registerMetamodel(String fileName) throws Exception {
-        List<EPackage> packages = registerMetamodel(URI.createPlatformResourceURI(fileName, true), EPackage.Registry.INSTANCE);
-        managedMetamodels.put(fileName, packages);
-    }
-
-    private List<EPackage> registerMetamodel(URI uri, EPackage.Registry registry) throws Exception {
-        List<EPackage> ePackages = new ArrayList<>();
-
-        final Map<String, Object> extensionToFactoryMap = Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap();
-        if (!extensionToFactoryMap.containsKey("*")) {
-            extensionToFactoryMap.put("*", new XMIResourceFactoryImpl());
-        }
-
+    /**
+     * Registers a metamodel from the {@code uri} to the given {@code registry}.
+     *
+     * @param uri      the {@link URI} of the resource to register
+     * @param registry the registry where to save the metamodel
+     *
+     * @return a immutable set of all registered metamodels
+     */
+    private Set<EPackage> register(URI uri, EPackage.Registry registry) throws IOException {
         ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getPackageRegistry().put(EcorePackage.eINSTANCE.getNsURI(), EcorePackage.eINSTANCE);
+        final ExtendedMetaData extendedMetaData = new BasicExtendedMetaData(registry);
+        resourceSet.getLoadOptions().put(XMLResource.OPTION_EXTENDED_META_DATA, extendedMetaData);
 
-        Resource metamodel = resourceSet.createResource(uri);
-        metamodel.load(Collections.emptyMap());
-        setDataTypesInstanceClasses(metamodel);
+        Resource resource = resourceSet.getResource(uri, true);
+        resource.load(Collections.emptyMap());
 
-        Iterable<EObject> allContents = metamodel::getAllContents;
-        for (EObject obj : allContents) {
-            if (obj instanceof EPackage) {
-                EPackage pkg = (EPackage) obj;
+        return MoreIterables.stream(resource::getAllContents)
+                .filter(EPackage.class::isInstance)
+                .map(EPackage.class::cast)
+                .map(this::fix)
+                .peek(p -> registry.put(p.getNsURI(), p))
+                .collect(Collectors.toSet());
+    }
 
-                if (isNull(pkg.getNsURI()) || pkg.getNsURI().trim().isEmpty()) {
-                    if (isNull(pkg.getESuperPackage())) {
-                        pkg.setNsURI(pkg.getName());
-                    }
-                    else {
-                        pkg.setNsURI(pkg.getESuperPackage().getNsURI() + "/" + pkg.getName());
-                    }
-                }
+    /**
+     * Adds the missing information in an incomplete {@link EPackage}.
+     *
+     * @param ePackage the package to fix
+     *
+     * @return the fixed {@code ePackage}
+     */
+    private EPackage fix(EPackage ePackage) {
+        String uri = ePackage.getNsURI();
+        String prefix = ePackage.getNsPrefix();
+        EPackage superEPackage = ePackage.getESuperPackage();
 
-                if ((isNull(pkg.getNsPrefix()) || pkg.getNsPrefix().trim().isEmpty()) && nonNull(pkg.getESuperPackage())) {
-                    if (nonNull(pkg.getESuperPackage().getNsPrefix())) {
-                        pkg.setNsPrefix(pkg.getESuperPackage().getNsPrefix() + "." + pkg.getName());
-                    }
-                    else {
-                        pkg.setNsPrefix(pkg.getName());
-                    }
-                }
-
-                if (isNull(pkg.getNsPrefix())) {
-                    pkg.setNsPrefix(pkg.getName());
-                }
-
-                registry.put(pkg.getNsURI(), pkg);
-                metamodel.setURI(URI.createURI(pkg.getNsURI()));
-                ePackages.add(pkg);
+        if (Strings.isNullOrEmpty(uri)) {
+            if (isNull(superEPackage)) {
+                ePackage.setNsURI(ePackage.getName());
+            }
+            else {
+                ePackage.setNsURI(superEPackage.getNsURI() + "/" + ePackage.getName());
             }
         }
 
-        return ePackages;
+        if (Strings.isNullOrEmpty(prefix) && nonNull(superEPackage)) {
+            if (nonNull(superEPackage.getNsPrefix())) {
+                ePackage.setNsPrefix(superEPackage.getNsPrefix() + "." + ePackage.getName());
+            }
+            else {
+                ePackage.setNsPrefix(ePackage.getName());
+            }
+        }
+
+        if (isNull(prefix)) {
+            ePackage.setNsPrefix(ePackage.getName());
+        }
+
+        return ePackage;
     }
 
+    /**
+     * The initialization-on-demand holder of the singleton of this class.
+     */
     private static final class Holder {
 
+        /**
+         * The instance of the outer class.
+         */
         private static final MetamodelRegistry INSTANCE = new MetamodelRegistry();
     }
 }

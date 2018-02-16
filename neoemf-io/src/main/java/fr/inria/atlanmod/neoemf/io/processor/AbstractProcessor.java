@@ -1,77 +1,71 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.structure.Attribute;
-import fr.inria.atlanmod.neoemf.io.structure.Element;
-import fr.inria.atlanmod.neoemf.io.structure.Reference;
+import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
+import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
-import javax.annotation.OverridingMethodsMustInvokeSuper;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Processor} that delegates all methods to its underlying processor.
+ * A abstract {@link Processor} that delegates all methods to an internal {@link Processor}.
+ *
+ * @param <H> the type of notified {@link fr.inria.atlanmod.neoemf.io.Handler}
  */
-public class AbstractProcessor extends AbstractNotifier<Handler> implements Processor {
+@ParametersAreNonnullByDefault
+public abstract class AbstractProcessor<H extends Handler> extends AbstractNotifier<H> implements Processor {
 
     /**
-     * Constructs a new {@code AbstractProcessor} with the given {@code handler}.
+     * Constructs a new {@code AbstractProcessor} with the given {@code handlers}.
      *
-     * @param handler the handler to notify
+     * @param handlers the handlers to notify
      */
-    public AbstractProcessor(Handler... handler) {
-        super(handler);
+    @SafeVarargs
+    public AbstractProcessor(H... handlers) {
+        super(handlers);
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleStartDocument() {
-        notifyStartDocument();
+    public void onInitialize() {
+        notifyInitialize();
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleStartElement(Element element) {
+    public void onStartElement(BasicElement element) {
         notifyStartElement(element);
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleAttribute(Attribute attribute) {
+    public void onAttribute(BasicAttribute attribute) {
         notifyAttribute(attribute);
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleReference(Reference reference) {
+    public void onReference(BasicReference reference) {
         notifyReference(reference);
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleEndElement() {
+    public void onCharacters(String characters) {
+        notifyCharacters(characters);
+    }
+
+    @Override
+    public void onEndElement() {
         notifyEndElement();
     }
 
     @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleEndDocument() {
-        notifyEndDocument();
-    }
-
-    @Override
-    @OverridingMethodsMustInvokeSuper
-    public void handleCharacters(String characters) {
-        notifyCharacters(characters);
+    public void onComplete() {
+        notifyComplete();
     }
 }

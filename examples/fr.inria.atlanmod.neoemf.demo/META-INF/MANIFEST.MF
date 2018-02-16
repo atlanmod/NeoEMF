@@ -2,23 +2,22 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Demo
 Bundle-SymbolicName: fr.inria.atlanmod.neoemf.demo
-Bundle-Version: 1.0.1.qualifier
+Bundle-Version: 1.0.3.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.xmi,
+ org.eclipse.emf.compare;bundle-version="3.1.2";resolution:=optional,
  org.eclipse.gmt.modisco.java;bundle-version="0.1.0",
  org.eclipse.ocl.ecore;bundle-version="3.3.100",
- fr.inria.atlanmod.neoemf.data.blueprints.core;bundle-version="1.0.1",
- fr.inria.atlanmod.neoemf.data.blueprints.neo4j;bundle-version="1.0.1",
- fr.inria.atlanmod.neoemf.data.mapdb;bundle-version="1.0.1",
- fr.inria.atlanmod.neoemf.data.hbase;bundle-version="1.0.1",
- fr.inria.atlanmod.neoemf.io;bundle-version="1.0.1",
- fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper;bundle-version="1.0.1",
- com.google.guava;bundle-version="15.0.0",
- org.eclipse.emf.compare;bundle-version="3.1.2";resolution:=optional,
- fr.inria.atlanmod.neoemf.core;bundle-version="1.0.1"
+ fr.inria.atlanmod.neoemf.core;bundle-version="1.0.3";visibility:=reexport,
+ fr.inria.atlanmod.neoemf.data.blueprints.core;bundle-version="1.0.3",
+ fr.inria.atlanmod.neoemf.data.blueprints.neo4j;bundle-version="1.0.3",
+ fr.inria.atlanmod.neoemf.data.mapdb;bundle-version="1.0.3",
+ fr.inria.atlanmod.neoemf.data.berkeleydb;bundle-version="1.0.3",
+ fr.inria.atlanmod.neoemf.data.hbase;bundle-version="1.0.3",
+ fr.inria.atlanmod.neoemf.io;bundle-version="1.0.3"
 Import-Package: org.eclipse.emf.ecore,
  org.eclipse.emf.common,
- org.eclipse.ocl.ecore,
  org.eclipse.ocl,
+ org.eclipse.ocl.ecore,
  org.eclipse.gmt.modisco.java

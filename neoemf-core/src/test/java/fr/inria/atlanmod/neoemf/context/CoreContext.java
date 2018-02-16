@@ -1,124 +1,70 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.context;
 
-import fr.inria.atlanmod.neoemf.data.AbstractPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
+import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.PersistenceURI;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
-import java.io.IOException;
 
-import static org.mockito.Mockito.mock;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A specific {@link Context} for the core.
  */
-public class CoreContext implements Context {
-
-    /**
-     * The name of this context.
-     */
-    public static final String NAME = "Core";
-
-    /**
-     * Constructs a new {@code CoreContext}.
-     */
-    protected CoreContext() {
-    }
+@ParametersAreNonnullByDefault
+public abstract class CoreContext extends AbstractContext {
 
     /**
      * Returns the instance of this class.
      *
      * @return the instance of this class.
      */
+    @Nonnull
     public static Context get() {
-        return Holder.INSTANCE;
+        return new CoreContext() {
+        };
     }
 
+    @Nonnull
     @Override
     public String name() {
-        return NAME;
+        return "Core";
     }
 
+    @Nonnull
     @Override
-    public String uriScheme() {
-        return "mock";
+    public BackendFactory factory() {
+        return InMemoryBackendFactory.getInstance();
     }
 
+    @Nonnull
     @Override
-    public URI createURI(URI uri) {
-        return PersistenceURI.createURI(uri);
-    }
-
-    @Override
-    public URI createFileURI(File file) {
-        return PersistenceURI.createFileURI(file, uriScheme());
+    public ImmutableConfig config() {
+        return InMemoryConfig.newConfig();
     }
 
     /**
      * {@inheritDoc}
      * <p>
-     * This {@code Context} doesn't support the {@link PersistentResource} creation.
+     * This {@code Context} doesn't support the {@link PersistentResource} loading.
      *
      * @throws UnsupportedOperationException every time
      */
+    @Nonnull
     @Override
-    public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This {@code Context} doesn't support the {@link PersistentResource} creation.
-     *
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public PersistenceBackendFactory persistenceBackendFactory() {
-        return mock(AbstractPersistenceBackendFactory.class);
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This {@code Context} doesn't have {@link DirectWriteStore} implementation.
-     *
-     * @throws UnsupportedOperationException every time
-     */
-    @Override
-    public Class<? extends DirectWriteStore> directWriteClass() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    private static class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        private static final Context INSTANCE = new CoreContext();
+    public PersistentResource loadResource(File file) {
+        throw new UnsupportedOperationException(
+                String.format("%s cannot load an existing resource", getClass().getSimpleName()));
     }
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-    <extension
-            point="org.eclipse.ui.editors">
-        <editor
-                class="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor"
+
+    <!-- Editor -->
+
+    <extension point="org.eclipse.ui.editors">
+        <editor class="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor"
                 contributorClass="org.eclipse.emf.ecore.presentation.EcoreActionBarContributor"
                 default="false"
                 icon="platform:/plugin/org.eclipse.emf.edit/icons/full/obj16/ModelFile.gif"
@@ -12,58 +13,43 @@
                 name="NeoEMF Editor">
         </editor>
     </extension>
-    <extension
-            point="org.eclipse.emf.importer.modelImporterDescriptors">
-        <modelImporterDescriptor
-                description="Create the Ecore model based on other Ecore or EMOF models"
-                extensions="ecore,emof"
-                icon="icons/full/obj16/model.gif"
-                id="fr.inria.atlanmod.neoemf.ui.modelImporterDescriptor"
-                name="Ecore model (NeoEMF Native)"
-                wizard="fr.inria.atlanmod.neoemf.eclipse.ui.wizard.NeoModelImporterWizard">
+
+    <!-- Model importer -->
+
+    <extension point="org.eclipse.emf.importer.modelImporterDescriptors">
+        <modelImporterDescriptor description="Create the Ecore model, based on other Ecore or EMOF models"
+                                 extensions="ecore,emof"
+                                 icon="icons/full/obj16/model.gif"
+                                 id="fr.inria.atlanmod.neoemf.ui.modelImporterDescriptor"
+                                 name="Ecore model (NeoEMF Native)"
+                                 wizard="fr.inria.atlanmod.neoemf.eclipse.ui.wizard.NeoModelImporterWizard">
         </modelImporterDescriptor>
     </extension>
-    <extension
-            point="org.eclipse.ui.menus">
-        <menuContribution
-                allPopups="false"
-                locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-            <menu
-                    icon="icons/full/obj16/neoemf.png"
-                    label="&amp;NeoEMF">
-                <command
-                        commandId="fr.inria.atlanmod.neoemf.eclipse.ui.migrate"
-                        style="push">
+
+    <!-- Menus -->
+
+    <extension point="org.eclipse.ui.menus">
+        <menuContribution allPopups="false" locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+            <menu icon="icons/full/obj16/neoemf.png" label="&amp;NeoEMF">
+                <command commandId="fr.inria.atlanmod.neoemf.eclipse.ui.migrate" style="push">
                     <visibleWhen>
-                        <with
-                                variable="activeMenuSelection">
-                            <iterate
-                                    ifEmpty="false">
-                                <adapt
-                                        type="org.eclipse.core.resources.IFile">
-                                    <test
-                                            property="org.eclipse.core.resources.extension"
-                                            value="genmodel">
-                                    </test>
+                        <with variable="activeMenuSelection">
+                            <iterate ifEmpty="false">
+                                <adapt type="org.eclipse.core.resources.IFile">
+                                    <test property="org.eclipse.core.resources.extension" value="genmodel" />
                                 </adapt>
                             </iterate>
                         </with>
                     </visibleWhen>
                 </command>
-                <command
-                        commandId="fr.inria.atlanmod.neoemf.eclipse.ui.openDB"
-                        style="push">
+
+                <command commandId="fr.inria.atlanmod.neoemf.eclipse.ui.openDB"
+                         style="push">
                     <visibleWhen>
-                        <with
-                                variable="activeMenuSelection">
-                            <iterate
-                                    ifEmpty="false">
-                                <adapt
-                                        type="org.eclipse.core.resources.IFolder">
-                                    <test
-                                            property="fr.inria.atlanmod.neoemf.eclipse.ui.isNeoEMFDB"
-                                            value="true">
-                                    </test>
+                        <with variable="activeMenuSelection">
+                            <iterate ifEmpty="false">
+                                <adapt type="org.eclipse.core.resources.IFolder">
+                                    <test property="fr.inria.atlanmod.neoemf.eclipse.ui.isNeoEMFDB" value="true" />
                                 </adapt>
                             </iterate>
                         </with>
@@ -71,77 +57,72 @@
                 </command>
             </menu>
         </menuContribution>
-        <menuContribution
-                allPopups="false"
-                locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-            <command
-                    commandId="fr.inria.atlanmod.neoemf.eclipse.ui.createDynamicInstance"
-                    style="push">
+
+        <menuContribution allPopups="false" locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+            <command commandId="fr.inria.atlanmod.neoemf.eclipse.ui.createDynamicInstance"
+                     style="push">
                 <visibleWhen>
-                    <with
-                            variable="activeMenuSelection">
-                        <iterate
-                                ifEmpty="false">
-                            <adapt
-                                    type="org.eclipse.emf.ecore.EClass">
-                            </adapt>
+                    <with variable="activeMenuSelection">
+                        <iterate ifEmpty="false">
+                            <adapt type="org.eclipse.emf.ecore.EClass" />
                         </iterate>
                     </with>
                 </visibleWhen>
             </command>
         </menuContribution>
     </extension>
-    <extension
-            point="org.eclipse.ui.commands">
-        <command
-                defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.MigrateCommand"
-                id="fr.inria.atlanmod.neoemf.eclipse.ui.migrate"
-                name="&amp;Migrate EMF Generator Model">
-        </command>
-        <command
-                defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.OpenBackendCommand"
-                id="fr.inria.atlanmod.neoemf.eclipse.ui.openDB"
-                name="&amp;Open Model Database">
-        </command>
-        <command
-                defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.CreateDynamicInstanceCommand"
-                id="fr.inria.atlanmod.neoemf.eclipse.ui.createDynamicInstance"
-                name="Create &amp;NeoEMF Dynamic Instance...">
-        </command>
-    </extension>
-    <extension
-            point="org.eclipse.core.expressions.propertyTesters">
-        <propertyTester
-                class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.IsNeoBackendTester"
-                id="fr.inria.atlanmod.neoemf.eclipse.ui.isNeoEMFDB"
-                namespace="fr.inria.atlanmod.neoemf.eclipse.ui"
-                properties="isNeoEMFDB"
-                type="org.eclipse.core.resources.IFolder">
-        </propertyTester>
-    </extension>
-    <extension
-            point="org.eclipse.ui.decorators">
-        <decorator
-                adaptable="true"
-                class="fr.inria.atlanmod.neoemf.eclipse.ui.decorator.NeoDecorator"
-                id="fr.inria.atlanmod.neoemf.ui.neoDBDecorator"
-                label="NeoEMF Database Folder Decorator"
-                objectClass="org.eclipse.core.resources.IFolder"
-                state="true">
-        </decorator>
-    </extension>
-    <extension
-            point="org.eclipse.ui.popupMenus">
-        <objectContribution
-                adaptable="false"
-                id="org.eclipse.ui.articles.action.contribution.popup.object"
-                nameFilter="*.ecore"
-                objectClass="org.eclipse.core.resources.IFile">
-            <action
-                    class="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
+
+    <!-- Actions / Commands -->
+
+    <extension point="org.eclipse.ui.popupMenus">
+        <objectContribution adaptable="false"
+                            id="org.eclipse.ui.articles.action.contribution.popup.object"
+                            nameFilter="*.ecore"
+                            objectClass="org.eclipse.core.resources.IFile">
+            <action class="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
                     icon="icons/full/obj16/register.png"
                     id="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
                     label="Register EPackages" />
+            <action class="fr.inria.atlanmod.neoemf.eclipse.ui.action.UnregisterMetamodelAction"
+                    icon="icons/full/obj16/register.png"
+                    id="fr.inria.atlanmod.neoemf.eclipse.ui.action.UnregisterMetamodelAction"
+                    label="Unregister EPackages" />
         </objectContribution>
     </extension>
+
+    <extension point="org.eclipse.ui.commands">
+        <command defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.MigrateCommand"
+                 id="fr.inria.atlanmod.neoemf.eclipse.ui.migrate"
+                 name="&amp;Migrate EMF Generator Model" />
+
+        <command defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.OpenBackendCommand"
+                 id="fr.inria.atlanmod.neoemf.eclipse.ui.openDB"
+                 name="&amp;Open Model Database" />
+
+        <command defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.CreateDynamicInstanceCommand"
+                 id="fr.inria.atlanmod.neoemf.eclipse.ui.createDynamicInstance"
+                 name="Create &amp;NeoEMF Dynamic Instance..." />
+    </extension>
+
+    <!-- Testers -->
+
+    <extension point="org.eclipse.core.expressions.propertyTesters">
+        <propertyTester class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.IsBackendTester"
+                        id="fr.inria.atlanmod.neoemf.eclipse.ui.isNeoEMFDB"
+                        namespace="fr.inria.atlanmod.neoemf.eclipse.ui"
+                        properties="isNeoEMFDB"
+                        type="org.eclipse.core.resources.IFolder" />
+    </extension>
+
+    <!-- Decorator -->
+
+    <extension point="org.eclipse.ui.decorators">
+        <decorator adaptable="true"
+                   class="fr.inria.atlanmod.neoemf.eclipse.ui.decorator.BackendDirectoryDecorator"
+                   id="fr.inria.atlanmod.neoemf.ui.neoDBDecorator"
+                   label="NeoEMF Database Decorator"
+                   objectClass="org.eclipse.core.resources.IFolder"
+                   state="true" />
+    </extension>
+
 </plugin>

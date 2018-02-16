@@ -1,28 +1,18 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
-import com.google.common.base.CaseFormat;
+import fr.inria.atlanmod.commons.Lazy;
+import fr.inria.atlanmod.commons.Throwables;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.Backend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.CdoBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoMapdbBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoNeo4jBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.NeoTinkerBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.XmiBackend;
-import fr.inria.atlanmod.neoemf.benchmarks.runner.Runner;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
@@ -30,68 +20,175 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
 import java.io.File;
-import java.util.Objects;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
+import static java.util.Objects.isNull;
 
 /**
- * This state contains all the benchmarks parameters, and provides a ready-to-use {@link Backend} and the preloaded
- * resource file. The datastore is not loaded.
+ * This state contains all the benchmarks parameters, and provides a ready-to-use {@link Adapter} and the preloaded
+ * resource file. <p> <p>Note:</p> It does not load the datastores.
  */
 @State(Scope.Thread)
 public class RunnerState {
 
-    protected static final Logger log = LogManager.getLogger();
+    /**
+     * The name of the default properties file containing {@link Adapter} instances definition.
+     */
+    @Nonnull
+    private static final String ADAPTERS_PROPERTIES = "adapters.properties";
 
-    private static final String CLASS_PREFIX = Backend.class.getPackage().getName() + ".";
-    private static final String CLASS_SUFFIX = Backend.class.getSimpleName();
+    // region JMH parameters
 
+    /**
+     * A map that holds all existing {@link Adapter} instances, identified by their name.
+     */
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    private final Lazy<Map<String, Class<? extends Adapter>>> adapters = Lazy.with(this::loadAdapters);
+
+    /**
+     * The name of the current {@link org.eclipse.emf.ecore.resource.Resource} file.
+     */
     @Param({
-            "fr.inria.atlanmod.kyanos.tests.xmi",
-            "fr.inria.atlanmod.neo4emf.neo4jresolver.xmi",
-            "org.eclipse.gmt.modisco.java.kyanos.xmi",
-            "org.eclipse.jdt.core.xmi",
-            "org.eclipse.jdt.source.all.xmi",
+            "set1",
+            "set2",
+            "set3",
     })
     protected String r;
 
+    /**
+     * The name of the current {@link Adapter}.
+     */
     @Param({
-            XmiBackend.NAME,
-            CdoBackend.NAME,
-            NeoMapdbBackend.NAME,
-            NeoTinkerBackend.NAME,
-            NeoNeo4jBackend.NAME,
+            "xmi",
+            "cdo",
+            "neo4j",
+            "berkeleydb-i",
+            "mapdb-i",
     })
-    protected String b;
+    protected String a;
 
-    private Backend backend;
+    /**
+     * The name of the current store chain.
+     */
+    @Param("A")
+    protected String o;
 
+    /**
+     * {@code "true"} if the direct import has to be used when creating or importing resources.
+     */
+    @Param("true")
+    protected String direct;
+
+    // endregion
+
+    /**
+     * The current {@link Adapter}.
+     */
+    private Adapter adapter;
+
+    /**
+     * The current {@link org.eclipse.emf.ecore.resource.Resource} file.
+     */
     private File resourceFile;
 
     /**
-     * Returns the current backend.
+     * {@code true} if the direct import has to be used when creating or importing resources.
      */
-    public Backend getBackend() throws Exception {
-        if (Objects.isNull(backend)) {
-            String className = CLASS_PREFIX + CaseFormat.LOWER_HYPHEN.to(CaseFormat.UPPER_CAMEL, b) + CLASS_SUFFIX;
-            backend = (Backend) Runner.class.getClassLoader().loadClass(className).newInstance();
-        }
-        return backend;
+    private boolean useDirectImport;
+
+    /**
+     * The options to use with the defined adapter.
+     */
+    private ImmutableConfig baseConfig;
+
+    // region Getters
+
+    /**
+     * Returns the current adapter.
+     */
+    @Nonnull
+    public Adapter adapter() {
+        return adapter;
     }
 
     /**
      * Returns the current resource file.
      */
-    public File getResourceFile() throws Exception {
+    @Nonnull
+    public File resourceFile() {
         return resourceFile;
     }
 
     /**
-     * Loads and creates the current resource file.
-     * <p/>
-     * This method is automatically called when setup the trial level.
+     * Returns {@code true} if the direct import has to be used when creating or importing resources.
+     */
+    public boolean useDirectImport() {
+        return useDirectImport;
+    }
+
+    /**
+     * Returns the options to use with the defined adapter.
+     */
+    @Nonnull
+    public ImmutableConfig baseConfig() {
+        return baseConfig;
+    }
+
+    // endregion
+
+    /**
+     * Initializes all defined arguments.
      */
     @Setup(Level.Trial)
-    public void initResource() throws Exception {
-        log.info("Initializing the resource");
-        resourceFile = getBackend().getOrCreateResource(r);
+    public void initArguments() throws IOException {
+        try {
+            Class<? extends Adapter> type = adapters.get().get(a);
+            if (isNull(type)) {
+                throw new IllegalArgumentException(String.format("No adapter named '%s' is registered", a));
+            }
+            adapter = type.newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e) {
+            throw Throwables.wrap(e, IllegalStateException.class);
+        }
+
+        baseConfig = ConfigParser.parse(o);
+        useDirectImport = Boolean.valueOf(direct);
+        resourceFile = adapter.getOrCreateResource(r);
+    }
+
+    /**
+     * Loads all known adapters from the properties file.
+     *
+     * @return the adapter mapping
+     */
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    private Map<String, Class<? extends Adapter>> loadAdapters() {
+        try (InputStream in = RunnerState.class.getResourceAsStream('/' + ADAPTERS_PROPERTIES)) {
+            Properties properties = new Properties();
+            properties.load(in);
+
+            return properties.stringPropertyNames()
+                    .stream()
+                    .collect(Collectors.toMap(n -> n, n -> {
+                        try {
+                            return (Class<? extends Adapter>) Class.forName(properties.getProperty(n));
+                        }
+                        catch (ClassNotFoundException e) {
+                            throw new IllegalArgumentException(e);
+                        }
+                    }));
+        }
+        catch (IOException e) {
+            throw Throwables.wrap(e, IllegalStateException.class);
+        }
     }
 }

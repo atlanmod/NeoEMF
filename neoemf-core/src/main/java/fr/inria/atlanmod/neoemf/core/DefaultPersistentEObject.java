@@ -1,62 +1,82 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackend;
-import fr.inria.atlanmod.neoemf.data.store.OwnedTransientStore;
-import fr.inria.atlanmod.neoemf.data.store.PersistentStore;
+import fr.inria.atlanmod.commons.Lazy;
+import fr.inria.atlanmod.commons.LazyReference;
+import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
+import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.core.internal.AllContentsIterator;
+import fr.inria.atlanmod.neoemf.core.internal.ContentsCopier;
+import fr.inria.atlanmod.neoemf.core.internal.ContentsList;
+import fr.inria.atlanmod.neoemf.core.internal.DirectStoreFeatureMap;
+import fr.inria.atlanmod.neoemf.core.internal.DirectStoreList;
+import fr.inria.atlanmod.neoemf.core.internal.DirectStoreMap;
+import fr.inria.atlanmod.neoemf.data.Backend;
+import fr.inria.atlanmod.neoemf.data.im.BoundInMemoryBackend;
+import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
+import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
+import fr.inria.atlanmod.neoemf.data.store.adapter.TransientStoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.NeoEContentsEList;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
-import org.eclipse.emf.common.util.BasicEMap;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
 import org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.Resource.Internal;
-import org.eclipse.emf.ecore.util.EcoreEMap;
+import org.eclipse.emf.ecore.util.FeatureMapUtil;
 
+import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkInstanceOf;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
  * The default implementation of a {@link PersistentEObject}.
  * <p>
- * This class extends {@link MinimalEStoreEObjectImpl} that delegates {@link EStructuralFeature} accesses
- * to an underlying {@link EStore} that interacts with the database used to store the model.
+ * This class extends {@link org.eclipse.emf.ecore.impl.MinimalEStoreEObjectImpl} that delegates {@link
+ * org.eclipse.emf.ecore.EStructuralFeature} accesses to an underlying {@link fr.inria.atlanmod.neoemf.data.store.Store}
+ * that interacts with the database used to store the model.
  * <p>
- * {@link DefaultPersistentEObject}s is backend-agnostic, and is as an EMF-level element wrapper in all
- * existing database implementations.
+ * {@code DefaultPersistentEObject}s are backend-agnostic, and are as an EMF-level element wrapper in all existing
+ * database implementations.
+ *
+ * @see TransientStoreAdapter
+ * @see BoundInMemoryBackend
+ * @see PersistenceFactory
  */
+@ParametersAreNonnullByDefault
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
     /**
-     * ???
+     * The {@link StoreAdapter} where this object is stored.
      */
-    private static final int UNSETTED_FEATURE_ID = -1;
+    @Nonnull
+    private final Lazy<StoreAdapter> lazyStore = Lazy.with(() -> getOrCreateStore(resource()));
+
+    /**
+     * The cached container of this object.
+     */
+    @Nonnull
+    private final LazyReference<PersistentEObject> lazyContainer = LazyReference.soft(() -> eStore().getContainer(this));
 
     /**
      * The identifier of this object.
@@ -67,35 +87,30 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     /**
      * The resource containing this object.
      */
+    @Nullable
     private Resource.Internal resource;
 
     /**
-     * Whether this object is mapped to an entity in a database.
-     */
-    private boolean isMapped;
-
-    /**
-     * The internal cached value of the eContainer.
+     * {@code true} if this object is being attached to a resource. This avoids an infinite loop when copying a fully
+     * transient backend to a persistent one.
      * <p>
-     * This information should be also maintained in the underlying {@link EStore}.
+     * When {@code true}, all calls to {@link #resource(Resource.Internal)} will be rejected.
+     *
+     * @see #resource(Resource.Internal)
      */
-    private InternalEObject eContainer;
+    private boolean locked;
 
     /**
-     * ???
+     * Constructs a new {@code DefaultPersistentEObject} with an undefined {@link Id}.
+     * <p>
+     * It does not generate the identifier: it will be generated on the first call to {@link #id()} if it was not
+     * previously defined with {@link #id(Id)}.
+     *
+     * @see Id#UNDEFINED
      */
-    private int eContainerFeatureId;
-
-    /**
-     * ???
-     */
-    private EStore store;
-
-    /**
-     * Constructs a new {@code DefaultPersistentEObject} with a generated {@link Id} using {@link StringId#generate()}.
-     */
+    @VisibleForTesting
     public DefaultPersistentEObject() {
-        this(StringId.generate());
+        this(Id.UNDEFINED);
     }
 
     /**
@@ -103,281 +118,241 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @param id the identifier of this object
      */
-    protected DefaultPersistentEObject(@Nonnull Id id) {
-        this.id = checkNotNull(id);
-        this.eContainerFeatureId = UNSETTED_FEATURE_ID;
-        this.isMapped = false;
+    @VisibleForTesting
+    public DefaultPersistentEObject(Id id) {
+        this.id = checkNotNull(id, "id");
     }
 
     @Nonnull
     @Override
     public Id id() {
+        if (id == Id.UNDEFINED) { // Id#UNDEFINED is immutable
+            id(Id.getProvider().generate());
+        }
         return id;
     }
 
     @Override
-    public void id(@Nonnull Id id) {
-        this.id = checkNotNull(id);
-    }
-
-    @Override
-    public boolean isMapped() {
-        return isMapped;
-    }
-
-    @Override
-    public void setMapped(boolean mapped) {
-        this.isMapped = mapped;
+    public void id(Id newId) {
+        this.id = checkNotNull(newId, "newId");
     }
 
     @Override
     @Nullable
-    public Internal resource() {
+    public Resource.Internal resource() {
         return resource;
     }
 
     @Override
-    public void resource(Internal resource) {
-        this.resource = resource;
-        EStore oldStore = store;
+    public void resource(@Nullable Resource.Internal newResource) {
+        if (locked || resource == newResource) {
+            return;
+        }
 
-        // Set the new EStore
-        if (resource instanceof PersistentResource) {
-            store = ((PersistentResource) resource).eStore();
+        locked = true;
+        resource = newResource;
+
+        // Refresh the container if necessary
+        if (lazyStore.isLoaded()) {
+            lazyContainer.get();
+        }
+
+        // Define and copy the store if necessary
+        StoreAdapter newStore = getOrCreateStore(newResource);
+        refreshStore(newStore);
+
+        locked = false;
+    }
+
+    @Override
+    protected void eBasicSetContainer(@Nullable InternalEObject newContainer, int newContainerFeatureID) {
+        if (nonNull(newContainer)) {
+            PersistentEObject container = PersistentEObject.from(newContainer);
+            EReference containmentFeature = eContainmentFeature(this, container, newContainerFeatureID);
+
+            lazyContainer.update(container);
+            eStore().updateContainment(this, containmentFeature, container);
+            resource(container.resource());
         }
         else {
-            store = new OwnedTransientStore(this);
-        }
-
-        // Move contents from oldStore to store
-        if (nonNull(oldStore) && nonNull(store) && store != oldStore) {
-            // If the new store is different, initialize the new store with the data stored in the old store
-            for (EStructuralFeature feature : eClass().getEAllStructuralFeatures()) {
-                if (oldStore.isSet(this, feature)) {
-                    if (!feature.isMany()) {
-                        Object value = getAdaptedValue(oldStore, feature, PersistentStore.NO_INDEX);
-                        if (nonNull(value)) {
-                            store.set(this, feature, PersistentStore.NO_INDEX, value);
-                        }
-                    }
-                    else {
-                        store.clear(this, feature);
-                        for (int i = 0; i < oldStore.size(this, feature); i++) {
-                            Object value = getAdaptedValue(oldStore, feature, i);
-                            if (nonNull(value)) {
-                                store.add(this, feature, i, value);
-                            }
-                        }
-                    }
-                }
-            }
+            lazyContainer.update(null);
+            eStore().removeContainment(this);
+            resource(null);
         }
     }
 
     @Override
-    public EObject eContainer() {
-        EObject container;
-        if (resource instanceof PersistentResource) {
-            /*
-             * If the resource is not distributed and if the value of the eContainer field
-             * is set it is not needed to get it from the backend.
-             * This is not true in a distributed context when another client can the database
-             * without notifying others.
-             */
-            if(!((PersistentResource) resource).isDistributed() && nonNull(eContainer)) {
-                container = eContainer;
-            }
-            else {
-                InternalEObject internalContainer = eStore().getContainer(this);
-                eBasicSetContainer(internalContainer);
-                eBasicSetContainerFeatureID(eContainerFeatureID());
-                container = internalContainer;
-            }
-        }
-        else {
-            container = super.eContainer();
-        }
-        return container;
+    public void eSetDirectResource(@Nullable Resource.Internal resource) {
+        resource(resource);
+
+        super.eSetDirectResource(resource);
+    }
+
+    @Nonnull
+    @Override
+    public EList<EObject> eContents() {
+        return ContentsList.newList(this);
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings("unchecked")
+    public TreeIterator<EObject> eAllContents() {
+        return TreeIterator.class.cast(new AllContentsIterator<>(this));
+    }
+
+    @Nullable
+    @Override
+    public Resource.Internal eInternalResource() {
+        return Optional.ofNullable(resource).orElseGet(super::eInternalResource);
     }
 
     @Override
-    public Resource eResource() {
-        return isNull(resource) ? super.eResource() : resource;
+    public void eSetStore(EStore store) {
+        checkNotNull(store, "store");
+        checkInstanceOf(store, StoreAdapter.class, "store must be instance of %d", StoreAdapter.class.getName());
+        refreshStore(StoreAdapter.class.cast(store));
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getClass().getName());
-        sb.append('@');
-        sb.append(Integer.toHexString(hashCode()));
+        StringBuilder sb = new StringBuilder();
+
+        // Display the identifier of this object instead of its hashCode
+        sb.append(getClass().getName()).append('#').append(id().toHexString());
 
         if (eIsProxy()) {
-            sb.append(" (eProxyURI: ");
-            sb.append(eProxyURI());
+            sb.append(" (eProxyURI: ").append(eProxyURI());
             if (nonNull(eDynamicClass())) {
-                sb.append(" eClass: ");
-                sb.append(eDynamicClass().getClass().getCanonicalName());
+                sb.append(" eClass: ").append(eDynamicClass());
             }
             sb.append(')');
         }
         else if (nonNull(eDynamicClass())) {
-            sb.append(" (eClass: ");
-            sb.append(eDynamicClass().getClass().getCanonicalName());
-            sb.append(')');
+            sb.append(" (eClass: ").append(eDynamicClass()).append(')');
         }
         else if (nonNull(eStaticClass())) {
-            sb.append(" (eClass: ");
-            sb.append(eStaticClass().getClass().getCanonicalName());
-            sb.append(')');
+            sb.append(" (eClass: ").append(eStaticClass()).append(')');
         }
+
         return sb.toString();
     }
-    
+
+    @Nonnull
     @Override
-    protected void eBasicSetContainer(InternalEObject eContainer) {
-        this.eContainer = eContainer;
-        if (nonNull(eContainer) && eContainer.eResource() != resource) {
-            resource((Resource.Internal) this.eContainer.eResource());
-        }
+    public StoreAdapter eStore() {
+        return lazyStore.get();
     }
 
-    @Override
-    protected void eBasicSetContainerFeatureID(int eContainerFeatureId) {
-        this.eContainerFeatureId = eContainerFeatureId;
-    }
-
-    @Override
-    public EList<EObject> eContents() {
-        return NeoEContentsEList.createNeoEContentsEList(this);
-    }
-
-    /**
-     * ???
-     *
-     * @param store   ???
-     * @param feature ???
-     * @param index   ???
-     *
-     * @return ???
-     */
-    private Object getAdaptedValue(EStore store, EStructuralFeature feature, int index) {
-        Object value = store.get(this, feature, index);
-        if (nonNull(value)) {
-            if (feature instanceof EReference) {
-                EReference eRef = (EReference) feature;
-                if (eRef.isContainment()) {
-                    PersistentEObject internalElement = PersistentEObject.from(value);
-                    if (internalElement.resource() != resource()) {
-                        internalElement.resource(resource());
-                    }
-                }
-            }
-        }
-        return value;
-    }
-
-    @Override
-    public EStore eStore() {
-        if (isNull(store)) {
-            store = new OwnedTransientStore(this);
-        }
-        return store;
-    }
-
-    @Override
-    protected boolean eIsCaching() {
-        return false;
-    }
-
+    @Nullable
     @Override
     public Object dynamicGet(int dynamicFeatureId) {
-        Object value;
-        final EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
-        final EClassifier eType = feature.getEType();
+        EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
+
+        if (FeatureMapUtil.isFeatureMap(feature)) {
+            return new DirectStoreFeatureMap(this, feature);
+        }
+
         if (feature.isMany()) {
-            if (Objects.equals(eType.getInstanceClassName(), java.util.Map.Entry.class.getName())) {
-                value = new EStoreEcoreEMap(eType, feature);
+            if (Objects.equals(feature.getEType().getInstanceClassName(), java.util.Map.Entry.class.getName())) {
+                return new DirectStoreMap<>(this, feature);
             }
             else {
-                value = new EStoreEcoreEList(feature);
+                return new DirectStoreList<>(this, feature);
             }
         }
-        else {
-            value = eStore().get(this, feature, PersistentStore.NO_INDEX);
-        }
-        return value;
+
+        return eStore().get(this, feature, EStore.NO_INDEX);
     }
 
     @Override
     public void dynamicSet(int dynamicFeatureId, Object value) {
         EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
-        if (feature.isMany()) {
-            /*
-             * TODO This operation should be atomic.
-		     * Reset the old value in case the operation fails in the middle
-		     */
-            eStore().unset(this, feature);
-            @SuppressWarnings("rawtypes")
-            EList collection = (EList) value;
-            for (int index = 0; index < collection.size(); index++) {
-                eStore().set(this, feature, index, collection.get(index));
-            }
+
+        if (!feature.isMany()) {
+            eStore().set(this, feature, EStore.NO_INDEX, value);
         }
         else {
-            eStore().set(this, feature, PersistentStore.NO_INDEX, value);
+            eStore().setAll(this, feature, (Collection<?>) value);
         }
     }
 
     @Override
     public void dynamicUnset(int dynamicFeatureId) {
         EStructuralFeature feature = eDynamicFeature(dynamicFeatureId);
+
         eStore().unset(this, feature);
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Returns the container of this {@link PersistentEObject}.
-     * <p>
-     * Do not return the same value as standard EMF implementation if the container has not been accessed with the
-     * public method {@link #eContainer()} before.
-     *
-     * @return the container of this object.
-     */
     @Override
-    public InternalEObject eInternalContainer() {
-        /*
-         * Don't load the container from the store here: it creates an important
-         * overhead and performance loss. 
-         * [Update 21-02-2017] don't call super.eInternalContainer() either: it 
-         * will delegate to the store.
-         */
-        return eContainer;
-//        return isNull(eContainer) ? super.eInternalContainer() : eContainer;
+    public PersistentEObject eInternalContainer() {
+        return lazyContainer.get();
     }
 
-    @Override
-    public int eContainerFeatureID() {
-        if (eContainerFeatureId == UNSETTED_FEATURE_ID && resource instanceof PersistentResource) {
-            EReference containingFeature = (EReference) eStore().getContainingFeature(this);
-            if (nonNull(containingFeature)) {
-                EReference oppositeFeature = containingFeature.getEOpposite();
-                if (nonNull(oppositeFeature)) {
-                    eBasicSetContainerFeatureID(eClass().getFeatureID(oppositeFeature));
+    /**
+     * Retrieves or creates a new store bound to this object.
+     *
+     * @param resource the resource to attach the store
+     *
+     * @return a new store
+     *
+     * @see #resource(Resource.Internal)
+     * @see #eStore()
+     */
+    @Nonnull
+    private StoreAdapter getOrCreateStore(@Nullable Resource.Internal resource) {
+        // Use the store of the resource
+        if (PersistentResource.class.isInstance(resource)) {
+            return PersistentResource.class.cast(resource).eStore();
+        }
+        // Adapt the current store
+        else if (lazyStore.isLoaded()) {
+            StoreAdapter currentStore = lazyStore.get();
+            currentStore.resource(resource);
+            return currentStore;
+        }
+        // Create a new transient store
+        else {
+            ImmutableConfig config = BaseConfig.newConfig();
+
+            Backend backend = new BoundInMemoryBackend(id());
+            Store baseStore = StoreFactory.getInstance().createStore(backend, config);
+            return new TransientStoreAdapter(baseStore, resource);
+        }
+    }
+
+    /**
+     * Defines the new store of this object, and copies the content from the existing store if necessary.
+     *
+     * @param newStore the store of this object
+     *
+     * @see #resource()
+     */
+    private void refreshStore(StoreAdapter newStore) {
+        checkNotNull(newStore, "newStore");
+
+        if (lazyStore.isLoaded()) {
+            StoreAdapter currentStore = lazyStore.get();
+
+            if (!Objects.equals(currentStore.store().backend(), newStore.store().backend())) {
+                // Copy if the resource is not being unloaded
+                if (nonNull(resource)) {
+                    new ContentsCopier(this).copy(currentStore, newStore);
                 }
-                else {
-                    eBasicSetContainerFeatureID(
-                            InternalEObject.EOPPOSITE_FEATURE_BASE
-                                    - eInternalContainer().eClass().getFeatureID(containingFeature));
+
+                // If the resource is persistent, it will close its store
+                if (!PersistentResource.isPersistent(currentStore.resource())) {
+                    currentStore.close();
                 }
             }
         }
-        return eContainerFeatureId;
+
+        lazyStore.update(newStore);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id());
     }
 
     @Override
@@ -385,149 +360,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         if (this == o) {
             return true;
         }
-        if (isNull(o) || getClass() != o.getClass()) {
+        if (!PersistentEObject.class.isInstance(o)) {
             return false;
         }
-        PersistentEObject other = (PersistentEObject) o;
-        return Objects.equals(id, other.id());
-    }
 
-    /**
-     * ???
-     */
-    private class EStoreEcoreEMap extends EcoreEMap<Object, Object> {
-
-        @SuppressWarnings("JavaDoc")
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * Constructs a {@code EStoreEcoreEMap} with the given {@code type} and {@code feature}.
-         *
-         * @param type    ???
-         * @param feature ???
-         */
-        public EStoreEcoreEMap(EClassifier type, EStructuralFeature feature) {
-            super((EClass) type, BasicEMap.Entry.class, null);
-            delegateEList = new EntryBasicEStoreEList(feature);
-            size = delegateEList.size();
-        }
-
-        /**
-         * ???
-         */
-        private class EntryBasicEStoreEList extends EStoreEObjectImpl.BasicEStoreEList<Entry<Object, Object>> {
-
-            @SuppressWarnings("JavaDoc")
-            private static final long serialVersionUID = 1L;
-
-            /**
-             * Constructs a new {@code EntryBasicEStoreEList} with the given {@code feature}. This
-             * {@link PersistentEObject} is defined as the owner of this list.
-             *
-             * @param feature ???
-             */
-            public EntryBasicEStoreEList(EStructuralFeature feature) {
-                super(DefaultPersistentEObject.this, feature);
-            }
-
-            @Override
-            protected void didSet(int index, Entry<Object, Object> newObject, Entry<Object, Object> oldObject) {
-                didRemove(index, oldObject);
-                didAdd(index, newObject);
-            }
-
-            @Override
-            protected void didAdd(int index, Entry<Object, Object> newObject) {
-                doPut(newObject);
-            }
-
-            @Override
-            protected void didRemove(int index, Entry<Object, Object> oldObject) {
-                EStoreEcoreEMap.this.doRemove(oldObject);
-            }
-
-            @Override
-            protected void didClear(int size, Object[] oldObjects) {
-                EStoreEcoreEMap.this.doClear();
-            }
-
-            @Override
-            protected void didMove(int index, Entry<Object, Object> movedObject, int oldIndex) {
-                EStoreEcoreEMap.this.doMove(movedObject);
-            }
-        }
-    }
-
-    /**
-     * ???
-     */
-    private class EStoreEcoreEList extends EStoreEObjectImpl.BasicEStoreEList<Object> {
-
-        @SuppressWarnings("JavaDoc")
-        private static final long serialVersionUID = 1L;
-
-        /**
-         * Constructs a new {@code EStoreEcoreEList} with the given {@code feature}. This {@link PersistentEObject} is
-         * defined as the owner of this list.
-         *
-         * @param feature ???
-         */
-        public EStoreEcoreEList(EStructuralFeature feature) {
-            super(DefaultPersistentEObject.this, feature);
-        }
-
-        @Override
-        public boolean contains(Object object) {
-            return delegateContains(object);
-        }
-        
-        /**
-         * {@inheritDoc}
-         * <p>
-         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject, EStructuralFeature, int)}
-         * by delegating the call to the {@link EStore#toArray(InternalEObject, EStructuralFeature)} implementation.
-         */
-        @Override
-        public Object[] toArray() {
-            return eStore().toArray(owner, getEStructuralFeature());
-        };
-        
-        /**
-         * {@inheritDoc}
-         * <p>
-         * Overrides the default implementation which relies on {@link #size()} and {@link EStore#get(InternalEObject, EStructuralFeature, int)}
-         * by delegating the call to the {@link EStore#toArray(InternalEObject, EStructuralFeature, Object[])} implementation.
-         */
-        @Override
-        public <T extends Object> T[] toArray(T[] array) {
-            return eStore().toArray(owner, getEStructuralFeature(), array);
-        };
-
-        /**
-         * {@inheritDoc}
-         * <p>
-         * Overrides the default implementation which relies on {@link #size()} to compute the insertion index by
-         * providing a custom {@link PersistentStore#NO_INDEX} features, meaning that the {@link PersistenceBackend} has
-         * to append the result to the existing list.
-         * <p>
-         * This behavior allows fast write operation on {@link PersistenceBackend} which would otherwise need to
-         * deserialize the underlying list to add the element at the specified index.
-         */
-        @Override
-        public boolean add(Object object) {
-            if (isUnique() && contains(object)) {
-                return false;
-            }
-            else {
-                if (eStructuralFeature instanceof EAttribute) {
-                    addUnique(object);
-                }
-                else {
-                    int index = size() == 0 ? 0 : PersistentStore.NO_INDEX;
-                    addUnique(index, object);
-                }
-                return true;
-            }
-        }
+        PersistentEObject that = PersistentEObject.class.cast(o);
+        return Objects.equals(id(), that.id());
     }
 }

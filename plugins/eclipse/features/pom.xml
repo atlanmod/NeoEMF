@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -26,7 +24,6 @@
         <!-- Graph-based implementation -->
         <module>fr.inria.atlanmod.neoemf.data.blueprints.core.feature</module>
         <module>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</module>
-        <module>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature</module>
 
         <!-- Map-based implementation -->
         <module>fr.inria.atlanmod.neoemf.data.mapdb.feature</module>
@@ -34,9 +31,6 @@
 
         <!-- Column-based implementation -->
         <module>fr.inria.atlanmod.neoemf.data.hbase.feature</module>
-
-        <!-- Utils -->
-        <module>fr.inria.atlanmod.neoemf.io.feature</module>
     </modules>
 
 </project>

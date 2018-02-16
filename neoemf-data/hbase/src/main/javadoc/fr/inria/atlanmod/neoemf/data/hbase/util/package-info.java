@@ -1,30 +1,25 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 /**
- * Provides utility classes to create HBase specific URIs, serialize and deserialize HBase records, and manage HBase
- * resource life-cycle.
+ * Provides utility classes related to HBase.
  * <p>
- * This package defines the {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI} class, that extends {@link
- * fr.inria.atlanmod.neoemf.util.PersistenceURI} to create HBase specific URIs. {@link
- * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI}s are convenience wrappers of EMF {@link
- * org.eclipse.emf.common.util.URI}s that set a dedicated protocol that is parsed by NeoEMF to create the appropriate
- * database.
+ * This package defines the {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri} class, that extends {@link
+ * fr.inria.atlanmod.neoemf.util.UriBuilder} to create HBase specific URIs. {@link
+ * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri}s are convenience wrappers of EMF URIs that set a dedicated
+ * protocol that is parsed by NeoEMF to create the appropriate database.
  * <p>
- * {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI}s are created using the following code. The {@link
- * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI} allows to easily set the address and port of the remote HBase
+ * {@link fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri}s are created using the following code. The {@link
+ * fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri} allows to easily set the address and port of the remote HBase
  * server that contains a model.
  * <pre>{@code
  * // Create a HBase URI referencing the HBase server running on localhost:1234 and containing the resource myModel
- * URI hbaseURI = HBaseURI.createHierarchicalURI("localhost", "1234", "myModel");
+ * URI hbaseURI = HBaseUri.createHierarchicalURI("localhost", "1234", "myModel");
  *
  * // The created URI can be used as a regular EMF URI to create a NeoEMF resource
  * Resource neoEMFResource = resourceSet.createResource(hbaseURI);

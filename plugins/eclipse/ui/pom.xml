@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -18,6 +16,7 @@
     <description>Eclipse UI integration plugin.</description>
 
     <dependencies>
+
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-core</artifactId>
@@ -25,27 +24,10 @@
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-data-blueprints-core</artifactId>
-            <version>${project.version}</version>
+            <groupId>fr.inria.atlanmod.commons</groupId>
+            <artifactId>commons-core</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-data-mapdb</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-data-berkeleydb</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-configuration</groupId>
-            <artifactId>commons-configuration</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

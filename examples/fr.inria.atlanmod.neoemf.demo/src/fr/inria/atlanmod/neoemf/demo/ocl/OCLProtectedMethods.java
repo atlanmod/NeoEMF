@@ -1,28 +1,23 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.demo.ocl;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.data.hbase.HBasePersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseURI;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbPersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
+import fr.inria.atlanmod.commons.Stopwatch;
+import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
+import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -36,8 +31,6 @@ import org.eclipse.ocl.ecore.OCL;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,43 +43,41 @@ import java.util.List;
 public class OCLProtectedMethods {
 
     public static void main(String[] args) throws IOException {
-        PersistenceBackendFactoryRegistry.register(BlueprintsURI.SCHEME, BlueprintsPersistenceBackendFactory.getInstance());
-        PersistenceBackendFactoryRegistry.register(MapDbURI.SCHEME, MapDbPersistenceBackendFactory.getInstance());
-        PersistenceBackendFactoryRegistry.register(HBaseURI.SCHEME, HBasePersistenceBackendFactory.getInstance());
-
-        ResourceSet rSet = new ResourceSetImpl();
-
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
-        rSet.getResourceFactoryRegistry().getProtocolToFactoryMap().put(HBaseURI.SCHEME, PersistentResourceFactory.getInstance());
+        ResourceSet resourceSet = new ResourceSetImpl();
 
         JavaPackage.eINSTANCE.eClass();
 
-        Instant start, end;
-
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(BlueprintsURI.createFileURI(new File("models/sample.graphdb")))) {
-            resource.load(Collections.emptyMap());
-            start = Instant.now();
+        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(BlueprintsUri.builder().fromFile("models/sample.graphdb"))) {
+            resource.load(BlueprintsNeo4jConfig.newConfig().toMap());
+            Stopwatch stopwatch = Stopwatch.createStarted();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
-            end = Instant.now();
-            NeoLogger.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+            stopwatch.stop();
+            Log.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), stopwatch.elapsed().getSeconds());
         }
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(MapDbURI.createFileURI(new File("models/sample.mapdb")))) {
-            resource.load(Collections.emptyMap());
-            start = Instant.now();
+        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(MapDbUri.builder().fromFile("models/sample.mapdb"))) {
+            resource.load(MapDbConfig.newConfig().withIndices().toMap());
+            Stopwatch stopwatch = Stopwatch.createStarted();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
-            end = Instant.now();
-            NeoLogger.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+            stopwatch.stop();
+            Log.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), stopwatch.elapsed().getSeconds());
         }
 
-        try (PersistentResource resource = (PersistentResource) rSet.createResource(HBaseURI.createHierarchicalURI("localhost", "2181", URI.createURI("sample.hbase")))) {
-            resource.load(Collections.emptyMap());
-            start = Instant.now();
+        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(BerkeleyDbUri.builder().fromFile("models/sample.berkeleydb"))) {
+            resource.load(BerkeleyDbConfig.newConfig().withIndices().toMap());
+            Stopwatch stopwatch = Stopwatch.createStarted();
             List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
-            end = Instant.now();
-            NeoLogger.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), Duration.between(start, end).getSeconds());
+            stopwatch.stop();
+            Log.info("[ProtectedMethods - BerkeleyDB] Done, found {0} elements in {1} seconds", result.size(), stopwatch.elapsed().getSeconds());
         }
+
+//        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase"))) {
+//            resource.load(HBaseConfig.newConfig().toMap());
+//            Stopwatch stopwatch = Stopwatch.createStarted();
+//            List<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
+//            stopwatch.stop();
+//            Log.info("[ProtectedMethods - HBase] Done, found {0} elements in {1} seconds", result.size(), stopwatch.elapsed().getSeconds());
+//        }
     }
 
     @SuppressWarnings("unchecked")
@@ -98,7 +89,7 @@ public class OCLProtectedMethods {
             return (List<MethodDeclaration>) ocl.createQuery(constraints.get(0)).evaluate(resource.getContents().get(0));
         }
         catch (Exception e) {
-            NeoLogger.error(e);
+            Log.error(e);
             return Collections.emptyList();
         }
     }

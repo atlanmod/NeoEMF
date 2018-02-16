@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 
-<!--
--->
-
 <plugin>
-
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated graph -->
       <package
             uri="http://atlanmod.neoemf.tutorial"
-            class="graph.GraphPackage"/>
+            class="graph.GraphPackage"
+            genModel="model/graph.genmodel"/>
    </extension>
-
 </plugin>

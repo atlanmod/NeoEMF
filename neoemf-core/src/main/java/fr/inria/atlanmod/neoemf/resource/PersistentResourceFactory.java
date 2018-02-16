@@ -1,29 +1,31 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.resource;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactoryRegistry;
+import fr.inria.atlanmod.commons.annotation.Singleton;
+import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * The factory that creates {@link PersistentResource}s.
+ * The factory that creates {@link PersistentResource} instances.
  */
+@Singleton
+@ParametersAreNonnullByDefault
 public class PersistentResourceFactory implements Resource.Factory {
 
     /**
@@ -45,27 +47,27 @@ public class PersistentResourceFactory implements Resource.Factory {
     /**
      * {@inheritDoc}
      * <p>
-     * The {@code uri} must be registered in the {@link PersistenceBackendFactoryRegistry}.
+     * The {@code uri} must be registered in the {@link BackendFactoryRegistry}.
      */
-    @Nullable
+    @Nonnull
     @Override
-    public Resource createResource(@Nonnull URI uri) {
-        checkNotNull(uri);
-        Resource resource = null;
-        if (PersistenceBackendFactoryRegistry.isRegistered(uri.scheme())) {
-            resource = new DefaultPersistentResource(uri);
-        }
-        return resource;
+    public PersistentResource createResource(URI uri) {
+        checkNotNull(uri, "uri");
+        checkArgument(BackendFactoryRegistry.getInstance().isRegistered(uri.scheme()),
+                "Unregistered scheme (%s)", uri.scheme());
+
+        return new DefaultPersistentResource(uri);
     }
 
     /**
      * The initialization-on-demand holder of the singleton of this class.
      */
-    private static class Holder {
+    @Static
+    private static final class Holder {
 
         /**
          * The instance of the outer class.
          */
-        private static final PersistentResourceFactory INSTANCE = new PersistentResourceFactory();
+        static final PersistentResourceFactory INSTANCE = new PersistentResourceFactory();
     }
 }

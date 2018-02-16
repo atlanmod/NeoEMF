@@ -1,109 +1,151 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.context;
 
-import fr.inria.atlanmod.neoemf.data.PersistenceBackendFactory;
-import fr.inria.atlanmod.neoemf.data.store.DirectWriteStore;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.PersistenceURI;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 
 import java.io.File;
 import java.io.IOException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A utility class representing a test-case context.
  * <p>
  * All methods are a proxy to their associated method; they do not provide new functionalities.
  */
+@ParametersAreNonnullByDefault
 public interface Context {
 
     /**
-     * Returns the name of this {@code Context}.
+     * Checks whether this context is ready for testing.
      *
-     * @return the name of this context
+     * @return {@code true} if the context is initialized, {@code false} if the {@link
+     * fr.inria.atlanmod.neoemf.data.Backend} failed to initialize.
      */
+    default boolean isInitialized() {
+        // By default: a context is always ready
+        return true;
+    }
+
+    /**
+     * Initializes this context if necessary.
+     *
+     * @implNote Should never throws an exception
+     */
+    default Context init() {
+        return this;
+    }
+
+    /**
+     * Returns the name of this context.
+     *
+     * @return the name
+     */
+    @Nonnull
     String name();
 
     /**
-     * Returns the {@link URI} scheme used by this {@code Context}.
+     * Returns the {@link BackendFactory} used by this context.
+     *
+     * @return the factory
+     */
+    @Nonnull
+    BackendFactory factory();
+
+    /**
+     * Returns the base configuration used by this context.
+     *
+     * @return a new configuration
+     */
+    @Nonnull
+    ImmutableConfig config();
+
+    /**
+     * Returns the {@link URI} scheme used by this context.
      *
      * @return the {@link URI} scheme
-     *
-     * @see PersistenceURI#scheme()
      */
+    @Nonnull
     String uriScheme();
 
     /**
-     * Creates a new {@link URI} from the given {@code uri}, according to this {@code Context}.
+     * Creates a new {@link URI} from the given {@code uri}, according to this context.
      *
      * @param uri the base {@link URI}
      *
      * @return the created {@link URI}
-     *
-     * @see PersistenceURI#createURI(URI)
      */
-    URI createURI(URI uri);
+    @Nonnull
+    URI createUri(URI uri);
 
     /**
-     * Creates a new {@link URI} from the given {@code file}, according to this {@code Context}.
+     * Creates a new {@link URI} from the given {@code file}, according to this context.
      *
      * @param file the {@link File} to build a {@link URI} from
      *
      * @return the created {@link URI}
-     *
-     * @see PersistenceURI#createFileURI(File, String)
      */
-    URI createFileURI(File file);
+    @Nonnull
+    URI createUri(File file);
 
     /**
      * Creates a new persistent resource from the given {@code ePackage} on the given {@code file}.
      *
-     * @param ePackage the {@link EPackage} associated to the resource
      * @param file the file from which to load/save data
      *
      * @return a new {@link PersistentResource}
-     * @throws IOException if an I/O error occurs
      *
-     * @see ResourceBuilder
+     * @see ContextualResourceBuilder
      */
-    PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException;
+    @Nonnull
+    PersistentResource createPersistentResource(File file) throws IOException;
 
     /**
      * Creates a new transient resource from the given {@code ePackage} on the given {@code file}.
      *
-     * @param ePackage the {@link EPackage} associated to the resource
      * @param file the file from which to load/save data
      *
      * @return a new {@link PersistentResource}
-     * @throws IOException if an I/O error occurs
      *
-     * @see ResourceBuilder
+     * @see ContextualResourceBuilder
      */
-    PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException;
+    @Nonnull
+    PersistentResource createTransientResource(File file) throws IOException;
 
     /**
-     * Returns the {@link PersistenceBackendFactory} used by this {@code Context}
+     * Loads an existing resource from the given {@code file}.
      *
-     * @return the {@link PersistenceBackendFactory}
+     * @param file the file from which to load/save data
+     *
+     * @return a new {@link PersistentResource}
+     *
+     * @see ContextualResourceBuilder
      */
-    PersistenceBackendFactory persistenceBackendFactory();
+    @Nonnull
+    PersistentResource loadResource(File file) throws IOException;
 
     /**
-     * Returns the {@link Class} representing the {@link DirectWriteStore} implementation used in this {@code Context}.
+     * Creates a new {@link DataMapper} on the given {@code uri}.
      *
-     * @return the {@link DirectWriteStore} sub-class
+     * @param file the URI of the backend
+     *
+     * @return a new {@link DataMapper}
+     *
+     * @see ContextualResourceBuilder
      */
-    Class<? extends DirectWriteStore> directWriteClass();
+    @Nonnull
+    DataMapper createMapper(File file);
 }

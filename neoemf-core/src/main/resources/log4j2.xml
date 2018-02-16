@@ -1,24 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" shutdownHook="disable">
     <Appenders>
+
+        <!-- The default console appender -->
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout
-                    pattern="%-7level{WARN=[WARN], DEBUG=[DEBUG], ERROR=[ERROR], TRACE=[TRACE], INFO=[INFO]} %d{ABSOLUTE} - %msg%n%ex{full}" />
+                    pattern="%-7level{TRACE=[TRACE], DEBUG=[DEBUG], INFO=[INFO], WARN=[WARN], ERROR=[ERROR], FATAL=[FATAL]} %d{ABSOLUTE} - %msg%n%ex{full}" />
         </Console>
+
+        <!-- A console appender without timestamp and exception details -->
         <Console name="ConsoleTest" target="SYSTEM_OUT">
             <PatternLayout
-                    pattern="%msg%n" />
+                    pattern="%-7level{TRACE=[TRACE], DEBUG=[DEBUG], INFO=[INFO], WARN=[WARN], ERROR=[ERROR], FATAL=[FATAL]} %msg%n" />
         </Console>
+
     </Appenders>
+
     <Loggers>
+
+        <!-- Global -->
+
         <Root level="INFO">
             <AppenderRef ref="Console" />
         </Root>
-        <Logger name="org.apache.commons" level="OFF" additivity="false">
-            <AppenderRef ref="Console" />
-        </Logger>
+
+        <!-- Logger for testing -->
         <Logger name="test" level="ALL" additivity="false">
             <AppenderRef ref="ConsoleTest" />
         </Logger>
+
+        <!-- Reflections -->
+
+        <Logger name="org.reflections" level="ERROR" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <!-- Neo4j -->
+
+        <Logger name="org.neo4j" level="ERROR" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <!-- Apache & Hadoop/HBase -->
+
+        <Logger name="org.apache" level="ERROR" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <Logger name="org.mortbay" level="ERROR" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <!-- HBase specific loggers -->
+
+        <Logger name="SecurityLogger" level="ERROR" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <Logger name="BlockStateChange" level="ERROR" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <Logger name="NameNodeMetricsLog" level="ERROR" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
+        <Logger name="DataNodeMetricsLog" level="ERROR" additivity="false">
+            <AppenderRef ref="Console" />
+        </Logger>
+
     </Loggers>
 </Configuration>

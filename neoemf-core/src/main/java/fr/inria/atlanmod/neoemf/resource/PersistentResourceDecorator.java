@@ -1,15 +1,15 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.resource;
+
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notification;
@@ -19,7 +19,6 @@ import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject.EStore;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.IOException;
@@ -27,16 +26,24 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+import javax.annotation.OverridingMethodsMustInvokeSuper;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+
 /**
  * A {@link PersistentResource} wrapper that delegates all method calls to the decorated resource.
  * <p>
  * This class can be extended by external tools to add behavior to an existing {@link PersistentResource}.
  */
+@ParametersAreNonnullByDefault
 public class PersistentResourceDecorator implements PersistentResource {
 
     /**
      * The underlying resource.
      */
+    @Nonnull
     protected final PersistentResource resource;
 
     /**
@@ -45,182 +52,223 @@ public class PersistentResourceDecorator implements PersistentResource {
      * @param resource the underlying resource
      */
     public PersistentResourceDecorator(PersistentResource resource) {
-        this.resource = resource;
+        this.resource = checkNotNull(resource, "resource");
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public ResourceSet getResourceSet() {
         return resource.getResourceSet();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public URI getURI() {
         return resource.getURI();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void setURI(URI uri) {
         resource.setURI(uri);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public long getTimeStamp() {
         return resource.getTimeStamp();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void setTimeStamp(long timeStamp) {
         resource.setTimeStamp(timeStamp);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public EList<EObject> getContents() {
         return resource.getContents();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public TreeIterator<EObject> getAllContents() {
         return resource.getAllContents();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public String getURIFragment(EObject eObject) {
         return resource.getURIFragment(eObject);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public EObject getEObject(String uriFragment) {
         return resource.getEObject(uriFragment);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void save(Map<?, ?> options) throws IOException {
         resource.save(options);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void load(Map<?, ?> options) throws IOException {
         resource.load(options);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void save(OutputStream outputStream, Map<?, ?> options) throws IOException {
-        resource.save(options);
+        resource.save(outputStream, options);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void load(InputStream inputStream, Map<?, ?> options) throws IOException {
-        resource.load(options);
+        resource.load(inputStream, options);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public boolean isTrackingModification() {
         return resource.isTrackingModification();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void setTrackingModification(boolean isTrackingModification) {
         resource.setTrackingModification(isTrackingModification);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public boolean isModified() {
         return resource.isModified();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void setModified(boolean isModified) {
         resource.setModified(isModified);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public boolean isLoaded() {
         return resource.isLoaded();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void unload() {
         resource.unload();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void delete(Map<?, ?> options) throws IOException {
         resource.delete(options);
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public EList<Diagnostic> getErrors() {
         return resource.getErrors();
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public EList<Diagnostic> getWarnings() {
         return resource.getWarnings();
     }
 
     @Override
-    public EList<Adapter> eAdapters() {
-        return resource.eAdapters();
-    }
-
-    @Override
-    public boolean eDeliver() {
-        return resource.eDeliver();
-    }
-
-    @Override
-    public void eSetDeliver(boolean deliver) {
-        resource.eSetDeliver(deliver);
-    }
-
-    @Override
-    public void eNotify(Notification notification) {
-        resource.eNotify(notification);
-    }
-
-    @Override
-    public void attached(EObject eObject) {
-        resource.attached(eObject);
-    }
-
-    @Override
-    public void detached(EObject eObject) {
-        resource.detached(eObject);
-    }
-
-    @Override
-    public NotificationChain basicSetResourceSet(ResourceSet resourceSet, NotificationChain notifications) {
-        return resource.basicSetResourceSet(resourceSet, notifications);
-    }
-
-    @Override
-    public boolean isLoading() {
-        return resource.isLoading();
-    }
-
-    @Override
+    @OverridingMethodsMustInvokeSuper
     public final void close() {
         resource.close();
     }
 
     @Override
-    public EStore eStore() {
+    public void save(ImmutableConfig config) throws IOException {
+        resource.save(config);
+    }
+
+    @Override
+    public void load(ImmutableConfig config) throws IOException {
+        resource.load(config);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <T extends EObject> Iterable<T> allInstancesOf(EClass eClass) {
+        return resource.allInstancesOf(eClass);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public <T extends EObject> Iterable<T> allInstancesOf(EClass eClass, boolean strict) {
+        return resource.allInstancesOf(eClass, strict);
+    }
+
+    @Nonnull
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public StoreAdapter eStore() {
         return resource.eStore();
     }
-    
+
     @Override
-    public boolean isDistributed() {
-        return resource.isDistributed();
+    @OverridingMethodsMustInvokeSuper
+    public EList<Adapter> eAdapters() {
+        return resource.eAdapters();
     }
 
     @Override
-    public EList<EObject> getAllInstances(EClass eClass) {
-        return resource.getAllInstances(eClass);
+    @OverridingMethodsMustInvokeSuper
+    public boolean eDeliver() {
+        return resource.eDeliver();
     }
 
     @Override
-    public EList<EObject> getAllInstances(EClass eClass, boolean strict) {
-        return resource.getAllInstances(eClass, strict);
+    @OverridingMethodsMustInvokeSuper
+    public void eSetDeliver(boolean deliver) {
+        resource.eSetDeliver(deliver);
     }
 
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void eNotify(Notification notification) {
+        resource.eNotify(notification);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void attached(EObject eObject) {
+        resource.attached(eObject);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public void detached(EObject eObject) {
+        resource.detached(eObject);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public NotificationChain basicSetResourceSet(ResourceSet resourceSet, NotificationChain notifications) {
+        return resource.basicSetResourceSet(resourceSet, notifications);
+    }
+
+    @Override
+    @OverridingMethodsMustInvokeSuper
+    public boolean isLoading() {
+        return resource.isLoading();
+    }
 }

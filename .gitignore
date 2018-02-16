@@ -63,8 +63,8 @@
 
 **/.idea/
 **/*.iml
-**/*.iws
 **/*.eml
+**/*.iws
 
 ### NetBeans
 
@@ -125,3 +125,5 @@
 
 **/*.log
 **/java-gen
+
+.keystore

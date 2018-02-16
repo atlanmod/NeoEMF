@@ -1,25 +1,32 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.commons.annotation.Singleton;
+import fr.inria.atlanmod.commons.annotation.Static;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The factory that creates {@link PersistentEObject}s from {@link EClass}es.
+ * The factory that creates {@link PersistentEObject} instances from {@link org.eclipse.emf.ecore.EClass}es.
  */
+@Singleton
+@ParametersAreNonnullByDefault
 public class PersistenceFactory extends EFactoryImpl implements EFactory {
 
     /**
@@ -38,21 +45,48 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
         return Holder.INSTANCE;
     }
 
+    @Nonnull
     @Override
     public PersistentEObject create(EClass eClass) {
-        DefaultPersistentEObject object = new DefaultPersistentEObject();
-        object.eSetClass(eClass);
-        return object;
+        return create(eClass, Id.getProvider().generate());
+    }
+
+    /**
+     * Creates a new instance of the class and returns it.
+     *
+     * @param eClass the class of the new instance
+     * @param id     the identifier of the new instance
+     *
+     * @return a new instance of the class
+     */
+    @Nonnull
+    public PersistentEObject create(EClass eClass, Id id) {
+        PersistentEObject newObject;
+
+        if (eClass.getEPackage().getClass() == EPackageImpl.class) {
+            newObject = new DefaultPersistentEObject(id);
+        }
+        else {
+            newObject = PersistentEObject.from(EcoreUtil.create(eClass));
+            newObject.id(id);
+        }
+
+        if (!Objects.equals(newObject.eClass(), eClass)) {
+            newObject.eSetClass(eClass);
+        }
+
+        return newObject;
     }
 
     /**
      * The initialization-on-demand holder of the singleton of this class.
      */
-    private static class Holder {
+    @Static
+    private static final class Holder {
 
         /**
          * The instance of the outer class.
          */
-        private static final PersistenceFactory INSTANCE = new PersistenceFactory();
+        static final PersistenceFactory INSTANCE = new PersistenceFactory();
     }
 }

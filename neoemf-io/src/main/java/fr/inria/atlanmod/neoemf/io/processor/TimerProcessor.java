@@ -1,30 +1,31 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import com.google.common.base.Stopwatch;
-
+import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An {@link Processor} that measures elapsed time between the start and the end of an I/O process.
+ * A {@link Processor} that measures elapsed time between the start and the end of an I/O process.
  */
-public class TimerProcessor extends AbstractProcessor {
+@ParametersAreNonnullByDefault
+public class TimerProcessor extends AbstractProcessor<Handler> {
 
     /**
-     * The stopwatch.
+     * The start instant.
      */
-    private Stopwatch stopWatch;
+    @Nonnull
+    private final Stopwatch stopwatch = Stopwatch.createUnstarted();
 
     /**
      * Constructs a new {@code TimerProcessor} with the given {@code handler}.
@@ -36,17 +37,18 @@ public class TimerProcessor extends AbstractProcessor {
     }
 
     @Override
-    public void handleStartDocument() {
-        NeoLogger.info("Document analysis in progress...");
-        stopWatch = Stopwatch.createStarted();
+    public void onInitialize() {
+        Log.info("Migration in progress...");
+        stopwatch.start();
 
-        super.handleStartDocument();
+        notifyInitialize();
     }
 
     @Override
-    public void handleEndDocument() {
-        NeoLogger.info("Document analysis done in {0}", stopWatch.stop());
+    public void onComplete() {
+        stopwatch.stop();
+        Log.info("Migration done in {0}", stopwatch.elapsed());
 
-        super.handleEndDocument();
+        notifyComplete();
     }
 }

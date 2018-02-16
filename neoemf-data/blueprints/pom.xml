@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -13,18 +13,16 @@
     <packaging>pom</packaging>
 
     <name>NeoEMF Data Blueprints</name>
-    <description>
-        Parent project for database implementations of the core component.
-    </description>
+    <description>Parent project for Blueprints-based extensions of the core component.</description>
 
     <modules>
         <module>core</module>
         <module>neo4j</module>
-        <module>neo4j-wrapper</module>
     </modules>
 
     <properties>
         <blueprints.version>2.6.0</blueprints.version>
+        <commons-configuration.version>1.10</commons-configuration.version>
     </properties>
 
 </project>

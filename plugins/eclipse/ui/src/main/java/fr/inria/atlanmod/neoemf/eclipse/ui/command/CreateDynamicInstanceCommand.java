@@ -1,16 +1,14 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.eclipse.ui.wizard.DynamicModelWizard;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -26,66 +24,74 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ui.ISelectionService;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import static java.util.Objects.isNull;
+import java.util.Optional;
+
 import static java.util.Objects.nonNull;
 
 /**
- * Create a dynamic instance of an {@link EClass}.
+ * A {@link org.eclipse.core.commands.IHandler} that creates dynamic instances of {@link EClass}es.
  */
 public class CreateDynamicInstanceCommand extends AbstractHandler {
 
-    private static final URI PLATFORM_RESOURCE = URI.createPlatformResourceURI("/", false);
-
-    private EClass eClass;
+    /**
+     * The current class instance.
+     */
+    private EClass currentClass;
 
     @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException {
+    public Object execute(ExecutionEvent event) {
+        currentClass(event);
 
-        initializeEClass(event);
+        URI uri = currentClass.eResource().getURI();
 
-        URI uri = eClass.eResource().getURI();
         IStructuredSelection selection = StructuredSelection.EMPTY;
-        if (nonNull(uri) && uri.isHierarchical()) {
-            if (uri.isRelative() || (uri = uri.deresolve(PLATFORM_RESOURCE)).isRelative()) {
-                IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri.toString()));
-                if (file.exists()) {
-                    selection = new StructuredSelection(file);
-                }
+
+        if (nonNull(uri) && uri.isHierarchical() && (uri.isRelative() || (uri = uri.deresolve(URI.createPlatformResourceURI("/", false))).isRelative())) {
+            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri.toString()));
+            if (file.exists()) {
+                selection = new StructuredSelection(file);
             }
         }
 
-        // Register the EClass EPackage if it is not registered yet
-        if (isNull(EPackage.Registry.INSTANCE.getEPackage(eClass.getEPackage().getNsURI()))) {
-            EPackage.Registry.INSTANCE.put(eClass.getEPackage().getNsURI(), eClass.getEPackage());
-        }
+        EPackage.Registry.INSTANCE.putIfAbsent(
+                currentClass.getEPackage().getNsURI(),
+                currentClass.getEPackage());
 
-        DynamicModelWizard dynamicModelWizard = new DynamicModelWizard(eClass);
-        dynamicModelWizard.init(PlatformUI.getWorkbench(), selection);
+        DynamicModelWizard wizard = new DynamicModelWizard(currentClass);
+        wizard.init(PlatformUI.getWorkbench(), selection);
 
-        WizardDialog wizardDialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), dynamicModelWizard);
-        wizardDialog.open();
+        new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard).open();
 
         return null;
     }
 
-    private void initializeEClass(ExecutionEvent event) throws ExecutionException {
-        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-        ISelectionService service = window.getSelectionService();
-        ISelection selection = service.getSelection();
-        if (selection instanceof IStructuredSelection) {
-            Object object = ((IStructuredSelection) selection).getFirstElement();
-            if (object instanceof EClass) {
-                eClass = (EClass) object;
-                setEnabled(!eClass.isAbstract());
-                return;
-            }
+    /**
+     * Initialize the current {@link EClass}.
+     *
+     * @param event the fired event to retrieve the class
+     */
+    private void currentClass(ExecutionEvent event) {
+        try {
+            ISelection selection = HandlerUtil.getActiveWorkbenchWindowChecked(event)
+                    .getSelectionService()
+                    .getSelection();
+
+            Optional<EClass> newClass = Optional.ofNullable(selection)
+                    .filter(IStructuredSelection.class::isInstance)
+                    .map(IStructuredSelection.class::cast)
+                    .map(IStructuredSelection::getFirstElement)
+                    .filter(EClass.class::isInstance)
+                    .map(EClass.class::cast);
+
+            currentClass = newClass.orElse(null);
+            setEnabled(newClass.isPresent() && !currentClass.isAbstract());
         }
-        eClass = null;
-        setEnabled(false);
+        catch (ExecutionException e) {
+            Log.error(e);
+            currentClass = null;
+        }
     }
 }

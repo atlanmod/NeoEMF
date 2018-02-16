@@ -1,32 +1,30 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2017 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
-import fr.inria.atlanmod.neoemf.data.berkeleydb.option.BerkeleyDbOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbURI;
-import fr.inria.atlanmod.neoemf.data.blueprints.option.BlueprintsOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsURI;
-import fr.inria.atlanmod.neoemf.data.mapdb.option.MapDbOptionsBuilder;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbURI;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
-import fr.inria.atlanmod.neoemf.util.logging.NeoLogger;
+import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.Config;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
+import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.presentation.EcoreEditor;
 import org.eclipse.emf.ecore.presentation.EcoreEditorPlugin;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.emf.edit.ui.util.EditUIUtil;
+import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -34,101 +32,72 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Tree;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
 
+/**
+ * An {@link EcoreEditor} that allows modifications on a {@link fr.inria.atlanmod.neoemf.data.Backend}.
+ */
 public class NeoEditor extends EcoreEditor {
 
+    /**
+     * The identifier of the {@code NeoEditor}.
+     */
     public static final String EDITOR_ID = NeoEditor.class.getName();
-
-    public NeoEditor() {
-        super();
-        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(BlueprintsURI.SCHEME, PersistentResourceFactory.getInstance());
-        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(MapDbURI.SCHEME, PersistentResourceFactory.getInstance());
-        this.editingDomain.getResourceSet().getResourceFactoryRegistry().getProtocolToFactoryMap().put(BerkeleyDbURI.SCHEME, PersistentResourceFactory.getInstance());
-    }
 
     @Override
     public void createModel() {
-        URI resourceURI = EditUIUtil.getURI(getEditorInput());
-        Resource resource = editingDomain.getResourceSet().createResource(resourceURI);
-        editingDomain.getResourceSet().eAdapters().add(problemIndicationAdapter);
-
-        // Create the store options depending of the backend
-        Map<String, Object> options;
-        String scheme = resource.getURI().scheme();
-        if (Objects.equals(scheme, BlueprintsURI.SCHEME)) {
-            options = BlueprintsOptionsBuilder.newBuilder()
-//                  .log()
-                    .directWriteCacheMany()
-                    .asMap();
-        }
-        else if (Objects.equals(scheme, MapDbURI.SCHEME)) {
-            options = MapDbOptionsBuilder.newBuilder()
-//                  .log()
-                    .directWriteCacheMany()
-                    .asMap();
-        }
-        else if (Objects.equals(scheme, BerkeleyDbURI.SCHEME)) {
-            options = BerkeleyDbOptionsBuilder.newBuilder()
-//                  .log()
-                    .directWriteCacheMany()
-                    .asMap();
-        }
-        else {
-            options = Collections.emptyMap();
-        }
-
         try {
-            resource.load(options);
+            URI uri = EditUIUtil.getURI(getEditorInput());
+            String uriScheme = uri.scheme();
+
+            uri = UriBuilder.forScheme(uriScheme).fromUri(uri);
+
+            ResourceSet resourceSet = getEditingDomain().getResourceSet();
+            resourceSet.eAdapters().add(problemIndicationAdapter);
+
+            Resource resource = resourceSet.createResource(uri);
+
+            // Create a default configuration: the exact instance will be create when loading the existing configuration
+            ImmutableConfig config = Config.forScheme(uriScheme)
+                    .cacheContainers()
+                    .cacheMetaClasses()
+//                    .log()
+                    .autoSave();
+
+            resource.load(config.toMap());
         }
-        catch (IOException e) {
-            NeoLogger.error(e, "Unable to create model for the editor");
-            for (Resource r : editingDomain.getResourceSet().getResources()) {
-                NeoLogger.info(resource.getURI().toString());
-                if (r instanceof PersistentResource) {
-                    PersistentResource persistentResource = (PersistentResource) r;
-                    persistentResource.close();
-                }
-                else {
-                    r.unload();
-                }
-            }
+        catch (Exception e) {
+            Log.error(e, "Unable to create model");
+            closeAll();
+            throw new IllegalStateException(e);
         }
     }
 
     @Override
-    public void createPages()
-    {
+    public void createPages() {
         Instant begin = Instant.now();
         createModel();
 
         // Only creates the other pages if there is something that can be edited
         if (!getEditingDomain().getResourceSet().getResources().isEmpty()) {
+
             // Create a page for the selection tree view.
             Tree tree = new Tree(getContainer(), SWT.VIRTUAL | SWT.FULL_SELECTION);
-//	        Tree tree = new Tree(getContainer(), SWT.VIRTUAL | SWT.MULTI);
+
             selectionViewer = new TreeViewer(tree);
+            {
+                selectionViewer.setContentProvider(new LazyAdapterFactoryContentProvider(adapterFactory));
+                selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+                selectionViewer.setUseHashlookup(true);
+                selectionViewer.setInput(editingDomain.getResourceSet());
+            }
             setCurrentViewer(selectionViewer);
-
-//	        selectionViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-            selectionViewer.setContentProvider(new LazyAdapterFactoryContentProvider(adapterFactory));
-//	        selectionViewer.setLabelProvider(new DecoratingColumLabelProvider(new AdapterFactoryLabelProvider(adapterFactory), new DiagnosticDecorator(editingDomain, selectionViewer, EcoreEditorPlugin.getPlugin().getDialogSettings())));
-            selectionViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
-            selectionViewer.setUseHashlookup(true);
-            selectionViewer.setInput(editingDomain.getResourceSet());
-//	        selectionViewer.setSelection(new StructuredSelection(editingDomain.getResourceSet().getResources().get(0)), true);
-
-//	        new AdapterFactoryTreeEditor(selectionViewer.getTree(), adapterFactory);
-//	        new ColumnViewerInformationControlToolTipSupport(selectionViewer, new DiagnosticDecorator.EditingDomainLocationListener(editingDomain, selectionViewer));
-
             createContextMenuFor(selectionViewer);
-            int pageIndex = addPage(tree);
-            setPageText(pageIndex, EcoreEditorPlugin.INSTANCE.getString("_UI_SelectionPage_label"));
+
+            setPageText(addPage(tree), EcoreEditorPlugin.INSTANCE.getString("_UI_SelectionPage_label"));
 
             getSite().getShell().getDisplay().asyncExec(() -> setActivePage(0));
         }
@@ -151,7 +120,7 @@ public class NeoEditor extends EcoreEditor {
 
         Instant end = Instant.now();
 
-        NeoLogger.info("NeoEMF Editor Opened in {0}", Duration.between(begin, end));
+        Log.debug("NeoEMF editor opened in {0}", Duration.between(begin, end));
     }
 
     @Override
@@ -159,24 +128,102 @@ public class NeoEditor extends EcoreEditor {
         try {
             super.setSelection(selection);
         }
-        catch (NoSuchMethodError e) {
-            NeoLogger.warn("Captured a NoSuchMethod error when changing the selection." +
-                    "Please check this is not related to Dynamic EMF, which is not supported for now in the editor.");
+        // FIXME See issue #52
+        catch (UnsupportedOperationException e) {
+            Log.warn(e.getMessage());
         }
     }
 
     @Override
     public void dispose() {
-        NeoLogger.info("Disposing NeoEditor");
+        Log.debug("Disposing NeoEMF editor");
 
-        for (Resource resource : editingDomain.getResourceSet().getResources()) {
-            if (resource instanceof PersistentResource) {
-                ((PersistentResource) resource).close();
-            }
-            else {
-                resource.unload();
-            }
-        }
+        closeAll();
         super.dispose();
+    }
+
+    /**
+     * Closes all opened resources.
+     */
+    private void closeAll() {
+        getEditingDomain().getResourceSet().getResources().forEach(Resource::unload);
+    }
+
+    /**
+     *
+     */
+    private static class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProvider implements ILazyTreeContentProvider {
+
+        /**
+         * Constructs a new {@code LazyAdapterFactoryContentProvider} on the {@code factory}.
+         *
+         * @param factory the delegated factory
+         */
+        public LazyAdapterFactoryContentProvider(AdapterFactory factory) {
+            super(factory);
+        }
+
+        @Override
+        public void updateElement(Object parent, int index) {
+            childOf(parent, index).ifPresent(c -> {
+                TreeViewer treeViewer = TreeViewer.class.cast(viewer);
+                treeViewer.replace(parent, index, c);
+                sizeOf(c).ifPresent(s -> treeViewer.setChildCount(c, s));
+            });
+        }
+
+        @Override
+        public void updateChildCount(Object element, int currentChildCount) {
+            sizeOf(element).ifPresent(s -> TreeViewer.class.cast(viewer).setChildCount(element, s));
+        }
+
+        /**
+         * Returns the size of the given {@code element}.
+         *
+         * @param element the object to calculate the size
+         *
+         * @return an {@link OptionalInt} containing the size, of {@link OptionalInt#empty()} if the {@code element} is
+         * not supported
+         */
+        private OptionalInt sizeOf(Object element) {
+            if (ResourceSet.class.isInstance(element)) {
+                return OptionalInt.of(ResourceSet.class.cast(element).getResources().size());
+            }
+
+            if (Resource.class.isInstance(element)) {
+                return OptionalInt.of(Resource.class.cast(element).getContents().size());
+            }
+
+            if (EObject.class.isInstance(element)) {
+                return OptionalInt.of(EObject.class.cast(element).eContents().size());
+            }
+
+            return OptionalInt.empty();
+        }
+
+        /**
+         * Retrieves the child from the {@code parent} object at the given {@code index}.
+         *
+         * @param parent the parent of the child to look for
+         * @param index  the index of the child to look for in its {@code parent}
+         *
+         * @return an {@link Optional} containing the child, or {@link Optional#empty()} if the child cannot be
+         * retrieved
+         */
+        private Optional<Object> childOf(Object parent, int index) {
+            if (ResourceSet.class.isInstance(parent)) {
+                return Optional.of(ResourceSet.class.cast(parent).getResources().get(index));
+            }
+
+            if (Resource.class.isInstance(parent)) {
+                return Optional.of(Resource.class.cast(parent).getContents().get(index));
+            }
+
+            if (EObject.class.isInstance(parent)) {
+                return Optional.of(EObject.class.cast(parent).eContents().get(index));
+            }
+
+            return Optional.empty();
+        }
     }
 }

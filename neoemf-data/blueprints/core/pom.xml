@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -14,145 +14,82 @@
 
     <name>NeoEMF Data Blueprints Core</name>
     <description>
-        Generic Blueprints implementation of the core component.
+        Blueprints extension of the core component.
         It can be extended with Blueprints connectors to handle several graph databases.
     </description>
 
     <dependencies>
+
+        <!-- Database -->
+
         <dependency>
             <groupId>com.tinkerpop.blueprints</groupId>
             <artifactId>blueprints-core</artifactId>
         </dependency>
-
-        <!-- Cache -->
-
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
-
-        <!-- Common -->
 
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <!-- EMF -->
-
-        <dependency>
-            <groupId>org.eclipse.emf</groupId>
-            <artifactId>org.eclipse.emf.common</artifactId>
-        </dependency>
+        <!-- Test -->
 
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore</artifactId>
-        </dependency>
-
-        <!-- Test -->
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-        </dependency>
-
-        <!-- Internal -->
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-io</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-core</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- Database -->
+
             <dependency>
                 <groupId>com.tinkerpop.blueprints</groupId>
                 <artifactId>blueprints-core</artifactId>
                 <version>${blueprints.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>commons-configuration</groupId>
+                <artifactId>commons-configuration</artifactId>
+                <version>${commons-configuration.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>
-                            ${project.groupId}.data.blueprints.core
-                        </Bundle-SymbolicName>
-                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Bundle-SymbolicName>${project.groupId}.data.blueprints.core</Bundle-SymbolicName>
+                        <DynamicImport-Package>
+                            com.tinkerpop.blueprints.impls.*;version="${blueprints.version}",
+                            *
+                        </DynamicImport-Package>
                         <Export-Package>
+                            !fr.inria.atlanmod.neoemf.data.blueprints.*.internal.*,
                             fr.inria.atlanmod.neoemf.data.blueprints.*
                         </Export-Package>
                         <_exportcontents>
-                            com.tinkerpop.blueprints,
-                            com.tinkerpop.blueprints.util,
-                            com.tinkerpop.blueprints.util.wrappers,
-                            com.tinkerpop.blueprints.util.wrappers.id,
-
-                            org.apache.commons.configuration,
-                            org.apache.commons.configuration.beanutils,
-                            org.apache.commons.configuration.event,
-                            org.apache.commons.configuration.interpol,
-                            org.apache.commons.configuration.reloading,
-                            org.apache.commons.configuration.resolver,
-                            org.apache.commons.configuration.tree,
-
-                            org.apache.commons.lang.exception,
-                            org.apache.commons.lang.text,
-
-                            org.apache.commons.logging,
+                            com.tinkerpop.blueprints;version="${blueprints.version}",
+                            org.apache.commons.configuration;version="${commons-configuration.version}"
                         </_exportcontents>
                         <Require-Bundle>
                             ${project.groupId}.core
                         </Require-Bundle>
-                        <Bundle-Activator>
-                            fr.inria.atlanmod.neoemf.data.blueprints.Activator
-                        </Bundle-Activator>
-                        <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                     </instructions>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

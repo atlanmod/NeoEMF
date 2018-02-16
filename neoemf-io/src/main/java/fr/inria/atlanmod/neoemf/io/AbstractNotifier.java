@@ -1,21 +1,18 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.io;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import javax.annotation.Nonnull;
+
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link Notifier} that provides overall behavior for the management of handlers.
@@ -27,7 +24,8 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
     /**
      * The handlers to notify.
      */
-    private Set<H> handlers;
+    @Nonnull
+    private final Iterable<H> handlers;
 
     /**
      * Constructs a new {@code AbstractNotifier} with the given {@code handlers}.
@@ -36,11 +34,12 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
      */
     @SafeVarargs
     public AbstractNotifier(H... handlers) {
-        checkNotNull(handlers);
+        checkNotNull(handlers, "handlers");
 
-        this.handlers = new HashSet<>(Arrays.asList(handlers));
+        this.handlers = Arrays.asList(handlers);
     }
 
+    @Nonnull
     @Override
     public Iterable<H> next() {
         return handlers;

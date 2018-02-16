@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf</groupId>
         <artifactId>neoemf</artifactId>
         <version>1.0.3-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../..</relativePath>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
@@ -20,7 +18,7 @@
     <name>NeoEMF Eclipse</name>
     <description>
         Parent project for the Eclipse plugin generation.
-        Is responsible of ui and feature plugin generation and update site creation.
+        It is responsible of UI, features and plugins generation, and update-site creation.
     </description>
 
     <modules>
@@ -31,12 +29,12 @@
     </modules>
 
     <properties>
-        <tycho-plugin.version>0.26.0</tycho-plugin.version>
+        <tycho-plugin.version>1.0.0</tycho-plugin.version>
     </properties>
 
     <repositories>
         <repository>
-            <id>eclipse-luna</id>
+            <id>eclipse</id>
             <layout>p2</layout>
             <url>http://download.eclipse.org/releases/luna</url>
         </repository>
@@ -82,6 +80,9 @@
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-compiler-plugin</artifactId>
                     <version>${tycho-plugin.version}</version>
+                    <configuration>
+                        <useProjectSettings>false</useProjectSettings>
+                    </configuration>
                 </plugin>
 
                 <plugin>

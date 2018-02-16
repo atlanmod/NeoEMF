@@ -1,0 +1,44 @@
+<assembly xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/ASSEMBLY/2.0.0" xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>repackaged</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>${project.build.directory}/dependency/</directory>
+            <outputDirectory />
+
+            <useDefaultExcludes>true</useDefaultExcludes>
+
+            <excludes>
+                <!-- Exclude signatures -->
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+
+                <!-- Exclude unnecessary files -->
+                <exclude>**.profile</exclude>
+                <exclude>about_files/**</exclude>
+                <exclude>.options</exclude>
+                <exclude>plugin.xml</exclude>
+                <exclude>systembundle.properties</exclude>
+                <exclude>profile.list</exclude>
+                <exclude>.api_description</exclude>
+
+                <!-- Exclude Eclipse components -->
+                <exclude>**/apache/**</exclude>
+                <exclude>**/eclipse/core/**</exclude>
+                <exclude>**/eclipse/equinox/**</exclude>
+                <exclude>**/osgi/**</exclude>
+
+                <!-- Exclude EMF -->
+                <exclude>**/eclipse/emf/common/**</exclude>
+                <exclude>**/eclipse/emf/ecore/**</exclude>
+
+                <!-- Exclude Guava -->
+                <exclude>**/com/**</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+</assembly>

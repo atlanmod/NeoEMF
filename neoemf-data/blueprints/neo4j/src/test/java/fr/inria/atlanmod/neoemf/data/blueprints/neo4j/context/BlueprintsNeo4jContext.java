@@ -1,73 +1,50 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * This Source Code may also be made available under the following Secondary
+ * Licenses when the conditions for such availability set forth in the Eclipse
+ * Public License, v. 2.0 are satisfied: GNU General Public License, version 3.
  */
 
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context;
 
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
+import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
 
-import org.eclipse.emf.ecore.EPackage;
-
-import java.io.File;
-import java.io.IOException;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A specific {@link Context} for the Blueprints Neo4j implementation.
  */
-public class BlueprintsNeo4jContext extends BlueprintsContext {
+@ParametersAreNonnullByDefault
+public abstract class BlueprintsNeo4jContext extends BlueprintsContext {
 
     /**
-     * The name of this context.
-     */
-    public static final String NAME = "Neo4j";
-
-    /**
-     * Constructs a new {@code BlueprintsNeo4jContext}.
-     */
-    protected BlueprintsNeo4jContext() {
-    }
-
-    /**
-     * Returns the instance of this class.
+     * Creates a new {@code BlueprintsContext} with a mapping with indices.
      *
-     * @return the instance of this class.
+     * @return a new context.
      */
-    public static Context get() {
-        return Holder.INSTANCE;
+    @Nonnull
+    public static Context getDefault() {
+        return new BlueprintsNeo4jContext() {
+            @Nonnull
+            @Override
+            public ImmutableConfig config() {
+                return BlueprintsNeo4jConfig.newConfig();
+            }
+        };
     }
 
+    @Nonnull
     @Override
     public String name() {
-        return NAME;
-    }
-
-    @Override
-    public PersistentResource createPersistentResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsNeo4jResourceBuilder(ePackage).persistent().file(file).build();
-    }
-
-    @Override
-    public PersistentResource createTransientResource(EPackage ePackage, File file) throws IOException {
-        return new BlueprintsNeo4jResourceBuilder(ePackage).file(file).build();
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    private static class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        private static final Context INSTANCE = new BlueprintsNeo4jContext();
+        return "Neo4j";
     }
 }

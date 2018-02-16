@@ -1,17 +1,16 @@
 /*
- * Copyright (c) 2013-2017 Atlanmod INRIA LINA Mines Nantes.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
  *
- * Contributors:
- *     Atlanmod INRIA LINA Mines Nantes - initial API and implementation
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
-import fr.inria.atlanmod.neoemf.benchmarks.datastore.Backend;
+import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
+import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Level;
@@ -19,59 +18,67 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.TearDown;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
 /**
- * This state provided a ready-to-use datastore. It is automatically preloaded and unloaded from the default location.
+ * This state provides a ready-to-use datastore. It is automatically preloaded and unloaded from the default location.
  * <p/>
  * It is used for simple queries.
  */
 public class ReadOnlyRunnerState extends RunnerState {
 
-    protected Resource resource;
+    /**
+     * The current {@link Resource}.
+     */
+    private Resource resource;
 
-    protected File storeFile;
+    /**
+     * The location of the current {@link Adapter}.
+     */
+    private File storeFile;
 
     /**
      * Returns the current resource loaded from the datastore.
      */
-    public Resource getResource() {
-        if (Objects.isNull(resource)) {
-            throw new NullPointerException();
-        }
+    @Nonnull
+    public Resource resource() {
         return resource;
     }
 
-    protected File getStoreLocation() {
+    /**
+     * Returns the location of the current {@link Adapter}.
+     */
+    @Nonnull
+    protected File storeFile() {
         return storeFile;
     }
 
     /**
      * Loads and creates the current datastore and its resource.
-     * <p/>
-     * This method is automatically called when setup the iteration level.
      */
     @Setup(Level.Iteration)
-    public void loadResource() throws Exception {
-        log.info("Initializing the datastore");
-        storeFile = getBackend().getOrCreateStore(getResourceFile());
+    public void loadResource() throws IOException {
+        Log.info("Initializing the data store");
+        storeFile = adapter().getOrCreateStore(resourceFile(), baseConfig(), useDirectImport());
 
-        log.info("Loading the resource");
-        resource = getBackend().load(getStoreLocation());
+        Log.info("Loading the resource");
+        resource = adapter().load(storeFile(), baseConfig());
     }
 
     /**
      * Unloads the current resource.
-     * <p/>
-     * This method is automatically called when tear down the iteration level.
      */
     @TearDown(Level.Iteration)
-    public void unloadResource() throws Exception {
-        log.info("Unloading the resource");
+    public void unloadResource() {
+        Log.info("Unloading the resource");
         if (!Objects.isNull(resource)) {
-            getBackend().unload(resource);
+            adapter().unload(resource);
             resource = null;
         }
-        Backend.clean();
+
+        Workspace.cleanTempDirectory();
     }
 }
