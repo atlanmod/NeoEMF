@@ -47,6 +47,7 @@ generate() {
         skip "No $TYPE has been generated"
     fi
 
+    mkdir -p $1
     cp -Rfp ${outputDir}/* $1
 }
 
