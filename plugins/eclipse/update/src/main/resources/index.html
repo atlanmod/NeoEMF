@@ -2,28 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link rel="icon" type="image/png" href="img/favicon.png">
-    <title>NeoEMF: Update-site</title>
-<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">-->
-    <link rel="stylesheet" href="https://bootswatch.com/4/slate/bootstrap.min.css" crossorigin="anonymous">
+    <link id="favicon" rel="icon"><!-- Set dynamically -->
+    <link id="bootstrap-css" rel="stylesheet"><!-- Set dynamically -->
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
-<body style="background-color: #212D39;">
-<div class="container-fluid">
-    <header class="row justify-content-center mt-4">
-        <div class="col-auto">
-            <a href="http://www.neoemf.com"><img src="img/neoemf.svg" alt="Logo" width="80"/></a>
-        </div>
-        <div class="col-auto" >
-            <h1 class="text-light">NeoEMF&nbsp;<small class="text-muted">Update-site</small></h1>
-            <p>Version: SNAPSHOT</p>
-        </div>
-    </header>
-    <hr/>
-    <div id="content" class="row justify-content-center">
-        <p>This URL is an Eclipse software repository, you must use it in Eclipse (<a href="http://help.eclipse.org/neon/index.jsp?topic=/org.eclipse.platform.doc.user/tasks/tasks-127.htm">see how</a>)</p>
-        <span class="w-100"></span>
-        <img class="my-4" src="img/eclipse-update.png" alt="Install in Eclipse" style="box-shadow: 0 0 20px 4px rgba(0, 0, 0, 0.20);"/>
-    </div>
-</div>
+<body>
+<script>
+    $("body").load("../../../updatesite/body-fragment.html");
+</script>
 </body>
 </html>
