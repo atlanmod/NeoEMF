@@ -1,10 +1,11 @@
 NeoEMF
 ======
 [![Build Status](https://www.travis-ci.org/atlanmod/NeoEMF.svg?branch=master)](https://www.travis-ci.org/atlanmod/NeoEMF)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf)
 [![CodeCov](https://codecov.io/gh/atlanmod/NeoEMF/branch/master/graph/badge.svg)](https://codecov.io/gh/atlanmod/NeoEMF)
 [![Codacy](https://api.codacy.com/project/badge/Grade/82af9c0b0354424f93e1044cbdc85a9e)](https://www.codacy.com/app/atlanmod/NeoEMF?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=atlanmod/NeoEMF&amp;utm_campaign=Badge_Grade)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf/badge.svg)](https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf)
 [![Javadoc](https://img.shields.io/badge/javadoc--blue.svg)](https://atlanmod.github.io/NeoEMF/releases/latest/doc/)
+[![Plugin](https://img.shields.io/badge/plugin--blue.svg)](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/)
 [![Licence](https://img.shields.io/badge/licence-EPL--2.0-blue.svg)](https://www.eclipse.org/legal/epl-2.0/)
 
 Check out our [wiki][wiki] for further information on the installation, usages, supported backends, code examples, developer resources, etc.
