@@ -20,4 +20,5 @@ Import-Package: org.eclipse.emf.ecore,
  org.eclipse.emf.common,
  org.eclipse.ocl,
  org.eclipse.ocl.ecore,
+ fr.inria.atlanmod.commons,
  org.eclipse.gmt.modisco.java

@@ -8,8 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.demo.importer;
 
-import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;

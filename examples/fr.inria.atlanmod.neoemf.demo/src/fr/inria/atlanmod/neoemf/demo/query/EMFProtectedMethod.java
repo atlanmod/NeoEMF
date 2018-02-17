@@ -8,8 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.demo.query;
 
-import fr.inria.atlanmod.commons.Stopwatch;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
