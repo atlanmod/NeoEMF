@@ -12,7 +12,6 @@ import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.Storable;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -43,7 +42,7 @@ import static java.util.Objects.isNull;
  * @see PersistentEObject#eStore()
  */
 @ParametersAreNonnullByDefault
-public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
+public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> implements Storable {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 2630358403343923944L;
@@ -65,50 +64,13 @@ public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
         this.storable = owner;
     }
 
-    /**
-     * TODO
-     *
-     * @return the store
-     */
     @Nonnull
-    protected StoreAdapter eStore() {
+    @Override
+    public StoreAdapter eStore() {
         return storable.eStore();
     }
 
     // region Delegating methods
-
-    @Override
-    public boolean isSet() {
-        return delegateIsSet();
-    }
-
-    @Override
-    public void unset() {
-        if (isUnsettable() && isNotificationRequired()) {
-            boolean oldIsSet = isSet();
-            delegateUnset();
-            dispatchNotification(createNotification(Notification.UNSET, oldIsSet, false));
-        }
-        else {
-            delegateUnset();
-        }
-    }
-
-    /**
-     * TODO
-     *
-     * @return
-     */
-    protected boolean delegateIsSet() {
-        return eStore().isSet(owner, eStructuralFeature);
-    }
-
-    /**
-     * TODO
-     */
-    protected void delegateUnset() {
-        eStore().unset(owner, eStructuralFeature);
-    }
 
     @Override
     protected List<E> delegateList() {
@@ -317,25 +279,30 @@ public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
     // region Overrides from `DelegatingNotifyingListImpl`
 
     @Override
+    // FIXME Using EStore.NO_INDEX can cause issues with notifications
     public void addUnique(E object) {
         addUnique(InternalEObject.EStore.NO_INDEX, object);
     }
 
     @Override
     protected void doAddUnique(E object) {
-        // Only called from `addUnique(Object)`
+        // Only called from #addUnique(Object)
         throw new UnsupportedOperationException("doAddUnique(Object)");
     }
 
     @Override
     public boolean addAllUnique(Collection<? extends E> collection) {
-        return addAllUnique(InternalEObject.EStore.NO_INDEX, collection);
+        final int index = isNotificationRequired() || hasInverse()
+                ? size()
+                : InternalEObject.EStore.NO_INDEX;
+
+        return addAllUnique(index, collection);
     }
 
     @Override
     protected boolean doAddAllUnique(Collection<? extends E> collection) {
-        // Only called from `addAllUnique(Collection)`
-        throw new UnsupportedOperationException("doAddAllUnique(Collection)");
+        // Only called from #addAllUnique(Collection<? extends E>)
+        throw new UnsupportedOperationException("doAddAllUnique(Collection<? extends E>)");
     }
 
     @Override
@@ -364,41 +331,23 @@ public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> {
 
     @Override
     public boolean addAllUnique(Object[] objects, int start, int end) {
-        return addAllUnique(InternalEObject.EStore.NO_INDEX, objects, start, end);
+        final int index = isNotificationRequired() || hasInverse()
+                ? size()
+                : InternalEObject.EStore.NO_INDEX;
+
+        return addAllUnique(index, objects, start, end);
     }
 
     @Override
     protected boolean doAddAllUnique(Object[] objects, int start, int end) {
-        // Only called from `addAllUnique(Object[], int, int)`
+        // Only called from #addAllUnique(Object[], int, int)
         throw new UnsupportedOperationException("doAddAllUnique(Object[], int, int)");
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected boolean doAddAllUnique(int index, Object[] objects, int start, int end) {
-        int growth = end - start;
-
-        ++modCount;
-
-        if (growth == 0) {
-            return false;
-        }
-
-        // Validate all values before insertion
-        Collection<E> validatedCollection = Arrays.stream(objects, start, end)
-                .map(e -> (E) e)
-                .map(e -> validate(start, e))
-                .collect(Collectors.toList());
-
-        int firstIndex = delegateAddAll(index, validatedCollection);
-
-        for (E object : validatedCollection) {
-            didAdd(firstIndex, object);
-            didChange();
-            firstIndex++;
-        }
-
-        return true;
+        return doAddAllUnique(index, Arrays.asList((E[]) objects));
     }
 
     // endregion

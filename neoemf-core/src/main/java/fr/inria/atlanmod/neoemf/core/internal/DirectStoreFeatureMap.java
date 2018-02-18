@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.util.DelegatingFeatureMap;
 import org.eclipse.emf.ecore.util.EcoreEList;
 import org.eclipse.emf.ecore.util.FeatureMap;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +42,8 @@ import static java.util.Objects.isNull;
  */
 @ParametersAreNonnullByDefault
 // Synchronize modifications from `DirectStoreList`
-public class DirectStoreFeatureMap extends DelegatingFeatureMap {
+// TODO Re-implements all methods related to addition without index
+public class DirectStoreFeatureMap extends DelegatingFeatureMap implements Storable {
 
     /**
      * The object that holds the store.
@@ -60,13 +62,9 @@ public class DirectStoreFeatureMap extends DelegatingFeatureMap {
         this.storable = owner;
     }
 
-    /**
-     * TODO
-     *
-     * @return the store
-     */
     @Nonnull
-    protected StoreAdapter eStore() {
+    @Override
+    public StoreAdapter eStore() {
         return storable.eStore();
     }
 
@@ -223,6 +221,53 @@ public class DirectStoreFeatureMap extends DelegatingFeatureMap {
     @SuppressWarnings("unchecked")
     protected List<Entry> delegateGetAll() {
         return List.class.cast(eStore().getAll(owner, eStructuralFeature));
+    }
+
+    /**
+     * TODO
+     *
+     * @param index
+     * @param collection
+     *
+     * @return
+     */
+    @Nonnegative
+    protected int delegateAddAll(int index, Collection<? extends Entry> collection) {
+        return eStore().addAll(owner, eStructuralFeature, index, collection);
+    }
+
+    // endregion
+
+    // region Overrides from `DelegatingNotifyingListImpl`
+
+    @Override
+    protected boolean doAddAllUnique(int index, Collection<? extends Entry> collection) {
+        ++modCount;
+
+        if (collection.isEmpty()) {
+            return false;
+        }
+
+        // Validate all values before insertion
+        Collection<? extends Entry> validatedCollection = collection.stream()
+                .map(e -> validate(index, e))
+                .collect(Collectors.toList());
+
+        int firstIndex = delegateAddAll(index, validatedCollection);
+
+        for (Entry object : validatedCollection) {
+            didAdd(firstIndex, object);
+            didChange();
+            firstIndex++;
+        }
+
+        return true;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected boolean doAddAllUnique(int index, Object[] objects, int start, int end) {
+        return doAddAllUnique(index, Arrays.asList((Entry[]) objects));
     }
 
     // endregion
