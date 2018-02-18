@@ -68,11 +68,16 @@ public class ClassBean implements Serializable {
         this.name = checkNotNull(name, "name");
         this.uri = checkNotNull(uri, "uri");
 
-        lazyClass = LazyReference.soft(() ->
-                Optional.ofNullable(EPackage.Registry.INSTANCE.getEPackage(uri))
-                        .map(p -> p.getEClassifier(name))
-                        .map(EClass.class::cast)
-                        .orElse(null));
+        lazyClass = LazyReference.soft(() -> {
+            EPackage p = EPackage.Registry.INSTANCE.getEPackage(uri);
+            checkNotNull(p, "Unable to find EPackage associated with URI: %s. " +
+                    "Make sure it is registered in EPackage.Registry", uri);
+
+            EClass c = EClass.class.cast(p.getEClassifier(name));
+            checkNotNull(c, "Unable to find EClass '%s' from EPackage '%s'", name, uri);
+
+            return c;
+        });
     }
 
     /**
@@ -217,9 +222,7 @@ public class ClassBean implements Serializable {
      */
     @Nonnull
     public EClass get() {
-        return checkNotNull(lazyClass.get(),
-                "Unable to find the EPackage associated with URI: %s. " +
-                        "Make sure it is registered in EPackage.Registry.", uri);
+        return lazyClass.get();
     }
 
     @Override

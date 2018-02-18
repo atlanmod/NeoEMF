@@ -95,7 +95,8 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
     }
 
     /**
-     * Ensures that the factory is the real instance to avoid creating a {@link org.eclipse.emf.ecore.impl.DynamicEObjectImpl} instance.
+     * Ensures that the factory is the real instance to avoid creating a {@link org.eclipse.emf.ecore.impl.DynamicEObjectImpl}
+     * instance.
      *
      * @param eFactory the factory to test
      */

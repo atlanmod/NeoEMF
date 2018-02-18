@@ -85,7 +85,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        final EStructuralFeature eFeature = findFeature(attribute.name());
+        final EStructuralFeature eFeature = getFeature(attribute.name());
 
         if (EObjects.isAttribute(eFeature)) {
             // The attribute is well a attribute
@@ -102,7 +102,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onReference(BasicReference reference) {
-        final EStructuralFeature eFeature = findFeature(reference.name());
+        final EStructuralFeature eFeature = getFeature(reference.name());
 
         processReference(reference, EObjects.asReference(eFeature));
     }
@@ -116,9 +116,6 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
             pendingAttribute = null;
         }
-        else {
-            Log.debug("Ignoring characters: \"{0}\"", characters);
-        }
     }
 
     @Override
@@ -130,7 +127,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         }
         else {
             if (nonNull(pendingAttribute)) {
-                Log.warn("The element ended before the pending attribute {0} received a value: it will be ignored", pendingAttribute.name());
+                Log.warn("An attribute '{0}' is still waiting a value: it will be ignored", pendingAttribute.name());
             }
 
             pendingAttribute = null;
@@ -148,15 +145,9 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     private void processElementAsRoot(BasicElement element) {
         checkNotNull(element.metaClass(), "The root element must have a namespace");
 
-        BasicMetaclass metaClass = element.metaClass();
-
-        // Retrieve the EPackage from the NS prefix
-        EPackage ePackage = metaClass.ns().ePackage();
-
         // Retrieve the current EClass & define the meta-class of the current element if not present
-        EClass eClass = EClass.class.cast(ePackage.getEClassifier(element.name()));
-        checkNotNull(eClass, "Cannot retrieve EClass %s from the EPackage %s", element.name(), ePackage);
-        metaClass.eClass(eClass);
+        BasicMetaclass metaClass = element.metaClass();
+        metaClass.eClass(getClass(element.name(), metaClass.ns().ePackage()));
 
         // Define the element as root node
         element.isRoot(true);
@@ -178,21 +169,25 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @see #processElementAsReference(BasicElement, EReference)
      */
     private void processElementAsFeature(BasicElement element) {
-        final EStructuralFeature feature = findFeature(element.name());
+        final EStructuralFeature feature = getFeature(element.name());
 
         if (EObjects.isAttribute(feature)) {
             processElementAsAttribute(EObjects.asAttribute(feature));
         }
         else {
-            EPackage ePackage = resolvePackageOf(element);
-
             EReference eReference = EObjects.asReference(feature);
-            BasicMetaclass metaClass = element.metaClass();
+            EClass baseClass = EClass.class.cast(eReference.getEType());
 
-            // Retrieve the type the reference or gets the type from the registered meta-class
-            EClass superClass = EClass.class.cast(eReference.getEType());
-            EClass eClass = resolveInstanceOf(metaClass, superClass, ePackage);
-            metaClass.eClass(eClass);
+            // Retrieve the type the reference
+            if (nonNull(element.metaClass())) {
+                // The meta-class was specified in the element
+                BasicMetaclass metaClass = element.metaClass();
+                metaClass.eClass(resolveClass(metaClass, baseClass));
+            }
+            else {
+                BasicNamespace ns = BasicNamespace.Registry.getInstance().get(baseClass.getEPackage());
+                element.metaClass(new BasicMetaclass(ns).eClass(baseClass));
+            }
 
             processElementAsReference(element, eReference);
         }
@@ -319,7 +314,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @throws NullPointerException if the feature cannot be found
      */
     @Nonnull
-    private EStructuralFeature findFeature(String name) {
+    private EStructuralFeature getFeature(String name) {
         BasicElement parentElement = previousElements.getLast();
         EClass metaClass = parentElement.metaClass().eClass();
         EStructuralFeature eFeature = metaClass.getEStructuralFeature(name);
@@ -330,25 +325,22 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     }
 
     /**
-     * Returns the {@link EPackage} containing the meta-class of the specified {@code element}.
+     * Returns the {@link EClass} with the given {@code name} from the {@code package}.
      *
-     * @param element the element
+     * @param name     the name of the class
+     * @param ePackage the package where to find the class
      *
-     * @return the package
+     * @return the class
+     *
+     * @throws NullPointerException if the class cannot be found if the {@code package}
      */
     @Nonnull
-    private EPackage resolvePackageOf(BasicElement element) {
-        if (nonNull(element.metaClass())) {
-            return element.metaClass().ns().ePackage();
-        }
-        else {
-            EPackage ePackage = previousElements.getLast().metaClass().eClass().getEPackage();
+    private EClass getClass(String name, EPackage ePackage) {
+        EClass eClass = EClass.class.cast(ePackage.getEClassifier(name));
 
-            BasicNamespace ns = BasicNamespace.Registry.getInstance().getByUri(ePackage.getNsURI()).ePackage(ePackage);
-            element.metaClass(new BasicMetaclass(ns));
+        checkNotNull(eClass, "Unable to find EClass '%s' from EPackage '%s'", name, ePackage.getNsURI());
 
-            return ePackage;
-        }
+        return eClass;
     }
 
     /**
@@ -356,19 +348,19 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      *
      * @param metaClass  the element representing the class
      * @param superClass the super-type of the class
-     * @param ePackage   the package where to find the class
      *
      * @return the class
      *
+     * @throws NullPointerException     if the class cannot be found
      * @throws IllegalArgumentException if the {@code superClass} is not the super-type of the sought class
      */
     @Nonnull
-    private EClass resolveInstanceOf(BasicMetaclass metaClass, EClass superClass, EPackage ePackage) {
+    private EClass resolveClass(BasicMetaclass metaClass, EClass superClass) {
+        final EPackage ePackage = metaClass.ns().ePackage();
+
         // Is a more specific meta-class defined ?
         if (nonNull(metaClass.name())) {
-            EClass eClass = EClass.class.cast(ePackage.getEClassifier(metaClass.name()));
-
-            checkNotNull(eClass, "Cannot retrieve EClass {0} from the EPackage {1}", metaClass.name(), ePackage);
+            EClass eClass = getClass(metaClass.name(), ePackage);
 
             // Checks that the meta-class is a subtype of the reference type
             checkArgument(superClass.isSuperTypeOf(eClass),
@@ -376,7 +368,8 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
             return eClass;
         }
-
-        return superClass;
+        else {
+            return getClass(superClass.getName(), ePackage);
+        }
     }
 }

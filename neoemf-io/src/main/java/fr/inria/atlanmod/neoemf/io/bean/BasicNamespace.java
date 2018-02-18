@@ -196,18 +196,28 @@ public class BasicNamespace {
         }
 
         /**
+         * Returns a {@link BasicNamespace} from the specified {@code ePackage}.
+         *
+         * @param ePackage the {@link EPackage} associated with the namespace
+         *
+         * @return the namespace
+         */
+        @Nonnull
+        public BasicNamespace get(EPackage ePackage) {
+            return Optional.ofNullable(getByUri(ePackage.getNsURI())).orElseGet(() -> register(ePackage));
+        }
+
+        /**
          * Returns a {@link BasicNamespace} identified by the given {@code prefix}, or {@code null} if no namespace is
          * registered with this {@code prefix}.
          *
          * @param prefix the prefix of the desired namespace
          *
-         * @return a {@code BasicNamespace} identified by the given {@code prefix}, or {@code null} if no namespace is
-         * registered with this {@code prefix}
+         * @return a namespace identified by the given {@code prefix}, or {@code null} if no namespace is registered
+         * with this {@code prefix}
          */
         public BasicNamespace getByPrefix(@Nullable String prefix) {
-            return Optional.ofNullable(prefix)
-                    .map(namespacesByPrefix::get)
-                    .orElse(null);
+            return Optional.ofNullable(prefix).map(namespacesByPrefix::get).orElse(null);
         }
 
         /**
@@ -216,13 +226,11 @@ public class BasicNamespace {
          *
          * @param uri the URI of the desired namespace
          *
-         * @return a {@code BasicNamespace} identified by the given {@code uri}, or {@code null} if no namespace is
-         * registered with this {@code uri}.
+         * @return a namespace identified by the given {@code uri}, or {@code null} if no namespace is registered with
+         * this {@code uri}.
          */
         public BasicNamespace getByUri(@Nullable String uri) {
-            return Optional.ofNullable(uri)
-                    .map(v -> namespacesByUri.get(uri))
-                    .orElse(null);
+            return Optional.ofNullable(uri).map(v -> namespacesByUri.get(uri)).orElse(null);
         }
 
         /**
@@ -230,14 +238,13 @@ public class BasicNamespace {
          *
          * @param ePackage the {@link EPackage} associated with the namespace
          *
-         * @return the new {@link BasicNamespace}
+         * @return the new namespace
          */
         @Nonnull
         public BasicNamespace register(EPackage ePackage) {
             checkNotNull(ePackage, "ePackage");
 
-            return register(ePackage.getNsPrefix(), ePackage.getNsURI())
-                    .ePackage(ePackage);
+            return register(ePackage.getNsPrefix(), ePackage.getNsURI()).ePackage(ePackage);
         }
 
         /**
@@ -246,7 +253,7 @@ public class BasicNamespace {
          * @param prefix the prefix of the new namespace
          * @param uri    the URI associated with the prefix
          *
-         * @return the new {@link BasicNamespace}
+         * @return the new namespace
          */
         @Nonnull
         public BasicNamespace register(String prefix, String uri) {
