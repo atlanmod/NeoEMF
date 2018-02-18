@@ -12,6 +12,7 @@ import fr.inria.atlanmod.commons.LazyReference;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 
 import java.util.Objects;
 
@@ -45,8 +46,11 @@ public class BasicMetaclass extends AbstractNamedElement<BasicMetaclass> {
      */
     @Nonnull
     private final LazyReference<EClass> eClass = LazyReference.soft(() -> {
-        EClass c = EClass.class.cast(ns().ePackage().getEClassifier(name()));
-        checkNotNull(c, "eClass");
+        final EPackage p = ns().ePackage();
+        final String name = name();
+
+        EClass c = EClass.class.cast(p.getEClassifier(name));
+        checkNotNull(c, "Unable to find EClass '%s' from EPackage '%s'", name, p.getNsURI());
         return c;
     });
 

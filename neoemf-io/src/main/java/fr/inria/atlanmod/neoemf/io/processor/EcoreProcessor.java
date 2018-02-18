@@ -128,9 +128,9 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         else {
             if (nonNull(pendingAttribute)) {
                 Log.warn("An attribute '{0}' is still waiting a value: it will be ignored", pendingAttribute.name());
+                pendingAttribute = null;
             }
 
-            pendingAttribute = null;
             ignoredElement = false;
         }
     }
