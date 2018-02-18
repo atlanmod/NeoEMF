@@ -31,6 +31,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkState;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -71,7 +73,14 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * <p>
      * Used when a special or unmanaged feature is encountered.
      */
-    private boolean ignoreElement;
+    private boolean ignoredElement;
+
+    /**
+     * Whether the current element was not an element.
+     * <p>
+     * Used when a multi-valued feature is encountered.
+     */
+    private boolean ignoredId;
 
     /**
      * Constructs a new {@code AbstractStreamReader} with the given {@code handler}.
@@ -131,7 +140,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * next handlers.
      */
     public void ignoreCurrentElement() {
-        this.ignoreElement = true;
+        this.ignoredElement = true;
     }
 
     /**
@@ -179,13 +188,21 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * Finalizes the current element and sends all delayed notifications to handlers.
      */
     protected final void flushCurrentElement() {
-        if (!ignoreElement) {
+        if (!ignoredElement) {
             // Notifies the current element
             notifyStartElement(currentElement);
-            previousIds.addLast(currentElement.id());
 
-            // Notifies the attributes
-            currentAttributes.forEach(this::notifyAttribute);
+            if (isNull(currentElement.id())) {
+                // The element is probably a multi-valued attribute
+                checkState(currentAttributes.isEmpty(), "The element is not supposed to have attributes");
+                ignoredId = true;
+            }
+            else {
+                previousIds.addLast(currentElement.id());
+
+                // Notifies the attributes
+                currentAttributes.forEach(this::notifyAttribute);
+            }
         }
     }
 
@@ -197,7 +214,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * @param value  the value of the attribute
      */
     protected final void readAttribute(@Nullable String prefix, String name, String value) {
-        if (!ignoreElement && !isSpecialAttribute(prefix, name, value)) {
+        if (!ignoredElement && !isSpecialAttribute(prefix, name, value)) {
             BasicAttribute attribute = new BasicAttribute()
                     .name(name)
                     .rawValue(value);
@@ -249,12 +266,16 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * Reads the end of an element.
      */
     protected final void readEndElement() {
-        if (!ignoreElement) {
+        if (!ignoredElement) {
             notifyEndElement();
         }
 
-        ignoreElement = false;
-        previousIds.removeLast();
+        if (!ignoredId) {
+            previousIds.removeLast();
+        }
+
+        ignoredElement = false;
+        ignoredId = false;
     }
 
     /**

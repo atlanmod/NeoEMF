@@ -60,7 +60,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     /**
      * Defines if the previous element was an attribute, or not.
      */
-    private boolean previousWasAttribute;
+    private boolean ignoredElement;
 
     /**
      * Constructs a new {@code EcoreProcessor} with the given {@code processor}.
@@ -113,8 +113,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     public void onCharacters(String characters) {
         // Defines the value of the waiting attribute, if exists
         if (nonNull(waitingAttribute)) {
-            waitingAttribute.value(ValueConverter.INSTANCE.convert(characters, waitingAttribute.eFeature()));
-
+            waitingAttribute.rawValue(characters);
             onAttribute(waitingAttribute);
 
             waitingAttribute = null;
@@ -126,15 +125,18 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onEndElement() {
-        if (!previousWasAttribute) {
+        if (!ignoredElement) {
             previousElements.removeLast();
 
             notifyEndElement();
         }
         else {
-            Log.warn("An attribute still waiting for a value: it will be ignored");
+            if (nonNull(waitingAttribute)) {
+                Log.warn("The element ended before the pending attribute {0} received a value: it will be ignored", waitingAttribute.name());
+            }
+
             waitingAttribute = null;
-            previousWasAttribute = false;
+            ignoredElement = false;
         }
     }
 
@@ -223,7 +225,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      */
     private void processElementAsAttribute(EAttribute eAttribute) {
         if (nonNull(waitingAttribute)) {
-            Log.warn("An attribute still waiting for a value : it will be ignored");
+            Log.warn("The new attribute {0} will replace the pending one {1}", eAttribute.getName(), waitingAttribute.name());
         }
 
         BasicElement parentElement = previousElements.getLast();
@@ -235,7 +237,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
                 .id(parentEClass.getFeatureID(eAttribute))
                 .eFeature(eAttribute);
 
-        previousWasAttribute = true;
+        ignoredElement = true;
     }
 
     /**

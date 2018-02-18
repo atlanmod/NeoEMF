@@ -13,6 +13,7 @@ import fr.inria.atlanmod.commons.primitive.Primitives;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
 
@@ -66,7 +67,7 @@ public class ValueConverter implements BiConverter<String, EAttribute, Object> {
             throw new UnsupportedOperationException("FeatureMaps are not supported yet");
         }
 
-        if (Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
+        if (!EEnum.class.isInstance(dataType) && Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
             return EcoreUtil.createFromString(dataType, value);
         }
 
