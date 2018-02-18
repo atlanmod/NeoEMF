@@ -162,7 +162,7 @@ public class XPathResolver extends AbstractProcessor<Handler> {
         }
 
         Id referencedId;
-        String rawValue = reference.rawValue();
+        String rawValue = reference.stringValue();
         checkNotNull(rawValue, "raw value must be set");
 
         if (ignore || !rawValue.startsWith(START_EXPR) && !rawValue.startsWith(START_ELT)) {

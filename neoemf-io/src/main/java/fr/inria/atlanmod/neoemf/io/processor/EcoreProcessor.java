@@ -55,7 +55,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @see #onCharacters(String)
      */
     @Nullable
-    private BasicAttribute waitingAttribute;
+    private BasicAttribute pendingAttribute;
 
     /**
      * Defines if the previous element was an attribute, or not.
@@ -85,8 +85,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        BasicElement parentElement = previousElements.getLast();
-        EStructuralFeature eFeature = parentElement.metaClass().eClass().getEStructuralFeature(attribute.name());
+        final EStructuralFeature eFeature = findFeature(attribute.name());
 
         if (EObjects.isAttribute(eFeature)) {
             // The attribute is well a attribute
@@ -95,7 +94,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         else {
             // Otherwise redirect to the reference handler
             BasicReference reference = new BasicReference()
-                    .rawValue(attribute.rawValue());
+                    .stringValue(attribute.stringValue());
 
             processReference(reference, EObjects.asReference(eFeature));
         }
@@ -103,8 +102,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
 
     @Override
     public void onReference(BasicReference reference) {
-        BasicElement parentElement = previousElements.getLast();
-        EStructuralFeature eFeature = parentElement.metaClass().eClass().getEStructuralFeature(reference.name());
+        final EStructuralFeature eFeature = findFeature(reference.name());
 
         processReference(reference, EObjects.asReference(eFeature));
     }
@@ -112,11 +110,11 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     @Override
     public void onCharacters(String characters) {
         // Defines the value of the waiting attribute, if exists
-        if (nonNull(waitingAttribute)) {
-            waitingAttribute.rawValue(characters);
-            onAttribute(waitingAttribute);
+        if (nonNull(pendingAttribute)) {
+            pendingAttribute.stringValue(characters);
+            onAttribute(pendingAttribute);
 
-            waitingAttribute = null;
+            pendingAttribute = null;
         }
         else {
             Log.debug("Ignoring characters: \"{0}\"", characters);
@@ -131,11 +129,11 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             notifyEndElement();
         }
         else {
-            if (nonNull(waitingAttribute)) {
-                Log.warn("The element ended before the pending attribute {0} received a value: it will be ignored", waitingAttribute.name());
+            if (nonNull(pendingAttribute)) {
+                Log.warn("The element ended before the pending attribute {0} received a value: it will be ignored", pendingAttribute.name());
             }
 
-            waitingAttribute = null;
+            pendingAttribute = null;
             ignoredElement = false;
         }
     }
@@ -180,38 +178,20 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @see #processElementAsReference(BasicElement, EReference)
      */
     private void processElementAsFeature(BasicElement element) {
-        // Retrieve the parent EClass
-        BasicElement parentElement = previousElements.getLast();
-        EClass parentEClass = parentElement.metaClass().eClass();
-
-        // Retrieve the structural feature from the parent, according the its local name (the attr/ref name)
-        EStructuralFeature feature = parentEClass.getEStructuralFeature(element.name());
+        final EStructuralFeature feature = findFeature(element.name());
 
         if (EObjects.isAttribute(feature)) {
             processElementAsAttribute(EObjects.asAttribute(feature));
         }
         else {
+            EPackage ePackage = resolvePackageOf(element);
+
             EReference eReference = EObjects.asReference(feature);
-
-            // Retrieve the namespace xor the EPackage, and build the meta-class
-            BasicNamespace ns;
-            EPackage ePackage;
-
-            if (nonNull(element.metaClass())) {
-                ns = element.metaClass().ns();
-                ePackage = ns.ePackage();
-            }
-            else {
-                ePackage = parentEClass.getEPackage();
-                ns = BasicNamespace.Registry.getInstance().getByUri(ePackage.getNsURI());
-                ns.ePackage(ePackage);
-                element.metaClass(new BasicMetaclass(ns));
-            }
-
             BasicMetaclass metaClass = element.metaClass();
 
             // Retrieve the type the reference or gets the type from the registered meta-class
-            EClass eClass = resolveInstanceOf(metaClass, EClass.class.cast(eReference.getEType()), ePackage);
+            EClass superClass = EClass.class.cast(eReference.getEType());
+            EClass eClass = resolveInstanceOf(metaClass, superClass, ePackage);
             metaClass.eClass(eClass);
 
             processElementAsReference(element, eReference);
@@ -224,19 +204,21 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @param eAttribute the associated EMF attribute
      */
     private void processElementAsAttribute(EAttribute eAttribute) {
-        if (nonNull(waitingAttribute)) {
-            Log.warn("The new attribute {0} will replace the pending one {1}", eAttribute.getName(), waitingAttribute.name());
+        if (nonNull(pendingAttribute)) {
+            Log.warn("The new attribute {0} will replace the pending one {1}", eAttribute.getName(), pendingAttribute.name());
         }
 
         BasicElement parentElement = previousElements.getLast();
         EClass parentEClass = parentElement.metaClass().eClass();
 
-        // The attribute waiting a plain text value
-        waitingAttribute = new BasicAttribute()
+        @SuppressWarnings("UnnecessaryLocalVariable")
+        BasicAttribute attribute = new BasicAttribute()
                 .owner(parentElement.id())
                 .id(parentEClass.getFeatureID(eAttribute))
                 .eFeature(eAttribute);
 
+        // The attribute waiting a plain text value
+        pendingAttribute = attribute;
         ignoredElement = true;
     }
 
@@ -278,7 +260,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         attribute.owner(parentElement.id())
                 .id(parentEClass.getFeatureID(eAttribute))
                 .eFeature(eAttribute)
-                .value(ValueConverter.INSTANCE.convert(attribute.rawValue(), eAttribute));
+                .value(ValueConverter.INSTANCE.convert(attribute.stringValue(), eAttribute));
 
         notifyAttribute(attribute);
     }
@@ -318,13 +300,55 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
                 .owner(reference.owner())
                 .id(reference.id())
                 .eFeature(eReference)
-                .rawValue(s);
+                .stringValue(s);
 
-        Arrays.stream(reference.rawValue().split(Strings.SPACE))
+        Arrays.stream(reference.stringValue().split(Strings.SPACE))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .map(createFunc)
                 .forEach(this::notifyReference);
+    }
+
+    /**
+     * Finds the {@link EStructuralFeature} with the specified {@code name} using the meta-class of the last element.
+     *
+     * @param name the name of the feature
+     *
+     * @return the feature
+     *
+     * @throws NullPointerException if the feature cannot be found
+     */
+    @Nonnull
+    private EStructuralFeature findFeature(String name) {
+        BasicElement parentElement = previousElements.getLast();
+        EClass metaClass = parentElement.metaClass().eClass();
+        EStructuralFeature eFeature = metaClass.getEStructuralFeature(name);
+
+        checkNotNull(eFeature, "No feature named {0} has been found in class {1}", name, metaClass);
+
+        return eFeature;
+    }
+
+    /**
+     * Returns the {@link EPackage} containing the meta-class of the specified {@code element}.
+     *
+     * @param element the element
+     *
+     * @return the package
+     */
+    @Nonnull
+    private EPackage resolvePackageOf(BasicElement element) {
+        if (nonNull(element.metaClass())) {
+            return element.metaClass().ns().ePackage();
+        }
+        else {
+            EPackage ePackage = previousElements.getLast().metaClass().eClass().getEPackage();
+
+            BasicNamespace ns = BasicNamespace.Registry.getInstance().getByUri(ePackage.getNsURI()).ePackage(ePackage);
+            element.metaClass(new BasicMetaclass(ns));
+
+            return ePackage;
+        }
     }
 
     /**
@@ -334,7 +358,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @param superClass the super-type of the class
      * @param ePackage   the package where to find the class
      *
-     * @return a class
+     * @return the class
      *
      * @throws IllegalArgumentException if the {@code superClass} is not the super-type of the sought class
      */

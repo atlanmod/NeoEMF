@@ -217,7 +217,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
         if (!ignoredElement && !isSpecialAttribute(prefix, name, value)) {
             BasicAttribute attribute = new BasicAttribute()
                     .name(name)
-                    .rawValue(value);
+                    .stringValue(value);
 
             currentAttributes.add(attribute);
         }

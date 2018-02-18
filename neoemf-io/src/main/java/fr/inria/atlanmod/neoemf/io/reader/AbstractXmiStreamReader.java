@@ -52,7 +52,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
                 BasicReference reference = new BasicReference()
                         .name(getCurrentElement().name())
                         .owner(getPreviousId())
-                        .rawValue(value);
+                        .stringValue(value);
 
                 notifyReference(reference);
 

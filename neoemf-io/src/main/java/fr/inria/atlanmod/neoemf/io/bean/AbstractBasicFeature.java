@@ -150,7 +150,7 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
      *
      * @return the string representation of the value of this feature
      */
-    public String rawValue() {
+    public String stringValue() {
         return rawValue;
     }
 
@@ -161,7 +161,7 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
      *
      * @return this instance (for chaining)
      */
-    public T rawValue(String rawValue) {
+    public T stringValue(String rawValue) {
         this.rawValue = rawValue;
 
         return me();
