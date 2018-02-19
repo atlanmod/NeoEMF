@@ -23,6 +23,8 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
+import org.eclipse.emf.ecore.util.FeatureMapUtil;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -170,6 +172,12 @@ public class EcoreMapper extends AbstractProcessor {
      */
     private void processElementAsFeature(BasicElement element) {
         final EStructuralFeature feature = getFeature(element.name());
+
+        // Check if the feature is a FeatureMap.Entry
+        final EStructuralFeature featureGroup = ExtendedMetaData.INSTANCE.getGroup(feature);
+        if (nonNull(featureGroup) && FeatureMapUtil.isFeatureMap(featureGroup)) {
+            throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
+        }
 
         if (EObjects.isAttribute(feature)) {
             processElementAsAttribute(EObjects.asAttribute(feature));

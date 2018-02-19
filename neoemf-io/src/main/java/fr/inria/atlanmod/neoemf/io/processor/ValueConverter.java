@@ -64,7 +64,7 @@ public class ValueConverter implements BiConverter<String, EAttribute, Object> {
         final EDataType dataType = attribute.getEAttributeType();
 
         if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-            throw new UnsupportedOperationException("FeatureMaps are not supported yet");
+            throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
         }
 
         if (!EEnum.class.isInstance(dataType) && Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
@@ -97,7 +97,7 @@ public class ValueConverter implements BiConverter<String, EAttribute, Object> {
         final EDataType dataType = attribute.getEAttributeType();
 
         if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-            throw new UnsupportedOperationException("FeatureMaps are not supported yet");
+            throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
         }
 
         if (Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
