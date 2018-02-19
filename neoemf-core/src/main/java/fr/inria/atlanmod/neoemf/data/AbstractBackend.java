@@ -182,6 +182,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     }
 
     @SuppressWarnings("unchecked")
+    // TODO Move this method in StoreAdapter to use all defined stores (including auto-save)
     private void defaultCopyTo(DataMapper target) {
         final String typeName = "fr.inria.atlanmod.neoemf.io.DirectDataCopier";
 
