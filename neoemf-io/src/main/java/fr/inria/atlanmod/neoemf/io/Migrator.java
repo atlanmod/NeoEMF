@@ -10,13 +10,16 @@ package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
+import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.io.processor.CounterProcessor;
-import fr.inria.atlanmod.neoemf.io.processor.LoggingProcessor;
+import fr.inria.atlanmod.neoemf.io.listener.CountingListener;
+import fr.inria.atlanmod.neoemf.io.listener.Listener;
+import fr.inria.atlanmod.neoemf.io.listener.LoggingListener;
+import fr.inria.atlanmod.neoemf.io.listener.ProgressListener;
+import fr.inria.atlanmod.neoemf.io.listener.TimerListener;
 import fr.inria.atlanmod.neoemf.io.processor.NoopProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.processor.TimerProcessor;
 import fr.inria.atlanmod.neoemf.io.reader.DefaultMapperReader;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
@@ -24,6 +27,7 @@ import fr.inria.atlanmod.neoemf.io.writer.DefaultMapperWriter;
 import fr.inria.atlanmod.neoemf.io.writer.Writer;
 import fr.inria.atlanmod.neoemf.io.writer.XmiStreamWriter;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,6 +39,8 @@ import java.io.PushbackInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -48,6 +54,7 @@ import javax.annotation.WillNotClose;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.nonNull;
 
 /**
@@ -85,7 +92,7 @@ public final class Migrator<T> {
      * Essential processors must be placed at the end of this queue, while the rest must be placed at the beginning.
      */
     @Nonnull
-    private final Set<Class<? extends Processor>> processorClasses = new HashSet<>();
+    private final Set<Listener> listeners = new HashSet<>();
 
     /**
      * The set that holds all {@link Writer} to use.
@@ -267,10 +274,6 @@ public final class Migrator<T> {
         return toXmi(out);
     }
 
-    //endregion
-
-    //region Processors
-
     /**
      * Specifies the {@code stream} where to write the data.
      *
@@ -285,92 +288,118 @@ public final class Migrator<T> {
         return to(new XmiStreamWriter(stream));
     }
 
+    //endregion
+
+    //region Listeners
+
     /**
      * Adds a pre/post-processing feature.
      *
-     * @param processor the processor to add
+     * @param listener the listener to add
      *
      * @return this migrator (for chaining)
      */
     @Nonnull
-    private Migrator<T> with(Class<? extends Processor> processor) {
-        processorClasses.add(processor);
+    public Migrator<T> with(Listener listener) {
+        listeners.add(listener);
         return this;
     }
 
     /**
-     * Adds the {@code logging} feature.
+     * Logs each event when they occur.
      *
      * @return this migrator (for chaining)
      */
     @Nonnull
     public Migrator<T> withLogger() {
-        return with(LoggingProcessor.class);
+        return with(new LoggingListener());
     }
 
     /**
-     * Adds the {@code event-counting} feature.
+     * Logs each event when they occur.
+     *
+     * @param level the logging level to use
+     *
+     * @return this migrator (for chaining)
+     */
+    @Nonnull
+    public Migrator<T> withLogger(Level level) {
+        return with(new LoggingListener(level));
+    }
+
+    /**
+     * Counts the number of processed events (elements, attributes, references).
      *
      * @return this migrator (for chaining)
      */
     @Nonnull
     public Migrator<T> withCounter() {
-        return with(CounterProcessor.class);
+        return with(new CountingListener());
     }
 
-    //endregion
-
     /**
-     * Adds the {@code timing} feature.
+     * Displays the amount of time spent during the migration.
      *
      * @return this migrator (for chaining)
      */
     @Nonnull
     public Migrator<T> withTimer() {
-        return with(TimerProcessor.class);
+        return with(new TimerListener());
     }
+
+    /**
+     * Displays the progress of the migration at regular intervals.
+     * <p>
+     * <b>WARNING:</b> This feature can only be used when reading a file or a stream.
+     *
+     * @return this migrator (for chaining)
+     */
+    @Nonnull
+    public Migrator<T> withProgress() {
+        checkState(InputStream.class.isInstance(source), "Progress feature can only be used when reading a file or stream");
+        return with(new ProgressListener(InputStream.class.cast(source)));
+    }
+
+    //endregion
 
     /**
      * Runs the migration.
      *
      * @throws IOException if an I/O error occurs when migrating
      */
-    // TODO Handle constructor parameters
-    @SuppressWarnings("JavaReflectionMemberAccess")
     public void migrate() throws IOException {
         checkNotNull(writers, "writers");
 
-        Processor processor = new NoopProcessor(writers.toArray(new Writer[writers.size()]));
-
-        Reader<T> reader;
+        Collection<Handler> handlers = new ArrayList<>();
+        handlers.addAll(listeners);
+        handlers.addAll(writers);
 
         try {
-            for (Class<? extends Processor> c : processorClasses) {
-                processor = c.getConstructor(Handler.class).newInstance(processor);
-            }
+            Processor processor = new NoopProcessor(handlers.toArray(new Handler[handlers.size()]));
+            Reader<T> reader = readerClass.getConstructor(Processor.class).newInstance(processor);
 
-            reader = readerClass.getConstructor(Handler.class).newInstance(processor);
+            reader.read(source);
         }
         catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw Throwables.wrap(e, IllegalStateException.class); // Should never happen
         }
-
-        reader.read(source);
-        closeAll();
+        finally {
+            closeAll();
+        }
     }
 
     /**
      * Closes all internal streams.
      */
     private void closeAll() {
-        for (OutputStream out : streamsToClose) {
+        for (Closeable closeable : streamsToClose) {
             try {
-                if (ZipOutputStream.class.isInstance(out)) {
-                    ZipOutputStream zos = ZipOutputStream.class.cast(out);
+                if (ZipOutputStream.class.isInstance(closeable)) {
+                    ZipOutputStream zos = ZipOutputStream.class.cast(closeable);
                     zos.closeEntry();
                 }
 
-                out.close();
+                closeable.close();
             }
             catch (IOException e) {
                 Log.warn(e);

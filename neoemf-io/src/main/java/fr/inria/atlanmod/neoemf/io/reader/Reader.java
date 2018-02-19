@@ -8,8 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.Notifier;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 import java.io.IOException;
 
@@ -22,10 +22,10 @@ import javax.annotation.WillNotClose;
  * @param <T> the type of the source
  */
 @ParametersAreNonnullByDefault
-public interface Reader<T> extends Notifier<Handler> {
+public interface Reader<T> extends Notifier<Processor> {
 
     /**
-     * Reads an {@link Object} and notifies registered {@link fr.inria.atlanmod.neoemf.io.Handler}.
+     * Reads an {@link Object}.
      *
      * @param source the object to read
      *

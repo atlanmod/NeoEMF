@@ -6,13 +6,12 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.processor;
+package fr.inria.atlanmod.neoemf.io.listener;
 
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
@@ -23,10 +22,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Processor} that logs every events.
+ * A {@link Listener} that logs every events.
  */
 @ParametersAreNonnullByDefault
-public class LoggingProcessor extends AbstractProcessor<Handler> {
+public class LoggingListener extends AbstractListener {
 
     /**
      * The {@link Level} for logging.
@@ -40,30 +39,24 @@ public class LoggingProcessor extends AbstractProcessor<Handler> {
     private Id currentId;
 
     /**
-     * Constructs a new {@code LoggingProcessor} with the given {@code handler}.
-     *
-     * @param handler the handler to notify
+     * Constructs a new {@code LoggingListener} with the default logging level.
      */
-    public LoggingProcessor(Handler handler) {
-        this(handler, Level.INFO);
+    public LoggingListener() {
+        this(Level.INFO);
     }
 
     /**
-     * Constructs a new {@code LoggingProcessor} with the given {@code handler}.
+     * Constructs a new {@code LoggingListener} with the given logging {@code level}.
      *
-     * @param handler the handler to notify
-     * @param level   the logging level to use
+     * @param level the logging level to use
      */
-    public LoggingProcessor(Handler handler, Level level) {
-        super(handler);
+    public LoggingListener(Level level) {
         this.level = level;
     }
 
     @Override
     public void onInitialize() {
         Log.log(level, "[#] Starting document");
-
-        notifyInitialize();
     }
 
     @Override
@@ -74,8 +67,6 @@ public class LoggingProcessor extends AbstractProcessor<Handler> {
                 element.id().toHexString());
 
         currentId = element.id();
-
-        notifyStartElement(element);
     }
 
     @Override
@@ -84,8 +75,6 @@ public class LoggingProcessor extends AbstractProcessor<Handler> {
                 attribute.name(),
                 attribute.isMany() ? " many[-1]" : Strings.EMPTY,
                 attribute.value());
-
-        notifyAttribute(attribute);
     }
 
     @Override
@@ -96,14 +85,10 @@ public class LoggingProcessor extends AbstractProcessor<Handler> {
                 Objects.isNull(reference.owner()) ? "this" : reference.owner().toHexString(),
                 reference.isContainment() ? 'C' : '-',
                 Objects.equals(reference.value(), currentId) ? "this" : reference.value().toHexString());
-
-        notifyReference(reference);
     }
 
     @Override
     public void onComplete() {
         Log.log(level, "[#] Ending document");
-
-        notifyComplete();
     }
 }

@@ -11,6 +11,7 @@ package fr.inria.atlanmod.neoemf.io;
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -19,6 +20,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  *
  * @param <H> the type of the notified {@link Handler}
  */
+@ParametersAreNonnullByDefault
 public abstract class AbstractNotifier<H extends Handler> implements Notifier<H> {
 
     /**
@@ -35,7 +37,6 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier<H>
     @SafeVarargs
     public AbstractNotifier(H... handlers) {
         checkNotNull(handlers, "handlers");
-
         this.handlers = Arrays.asList(handlers);
     }
 

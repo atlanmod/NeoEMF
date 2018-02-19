@@ -41,7 +41,7 @@ import static java.util.Objects.nonNull;
  * A {@link Processor} that transforms simple elements to an EMF structure.
  */
 @ParametersAreNonnullByDefault
-public class EcoreProcessor extends AbstractProcessor<Processor> {
+public class EcoreMapper extends AbstractProcessor {
 
     /**
      * A LIFO that holds the current {@link BasicElement} chain. It contains the current element and the previous.
@@ -63,11 +63,11 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     private boolean ignoredElement;
 
     /**
-     * Constructs a new {@code EcoreProcessor} with the given {@code processor}.
+     * Constructs a new {@code EcoreMapper}.
      *
-     * @param processor the processor to notify
+     * @param processor the next processor
      */
-    public EcoreProcessor(Processor processor) {
+    public EcoreMapper(Processor processor) {
         super(processor);
     }
 

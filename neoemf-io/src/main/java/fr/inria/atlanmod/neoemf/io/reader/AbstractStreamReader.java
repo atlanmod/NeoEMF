@@ -11,11 +11,11 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -83,12 +83,12 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     private boolean ignoredId;
 
     /**
-     * Constructs a new {@code AbstractStreamReader} with the given {@code handler}.
+     * Constructs a new {@code AbstractStreamReader} with the given {@code processor}.
      *
-     * @param handler the handler to notify
+     * @param processor the processor to notify
      */
-    public AbstractStreamReader(Handler handler) {
-        super(handler);
+    public AbstractStreamReader(Processor processor) {
+        super(processor);
     }
 
     @Override

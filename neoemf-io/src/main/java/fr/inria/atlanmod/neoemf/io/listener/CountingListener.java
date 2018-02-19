@@ -6,10 +6,9 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.processor;
+package fr.inria.atlanmod.neoemf.io.listener;
 
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
@@ -20,10 +19,10 @@ import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Processor} that counts the number of different element.
+ * A {@link Listener} that counts the number of different element.
  */
 @ParametersAreNonnullByDefault
-public class CounterProcessor extends AbstractProcessor<Handler> {
+public class CountingListener extends AbstractListener {
 
     /**
      * The current number of element.
@@ -43,34 +42,19 @@ public class CounterProcessor extends AbstractProcessor<Handler> {
     @Nonnegative
     private final AtomicLong referenceCount = new AtomicLong();
 
-    /**
-     * Constructs a new {@code CounterProcessor} with the given {@code handler}.
-     *
-     * @param handler the handler to notify
-     */
-    public CounterProcessor(Handler handler) {
-        super(handler);
-    }
-
     @Override
     public void onStartElement(BasicElement element) {
         elementCount.incrementAndGet();
-
-        notifyStartElement(element);
     }
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
         attributeCount.incrementAndGet();
-
-        notifyAttribute(attribute);
     }
 
     @Override
     public void onReference(BasicReference reference) {
         referenceCount.incrementAndGet();
-
-        notifyReference(reference);
     }
 
     @Override
@@ -78,7 +62,5 @@ public class CounterProcessor extends AbstractProcessor<Handler> {
         Log.info("Elements   : {0,number,#}", elementCount);
         Log.info("Attributes : {0,number,#}", attributeCount);
         Log.info("References : {0,number,#}", referenceCount);
-
-        notifyComplete();
     }
 }

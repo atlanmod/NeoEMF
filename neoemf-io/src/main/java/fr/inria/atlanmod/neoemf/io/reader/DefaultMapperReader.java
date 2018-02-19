@@ -12,12 +12,12 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.EObjects;
 
@@ -55,12 +55,12 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     private DataMapper mapper;
 
     /**
-     * Constructs a new {@code DefaultMapperReader} with the given {@code handler}.
+     * Constructs a new {@code DefaultMapperReader} with the given {@code processor}.
      *
-     * @param handler the handler to notify
+     * @param processor the processor to notify
      */
-    public DefaultMapperReader(Handler handler) {
-        super(handler);
+    public DefaultMapperReader(Processor processor) {
+        super(processor);
     }
 
     @Override

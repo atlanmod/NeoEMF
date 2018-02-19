@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
-import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -19,14 +19,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @param <T> the type of the source
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractReader<T> extends AbstractNotifier<Handler> implements Reader<T> {
+public abstract class AbstractReader<T> extends AbstractNotifier<Processor> implements Reader<T> {
 
     /**
-     * Constructs a new {@code AbstractReader} with the given {@code handler}.
+     * Constructs a new {@code AbstractReader} with the given {@code processor}.
      *
-     * @param handler the handler to notify
+     * @param processor the processor to notify
      */
-    public AbstractReader(Handler handler) {
-        super(handler);
+    public AbstractReader(Processor processor) {
+        super(processor);
     }
 }

@@ -6,11 +6,10 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.processor;
+package fr.inria.atlanmod.neoemf.io.listener;
 
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.io.Handler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,10 +20,10 @@ import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Processor} that logs the progress of a migration.
+ * A {@link Listener} that logs the progress of a migration.
  */
 @ParametersAreNonnullByDefault
-public class ProgressProcessor extends AbstractProcessor<Handler> {
+public class ProgressListener extends AbstractListener {
 
     /**
      * The stream to watch.
@@ -47,24 +46,21 @@ public class ProgressProcessor extends AbstractProcessor<Handler> {
     private Timer task;
 
     /**
-     * Constructs a new {@code ProgressProcessor} with the given {@code handler}.
+     * Constructs a new {@code ProgressListener} with the default period.
      *
-     * @param handler the handler to notify
-     * @param stream  the stream to watch
+     * @param stream the stream to watch
      */
-    public ProgressProcessor(Handler handler, InputStream stream) {
-        this(handler, stream, 20_000);
+    public ProgressListener(InputStream stream) {
+        this(stream, 20_000);
     }
 
     /**
-     * Constructs a new {@code ProgressProcessor} with the given {@code handler}.
+     * Constructs a new {@code ProgressListener} with the given {@code period}.
      *
-     * @param handler the handler to notify
-     * @param stream  the stream to watch
-     * @param period  the time between progress analysis, in milliseconds
+     * @param stream the stream to watch
+     * @param period the time between progress analysis, in milliseconds
      */
-    public ProgressProcessor(Handler handler, InputStream stream, @Nonnegative long period) {
-        super(handler);
+    public ProgressListener(InputStream stream, @Nonnegative long period) {
         this.stream = stream;
         this.period = period;
 
@@ -92,14 +88,10 @@ public class ProgressProcessor extends AbstractProcessor<Handler> {
                 }
             }
         }, 0, period);
-
-        notifyInitialize();
     }
 
     @Override
     public void onComplete() {
         task.cancel();
-
-        notifyComplete();
     }
 }

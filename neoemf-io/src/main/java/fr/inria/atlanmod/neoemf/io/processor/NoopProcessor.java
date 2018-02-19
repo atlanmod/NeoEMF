@@ -8,7 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.neoemf.io.writer.Writer;
+import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
+import fr.inria.atlanmod.neoemf.io.Handler;
+import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
+import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -17,14 +21,49 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * without any additional operation.
  */
 @ParametersAreNonnullByDefault
-public final class NoopProcessor extends AbstractProcessor<Writer> implements Processor {
+public final class NoopProcessor extends AbstractNotifier<Handler> implements Processor {
 
     /**
-     * Constructs a new {@code NoopProcessor} with the given {@code writers}.
+     * Constructs a new {@code NoopProcessor} with the given {@code handlers}.
      *
-     * @param writers the writers to notify
+     * @param handlers the handlers to notify
      */
-    public NoopProcessor(Writer... writers) {
-        super(writers);
+    public NoopProcessor(Handler... handlers) {
+        super(handlers);
+    }
+
+    @Override
+    public void onInitialize() {
+        notifyInitialize();
+    }
+
+    @Override
+    public void onStartElement(BasicElement element) {
+        notifyStartElement(element);
+    }
+
+    @Override
+    public void onAttribute(BasicAttribute attribute) {
+        notifyAttribute(attribute);
+    }
+
+    @Override
+    public void onReference(BasicReference reference) {
+        notifyReference(reference);
+    }
+
+    @Override
+    public void onCharacters(String characters) {
+        notifyCharacters(characters);
+    }
+
+    @Override
+    public void onEndElement() {
+        notifyEndElement();
+    }
+
+    @Override
+    public void onComplete() {
+        notifyComplete();
     }
 }

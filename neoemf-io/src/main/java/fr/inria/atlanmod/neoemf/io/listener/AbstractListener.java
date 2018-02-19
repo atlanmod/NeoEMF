@@ -6,9 +6,8 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.processor;
+package fr.inria.atlanmod.neoemf.io.listener;
 
-import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
@@ -16,52 +15,43 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Processor} that simply delegates all methods to the next {@link Processor}.
+ * A {@link Listener} that does nothing.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractProcessor extends AbstractNotifier<Processor> implements Processor {
-
-    /**
-     * Constructs a new {@code AbstractProcessor}.
-     *
-     * @param processor the next processor
-     */
-    public AbstractProcessor(Processor processor) {
-        super(processor);
-    }
+public abstract class AbstractListener implements Listener {
 
     @Override
     public void onInitialize() {
-        notifyInitialize();
+        // Do nothing
     }
 
     @Override
     public void onStartElement(BasicElement element) {
-        notifyStartElement(element);
+        // Do nothing
     }
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        notifyAttribute(attribute);
+        // Do nothing
     }
 
     @Override
     public void onReference(BasicReference reference) {
-        notifyReference(reference);
+        // Do nothing
     }
 
     @Override
     public void onCharacters(String characters) {
-        notifyCharacters(characters);
+        // Do nothing
     }
 
     @Override
     public void onEndElement() {
-        notifyEndElement();
+        // Do nothing
     }
 
     @Override
     public void onComplete() {
-        notifyComplete();
+        // Do nothing
     }
 }

@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdProvider;
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
@@ -32,7 +31,7 @@ import static java.util.Objects.nonNull;
  * A {@link Processor} that analyses XPath references and transforms them in {@link fr.inria.atlanmod.neoemf.core.Id}.
  */
 @ParametersAreNonnullByDefault
-public class XPathResolver extends AbstractProcessor<Handler> {
+public class XPathResolver extends AbstractProcessor {
 
     /**
      * Pattern for detecting nodes which have no index in their path.
@@ -67,12 +66,12 @@ public class XPathResolver extends AbstractProcessor<Handler> {
     private Boolean ignore;
 
     /**
-     * Constructs a new {@code XPathResolver} with the given {@code handler}.
+     * Constructs a new {@code XPathResolver}.
      *
-     * @param handler the handler to notify
+     * @param processor the next processor
      */
-    public XPathResolver(Handler handler) {
-        super(handler);
+    public XPathResolver(Processor processor) {
+        super(processor);
     }
 
     @Override
@@ -109,11 +108,6 @@ public class XPathResolver extends AbstractProcessor<Handler> {
         }
 
         notifyEndElement();
-    }
-
-    @Override
-    public void onComplete() {
-        notifyComplete();
     }
 
     /**

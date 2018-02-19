@@ -11,8 +11,8 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import com.ctc.wstx.api.WstxInputProperties;
 
 import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.processor.EcoreProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.EcoreMapper;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.processor.XPathResolver;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
@@ -36,12 +36,12 @@ import javax.xml.stream.XMLStreamReader;
 public class XmiStreamReader extends AbstractXmiStreamReader {
 
     /**
-     * Constructs a new {@code XmiStreamReader} with the given {@code handler}.
+     * Constructs a new {@code XmiStreamReader} with the given {@code processor}.
      *
-     * @param handler the handler to notify
+     * @param processor the processor to notify
      */
-    public XmiStreamReader(Handler handler) {
-        super(new EcoreProcessor(new XPathResolver(handler)));
+    public XmiStreamReader(Processor processor) {
+        super(new EcoreMapper(new XPathResolver(processor)));
     }
 
     @Override

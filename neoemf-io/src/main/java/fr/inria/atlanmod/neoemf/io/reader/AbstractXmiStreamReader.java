@@ -10,8 +10,8 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
 import java.util.Objects;
@@ -28,12 +28,12 @@ import static java.util.Objects.nonNull;
 public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
     /**
-     * Constructs a new {@code AbstractXmiStreamReader} with the given {@code handler}.
+     * Constructs a new {@code AbstractXmiStreamReader} with the given {@code processor}.
      *
-     * @param handler the handler to notify
+     * @param processor the processor to notify
      */
-    public AbstractXmiStreamReader(Handler handler) {
-        super(handler);
+    public AbstractXmiStreamReader(Processor processor) {
+        super(processor);
     }
 
     @Override

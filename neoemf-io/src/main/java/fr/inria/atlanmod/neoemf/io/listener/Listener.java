@@ -6,20 +6,15 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.processor;
+package fr.inria.atlanmod.neoemf.io.listener;
 
 import fr.inria.atlanmod.neoemf.io.Handler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.io.Handler} that pre-processes and post-processes received events, before notifying
- * the next {@link Processor}.
- * <p>
- * It can add validation, redirection, cancellation, or data enhancement capabilities.
- * <p>
- * <b>NOTE:</b> Because of the stream-based architecture, all {@code Processor}s are stateful.
+ * A {@link fr.inria.atlanmod.neoemf.io.Handler} that simply listen events.
  */
 @ParametersAreNonnullByDefault
-public interface Processor extends Handler {
+public interface Listener extends Handler {
 }
