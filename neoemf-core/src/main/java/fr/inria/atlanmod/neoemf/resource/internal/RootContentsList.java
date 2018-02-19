@@ -52,7 +52,7 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     /**
      * Constructs a new {@code RootContentsList}.
      *
-     * @param resource TODO
+     * @param resource
      */
     public RootContentsList(DefaultPersistentResource resource) {
         super(new RootObject(resource), new RootContentsReference());

@@ -49,7 +49,7 @@ public abstract class AbstractWriter<T> implements Writer {
      * A LIFO that holds the current {@link Id} chain. It contains the current identifier and the previous.
      */
     @Nonnull
-    private final Deque<Id> previousId = new ArrayDeque<>();
+    private final Deque<Id> identifiers = new ArrayDeque<>();
 
     /**
      * A map that holds multi-valued references of the current element, waiting to be written.
@@ -57,7 +57,7 @@ public abstract class AbstractWriter<T> implements Writer {
      * @see #flushAllFeatures()
      */
     @Nonnull
-    private final Map<BasicReference, List<Id>> manyReferencesAccumulator = new HashMap<>();
+    private final Map<BasicReference, List<Id>> referencesAccumulator = new HashMap<>();
 
     /**
      * A map that holds multi-valued attributes of the current element, waiting to be written.
@@ -65,7 +65,7 @@ public abstract class AbstractWriter<T> implements Writer {
      * @see #flushAllFeatures()
      */
     @Nonnull
-    private final Map<BasicAttribute, List<Object>> manyAttributesAccumulator = new HashMap<>();
+    private final Map<BasicAttribute, List<Object>> attributesAccumulator = new HashMap<>();
 
     /**
      * The last multi-valued feature identifier processed by {@link #onAttribute(BasicAttribute)} or {@link
@@ -89,28 +89,28 @@ public abstract class AbstractWriter<T> implements Writer {
     public void onStartElement(BasicElement element) {
         flushAllFeatures();
 
-        previousId.addLast(element.id());
+        identifiers.addLast(element.id());
     }
 
     @Override
     public final void onAttribute(BasicAttribute attribute) {
-        checkEqualTo(previousId.getLast(), attribute.owner(),
-                "%s is not the owner of this attribute (%s)", previousId.getLast(), attribute.owner());
+        checkEqualTo(identifiers.getLast(), attribute.owner(),
+                "%s is not the owner of this attribute (%s)", identifiers.getLast(), attribute.owner());
 
         if (!attribute.isMany()) {
             onAttribute(attribute, Collections.singletonList(attribute.value()));
         }
         else {
             flushLastFeature(attribute.id());
-            manyAttributesAccumulator.computeIfAbsent(attribute, a -> new LinkedList<>()).add(attribute.value());
+            attributesAccumulator.computeIfAbsent(attribute, a -> new LinkedList<>()).add(attribute.value());
         }
     }
 
     @Override
     public final void onReference(BasicReference reference) {
         if (!reference.isContainment()) { // Containment references are processed differently from standard references
-            checkEqualTo(previousId.getLast(), reference.owner(),
-                    "%s is not the owner of this reference (%s)", previousId.getLast(), reference.owner());
+            checkEqualTo(identifiers.getLast(), reference.owner(),
+                    "%s is not the owner of this reference (%s)", identifiers.getLast(), reference.owner());
         }
 
         if (!reference.isMany()) {
@@ -118,7 +118,7 @@ public abstract class AbstractWriter<T> implements Writer {
         }
         else {
             flushLastFeature(reference.id());
-            manyReferencesAccumulator.computeIfAbsent(reference, r -> new LinkedList<>()).add(reference.value());
+            referencesAccumulator.computeIfAbsent(reference, r -> new LinkedList<>()).add(reference.value());
         }
     }
 
@@ -132,7 +132,7 @@ public abstract class AbstractWriter<T> implements Writer {
     public void onEndElement() {
         flushAllFeatures();
 
-        previousId.removeLast();
+        identifiers.removeLast();
     }
 
     /**
@@ -183,14 +183,14 @@ public abstract class AbstractWriter<T> implements Writer {
      * Flushes all delayed multi-valued features.
      */
     private void flushAllFeatures() {
-        if (!manyReferencesAccumulator.isEmpty()) {
-            manyReferencesAccumulator.forEach(this::onReference);
-            manyReferencesAccumulator.clear();
+        if (!referencesAccumulator.isEmpty()) {
+            referencesAccumulator.forEach(this::onReference);
+            referencesAccumulator.clear();
         }
 
-        if (!manyAttributesAccumulator.isEmpty()) {
-            manyAttributesAccumulator.forEach(this::onAttribute);
-            manyAttributesAccumulator.clear();
+        if (!attributesAccumulator.isEmpty()) {
+            attributesAccumulator.forEach(this::onAttribute);
+            attributesAccumulator.clear();
         }
 
         lastManyFeatureId = -1;

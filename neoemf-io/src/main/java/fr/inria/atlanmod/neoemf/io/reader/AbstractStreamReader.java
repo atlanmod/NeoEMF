@@ -53,7 +53,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * A LIFO that holds the current {@link Id} chain. It contains the current identifier and the previous.
      */
     @Nonnull
-    private final Deque<Id> previousIds = new ArrayDeque<>();
+    private final Deque<Id> identifiers = new ArrayDeque<>();
 
     /**
      * The current element.
@@ -122,7 +122,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      */
     @Nonnull
     public Id getPreviousId() {
-        return previousIds.getLast();
+        return identifiers.getLast();
     }
 
     /**
@@ -198,7 +198,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
                 ignoredId = true;
             }
             else {
-                previousIds.addLast(currentElement.id());
+                identifiers.addLast(currentElement.id());
 
                 // Notifies the attributes
                 currentAttributes.forEach(this::notifyAttribute);
@@ -271,7 +271,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
         }
 
         if (!ignoredId) {
-            previousIds.removeLast();
+            identifiers.removeLast();
         }
 
         ignoredElement = false;

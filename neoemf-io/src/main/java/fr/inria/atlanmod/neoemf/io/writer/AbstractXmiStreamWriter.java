@@ -21,13 +21,25 @@ import fr.inria.atlanmod.neoemf.io.processor.ValueConverter;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static fr.inria.atlanmod.neoemf.io.util.XmiConstants.XMI_ID;
+import static fr.inria.atlanmod.neoemf.io.util.XmiConstants.XMI_NS;
+import static fr.inria.atlanmod.neoemf.io.util.XmiConstants.XMI_TYPE;
+import static fr.inria.atlanmod.neoemf.io.util.XmiConstants.XMI_URI;
+import static fr.inria.atlanmod.neoemf.io.util.XmiConstants.XMI_VERSION;
+import static fr.inria.atlanmod.neoemf.io.util.XmiConstants.XMI_VERSION_ATTR;
 
 /**
  * An {@link AbstractStreamWriter} that writes data into an XMI file.
@@ -35,6 +47,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Beta
 @ParametersAreNonnullByDefault
 public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
+
+    /**
+     * A LIFO that holds the current {@link EClass} chain. It contains the current element and the previous.
+     */
+    @Nonnull
+    private final Deque<EClass> classes = new ArrayDeque<>();
 
     /**
      * Constructs a new {@code AbstractXmiStreamWriter} with the given {@code stream}.
@@ -78,23 +96,26 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
 
                 // Namespaces
                 writeNamespace(ns.prefix(), ns.uri());
-                writeNamespace(XmiConstants.XMI_NS, XmiConstants.XMI_URI);
+                writeNamespace(XMI_NS, XMI_URI);
 
                 // XMI version
-                writeAttribute(XmiConstants.XMI_VERSION_ATTR, XmiConstants.XMI_VERSION);
+                writeAttribute(XMI_VERSION_ATTR, XMI_VERSION);
             }
             else {
                 writeStartElement(element.name());
             }
 
-            // TODO Write the meta-class only if EReference#getEType() != EClass
-            writeAttribute(XmiConstants.XMI_TYPE, XmiConstants.format(metaClass.ns().prefix(), metaClass.name()));
+            if (requiresExplicitType(element)) {
+                writeAttribute(XMI_TYPE, XmiConstants.format(ns.prefix(), metaClass.name()));
+            }
 
-            writeAttribute(XmiConstants.XMI_ID, element.id().toHexString());
+            writeAttribute(XMI_ID, element.id().toHexString());
         }
         catch (IOException e) {
             handleException(e);
         }
+
+        classes.add(metaClass.eClass());
     }
 
     @Override
@@ -107,6 +128,8 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
         catch (IOException e) {
             handleException(e);
         }
+
+        classes.removeLast();
     }
 
     @Override
@@ -117,7 +140,6 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
                 writeAttribute(attribute.name(), ValueConverter.INSTANCE.revert(values.get(0), eAttribute));
             }
             else {
-                // TODO Check the behavior of multi-valued attributes
                 for (Object v : values) {
                     writeStartElement(attribute.name());
                     writeCharacters(ValueConverter.INSTANCE.revert(v, eAttribute));
@@ -147,6 +169,30 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
         catch (IOException e) {
             handleException(e);
         }
+    }
+
+    /**
+     * Checks that the element inherit from type of the referencing feature type, from its container. If the type of the
+     * element is the same as the type of the referencing feature, then the explicit declaration can be skipped.
+     * <p>
+     * This method validates this predicate: {@code e.type != e.container.reference(e).type}.
+     *
+     * @param element the element to test
+     *
+     * @return {@code true} if the element requires an explicit declaration of its type
+     */
+    private boolean requiresExplicitType(BasicElement element) {
+        if (element.isRoot()) {
+            return false;
+        }
+
+        final EClass containerClass = classes.getLast();
+        final EStructuralFeature referencingFeature = containerClass.getEStructuralFeature(element.name());
+
+        EClass baseType = EClass.class.cast(referencingFeature.getEType());
+        EClass specificType = element.metaClass().eClass();
+
+        return specificType != baseType;
     }
 
     /**

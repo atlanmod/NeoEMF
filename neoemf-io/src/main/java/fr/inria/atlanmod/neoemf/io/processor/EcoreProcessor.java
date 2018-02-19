@@ -47,7 +47,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * A LIFO that holds the current {@link BasicElement} chain. It contains the current element and the previous.
      */
     @Nonnull
-    private final Deque<BasicElement> previousElements = new ArrayDeque<>();
+    private final Deque<BasicElement> elements = new ArrayDeque<>();
 
     /**
      * An attribute that is waiting for a value.
@@ -74,7 +74,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     @Override
     public void onStartElement(BasicElement element) {
         // Is root
-        if (previousElements.isEmpty()) {
+        if (elements.isEmpty()) {
             processElementAsRoot(element);
         }
         // Is a feature of parent
@@ -121,7 +121,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
     @Override
     public void onEndElement() {
         if (!ignoredElement) {
-            previousElements.removeLast();
+            elements.removeLast();
 
             notifyEndElement();
         }
@@ -156,7 +156,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         notifyStartElement(element);
 
         // Save the current element
-        previousElements.addLast(element);
+        elements.addLast(element);
     }
 
     /**
@@ -203,7 +203,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
             Log.warn("The new attribute {0} will replace the pending one {1}", eAttribute.getName(), pendingAttribute.name());
         }
 
-        BasicElement parentElement = previousElements.getLast();
+        BasicElement parentElement = elements.getLast();
         EClass parentEClass = parentElement.metaClass().eClass();
 
         @SuppressWarnings("UnnecessaryLocalVariable")
@@ -239,7 +239,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
         }
 
         // Save the current element
-        previousElements.addLast(element);
+        elements.addLast(element);
     }
 
     /**
@@ -249,7 +249,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @param eAttribute the associated EMF attribute
      */
     private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) {
-        BasicElement parentElement = previousElements.getLast();
+        BasicElement parentElement = elements.getLast();
         EClass parentEClass = parentElement.metaClass().eClass();
 
         attribute.owner(parentElement.id())
@@ -267,7 +267,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      * @param eReference the associated EMF reference
      */
     private void processReference(BasicReference reference, EReference eReference) {
-        BasicElement parentElement = previousElements.getLast();
+        BasicElement parentElement = elements.getLast();
         EClass parentEClass = parentElement.metaClass().eClass();
 
         reference.owner(parentElement.id())
@@ -315,7 +315,7 @@ public class EcoreProcessor extends AbstractProcessor<Processor> {
      */
     @Nonnull
     private EStructuralFeature getFeature(String name) {
-        BasicElement parentElement = previousElements.getLast();
+        BasicElement parentElement = elements.getLast();
         EClass metaClass = parentElement.metaClass().eClass();
         EStructuralFeature eFeature = metaClass.getEStructuralFeature(name);
 

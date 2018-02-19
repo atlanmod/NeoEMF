@@ -48,7 +48,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * A LIFO that holds the current {@link EClass} chain. It contains the current element and the previous.
      */
     @Nonnull
-    private final Deque<EClass> previousClasses = new ArrayDeque<>();
+    private final Deque<EClass> classes = new ArrayDeque<>();
     /**
      * The mapper to read.
      */
@@ -69,7 +69,6 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
 
         notifyInitialize();
 
-        // TODO Calculates the feature identifier
         SingleFeatureBean rootKey = SingleFeatureBean.of(PersistentResource.ROOT_ID, -1);
         source.allReferencesOf(rootKey).forEach(id -> readElement(id, true));
 
@@ -94,7 +93,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
         // If root it's the name of the meta-class, otherwise the name of the containing feature from the previous class
         String name = isRoot ? eClass.getName() : mapper.containerOf(id)
                 .map(SingleFeatureBean::id)
-                .map(previousClasses.getLast()::getEStructuralFeature)
+                .map(classes.getLast()::getEStructuralFeature)
                 .map(EStructuralFeature::getName)
                 .<IllegalStateException>orElseThrow(IllegalStateException::new);
 
@@ -110,12 +109,12 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                 .metaClass(metaClass);
 
         notifyStartElement(element);
-        previousClasses.addLast(eClass);
+        classes.addLast(eClass);
 
         // Process all features
         readAllFeatures(id, eClass);
 
-        previousClasses.removeLast();
+        classes.removeLast();
         notifyEndElement();
     }
 
