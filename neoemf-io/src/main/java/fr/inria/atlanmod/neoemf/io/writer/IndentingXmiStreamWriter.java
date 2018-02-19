@@ -88,7 +88,7 @@ public class IndentingXmiStreamWriter extends XmiStreamWriter {
             super.writeStartElement(name);
         }
         catch (XMLStreamException e) {
-            handleException(e);
+            throw new IOException(e);
         }
     }
 
@@ -104,7 +104,7 @@ public class IndentingXmiStreamWriter extends XmiStreamWriter {
             super.writeEndElement();
         }
         catch (XMLStreamException e) {
-            handleException(e);
+            throw new IOException(e);
         }
     }
 

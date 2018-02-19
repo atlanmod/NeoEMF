@@ -16,7 +16,6 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -29,7 +28,6 @@ import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -176,8 +174,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             return instancesOf;
         }
         catch (IOException e) {
-            handleException(e);
-            return Collections.emptySet();
+            throw new RuntimeException(e);
         }
     }
 
@@ -241,8 +238,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             return value;
         }
         catch (IOException e) {
-            handleException(e);
-            return Optional.empty();
+            throw new RuntimeException(e);
         }
     }
 
@@ -265,7 +261,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             database.put(null, dbKey, dbValue);
         }
         catch (IOException e) {
-            handleException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -290,8 +286,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             return database.putNoOverwrite(null, dbKey, dbValue) != OperationStatus.KEYEXIST;
         }
         catch (IOException e) {
-            handleException(e);
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
@@ -310,7 +305,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             database.delete(null, dbKey);
         }
         catch (IOException e) {
-            handleException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -329,14 +324,5 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             }
         }
         to.sync();
-    }
-
-    /**
-     * TODO
-     *
-     * @param e the exception to handle
-     */
-    private void handleException(IOException e) {
-        throw Throwables.wrap(e, RuntimeException.class);
     }
 }

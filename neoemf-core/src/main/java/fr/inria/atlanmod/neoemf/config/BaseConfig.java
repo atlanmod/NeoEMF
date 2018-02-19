@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.config;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Builder;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
@@ -416,7 +415,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
             mappingClass = (Class<? extends DataMapper>) Class.forName(mappingType);
         }
         catch (ClassNotFoundException e) {
-            throw Throwables.wrap(e, InvalidConfigException.class);
+            throw new InvalidConfigException(e);
         }
         catch (ClassCastException e) {
             throw new InvalidConfigException(

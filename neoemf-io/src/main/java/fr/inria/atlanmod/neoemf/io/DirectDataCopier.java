@@ -30,7 +30,7 @@ public final class DirectDataCopier implements Copier<DataMapper> {
             Migrator.fromMapper(source).toMapper(target).migrate();
         }
         catch (IOException e) {
-            throw Throwables.wrap(e, IllegalStateException.class); // Should never happen
+            throw Throwables.shouldNeverHappen(e);
         }
     }
 }

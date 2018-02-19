@@ -381,7 +381,7 @@ public final class Migrator<T> {
             reader.read(source);
         }
         catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw Throwables.wrap(e, IllegalStateException.class); // Should never happen
+            throw Throwables.shouldNeverHappen(e);
         }
         finally {
             closeAll();

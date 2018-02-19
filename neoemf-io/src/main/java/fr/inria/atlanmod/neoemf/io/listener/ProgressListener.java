@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.io.listener;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.log.Log;
 
 import java.io.IOException;
@@ -68,7 +67,7 @@ public class ProgressListener extends AbstractListener {
             this.totalSize = stream.available();
         }
         catch (IOException e) {
-            throw Throwables.wrap(e, IllegalArgumentException.class);
+            throw new IllegalArgumentException(e);
         }
     }
 

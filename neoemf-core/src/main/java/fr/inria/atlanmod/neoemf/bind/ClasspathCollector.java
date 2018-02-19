@@ -71,7 +71,7 @@ public class ClasspathCollector implements URLCollector {
                 return url.toURI();
             }
             catch (URISyntaxException e) {
-                throw Throwables.wrap(e, IllegalStateException.class);
+                throw Throwables.shouldNeverHappen(e);
             }
         }
 
@@ -81,7 +81,7 @@ public class ClasspathCollector implements URLCollector {
                 return uri.toURL();
             }
             catch (MalformedURLException e) {
-                throw Throwables.wrap(e, IllegalStateException.class);
+                throw Throwables.shouldNeverHappen(e);
             }
         }
     };

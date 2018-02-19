@@ -8,8 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
-import fr.inria.atlanmod.commons.Throwables;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -51,7 +49,7 @@ public abstract class AbstractMapperFactory {
             throw new InvalidDataMapperException(String.format("%s is not assignable from %s", typeName, DataMapper.class.getName()));
         }
         catch (ClassNotFoundException e) {
-            throw Throwables.wrap(e, InvalidDataMapperException.class);
+            throw new InvalidDataMapperException(e);
         }
     }
 
@@ -79,7 +77,7 @@ public abstract class AbstractMapperFactory {
             return constructor.newInstance(parameters);
         }
         catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw Throwables.wrap(e, InvalidDataMapperException.class);
+            throw new InvalidDataMapperException(e);
         }
     }
 

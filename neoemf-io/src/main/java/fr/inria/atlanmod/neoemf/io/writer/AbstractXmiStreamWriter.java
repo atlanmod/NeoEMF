@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Beta;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -69,7 +68,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
             writeStartDocument();
         }
         catch (IOException e) {
-            handleException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -79,7 +78,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
             writeEndDocument();
         }
         catch (IOException e) {
-            handleException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -112,7 +111,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
             writeAttribute(XMI_ID, element.id().toHexString());
         }
         catch (IOException e) {
-            handleException(e);
+            throw new RuntimeException(e);
         }
 
         classes.add(metaClass.eClass());
@@ -126,7 +125,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
             writeEndElement();
         }
         catch (IOException e) {
-            handleException(e);
+            throw new RuntimeException(e);
         }
 
         classes.removeLast();
@@ -148,7 +147,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
             }
         }
         catch (IOException e) {
-            handleException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -167,7 +166,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
             }
         }
         catch (IOException e) {
-            handleException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -253,13 +252,4 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
      * @throws IOException if an I/O error occurs when writing
      */
     protected abstract void writeEndDocument() throws IOException;
-
-    /**
-     * TODO
-     *
-     * @param e the exception to handle
-     */
-    private void handleException(IOException e) {
-        throw Throwables.wrap(e, RuntimeException.class);
-    }
 }

@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
 import org.codehaus.stax2.XMLOutputFactory2;
@@ -52,8 +51,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
             writer = factory.createXMLStreamWriter(new BufferedOutputStream(stream), XmiConstants.ENCODING);
         }
         catch (XMLStreamException e) {
-            handleException(e);
-            throw new IllegalStateException(); // Should never happen: Quick-fix to avoid Java compilation error
+            throw new IOException(e);
         }
     }
 
@@ -76,7 +74,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
             writer.writeStartDocument(XmiConstants.ENCODING, XmiConstants.VERSION);
         }
         catch (XMLStreamException e) {
-            handleException(e);
+            throw new IOException(e);
         }
     }
 
@@ -86,7 +84,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
             writer.writeStartElement(name);
         }
         catch (XMLStreamException e) {
-            handleException(e);
+            throw new IOException(e);
         }
     }
 
@@ -96,7 +94,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
             writer.writeNamespace(prefix, uri);
         }
         catch (XMLStreamException e) {
-            handleException(e);
+            throw new IOException(e);
         }
     }
 
@@ -106,7 +104,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
             writer.writeAttribute(name, value);
         }
         catch (XMLStreamException e) {
-            handleException(e);
+            throw new IOException(e);
         }
     }
 
@@ -116,7 +114,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
             writer.writeCharacters(characters);
         }
         catch (XMLStreamException e) {
-            handleException(e);
+            throw new IOException(e);
         }
     }
 
@@ -126,7 +124,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
             writer.writeEndElement();
         }
         catch (XMLStreamException e) {
-            handleException(e);
+            throw new IOException(e);
         }
     }
 
@@ -137,16 +135,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
             writer.close();
         }
         catch (XMLStreamException e) {
-            handleException(e);
+            throw new IOException(e);
         }
-    }
-
-    /**
-     * TODO
-     *
-     * @param e the exception to handle
-     */
-    protected void handleException(XMLStreamException e) throws IOException {
-        throw Throwables.wrap(e, IOException.class);
     }
 }

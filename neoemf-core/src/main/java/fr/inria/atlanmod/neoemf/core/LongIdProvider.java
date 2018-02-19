@@ -59,7 +59,7 @@ public final class LongIdProvider extends AbstractIdProvider {
             return fromLong(Long.parseUnsignedLong(hexValue, 16));
         }
         catch (NumberFormatException e) {
-            throw Throwables.wrap(e, IllegalArgumentException.class);
+            throw new IllegalArgumentException(e);
         }
     }
 

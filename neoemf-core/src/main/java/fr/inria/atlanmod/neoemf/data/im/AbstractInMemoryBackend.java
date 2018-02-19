@@ -268,7 +268,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
                 return delegate.deserialize(in.inputStream());
             }
             catch (IOException e) {
-                throw Throwables.wrap(e, IllegalStateException.class); // Should never happen
+                throw Throwables.shouldNeverHappen(e);
             }
         }
 
@@ -278,7 +278,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
                 delegate.serialize(value, out.outputStream());
             }
             catch (IOException e) {
-                throw Throwables.wrap(e, IllegalStateException.class); // Should never happen
+                throw Throwables.shouldNeverHappen(e);
             }
         }
     }
