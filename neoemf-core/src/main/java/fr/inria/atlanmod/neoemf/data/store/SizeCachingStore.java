@@ -25,15 +25,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically
-public class SizeCacheStore extends AbstractCacheStore<SingleFeatureBean, Optional<Integer>> {
+public class SizeCachingStore extends AbstractCachingStore<SingleFeatureBean, Optional<Integer>> {
 
     /**
-     * Constructs a new {@code SizeCacheStore}.
+     * Constructs a new {@code SizeCachingStore}.
      *
      * @param store the inner store
      */
     @VisibleForReflection
-    public SizeCacheStore(Store store) {
+    public SizeCachingStore(Store store) {
         super(store);
     }
 

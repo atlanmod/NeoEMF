@@ -34,10 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 /**
- * A test-case about {@link StatsRecordStore}.
+ * A test-case about {@link StatsRecorderStore}.
  */
 @ParametersAreNonnullByDefault
-class StatsRecordStoreTest extends AbstractTest {
+class StatsRecorderStoreTest extends AbstractTest {
 
     private static final long CALLS_COUNT = 2L;
 
@@ -89,11 +89,6 @@ class StatsRecordStoreTest extends AbstractTest {
         StoreStats stats = store.stats();
         assertThat(stats).isNotNull();
         assertThat(stats.methodCalls()).isEmpty();
-    }
-
-    @Test
-    void testClose() {
-        assertRecorded(() -> store.close(), "close", 1);
     }
 
     @Test

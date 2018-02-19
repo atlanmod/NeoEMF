@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @param <V> the type of cached values
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractCacheStore<K, V> extends AbstractStore {
+public abstract class AbstractCachingStore<K, V> extends AbstractStore {
 
     /**
      * In-memory cache that holds loaded values, identified by their key.
@@ -30,11 +30,11 @@ public abstract class AbstractCacheStore<K, V> extends AbstractStore {
             .build();
 
     /**
-     * Constructs a new {@code AbstractCacheStore} on the given {@code store}.
+     * Constructs a new {@code AbstractCachingStore} on the given {@code store}.
      *
      * @param store the inner store
      */
-    protected AbstractCacheStore(Store store) {
+    protected AbstractCachingStore(Store store) {
         super(store);
     }
 

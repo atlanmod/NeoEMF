@@ -9,6 +9,9 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
+import fr.inria.atlanmod.neoemf.data.store.listener.FailureCallReport;
+import fr.inria.atlanmod.neoemf.data.store.listener.StoreListener;
+import fr.inria.atlanmod.neoemf.data.store.listener.SuccessCallReport;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +27,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically
-public class StatsRecordStore extends AbstractListenerStore {
+// TODO Declare this class as a simple listener, and registers it in a ListeningStore
+public class StatsRecorderStore extends AbstractListeningStore implements StoreListener {
 
     /**
      * A map that accumulates the different calls made on the {@link Store} chain.
@@ -33,12 +37,12 @@ public class StatsRecordStore extends AbstractListenerStore {
     private final Map<String, AtomicLong> methodCallsAccumulator = new HashMap<>();
 
     /**
-     * Constructs a new {@code LogStore}.
+     * Constructs a new {@code LoggingStore}.
      *
      * @param store the inner store
      */
     @VisibleForReflection
-    public StatsRecordStore(Store store) {
+    public StatsRecorderStore(Store store) {
         super(store);
     }
 
@@ -49,21 +53,31 @@ public class StatsRecordStore extends AbstractListenerStore {
     }
 
     @Override
-    protected <K, V, R> void onSuccess(CallInfo<K, V, R> info) {
-        record(info);
+    public void onInitialize() {
+        // Do nothing
     }
 
     @Override
-    protected <K, V> void onFailure(CallInfo<K, V, ?> info) {
-        record(info);
+    public <K, V, R> void onSuccess(SuccessCallReport<K, V, R> callReport) {
+        record(callReport.method());
+    }
+
+    @Override
+    public <K, V> void onFailure(FailureCallReport<K, V> callReport) {
+        record(callReport.method());
+    }
+
+    @Override
+    public void onClose() {
+        // Do nothing
     }
 
     /**
      * Records the call of a method with a value.
      *
-     * @param info information about the call
+     * @param method the name of the called method
      */
-    protected void record(CallInfo<?, ?, ?> info) {
-        methodCallsAccumulator.computeIfAbsent(info.method(), s -> new AtomicLong()).incrementAndGet();
+    protected void record(String method) {
+        methodCallsAccumulator.computeIfAbsent(method, s -> new AtomicLong()).incrementAndGet();
     }
 }

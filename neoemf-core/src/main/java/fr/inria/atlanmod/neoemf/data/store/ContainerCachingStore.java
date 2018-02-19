@@ -24,15 +24,15 @@ import static java.util.Objects.nonNull;
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically
-public class ContainerCacheStore extends AbstractCacheStore<Id, Optional<SingleFeatureBean>> {
+public class ContainerCachingStore extends AbstractCachingStore<Id, Optional<SingleFeatureBean>> {
 
     /**
-     * Constructs a new {@code ContainerCacheStore} on the given {@code store}.
+     * Constructs a new {@code ContainerCachingStore} on the given {@code store}.
      *
      * @param store the inner store
      */
     @VisibleForReflection
-    protected ContainerCacheStore(Store store) {
+    protected ContainerCachingStore(Store store) {
         super(store);
     }
 

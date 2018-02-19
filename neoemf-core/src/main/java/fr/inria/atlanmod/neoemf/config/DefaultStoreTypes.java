@@ -27,7 +27,7 @@ final class DefaultStoreTypes {
      */
     @Nonnull
     public static final ConfigType<Store> CACHE_FEATURE = new ConfigType<>(
-            "fr.inria.atlanmod.neoemf.data.store.FeatureCacheStore",
+            "fr.inria.atlanmod.neoemf.data.store.FeatureCachingStore",
             60
     );
 
@@ -36,7 +36,7 @@ final class DefaultStoreTypes {
      */
     @Nonnull
     public static final ConfigType<Store> CACHE_SIZE = new ConfigType<>(
-            "fr.inria.atlanmod.neoemf.data.store.SizeCacheStore",
+            "fr.inria.atlanmod.neoemf.data.store.SizeCachingStore",
             60
     );
 
@@ -45,7 +45,7 @@ final class DefaultStoreTypes {
      */
     @Nonnull
     public static final ConfigType<Store> CACHE_CONTAINER = new ConfigType<>(
-            "fr.inria.atlanmod.neoemf.data.store.ContainerCacheStore",
+            "fr.inria.atlanmod.neoemf.data.store.ContainerCachingStore",
             70
     );
 
@@ -54,7 +54,7 @@ final class DefaultStoreTypes {
      */
     @Nonnull
     public static final ConfigType<Store> CACHE_METACLASS = new ConfigType<>(
-            "fr.inria.atlanmod.neoemf.data.store.ClassCacheStore",
+            "fr.inria.atlanmod.neoemf.data.store.ClassCachingStore",
             70
     );
 
@@ -63,7 +63,7 @@ final class DefaultStoreTypes {
      */
     @Nonnull
     public static final ConfigType<Store> LOG = new ConfigType<>(
-            "fr.inria.atlanmod.neoemf.data.store.LogStore",
+            "fr.inria.atlanmod.neoemf.data.store.LoggingStore",
             90,
             BaseConfig.STORE_LOG_LEVEL
     );
@@ -73,7 +73,7 @@ final class DefaultStoreTypes {
      */
     @Nonnull
     public static final ConfigType<Store> STATS = new ConfigType<>(
-            "fr.inria.atlanmod.neoemf.data.store.StatsRecordStore",
+            "fr.inria.atlanmod.neoemf.data.store.StatsRecorderStore",
             90
     );
 
@@ -82,7 +82,7 @@ final class DefaultStoreTypes {
      */
     @Nonnull
     public static final ConfigType<Store> AUTOSAVE = new ConfigType<>(
-            "fr.inria.atlanmod.neoemf.data.store.AutoSaveStore",
+            "fr.inria.atlanmod.neoemf.data.store.AutoSavingStore",
             100,
             BaseConfig.STORE_AUTOSAVE_CHUNK
     );

@@ -79,7 +79,7 @@ class StoreFactoryTest extends AbstractTest {
     }
 
     /**
-     * Checks the setup of the {@link LogStore}.
+     * Checks the setup of the {@link LoggingStore}.
      */
     @Test
     void testLogging() {
@@ -87,14 +87,14 @@ class StoreFactoryTest extends AbstractTest {
                 .log();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isInstanceOf(LogStore.class);
+        assertThat(store).isInstanceOf(LoggingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
-     * Checks the setup of the {@link SizeCacheStore}.
+     * Checks the setup of the {@link SizeCachingStore}.
      */
     @Test
     void testSizeCaching() {
@@ -102,14 +102,14 @@ class StoreFactoryTest extends AbstractTest {
                 .cacheSizes();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isInstanceOf(SizeCacheStore.class);
+        assertThat(store).isInstanceOf(SizeCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
-     * Checks the setup of the {@link FeatureCacheStore}.
+     * Checks the setup of the {@link FeatureCachingStore}.
      */
     @Test
     void testFeatureCaching() {
@@ -117,14 +117,14 @@ class StoreFactoryTest extends AbstractTest {
                 .cacheFeatures();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isInstanceOf(FeatureCacheStore.class);
+        assertThat(store).isInstanceOf(FeatureCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
-     * Checks the setup of the {@link ContainerCacheStore}.
+     * Checks the setup of the {@link ContainerCachingStore}.
      */
     @Test
     void testContainerCaching() {
@@ -132,14 +132,14 @@ class StoreFactoryTest extends AbstractTest {
                 .cacheContainers();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isInstanceOf(ContainerCacheStore.class);
+        assertThat(store).isInstanceOf(ContainerCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
-     * Checks the setup of the {@link ClassCacheStore}.
+     * Checks the setup of the {@link ClassCachingStore}.
      */
     @Test
     void testMetaclassCaching() {
@@ -147,14 +147,14 @@ class StoreFactoryTest extends AbstractTest {
                 .cacheMetaClasses();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isInstanceOf(ClassCacheStore.class);
+        assertThat(store).isInstanceOf(ClassCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
-     * Checks the setup of the {@link StatsRecordStore}.
+     * Checks the setup of the {@link StatsRecorderStore}.
      */
     @Test
     void testStatsCaching() {
@@ -162,14 +162,14 @@ class StoreFactoryTest extends AbstractTest {
                 .recordStats();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isInstanceOf(StatsRecordStore.class);
+        assertThat(store).isInstanceOf(StatsRecorderStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
-     * Checks the setup of the {@link AutoSaveStore} without chunk.
+     * Checks the setup of the {@link AutoSavingStore} without chunk.
      */
     @Test
     void testAutoSave() {
@@ -177,14 +177,14 @@ class StoreFactoryTest extends AbstractTest {
                 .autoSave();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isInstanceOf(AutoSaveStore.class);
+        assertThat(store).isInstanceOf(AutoSavingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);
     }
 
     /**
-     * Checks the setup of the {@link AutoSaveStore} with chunk.
+     * Checks the setup of the {@link AutoSavingStore} with chunk.
      */
     @Test
     void testAutoSaveWithChunk() {
@@ -194,9 +194,9 @@ class StoreFactoryTest extends AbstractTest {
                 .autoSave(expectedChunk);
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isInstanceOf(AutoSaveStore.class);
+        assertThat(store).isInstanceOf(AutoSavingStore.class);
 
-        long actualChunk = getValue(store, "chunk", AutoSaveStore.class, Long.class);
+        long actualChunk = getValue(store, "chunk", AutoSavingStore.class, Long.class);
         assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
@@ -204,7 +204,7 @@ class StoreFactoryTest extends AbstractTest {
     }
 
     /**
-     * Checks the setup of the {@link AutoSaveStore} with negative chunk.
+     * Checks the setup of the {@link AutoSavingStore} with negative chunk.
      */
     @Test
     void testAutoSaveWithNegativeChunk() {
@@ -229,31 +229,31 @@ class StoreFactoryTest extends AbstractTest {
                 .recordStats();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isInstanceOf(AutoSaveStore.class);
+        assertThat(store).isInstanceOf(AutoSavingStore.class);
 
-        long actualChunk = getValue(store, "chunk", AutoSaveStore.class, Long.class);
+        long actualChunk = getValue(store, "chunk", AutoSavingStore.class, Long.class);
         assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(StatsRecordStore.class);
+        assertThat(store).isExactlyInstanceOf(StatsRecorderStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(LogStore.class);
+        assertThat(store).isExactlyInstanceOf(LoggingStore.class);
 
-        Level actualLevel = getValue(store, "level", LogStore.class, Level.class);
+        Level actualLevel = getValue(store, "level", LoggingStore.class, Level.class);
         assertThat(actualLevel).isEqualTo(Level.DEBUG);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(ClassCacheStore.class);
+        assertThat(store).isExactlyInstanceOf(ClassCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(ContainerCacheStore.class);
+        assertThat(store).isExactlyInstanceOf(ContainerCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(FeatureCacheStore.class);
+        assertThat(store).isExactlyInstanceOf(FeatureCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(SizeCacheStore.class);
+        assertThat(store).isExactlyInstanceOf(SizeCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);

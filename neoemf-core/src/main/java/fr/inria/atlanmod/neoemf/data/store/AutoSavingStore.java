@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings("unused") // Called dynamically
-public class AutoSaveStore extends AbstractStore {
+public class AutoSavingStore extends AbstractStore {
 
     /**
      * The default number of allowed changes between saves.
@@ -51,24 +51,24 @@ public class AutoSaveStore extends AbstractStore {
     private final AtomicLong count = new AtomicLong();
 
     /**
-     * Constructs a new {@code AutoSaveStore} with the given {@code chunk}.
+     * Constructs a new {@code AutoSavingStore} with the given {@code chunk}.
      *
      * @param store the inner store
      * @param chunk the number of modifications between saves
      */
     @VisibleForReflection
-    public AutoSaveStore(Store store, Long chunk) {
+    public AutoSavingStore(Store store, Long chunk) {
         super(store);
         this.chunk = chunk;
     }
 
     /**
-     * Constructs a new {@code AutoSaveStore} with the default number of modifications between saves.
+     * Constructs a new {@code AutoSavingStore} with the default number of modifications between saves.
      *
      * @param store the underlying store
      */
     @VisibleForReflection
-    public AutoSaveStore(Store store) {
+    public AutoSavingStore(Store store) {
         this(store, DEFAULT_CHUNK);
     }
 
