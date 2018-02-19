@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Beta;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
 import org.codehaus.stax2.XMLOutputFactory2;
@@ -27,7 +26,6 @@ import javax.xml.stream.XMLStreamWriter;
 /**
  * A {@link AbstractXmiStreamWriter} that uses a StAX implementation with cursors for writing XMI files.
  */
-@Beta
 @ParametersAreNonnullByDefault
 public class XmiStreamWriter extends AbstractXmiStreamWriter {
 
@@ -35,7 +33,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
      * The XML writer on the {@link #target}.
      */
     @Nonnull
-    private final XMLStreamWriter writer;
+    protected final XMLStreamWriter writer;
 
     /**
      * Constructs a new {@code XmiStreamWriter} on the given {@code stream}.
@@ -148,7 +146,7 @@ public class XmiStreamWriter extends AbstractXmiStreamWriter {
      *
      * @param e the exception to handle
      */
-    private void handleException(XMLStreamException e) throws IOException {
+    protected void handleException(XMLStreamException e) throws IOException {
         throw Throwables.wrap(e, IOException.class);
     }
 }
