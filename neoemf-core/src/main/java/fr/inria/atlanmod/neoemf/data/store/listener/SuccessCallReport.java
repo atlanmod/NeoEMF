@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store.listener;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -25,7 +24,7 @@ public class SuccessCallReport<K, V, R> extends AbstractCallReport<K, V> {
     /**
      * The result of the call.
      */
-    @Nonnull
+    @Nullable
     private final R result;
 
     /**
@@ -37,7 +36,7 @@ public class SuccessCallReport<K, V, R> extends AbstractCallReport<K, V> {
      * @param value   the value used during the call
      * @param result  the result of the call
      */
-    public SuccessCallReport(BackendReport backend, String method, @Nullable K key, @Nullable V value, R result) {
+    public SuccessCallReport(BackendReport backend, String method, @Nullable K key, @Nullable V value, @Nullable R result) {
         super(backend, method, key, value);
         this.result = result;
     }
@@ -47,7 +46,7 @@ public class SuccessCallReport<K, V, R> extends AbstractCallReport<K, V> {
      *
      * @return the result of the call
      */
-    @Nonnull
+    @Nullable
     public R result() {
         return result;
     }

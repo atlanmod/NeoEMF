@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store.listener;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -24,7 +23,7 @@ public class FailureCallReport<K, V> extends AbstractCallReport<K, V> {
     /**
      * The exception thrown during the call.
      */
-    @Nonnull
+    @Nullable
     private final Throwable thrownException;
 
     /**
@@ -36,7 +35,7 @@ public class FailureCallReport<K, V> extends AbstractCallReport<K, V> {
      * @param value   the value used during the call
      * @param e       the exception thrown during the call
      */
-    public FailureCallReport(BackendReport backend, String method, @Nullable K key, @Nullable V value, Throwable e) {
+    public FailureCallReport(BackendReport backend, String method, @Nullable K key, @Nullable V value, @Nullable Throwable e) {
         super(backend, method, key, value);
         this.thrownException = e;
     }
@@ -46,7 +45,7 @@ public class FailureCallReport<K, V> extends AbstractCallReport<K, V> {
      *
      * @return the exception thrown during the call
      */
-    @Nonnull
+    @Nullable
     public Throwable thrownException() {
         return thrownException;
     }

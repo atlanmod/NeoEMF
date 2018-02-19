@@ -106,7 +106,9 @@ public class LoggingStore extends AbstractListeningStore implements StoreListene
     @Nonnull
     private <K, V, R> String toString(SuccessCallReport<K, V, R> info) {
         StringBuilder sb = initBuilder(info);
-        sb.append(" = ").append(info.result());
+        if (nonNull(info.result())) {
+            sb.append(" = ").append(info.result());
+        }
         return sb.toString();
     }
 
@@ -122,7 +124,10 @@ public class LoggingStore extends AbstractListeningStore implements StoreListene
     @Nonnull
     private <K, V> String toString(FailureCallReport<K, V> info) {
         StringBuilder sb = initBuilder(info);
-        sb.append(" but failed with ").append(info.thrownException().getClass().getSimpleName());
+        sb.append(" but failed");
+        if (nonNull(info.thrownException())) {
+            sb.append(" with ").append(info.thrownException());
+        }
         return sb.toString();
     }
 

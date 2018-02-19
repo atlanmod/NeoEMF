@@ -180,7 +180,7 @@ class StoreFeatureMapTest extends AbstractResourceBasedTest {
         target2.setName("Target2");
 
         TargetObject target3 = EFACTORY.createTargetObject();
-        target2.setName("Target3");
+        target3.setName("Target3");
 
         try (PersistentResource resource = createPersistentResource(context)) {
             PrimaryObject primary = fillResource(resource);
@@ -218,7 +218,7 @@ class StoreFeatureMapTest extends AbstractResourceBasedTest {
         target2.setName("Target2");
 
         TargetObject target3 = EFACTORY.createTargetObject();
-        target2.setName("Target3");
+        target3.setName("Target3");
 
         try (PersistentResource resource = createPersistentResource(context)) {
             PrimaryObject primary = fillResource(resource);
@@ -264,7 +264,7 @@ class StoreFeatureMapTest extends AbstractResourceBasedTest {
         target2.setName("Target2");
 
         TargetObject target3 = EFACTORY.createTargetObject();
-        target2.setName("Target3");
+        target3.setName("Target3");
 
         try (PersistentResource resource = createPersistentResource(context)) {
             PrimaryObject primary = fillResource(resource);

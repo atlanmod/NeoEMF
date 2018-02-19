@@ -68,7 +68,7 @@ class PrimaryObject {
 	@ExtendedMetaData(kind="group")
 	unique EFeatureMapEntry featureMapReferenceCollection
 	@ExtendedMetaData(group="#featureMapReferenceCollection")
-	refers local transient volatile derived TargetObject[] featureMapReferenceType1
+	contains transient volatile derived TargetObject[] featureMapReferenceType1
 	@ExtendedMetaData(group="#featureMapReferenceCollection")
 	contains transient volatile derived TargetObject[] featureMapReferenceType2
 	@ExtendedMetaData(kind="group")
