@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.data.im;
 
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.CoreContext;
+import fr.inria.atlanmod.neoemf.context.InMemoryContext;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
@@ -32,7 +32,7 @@ class BoundInMemoryBackendTest extends AbstractDataMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return new CoreContext() {
+        return new InMemoryContext() {
 
             @Nonnull
             @Override

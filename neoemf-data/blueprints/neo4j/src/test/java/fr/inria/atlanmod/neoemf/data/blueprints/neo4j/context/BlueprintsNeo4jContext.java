@@ -45,6 +45,6 @@ public abstract class BlueprintsNeo4jContext extends BlueprintsContext {
     @Nonnull
     @Override
     public String name() {
-        return "Neo4j";
+        return "Blueprints-Neo4j";
     }
 }

@@ -12,9 +12,6 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
 import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
-import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-
-import java.io.File;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A specific {@link Context} for the core.
  */
 @ParametersAreNonnullByDefault
-public abstract class CoreContext extends AbstractContext {
+public abstract class InMemoryContext extends AbstractContext {
 
     /**
      * Returns the instance of this class.
@@ -32,14 +29,14 @@ public abstract class CoreContext extends AbstractContext {
      */
     @Nonnull
     public static Context get() {
-        return new CoreContext() {
+        return new InMemoryContext() {
         };
     }
 
     @Nonnull
     @Override
     public String name() {
-        return "Core";
+        return "In-Memory";
     }
 
     @Nonnull
@@ -54,17 +51,8 @@ public abstract class CoreContext extends AbstractContext {
         return InMemoryConfig.newConfig();
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * This {@code Context} doesn't support the {@link PersistentResource} loading.
-     *
-     * @throws UnsupportedOperationException every time
-     */
-    @Nonnull
     @Override
-    public PersistentResource loadResource(File file) {
-        throw new UnsupportedOperationException(
-                String.format("%s cannot load an existing resource", getClass().getSimpleName()));
+    public boolean isPersistent() {
+        return false;
     }
 }

@@ -11,6 +11,7 @@ package fr.inria.atlanmod.neoemf.io.util;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.neoemf.tests.sample.impl.SamplePackageImpl;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -92,6 +93,7 @@ public final class ResourceManager {
      */
     public static void registerAllPackages() {
         JavaPackageImpl.init();
+        SamplePackageImpl.init();
     }
 
     /**

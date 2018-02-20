@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.im;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.CoreContext;
+import fr.inria.atlanmod.neoemf.context.InMemoryContext;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
 
@@ -28,7 +28,7 @@ class InMemoryBackendFactoryTest extends AbstractBackendFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return CoreContext.get();
+        return InMemoryContext.get();
     }
 
     @Disabled("Not supported")

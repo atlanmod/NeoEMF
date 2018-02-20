@@ -33,6 +33,11 @@ public abstract class AbstractContext implements Context {
         return BindingEngine.schemeOf(factory().getClass());
     }
 
+    @Override
+    public boolean isPersistent() {
+        return true;
+    }
+
     @Nonnull
     @Override
     public URI createUri(URI uri) {
@@ -62,6 +67,10 @@ public abstract class AbstractContext implements Context {
     @Nonnull
     @Override
     public PersistentResource loadResource(File file) throws IOException {
+        if (!isPersistent()) {
+            throw new UnsupportedOperationException(String.format("%s cannot load an existing resource", getClass().getSimpleName()));
+        }
+
         return new ContextualResourceBuilder(this).file(file).loadResource();
     }
 

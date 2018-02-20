@@ -43,7 +43,7 @@ public abstract class BlueprintsContext extends AbstractContext {
     @Nonnull
     @Override
     public String name() {
-        return "Tinker";
+        return "Blueprints-Tinkergraph";
     }
 
     @Nonnull

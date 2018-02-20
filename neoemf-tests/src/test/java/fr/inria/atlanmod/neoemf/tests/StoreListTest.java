@@ -35,10 +35,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ParametersAreNonnullByDefault
 class StoreListTest extends AbstractResourceBasedTest {
 
-    @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; count = {2}")
-    @ArgumentsSource(ContextProvider.AllWithBooleansAndIntegers.class)
-    void testContainsElements(Context context, Boolean isPersistent, Integer count) throws IOException {
-        try (PersistentResource resource = createResource(context, isPersistent)) {
+    @ParameterizedTest(name = "[{index}] {0}: count = {1}")
+    @ArgumentsSource(ContextProvider.AllWithIntegers.class)
+    void testContainsElements(Context context, Integer count) throws IOException {
+        try (PersistentResource resource = createPersistentResource(context)) {
             List<TargetObject> content = fillResource(resource, count);
 
             PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));

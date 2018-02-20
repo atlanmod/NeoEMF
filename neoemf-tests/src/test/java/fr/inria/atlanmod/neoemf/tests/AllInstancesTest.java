@@ -30,6 +30,7 @@ import java.util.stream.IntStream;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * A test-case about the {@link PersistentResource#allInstancesOf(EClass, boolean)} method.
@@ -75,10 +76,10 @@ class AllInstancesTest extends AbstractResourceBasedTest {
     /**
      * Checks the content.
      */
-    @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1} ; isStrict = {2}")
-    @ArgumentsSource(ContextProvider.AllWithBiBooleans.class)
-    void testAllInstances(Context context, Boolean isPersistent, Boolean isStrict) throws IOException {
-        try (PersistentResource resource = createResource(context, isPersistent)) {
+    @ParameterizedTest(name = "[{index}] {0}: isStrict = {1}")
+    @ArgumentsSource(ContextProvider.AllWithBooleans.class)
+    void testAllInstances(Context context, Boolean isStrict) throws IOException {
+        try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);
 
             if (!isStrict) {
@@ -96,6 +97,8 @@ class AllInstancesTest extends AbstractResourceBasedTest {
     @ParameterizedTest(name = "[{index}] {0}: isStrict = {1}")
     @ArgumentsSource(ContextProvider.AllWithBooleans.class)
     void testAllInstancesLoaded(Context context, Boolean isStrict) throws IOException {
+        assumeTrue(context.isPersistent(), "The context is transient");
+
         try (PersistentResource resource = createPersistentResource(context)) {
             fillResource(resource);
 

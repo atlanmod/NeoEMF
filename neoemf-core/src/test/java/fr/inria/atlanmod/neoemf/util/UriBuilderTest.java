@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.CoreContext;
+import fr.inria.atlanmod.neoemf.context.InMemoryContext;
 
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.Test;
@@ -34,7 +34,7 @@ class UriBuilderTest extends AbstractUriTest {
     @Nonnull
     @Override
     protected Context context() {
-        return CoreContext.get();
+        return InMemoryContext.get();
     }
 
     @Test

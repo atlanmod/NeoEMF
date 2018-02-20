@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.im;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.CoreContext;
+import fr.inria.atlanmod.neoemf.context.InMemoryContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
 import javax.annotation.Nonnull;
@@ -24,6 +24,6 @@ class DefaultInMemoryBackendTest extends AbstractDataMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return CoreContext.get();
+        return InMemoryContext.get();
     }
 }

@@ -93,7 +93,7 @@ public abstract class MapDbContext extends AbstractContext {
     @Nonnull
     @Override
     public String name() {
-        return "MapDb";
+        return "MapDB";
     }
 
     @Nonnull

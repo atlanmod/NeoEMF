@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.tests.provider;
 
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.context.InMemoryContext;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
@@ -44,6 +45,7 @@ public final class ContextProvider {
     @Nonnull
     public static Stream<Context> allContexts() {
         return Stream.of(
+                InMemoryContext.get(),
                 BlueprintsContext.getDefault(),
                 BlueprintsNeo4jContext.getDefault(),
                 MapDbContext.getWithIndices(),
@@ -107,33 +109,17 @@ public final class ContextProvider {
     }
 
     /**
-     * An {@link ArgumentsProvider} with all {@link Context}s associated with all {@link Boolean} variants (x2).
-     */
-    @ParametersAreNonnullByDefault
-    public static class AllWithBiBooleans implements ArgumentsProvider {
-
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return ContextProvider.allContexts()
-                    .flatMap(c -> Stream.of(false, true)
-                            .flatMap(b1 -> Stream.of(false, true)
-                                    .map(b2 -> Arguments.of(c, b1, b2))));
-        }
-    }
-
-    /**
      * An {@link ArgumentsProvider} with all {@link Context}s associated with all {@link Boolean} variants, and some
      * {@link Integer}s.
      */
     @ParametersAreNonnullByDefault
-    public static class AllWithBooleansAndIntegers implements ArgumentsProvider {
+    public static class AllWithIntegers implements ArgumentsProvider {
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return ContextProvider.allContexts()
-                    .flatMap(c -> Stream.of(false, true)
-                            .flatMap(b -> IntStream.rangeClosed(3, 5)
-                                    .mapToObj(i -> Arguments.of(c, b, i))));
+                    .flatMap(c -> IntStream.rangeClosed(3, 5)
+                            .mapToObj(i -> Arguments.of(c, i)));
         }
     }
 }

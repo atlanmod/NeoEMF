@@ -35,6 +35,8 @@ import java.nio.file.Paths;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 /**
  * A test-case that checks the behavior of direct I/O methods, by using the `neoemf-io` module.
  */
@@ -57,6 +59,8 @@ class DirectMigrationTest extends AbstractResourceBasedTest {
     @ParameterizedTest(name = "[{index}] {0} <- {1}")
     @ArgumentsSource(ContextProvider.AllWithUris.class)
     void testDirectImport(Context context, URI uri) throws IOException {
+        assumeTrue(context.isPersistent(), "The context is transient");
+
         final File sourceFile = currentTempFile();
         Log.info("Importing from file... [{0}]", sourceFile);
 
@@ -121,6 +125,9 @@ class DirectMigrationTest extends AbstractResourceBasedTest {
     @ParameterizedTest(name = "[{index}] {0} -> {1}")
     @ArgumentsSource(ContextProvider.AllWithContexts.class)
     void testDirectCrossCopy(Context sourceContext, Context targetContext) throws IOException {
+        assumeTrue(sourceContext.isPersistent(), "The source context is transient");
+        assumeTrue(targetContext.isPersistent(), "The target context is transient");
+
         final File sourceFile = currentTempFile();
         final File targetFile = Paths.get(currentTempFile() + "-copy").toFile();
 

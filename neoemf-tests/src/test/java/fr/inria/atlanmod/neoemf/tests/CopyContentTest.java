@@ -64,11 +64,11 @@ class CopyContentTest extends AbstractResourceBasedTest {
      */
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    void testCopyTransientToPersistentResource(Context sourceContext) throws IOException {
-        try (PersistentResource resource = createTransientResource(sourceContext)) {
+    void testCopyTransientToPersistentResource(Context context) throws IOException {
+        try (PersistentResource resource = createTransientResource(context)) {
             fillResource(resource);
 
-            resource.save(sourceContext.config());
+            resource.save(context.config());
             assertThat(resource.getContents()).isNotEmpty();
             assertThat(resource.getContents().get(0)).isInstanceOf(PrimaryObject.class);
 
@@ -92,11 +92,11 @@ class CopyContentTest extends AbstractResourceBasedTest {
      * fr.inria.atlanmod.neoemf.data.Backend}.
      */
     @Tag("slower")
-    @ParameterizedTest(name = "[{index}] {0}: isPersistent = {1}")
-    @ArgumentsSource(ContextProvider.AllWithBooleans.class)
+    @ParameterizedTest
+    @ArgumentsSource(ContextProvider.All.class)
     // FIXME May failed with HBase when using no caching store
-    void testMoveStandardToPersistentResource(Context context, Boolean isPersistent) throws IOException {
-        try (PersistentResource resource = createResource(context, isPersistent)) {
+    void testMoveStandardToPersistentResource(Context context) throws IOException {
+        try (PersistentResource resource = createPersistentResource(context)) {
             EObject expected = ResourceManager.load(ResourceManager.xmiStandard());
 
             // Move the content and check the state of `expected` after transfer

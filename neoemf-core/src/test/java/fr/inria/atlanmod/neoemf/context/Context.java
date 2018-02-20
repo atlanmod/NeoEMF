@@ -82,6 +82,13 @@ public interface Context {
     String uriScheme();
 
     /**
+     * Returns {@code true} if the context is persistent.
+     *
+     * @return {@code true}
+     */
+    boolean isPersistent();
+
+    /**
      * Creates a new {@link URI} from the given {@code uri}, according to this context.
      *
      * @param uri the base {@link URI}

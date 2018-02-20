@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * A test-case that checks the behavior of a loaded {@link PersistentResource}.
@@ -129,6 +130,8 @@ class LoadResourceTest extends AbstractResourceBasedTest {
      */
     @Nonnull
     private PersistentResource createPersistentLoadedResource(Context context) throws IOException {
+        assumeTrue(context.isPersistent(), "The context is transient");
+
         try (PersistentResource resource = createPersistentResource(context)) {
             PrimaryObject primary = EFACTORY.createPrimaryObject();
             TargetObject target = EFACTORY.createTargetObject();
