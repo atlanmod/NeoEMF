@@ -114,11 +114,6 @@ public final class InMemoryWriter implements Writer {
     }
 
     @Override
-    public void onCharacters(String characters) {
-        // Do nothing
-    }
-
-    @Override
     public void onEndElement() {
         previousElements.removeLast();
     }

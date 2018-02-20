@@ -96,21 +96,6 @@ public interface Notifier<H extends Handler> {
     }
 
     /**
-     * Notifies all registered handlers of a new set of characters.
-     *
-     * @param characters the new characters
-     *
-     * @see Handler#onCharacters(String)
-     */
-    default void notifyCharacters(String characters) throws IOException {
-        checkNotNull(characters, "characters");
-
-        for (H h : next()) {
-            h.onCharacters(characters);
-        }
-    }
-
-    /**
      * Notifies all registered handlers of the end of the current element.
      *
      * @see #notifyStartElement(BasicElement)

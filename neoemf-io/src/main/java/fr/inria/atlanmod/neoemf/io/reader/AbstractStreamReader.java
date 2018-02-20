@@ -169,6 +169,21 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     }
 
     /**
+     * Reads a new simple element, as {@code <name>value</name>}.
+     *
+     * @param uri   the URI of the element
+     * @param name  the name of the element
+     * @param value the literal value of the element
+     */
+    protected final void readSimpleElement(@Nullable String uri, String name, String value) throws IOException {
+        BasicAttribute attribute = new BasicAttribute()
+                .name(name)
+                .rawValue(value);
+
+        notifyAttribute(attribute);
+    }
+
+    /**
      * Reads a {@link fr.inria.atlanmod.neoemf.io.bean.BasicNamespace} declaration.
      *
      * @param prefix the prefix
@@ -215,7 +230,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
         if (!ignoredElement && !isSpecialAttribute(prefix, name, value)) {
             BasicAttribute attribute = new BasicAttribute()
                     .name(name)
-                    .stringValue(value);
+                    .rawValue(value);
 
             currentAttributes.add(attribute);
         }
@@ -232,15 +247,6 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * @return {@code true} if the given feature is a special feature
      */
     protected abstract boolean isSpecialAttribute(@Nullable String prefix, String name, String value) throws IOException;
-
-    /**
-     * Reads characters.
-     *
-     * @param characters a set of characters, as {@link String}
-     */
-    protected final void readCharacters(String characters) throws IOException {
-        notifyCharacters(characters);
-    }
 
     /**
      * Reads a meta-class attribute from the {@code prefixedValue}, and defines is as the meta-class of the given {@code

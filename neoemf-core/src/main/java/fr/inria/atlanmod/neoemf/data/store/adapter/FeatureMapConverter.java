@@ -35,7 +35,13 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
      * The delimiter used to separate the feature from its value in a serialized {@link FeatureMap.Entry}.
      */
     @Nonnull
-    private static final String FEATURE_MAP_DELIMITER = "#";
+    public static final String ENTRY_DELIMITER = "#";
+
+    /**
+     * The pattern used to store feature map entries.
+     */
+    @Nonnull
+    public static final String ENTRY_FORMAT = "%s" + ENTRY_DELIMITER + "%s";
 
     /**
      * The store associated to this converter.
@@ -86,7 +92,7 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
             value = referencedObject.id().toHexString();
         }
 
-        return entryFeature.getName() + FEATURE_MAP_DELIMITER + value;
+        return String.format(ENTRY_FORMAT, entryFeature.getName(), value);
     }
 
     /**
@@ -107,7 +113,7 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
     @Nonnull
     @Override
     public FeatureMap.Entry revert(String entry, EAttribute attribute) {
-        String[] splitValues = entry.split(FEATURE_MAP_DELIMITER, 2);
+        String[] splitValues = entry.split(ENTRY_DELIMITER, 2);
 
         EClass metaClass = attribute.getEContainingClass();
         EStructuralFeature entryFeature = metaClass.getEStructuralFeature(splitValues[0]);

@@ -125,11 +125,6 @@ public abstract class AbstractWriter<T> implements Writer {
     }
 
     @Override
-    public final void onCharacters(String characters) throws IOException {
-        // Do nothing
-    }
-
-    @Override
     @OverridingMethodsMustInvokeSuper
     public void onEndElement() throws IOException {
         flushAllFeatures();

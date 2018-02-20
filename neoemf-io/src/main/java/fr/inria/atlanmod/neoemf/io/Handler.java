@@ -63,16 +63,6 @@ public interface Handler {
     void onReference(BasicReference reference) throws IOException;
 
     /**
-     * Handles a set of characters.
-     *
-     * @param characters the new characters
-     *
-     * @see #onStartElement(BasicElement)
-     * @see Notifier#notifyCharacters(String)
-     */
-    void onCharacters(String characters) throws IOException;
-
-    /**
      * Handles the end of the current element.
      *
      * @see #onStartElement(BasicElement)

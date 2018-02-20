@@ -55,11 +55,6 @@ public final class NoopProcessor extends AbstractNotifier<Handler> implements Pr
     }
 
     @Override
-    public void onCharacters(String characters) throws IOException {
-        notifyCharacters(characters);
-    }
-
-    @Override
     public void onEndElement() throws IOException {
         notifyEndElement();
     }

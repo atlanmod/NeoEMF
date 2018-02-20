@@ -8,10 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
@@ -36,7 +34,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
@@ -54,19 +51,6 @@ public class EcoreMapper extends AbstractProcessor {
      */
     @Nonnull
     private final Deque<BasicElement> elements = new ArrayDeque<>();
-
-    /**
-     * An attribute that is waiting for a value.
-     *
-     * @see Handler#onCharacters(String)
-     */
-    @Nullable
-    private BasicAttribute pendingAttribute;
-
-    /**
-     * Defines if the previous element was an attribute, or not.
-     */
-    private boolean ignoredElement;
 
     /**
      * Constructs a new {@code EcoreMapper}.
@@ -93,6 +77,10 @@ public class EcoreMapper extends AbstractProcessor {
     public void onAttribute(BasicAttribute attribute) throws IOException {
         final EStructuralFeature eFeature = getFeature(attribute.name());
 
+        if (isFeatureMap(eFeature)) {
+            throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
+        }
+
         if (EObjects.isAttribute(eFeature)) {
             // The attribute is well a attribute
             processAttribute(attribute, EObjects.asAttribute(eFeature));
@@ -100,7 +88,7 @@ public class EcoreMapper extends AbstractProcessor {
         else {
             // Otherwise redirect to the reference handler
             BasicReference reference = new BasicReference()
-                    .stringValue(attribute.stringValue());
+                    .rawValue(attribute.rawValue());
 
             processReference(reference, EObjects.asReference(eFeature));
         }
@@ -114,31 +102,10 @@ public class EcoreMapper extends AbstractProcessor {
     }
 
     @Override
-    public void onCharacters(String characters) throws IOException {
-        // Defines the value of the waiting attribute, if exists
-        if (nonNull(pendingAttribute)) {
-            pendingAttribute.stringValue(characters);
-            onAttribute(pendingAttribute);
-
-            pendingAttribute = null;
-        }
-    }
-
-    @Override
     public void onEndElement() throws IOException {
-        if (!ignoredElement) {
-            elements.removeLast();
+        elements.removeLast();
 
-            notifyEndElement();
-        }
-        else {
-            if (nonNull(pendingAttribute)) {
-                Log.warn("An attribute '{0}' is still waiting a value: it will be ignored", pendingAttribute.name());
-                pendingAttribute = null;
-            }
-
-            ignoredElement = false;
-        }
+        notifyEndElement();
     }
 
     /**
@@ -170,63 +137,34 @@ public class EcoreMapper extends AbstractProcessor {
      * (attribute or reference).
      *
      * @param element the element representing the feature
-     *
-     * @see #processElementAsAttribute(EAttribute)
-     * @see #processElementAsReference(BasicElement, EReference)
      */
     private void processElementAsFeature(BasicElement element) throws IOException {
         final EStructuralFeature feature = getFeature(element.name());
 
         // Check if the feature is a FeatureMap.Entry
-        final EStructuralFeature featureGroup = ExtendedMetaData.INSTANCE.getGroup(feature);
-        if (nonNull(featureGroup) && FeatureMapUtil.isFeatureMap(featureGroup)) {
+        if (isFeatureMap(feature)) {
             throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
         }
 
         if (EObjects.isAttribute(feature)) {
-            processElementAsAttribute(EObjects.asAttribute(feature));
+            throw new IllegalStateException(String.format("You should never have arrived here: The element is an attribute: %s", feature.getName()));
+        }
+
+        EReference eReference = EObjects.asReference(feature);
+        EClass baseClass = EClass.class.cast(eReference.getEType());
+
+        // Retrieve the type the reference
+        if (nonNull(element.metaClass())) {
+            // The meta-class was specified in the element
+            BasicMetaclass metaClass = element.metaClass();
+            metaClass.eClass(resolveClass(metaClass, baseClass));
         }
         else {
-            EReference eReference = EObjects.asReference(feature);
-            EClass baseClass = EClass.class.cast(eReference.getEType());
-
-            // Retrieve the type the reference
-            if (nonNull(element.metaClass())) {
-                // The meta-class was specified in the element
-                BasicMetaclass metaClass = element.metaClass();
-                metaClass.eClass(resolveClass(metaClass, baseClass));
-            }
-            else {
-                BasicNamespace ns = BasicNamespace.Registry.getInstance().get(baseClass.getEPackage());
-                element.metaClass(new BasicMetaclass(ns).eClass(baseClass));
-            }
-
-            processElementAsReference(element, eReference);
-        }
-    }
-
-    /**
-     * Processes an element as an attribute.
-     *
-     * @param eAttribute the associated EMF attribute
-     */
-    private void processElementAsAttribute(EAttribute eAttribute) {
-        if (nonNull(pendingAttribute)) {
-            Log.warn("The new attribute {0} will replace the pending one {1}", eAttribute.getName(), pendingAttribute.name());
+            BasicNamespace ns = BasicNamespace.Registry.getInstance().get(baseClass.getEPackage());
+            element.metaClass(new BasicMetaclass(ns).eClass(baseClass));
         }
 
-        BasicElement parentElement = elements.getLast();
-        EClass parentEClass = parentElement.metaClass().eClass();
-
-        @SuppressWarnings("UnnecessaryLocalVariable")
-        BasicAttribute attribute = new BasicAttribute()
-                .owner(parentElement.id())
-                .id(parentEClass.getFeatureID(eAttribute))
-                .eFeature(eAttribute);
-
-        // The attribute waiting a plain text value
-        pendingAttribute = attribute;
-        ignoredElement = true;
+        processElementAsReference(element, eReference);
     }
 
     /**
@@ -262,12 +200,12 @@ public class EcoreMapper extends AbstractProcessor {
      */
     private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) throws IOException {
         BasicElement parentElement = elements.getLast();
-        EClass parentEClass = parentElement.metaClass().eClass();
+        EClass parentClass = parentElement.metaClass().eClass();
 
         attribute.owner(parentElement.id())
-                .id(parentEClass.getFeatureID(eAttribute))
+                .id(parentClass.getFeatureID(eAttribute))
                 .eFeature(eAttribute)
-                .value(ValueConverter.INSTANCE.convert(attribute.stringValue(), eAttribute));
+                .value(ValueConverter.INSTANCE.convert(attribute.rawValue(), eAttribute));
 
         notifyAttribute(attribute);
     }
@@ -280,10 +218,10 @@ public class EcoreMapper extends AbstractProcessor {
      */
     private void processReference(BasicReference reference, EReference eReference) throws IOException {
         BasicElement parentElement = elements.getLast();
-        EClass parentEClass = parentElement.metaClass().eClass();
+        EClass parentClass = parentElement.metaClass().eClass();
 
         reference.owner(parentElement.id())
-                .id(parentEClass.getFeatureID(eReference))
+                .id(parentClass.getFeatureID(eReference))
                 .eFeature(eReference);
 
         // The unique identifier is already set
@@ -307,9 +245,9 @@ public class EcoreMapper extends AbstractProcessor {
                 .owner(reference.owner())
                 .id(reference.id())
                 .eFeature(eReference)
-                .stringValue(s);
+                .rawValue(s);
 
-        List<BasicReference> allReferences = Arrays.stream(reference.stringValue().split(Strings.SPACE))
+        List<BasicReference> allReferences = Arrays.stream(reference.<String>rawValue().split(Strings.SPACE))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .map(createFunc)
@@ -318,6 +256,18 @@ public class EcoreMapper extends AbstractProcessor {
         for (BasicReference r : allReferences) {
             notifyReference(r);
         }
+    }
+
+    /**
+     * Returns {@code true} if the feature is a feature map.
+     *
+     * @param eFeature the feature to test
+     *
+     * @return {@code true} if the feature is a feature map
+     */
+    private boolean isFeatureMap(EStructuralFeature eFeature) {
+        final EStructuralFeature featureGroup = ExtendedMetaData.INSTANCE.getGroup(eFeature);
+        return nonNull(featureGroup) && FeatureMapUtil.isFeatureMap(featureGroup);
     }
 
     /**
@@ -332,10 +282,10 @@ public class EcoreMapper extends AbstractProcessor {
     @Nonnull
     private EStructuralFeature getFeature(String name) {
         BasicElement parentElement = elements.getLast();
-        EClass metaClass = parentElement.metaClass().eClass();
-        EStructuralFeature eFeature = metaClass.getEStructuralFeature(name);
+        EClass parentClass = parentElement.metaClass().eClass();
+        EStructuralFeature eFeature = parentClass.getEStructuralFeature(name);
 
-        checkNotNull(eFeature, "No feature named {0} has been found in class {1}", name, metaClass);
+        checkNotNull(eFeature, "No feature named {0} has been found in class {1}", name, parentClass);
 
         return eFeature;
     }

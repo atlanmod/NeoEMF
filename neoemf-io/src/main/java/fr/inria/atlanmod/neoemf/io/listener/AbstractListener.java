@@ -41,11 +41,6 @@ public abstract class AbstractListener implements Listener {
     }
 
     @Override
-    public void onCharacters(String characters) {
-        // Do nothing
-    }
-
-    @Override
     public void onEndElement() {
         // Do nothing
     }

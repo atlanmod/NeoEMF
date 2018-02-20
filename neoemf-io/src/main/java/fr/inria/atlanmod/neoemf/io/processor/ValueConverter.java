@@ -63,12 +63,12 @@ public class ValueConverter implements BiConverter<String, EAttribute, Object> {
 
         final EDataType dataType = attribute.getEAttributeType();
 
-        if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-            throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
+        if (!EEnum.class.isInstance(dataType) && Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
+            return EcoreUtil.createFromString(dataType, String.class.cast(value));
         }
 
-        if (!EEnum.class.isInstance(dataType) && Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
-            return EcoreUtil.createFromString(dataType, value);
+        if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
+            throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
         }
 
         return value;
@@ -96,12 +96,12 @@ public class ValueConverter implements BiConverter<String, EAttribute, Object> {
 
         final EDataType dataType = attribute.getEAttributeType();
 
-        if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-            throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
+        if (!EEnum.class.isInstance(dataType) && Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
+            return EcoreUtil.convertToString(dataType, value);
         }
 
-        if (Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
-            return EcoreUtil.convertToString(dataType, value);
+        if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
+            throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
         }
 
         return String.class.cast(value);

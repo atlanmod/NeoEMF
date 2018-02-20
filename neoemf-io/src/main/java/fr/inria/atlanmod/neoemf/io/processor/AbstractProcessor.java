@@ -53,11 +53,6 @@ public abstract class AbstractProcessor extends AbstractNotifier<Processor> impl
     }
 
     @Override
-    public void onCharacters(String characters) throws IOException {
-        notifyCharacters(characters);
-    }
-
-    @Override
     public void onEndElement() throws IOException {
         notifyEndElement();
     }
