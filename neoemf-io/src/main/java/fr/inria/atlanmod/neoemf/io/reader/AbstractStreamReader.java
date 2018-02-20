@@ -142,7 +142,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     /**
      * Reads the start of the document.
      */
-    protected final void readStartDocument() {
+    protected final void readStartDocument() throws IOException {
         notifyInitialize();
     }
 
@@ -183,7 +183,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     /**
      * Finalizes the current element and sends all delayed notifications to handlers.
      */
-    protected final void flushCurrentElement() {
+    protected final void flushCurrentElement() throws IOException {
         if (!ignoredElement) {
             // Notifies the current element
             notifyStartElement(currentElement);
@@ -197,7 +197,9 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
                 identifiers.addLast(currentElement.id());
 
                 // Notifies the attributes
-                currentAttributes.forEach(this::notifyAttribute);
+                for (BasicAttribute a : currentAttributes) {
+                    notifyAttribute(a);
+                }
             }
         }
     }
@@ -209,7 +211,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * @param name   the name of the attribute
      * @param value  the value of the attribute
      */
-    protected final void readAttribute(@Nullable String prefix, String name, String value) {
+    protected final void readAttribute(@Nullable String prefix, String name, String value) throws IOException {
         if (!ignoredElement && !isSpecialAttribute(prefix, name, value)) {
             BasicAttribute attribute = new BasicAttribute()
                     .name(name)
@@ -229,14 +231,14 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      *
      * @return {@code true} if the given feature is a special feature
      */
-    protected abstract boolean isSpecialAttribute(@Nullable String prefix, String name, String value);
+    protected abstract boolean isSpecialAttribute(@Nullable String prefix, String name, String value) throws IOException;
 
     /**
      * Reads characters.
      *
      * @param characters a set of characters, as {@link String}
      */
-    protected final void readCharacters(String characters) {
+    protected final void readCharacters(String characters) throws IOException {
         notifyCharacters(characters);
     }
 
@@ -261,7 +263,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     /**
      * Reads the end of an element.
      */
-    protected final void readEndElement() {
+    protected final void readEndElement() throws IOException {
         if (!ignoredElement) {
             notifyEndElement();
         }
@@ -277,7 +279,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     /**
      * Reads the end of the current document.
      */
-    protected final void readEndDocument() {
+    protected final void readEndDocument() throws IOException {
         notifyComplete();
     }
 }

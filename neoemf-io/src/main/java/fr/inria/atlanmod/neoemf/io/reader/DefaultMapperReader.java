@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.data.bean.AbstractFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
@@ -27,11 +28,12 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,6 +52,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      */
     @Nonnull
     private final Deque<EClass> classes = new ArrayDeque<>();
+
     /**
      * The mapper to read.
      */
@@ -65,13 +68,16 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     }
 
     @Override
-    public void read(DataMapper source) {
+    public void read(DataMapper source) throws IOException {
         mapper = source;
 
         notifyInitialize();
 
         SingleFeatureBean rootKey = SingleFeatureBean.of(PersistentResource.ROOT_ID, -1);
-        source.allReferencesOf(rootKey).forEach(id -> readElement(id, true));
+        Iterable<Id> rootReferences = source.allReferencesOf(rootKey).collect(Collectors.toList());
+        for (Id id : rootReferences) {
+            readElement(id, true);
+        }
 
         notifyComplete();
     }
@@ -82,7 +88,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * @param id     the identifier of the element
      * @param isRoot {@code true} if the element is a root element
      */
-    private void readElement(Id id, boolean isRoot) {
+    private void readElement(Id id, boolean isRoot) throws IOException {
         // Retrieve the meta-class and namespace
         EClass eClass = mapper.metaClassOf(id)
                 .map(ClassBean::get)
@@ -125,16 +131,20 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * @param id     the identifier of the element
      * @param eClass the meta-class of the element
      */
-    private void readAllFeatures(Id id, EClass eClass) {
+    private void readAllFeatures(Id id, EClass eClass) throws IOException {
+        List<Id> containments = new ArrayList<>();
+
         // Read all feature of the element, and notify the next handler
+        for (EStructuralFeature f : eClass.getEAllStructuralFeatures()) {
+            containments.addAll(readFeature(id, eClass, f));
+        }
+
         // Read the next element only if containerOf(next) == parent
-        eClass.getEAllStructuralFeatures().stream()
-                .map(f -> readFeature(id, eClass, f))
-                .flatMap(List::stream)
-                .collect(Collectors.toList())
-                .forEach(r -> mapper.containerOf(r)
-                        .filter(c -> Objects.equals(c.owner(), id))
-                        .ifPresent(c -> readElement(r, false)));
+        for (Id r : containments) {
+            if (mapper.containerOf(r).map(AbstractFeatureBean::owner).filter(id::equals).isPresent()) {
+                readElement(r, false);
+            }
+        }
     }
 
     /**
@@ -147,7 +157,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * @return a stream of containment references
      */
     @Nonnull
-    private List<Id> readFeature(Id id, EClass eClass, EStructuralFeature eFeature) {
+    private List<Id> readFeature(Id id, EClass eClass, EStructuralFeature eFeature) throws IOException {
         final SingleFeatureBean bean = SingleFeatureBean.of(id, eClass.getFeatureID(eFeature));
 
         if (EObjects.isAttribute(eFeature)) {
@@ -165,12 +175,18 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * @param feature    the owner of the attribute
      * @param eAttribute the associated EMF attribute
      */
-    private void readAttribute(SingleFeatureBean feature, EAttribute eAttribute) {
+    private void readAttribute(SingleFeatureBean feature, EAttribute eAttribute) throws IOException {
         if (!eAttribute.isMany()) {
-            mapper.valueOf(feature).ifPresent(v -> createAttribute(feature, eAttribute, v));
+            Optional<Object> value = mapper.valueOf(feature);
+            if (value.isPresent()) {
+                createAttribute(feature, eAttribute, value.get());
+            }
         }
         else {
-            mapper.allValuesOf(feature).forEach(v -> createAttribute(feature, eAttribute, v));
+            Iterable<Object> values = mapper.allValuesOf(feature).collect(Collectors.toList());
+            for (Object v : values) {
+                createAttribute(feature, eAttribute, v);
+            }
         }
     }
 
@@ -183,25 +199,33 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * @return a list of containment references
      */
     @Nonnull
-    private List<Id> readReference(SingleFeatureBean feature, EReference eReference) {
+    private List<Id> readReference(SingleFeatureBean feature, EReference eReference) throws IOException {
         boolean isContainment = eReference.isContainment();
 
         if (!eReference.isMany()) {
-            Optional<Id> reference = mapper.referenceOf(feature)
-                    .map(r -> createReference(feature, eReference, r));
+            Optional<Id> reference = mapper.referenceOf(feature);
+            if (reference.isPresent()) {
+                createReference(feature, eReference, reference.get());
+            }
 
             if (isContainment) {
                 return reference.map(Collections::singletonList).orElseGet(Collections::emptyList);
             }
         }
         else {
-            List<Id> references = mapper.allReferencesOf(feature)
-                    .map(r -> createReference(feature, eReference, r))
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+            List<Id> references = mapper.allReferencesOf(feature).collect(Collectors.toList());
+
+            List<Id> containments = new ArrayList<>();
+
+            for (Id r : references) {
+                Optional<Id> id = Optional.ofNullable(createReference(feature, eReference, r));
+                if (isContainment && id.isPresent()) {
+                    containments.add(id.get());
+                }
+            }
 
             if (isContainment) {
-                return Collections.unmodifiableList(references);
+                return Collections.unmodifiableList(containments);
             }
         }
 
@@ -215,7 +239,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * @param eAttribute the associated EMF attribute
      * @param value      the value of the attribute
      */
-    private void createAttribute(SingleFeatureBean feature, EAttribute eAttribute, Object value) {
+    private void createAttribute(SingleFeatureBean feature, EAttribute eAttribute, Object value) throws IOException {
         checkFeatureMap(eAttribute);
 
         BasicAttribute attribute = new BasicAttribute()
@@ -237,7 +261,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * @return the identifier of the referenced element if the reference is a containment, {@code null} otherwise
      */
     @Nullable
-    private Id createReference(SingleFeatureBean feature, EReference eReference, Id value) {
+    private Id createReference(SingleFeatureBean feature, EReference eReference, Id value) throws IOException {
         checkFeatureMap(eReference);
 
         BasicReference reference = new BasicReference()

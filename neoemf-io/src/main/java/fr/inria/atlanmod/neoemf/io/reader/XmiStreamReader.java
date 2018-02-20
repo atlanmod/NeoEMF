@@ -21,7 +21,6 @@ import org.codehaus.stax2.XMLStreamReader2;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.stream.IntStream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.stream.XMLInputFactory;
@@ -85,20 +84,22 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
      *
      * @throws XMLStreamException if there is an error with the underlying XML
      */
-    private void read(XMLStreamReader2 reader) throws XMLStreamException {
+    private void read(XMLStreamReader2 reader) throws IOException, XMLStreamException {
         readStartDocument();
 
         while (reader.hasNext()) {
             int event = reader.next();
 
             if (event == XMLStreamReader.START_ELEMENT) {
-                IntStream.range(0, reader.getNamespaceCount()).forEachOrdered(i ->
-                        readNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i)));
+                for (int i = 0, size = reader.getNamespaceCount(); i < size; i++) {
+                    readNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i));
+                }
 
                 readStartElement(reader.getNamespaceURI(), reader.getLocalName());
 
-                IntStream.range(0, reader.getAttributeCount()).forEachOrdered(i ->
-                        readAttribute(reader.getAttributePrefix(i), reader.getAttributeLocalName(i), reader.getAttributeValue(i)));
+                for (int i = 0, size = reader.getAttributeCount(); i < size; i++) {
+                    readAttribute(reader.getAttributePrefix(i), reader.getAttributeLocalName(i), reader.getAttributeValue(i));
+                }
 
                 flushCurrentElement();
             }

@@ -12,6 +12,8 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
+import java.io.IOException;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -28,7 +30,7 @@ public interface Handler {
      * @see #onComplete()
      * @see Notifier#notifyInitialize()
      */
-    void onInitialize();
+    void onInitialize() throws IOException;
 
     /**
      * Handles the start of an element.
@@ -38,7 +40,7 @@ public interface Handler {
      * @see #onEndElement()
      * @see Notifier#notifyStartElement(BasicElement)
      */
-    void onStartElement(BasicElement element);
+    void onStartElement(BasicElement element) throws IOException;
 
     /**
      * Handles an attribute in the current element.
@@ -48,7 +50,7 @@ public interface Handler {
      * @see #onStartElement(BasicElement)
      * @see Notifier#notifyAttribute(BasicAttribute)
      */
-    void onAttribute(BasicAttribute attribute);
+    void onAttribute(BasicAttribute attribute) throws IOException;
 
     /**
      * Handles a reference from the current element to another.
@@ -58,7 +60,7 @@ public interface Handler {
      * @see #onStartElement(BasicElement)
      * @see Notifier#notifyReference(BasicReference)
      */
-    void onReference(BasicReference reference);
+    void onReference(BasicReference reference) throws IOException;
 
     /**
      * Handles a set of characters.
@@ -68,7 +70,7 @@ public interface Handler {
      * @see #onStartElement(BasicElement)
      * @see Notifier#notifyCharacters(String)
      */
-    void onCharacters(String characters);
+    void onCharacters(String characters) throws IOException;
 
     /**
      * Handles the end of the current element.
@@ -76,7 +78,7 @@ public interface Handler {
      * @see #onStartElement(BasicElement)
      * @see Notifier#notifyEndElement()
      */
-    void onEndElement();
+    void onEndElement() throws IOException;
 
     /**
      * Handles the end of the current task.
@@ -84,5 +86,5 @@ public interface Handler {
      * @see #onInitialize()
      * @see Notifier#notifyComplete()
      */
-    void onComplete();
+    void onComplete() throws IOException;
 }

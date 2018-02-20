@@ -14,6 +14,7 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
@@ -37,7 +38,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
     }
 
     @Override
-    protected final boolean isSpecialAttribute(@Nullable String prefix, String name, String value) {
+    protected final boolean isSpecialAttribute(@Nullable String prefix, String name, String value) throws IOException {
         if (Objects.equals(XmiConstants.HREF, name)) { // A link to an external resource
             Log.warn("External features are not supported yet");
 

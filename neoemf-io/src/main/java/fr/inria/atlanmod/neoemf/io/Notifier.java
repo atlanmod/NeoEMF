@@ -12,6 +12,8 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
+import java.io.IOException;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -41,8 +43,10 @@ public interface Notifier<H extends Handler> {
      * @see #notifyComplete()
      * @see Handler#onInitialize()
      */
-    default void notifyInitialize() {
-        next().forEach(Handler::onInitialize);
+    default void notifyInitialize() throws IOException {
+        for (H h : next()) {
+            h.onInitialize();
+        }
     }
 
     /**
@@ -53,10 +57,12 @@ public interface Notifier<H extends Handler> {
      * @see #notifyEndElement()
      * @see Handler#onStartElement(BasicElement)
      */
-    default void notifyStartElement(BasicElement element) {
+    default void notifyStartElement(BasicElement element) throws IOException {
         checkNotNull(element, "element");
 
-        next().forEach(h -> h.onStartElement(element));
+        for (H h : next()) {
+            h.onStartElement(element);
+        }
     }
 
     /**
@@ -66,10 +72,12 @@ public interface Notifier<H extends Handler> {
      *
      * @see Handler#onAttribute(BasicAttribute)
      */
-    default void notifyAttribute(BasicAttribute attribute) {
+    default void notifyAttribute(BasicAttribute attribute) throws IOException {
         checkNotNull(attribute, "attribute");
 
-        next().forEach(h -> h.onAttribute(attribute));
+        for (H h : next()) {
+            h.onAttribute(attribute);
+        }
     }
 
     /**
@@ -79,10 +87,12 @@ public interface Notifier<H extends Handler> {
      *
      * @see Handler#onReference(BasicReference)
      */
-    default void notifyReference(BasicReference reference) {
+    default void notifyReference(BasicReference reference) throws IOException {
         checkNotNull(reference, "reference");
 
-        next().forEach(h -> h.onReference(reference));
+        for (H h : next()) {
+            h.onReference(reference);
+        }
     }
 
     /**
@@ -92,10 +102,12 @@ public interface Notifier<H extends Handler> {
      *
      * @see Handler#onCharacters(String)
      */
-    default void notifyCharacters(String characters) {
+    default void notifyCharacters(String characters) throws IOException {
         checkNotNull(characters, "characters");
 
-        next().forEach(h -> h.onCharacters(characters));
+        for (H h : next()) {
+            h.onCharacters(characters);
+        }
     }
 
     /**
@@ -104,8 +116,10 @@ public interface Notifier<H extends Handler> {
      * @see #notifyStartElement(BasicElement)
      * @see Handler#onEndElement()
      */
-    default void notifyEndElement() {
-        next().forEach(Handler::onEndElement);
+    default void notifyEndElement() throws IOException {
+        for (H h : next()) {
+            h.onEndElement();
+        }
     }
 
     /**
@@ -114,7 +128,9 @@ public interface Notifier<H extends Handler> {
      * @see #notifyInitialize()
      * @see Handler#onComplete()
      */
-    default void notifyComplete() {
-        next().forEach(Handler::onComplete);
+    default void notifyComplete() throws IOException {
+        for (H h : next()) {
+            h.onComplete();
+        }
     }
 }

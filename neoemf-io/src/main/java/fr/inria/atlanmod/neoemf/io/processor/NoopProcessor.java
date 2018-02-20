@@ -14,6 +14,8 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
+import java.io.IOException;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -33,37 +35,37 @@ public final class NoopProcessor extends AbstractNotifier<Handler> implements Pr
     }
 
     @Override
-    public void onInitialize() {
+    public void onInitialize() throws IOException {
         notifyInitialize();
     }
 
     @Override
-    public void onStartElement(BasicElement element) {
+    public void onStartElement(BasicElement element) throws IOException {
         notifyStartElement(element);
     }
 
     @Override
-    public void onAttribute(BasicAttribute attribute) {
+    public void onAttribute(BasicAttribute attribute) throws IOException {
         notifyAttribute(attribute);
     }
 
     @Override
-    public void onReference(BasicReference reference) {
+    public void onReference(BasicReference reference) throws IOException {
         notifyReference(reference);
     }
 
     @Override
-    public void onCharacters(String characters) {
+    public void onCharacters(String characters) throws IOException {
         notifyCharacters(characters);
     }
 
     @Override
-    public void onEndElement() {
+    public void onEndElement() throws IOException {
         notifyEndElement();
     }
 
     @Override
-    public void onComplete() {
+    public void onComplete() throws IOException {
         notifyComplete();
     }
 }

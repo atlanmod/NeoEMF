@@ -63,110 +63,80 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
     }
 
     @Override
-    public final void onInitialize() {
-        try {
-            writeStartDocument();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public final void onInitialize() throws IOException {
+        writeStartDocument();
     }
 
     @Override
-    public final void onComplete() {
-        try {
-            writeEndDocument();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public final void onComplete() throws IOException {
+        writeEndDocument();
     }
 
     @Override
-    public final void onStartElement(BasicElement element) {
+    public final void onStartElement(BasicElement element) throws IOException {
         super.onStartElement(element);
 
         BasicMetaclass metaClass = element.metaClass();
         BasicNamespace ns = metaClass.ns();
 
-        try {
-            if (element.isRoot()) {
-                writeStartElement(XmiConstants.format(ns.prefix(), element.name()));
+        if (element.isRoot()) {
+            writeStartElement(XmiConstants.format(ns.prefix(), element.name()));
 
-                // Namespaces
-                writeNamespace(ns.prefix(), ns.uri());
-                writeNamespace(XMI_NS, XMI_URI);
+            // Namespaces
+            writeNamespace(ns.prefix(), ns.uri());
+            writeNamespace(XMI_NS, XMI_URI);
 
-                // XMI version
-                writeAttribute(XMI_VERSION_ATTR, XMI_VERSION);
-            }
-            else {
-                writeStartElement(element.name());
-            }
-
-            if (requiresExplicitType(element)) {
-                writeAttribute(XMI_TYPE, XmiConstants.format(ns.prefix(), metaClass.name()));
-            }
-
-            writeAttribute(XMI_ID, element.id().toHexString());
+            // XMI version
+            writeAttribute(XMI_VERSION_ATTR, XMI_VERSION);
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        else {
+            writeStartElement(element.name());
         }
+
+        if (requiresExplicitType(element)) {
+            writeAttribute(XMI_TYPE, XmiConstants.format(ns.prefix(), metaClass.name()));
+        }
+
+        writeAttribute(XMI_ID, element.id().toHexString());
 
         classes.add(metaClass.eClass());
     }
 
     @Override
-    public final void onEndElement() {
+    public final void onEndElement() throws IOException {
         super.onEndElement();
 
-        try {
-            writeEndElement();
-        }
-        catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        writeEndElement();
 
         classes.removeLast();
     }
 
     @Override
-    public final void onAttribute(BasicAttribute attribute, List<Object> values) {
-        try {
-            EAttribute eAttribute = attribute.eFeature();
-            if (!attribute.isMany()) {
-                writeAttribute(attribute.name(), ValueConverter.INSTANCE.revert(values.get(0), eAttribute));
-            }
-            else {
-                for (Object v : values) {
-                    writeStartElement(attribute.name());
-                    writeCharacters(ValueConverter.INSTANCE.revert(v, eAttribute));
-                    writeEndElement();
-                }
-            }
+    public final void onAttribute(BasicAttribute attribute, List<Object> values) throws IOException {
+        EAttribute eAttribute = attribute.eFeature();
+        if (!attribute.isMany()) {
+            writeAttribute(attribute.name(), ValueConverter.INSTANCE.revert(values.get(0), eAttribute));
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        else {
+            for (Object v : values) {
+                writeStartElement(attribute.name());
+                writeCharacters(ValueConverter.INSTANCE.revert(v, eAttribute));
+                writeEndElement();
+            }
         }
     }
 
     @Override
-    public final void onReference(BasicReference reference, List<Id> values) {
+    public final void onReference(BasicReference reference, List<Id> values) throws IOException {
         if (reference.isContainment()) {
             return;
         }
 
-        try {
-            if (!reference.isMany()) {
-                writeAttribute(reference.name(), values.get(0).toHexString());
-            }
-            else {
-                writeAttribute(reference.name(), values.stream().map(Id::toHexString).collect(Collectors.joining(Strings.SPACE)));
-            }
+        if (!reference.isMany()) {
+            writeAttribute(reference.name(), values.get(0).toHexString());
         }
-        catch (IOException e) {
-            throw new RuntimeException(e);
+        else {
+            writeAttribute(reference.name(), values.stream().map(Id::toHexString).collect(Collectors.joining(Strings.SPACE)));
         }
     }
 

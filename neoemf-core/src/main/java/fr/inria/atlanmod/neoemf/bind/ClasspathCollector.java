@@ -124,9 +124,7 @@ public class ClasspathCollector implements URLCollector {
         phaser.awaitAdvance(READY);
         Log.debug("Classpath analysis is complete [phase = {0}]", phaser.getRegisteredParties());
 
-        return registeredUris.stream()
-                .map(urlToUri::revert)
-                .collect(Collectors.toSet());
+        return registeredUris.stream().map(urlToUri::revert).collect(Collectors.toSet());
     }
 
     /**
@@ -175,11 +173,9 @@ public class ClasspathCollector implements URLCollector {
      */
     private boolean isRelated(URL url, ConfigurationBuilder baseConfig) {
         try {
-            return !new Reflections(baseConfig.setUrls(url))
-                    .getTypesAnnotatedWith(BASE_ANNOTATION)
-                    .isEmpty();
+            return !new Reflections(baseConfig.setUrls(url)).getTypesAnnotatedWith(BASE_ANNOTATION).isEmpty();
         }
-        catch (RuntimeException e) {
+        catch (Exception e) {
             return false;
         }
     }

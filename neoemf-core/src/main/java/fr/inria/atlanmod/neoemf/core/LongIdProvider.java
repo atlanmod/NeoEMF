@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 

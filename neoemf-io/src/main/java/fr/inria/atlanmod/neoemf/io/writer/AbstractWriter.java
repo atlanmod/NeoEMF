@@ -10,10 +10,12 @@ package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
@@ -68,8 +70,8 @@ public abstract class AbstractWriter<T> implements Writer {
     private final Map<BasicAttribute, List<Object>> attributesAccumulator = new HashMap<>();
 
     /**
-     * The last multi-valued feature identifier processed by {@link #onAttribute(BasicAttribute)} or {@link
-     * #onReference(BasicReference)}.
+     * The last multi-valued feature identifier processed by {@link Handler#onAttribute(BasicAttribute)} or {@link
+     * Handler#onReference(BasicReference)}.
      */
     private int lastManyFeatureId = -1;
 
@@ -86,14 +88,14 @@ public abstract class AbstractWriter<T> implements Writer {
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void onStartElement(BasicElement element) {
+    public void onStartElement(BasicElement element) throws IOException {
         flushAllFeatures();
 
         identifiers.addLast(element.id());
     }
 
     @Override
-    public final void onAttribute(BasicAttribute attribute) {
+    public final void onAttribute(BasicAttribute attribute) throws IOException {
         checkEqualTo(identifiers.getLast(), attribute.owner(),
                 "%s is not the owner of this attribute (%s)", identifiers.getLast(), attribute.owner());
 
@@ -107,7 +109,7 @@ public abstract class AbstractWriter<T> implements Writer {
     }
 
     @Override
-    public final void onReference(BasicReference reference) {
+    public final void onReference(BasicReference reference) throws IOException {
         if (!reference.isContainment()) { // Containment references are processed differently from standard references
             checkEqualTo(identifiers.getLast(), reference.owner(),
                     "%s is not the owner of this reference (%s)", identifiers.getLast(), reference.owner());
@@ -123,13 +125,13 @@ public abstract class AbstractWriter<T> implements Writer {
     }
 
     @Override
-    public final void onCharacters(String characters) {
+    public final void onCharacters(String characters) throws IOException {
         // Do nothing
     }
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void onEndElement() {
+    public void onEndElement() throws IOException {
         flushAllFeatures();
 
         identifiers.removeLast();
@@ -142,7 +144,7 @@ public abstract class AbstractWriter<T> implements Writer {
      * @param values    the ordered values of the attribute; when the {@code attribute} is single-valued, this parameter
      *                  is a {@link Collections#singletonList(Object)}
      */
-    public abstract void onAttribute(BasicAttribute attribute, List<Object> values);
+    public abstract void onAttribute(BasicAttribute attribute, List<Object> values) throws IOException;
 
     /**
      * Handles a reference in the current element.
@@ -151,7 +153,7 @@ public abstract class AbstractWriter<T> implements Writer {
      * @param values    the ordered values of the reference; when the {@code reference} is single-valued, this parameter
      *                  is a {@link Collections#singletonList(Object)}
      */
-    public abstract void onReference(BasicReference reference, List<Id> values);
+    public abstract void onReference(BasicReference reference, List<Id> values) throws IOException;
 
     /**
      * Returns {@code true} if this writer requires the end of the current element before flushing all features,
@@ -172,7 +174,7 @@ public abstract class AbstractWriter<T> implements Writer {
      * @see #lastManyFeatureId
      * @see #requireEndBeforeFlush()
      */
-    private void flushLastFeature(int currentManyFeatureId) {
+    private void flushLastFeature(int currentManyFeatureId) throws IOException {
         if (!requireEndBeforeFlush() && lastManyFeatureId != -1 && currentManyFeatureId != lastManyFeatureId) {
             flushAllFeatures();
         }
@@ -182,14 +184,18 @@ public abstract class AbstractWriter<T> implements Writer {
     /**
      * Flushes all delayed multi-valued features.
      */
-    private void flushAllFeatures() {
+    private void flushAllFeatures() throws IOException {
         if (!referencesAccumulator.isEmpty()) {
-            referencesAccumulator.forEach(this::onReference);
+            for (Map.Entry<BasicReference, List<Id>> e : referencesAccumulator.entrySet()) {
+                onReference(e.getKey(), e.getValue());
+            }
             referencesAccumulator.clear();
         }
 
         if (!attributesAccumulator.isEmpty()) {
-            attributesAccumulator.forEach(this::onAttribute);
+            for (Map.Entry<BasicAttribute, List<Object>> e : attributesAccumulator.entrySet()) {
+                onAttribute(e.getKey(), e.getValue());
+            }
             attributesAccumulator.clear();
         }
 

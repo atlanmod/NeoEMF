@@ -16,6 +16,7 @@ import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
+import fr.inria.atlanmod.neoemf.data.DatabaseException;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
@@ -139,7 +140,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             return Optional.of(SingleFeatureBean.of(AS_BYTES.revert(byteId), Bytes.toInt(byteName)));
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -156,7 +157,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             table.put(put);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -172,7 +173,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             table.delete(delete);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -199,7 +200,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             return Optional.of(ClassBean.of(Bytes.toString(byteName), Bytes.toString(byteUri)));
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -224,7 +225,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             return true;
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -256,7 +257,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             return Optional.of(SERIALIZER_FACTORY.<V>forAny().deserialize(byteValue));
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -275,7 +276,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             table.put(put);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
 
         return previousValue;
@@ -292,7 +293,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
             table.delete(delete);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 }

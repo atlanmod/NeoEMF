@@ -18,6 +18,7 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
     }
 
     @Override
-    public void onStartElement(BasicElement element) {
+    public void onStartElement(BasicElement element) throws IOException {
         super.onStartElement(element);
 
         createElement(element, false);

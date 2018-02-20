@@ -13,6 +13,7 @@ import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,14 +76,14 @@ public class XPathResolver extends AbstractProcessor {
     }
 
     @Override
-    public void onInitialize() {
+    public void onInitialize() throws IOException {
         paths = new XPathTree();
 
         notifyInitialize();
     }
 
     @Override
-    public void onStartElement(BasicElement element) {
+    public void onStartElement(BasicElement element) throws IOException {
         // If the first element has an identifier, we assume that the file is ID-based.
         if (isNull(ignore)) {
             ignore = nonNull(element.rawId());
@@ -94,14 +95,14 @@ public class XPathResolver extends AbstractProcessor {
     }
 
     @Override
-    public void onReference(BasicReference reference) {
+    public void onReference(BasicReference reference) throws IOException {
         resolve(reference);
 
         notifyReference(reference);
     }
 
     @Override
-    public void onEndElement() {
+    public void onEndElement() throws IOException {
         if (!ignore) {
             // Removes children of the last element
             paths.clearLast();

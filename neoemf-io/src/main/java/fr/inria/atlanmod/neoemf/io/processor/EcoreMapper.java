@@ -11,6 +11,7 @@ package fr.inria.atlanmod.neoemf.io.processor;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
@@ -26,10 +27,13 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,7 +58,7 @@ public class EcoreMapper extends AbstractProcessor {
     /**
      * An attribute that is waiting for a value.
      *
-     * @see #onCharacters(String)
+     * @see Handler#onCharacters(String)
      */
     @Nullable
     private BasicAttribute pendingAttribute;
@@ -74,7 +78,7 @@ public class EcoreMapper extends AbstractProcessor {
     }
 
     @Override
-    public void onStartElement(BasicElement element) {
+    public void onStartElement(BasicElement element) throws IOException {
         // Is root
         if (elements.isEmpty()) {
             processElementAsRoot(element);
@@ -86,7 +90,7 @@ public class EcoreMapper extends AbstractProcessor {
     }
 
     @Override
-    public void onAttribute(BasicAttribute attribute) {
+    public void onAttribute(BasicAttribute attribute) throws IOException {
         final EStructuralFeature eFeature = getFeature(attribute.name());
 
         if (EObjects.isAttribute(eFeature)) {
@@ -103,14 +107,14 @@ public class EcoreMapper extends AbstractProcessor {
     }
 
     @Override
-    public void onReference(BasicReference reference) {
+    public void onReference(BasicReference reference) throws IOException {
         final EStructuralFeature eFeature = getFeature(reference.name());
 
         processReference(reference, EObjects.asReference(eFeature));
     }
 
     @Override
-    public void onCharacters(String characters) {
+    public void onCharacters(String characters) throws IOException {
         // Defines the value of the waiting attribute, if exists
         if (nonNull(pendingAttribute)) {
             pendingAttribute.stringValue(characters);
@@ -121,7 +125,7 @@ public class EcoreMapper extends AbstractProcessor {
     }
 
     @Override
-    public void onEndElement() {
+    public void onEndElement() throws IOException {
         if (!ignoredElement) {
             elements.removeLast();
 
@@ -144,7 +148,7 @@ public class EcoreMapper extends AbstractProcessor {
      *
      * @throws NullPointerException if the {@code element} does not have a namespace
      */
-    private void processElementAsRoot(BasicElement element) {
+    private void processElementAsRoot(BasicElement element) throws IOException {
         checkNotNull(element.metaClass(), "The root element must have a namespace");
 
         // Retrieve the current EClass & define the meta-class of the current element if not present
@@ -170,7 +174,7 @@ public class EcoreMapper extends AbstractProcessor {
      * @see #processElementAsAttribute(EAttribute)
      * @see #processElementAsReference(BasicElement, EReference)
      */
-    private void processElementAsFeature(BasicElement element) {
+    private void processElementAsFeature(BasicElement element) throws IOException {
         final EStructuralFeature feature = getFeature(element.name());
 
         // Check if the feature is a FeatureMap.Entry
@@ -231,7 +235,7 @@ public class EcoreMapper extends AbstractProcessor {
      * @param element    the element representing the reference
      * @param eReference the associated EMF reference
      */
-    private void processElementAsReference(BasicElement element, EReference eReference) {
+    private void processElementAsReference(BasicElement element, EReference eReference) throws IOException {
         // Notify next handlers of new element
         notifyStartElement(element);
 
@@ -256,7 +260,7 @@ public class EcoreMapper extends AbstractProcessor {
      * @param attribute  the attribute to process
      * @param eAttribute the associated EMF attribute
      */
-    private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) {
+    private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) throws IOException {
         BasicElement parentElement = elements.getLast();
         EClass parentEClass = parentElement.metaClass().eClass();
 
@@ -274,7 +278,7 @@ public class EcoreMapper extends AbstractProcessor {
      * @param reference  the reference to process
      * @param eReference the associated EMF reference
      */
-    private void processReference(BasicReference reference, EReference eReference) {
+    private void processReference(BasicReference reference, EReference eReference) throws IOException {
         BasicElement parentElement = elements.getLast();
         EClass parentEClass = parentElement.metaClass().eClass();
 
@@ -298,18 +302,22 @@ public class EcoreMapper extends AbstractProcessor {
      * @param reference  the reference to process
      * @param eReference the associated EMF reference
      */
-    private void processRawReference(BasicReference reference, EReference eReference) {
+    private void processRawReference(BasicReference reference, EReference eReference) throws IOException {
         final Function<String, BasicReference> createFunc = s -> new BasicReference()
                 .owner(reference.owner())
                 .id(reference.id())
                 .eFeature(eReference)
                 .stringValue(s);
 
-        Arrays.stream(reference.stringValue().split(Strings.SPACE))
+        List<BasicReference> allReferences = Arrays.stream(reference.stringValue().split(Strings.SPACE))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .map(createFunc)
-                .forEach(this::notifyReference);
+                .collect(Collectors.toList());
+
+        for (BasicReference r : allReferences) {
+            notifyReference(r);
+        }
     }
 
     /**

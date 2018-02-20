@@ -326,7 +326,7 @@ public abstract class AbstractListeningStore extends AbstractStore implements St
             onSuccess(new SuccessCallReport<>(backendReport.get(), getCallingMethod(), key, value, resultToLog));
             return result;
         }
-        catch (RuntimeException e) {
+        catch (Exception e) {
             onFailure(new FailureCallReport<>(backendReport.get(), getCallingMethod(), key, value, e));
             throw e;
         }

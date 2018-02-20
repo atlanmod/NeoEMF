@@ -21,6 +21,7 @@ import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
+import fr.inria.atlanmod.neoemf.data.DatabaseException;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
@@ -174,7 +175,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             return instancesOf;
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -238,7 +239,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             return value;
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -261,7 +262,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             database.put(null, dbKey, dbValue);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -286,7 +287,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             return database.putNoOverwrite(null, dbKey, dbValue) != OperationStatus.KEYEXIST;
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
@@ -305,7 +306,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
             database.delete(null, dbKey);
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e);
         }
     }
 
