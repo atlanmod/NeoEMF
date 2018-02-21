@@ -16,9 +16,8 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
-import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
-import org.bson.Document;
+import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -61,20 +60,21 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         this.mongoDatabase = database;
 
         //Create and get the needed collections
-        this.instancesCollection = getOrCreateCollection(INSTANCES_COLLECTION_NAME);
+        this.instancesCollection = getOrCreateCollection(INSTANCES_COLLECTION_NAME, StoredInstance.class);
     }
 
     /**
      * Gets a collection and creates it if needed
      * @param name the name of the collection
+     * @param modelClass the class of the model to use for this collection
      * @return the corresponding {@link MongoCollection} instance
      */
-    private MongoCollection getOrCreateCollection(String name)
+    private MongoCollection getOrCreateCollection(String name, Class modelClass)
     {
         if (!hasCollection(name))
             this.mongoDatabase.createCollection(name);
 
-        return this.mongoDatabase.getCollection(name);
+        return this.mongoDatabase.getCollection(name, modelClass);
     }
 
 

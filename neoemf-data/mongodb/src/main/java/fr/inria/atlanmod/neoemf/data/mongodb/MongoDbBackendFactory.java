@@ -9,16 +9,22 @@
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.net.URL;
+
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 /**
  * A {@link BackendFactory} that creates {@link MongoDbBackend} instances.
@@ -62,8 +68,11 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
 
         //This will not throw any exception even if the connection failed
         //due to MongoDb driver's asynchronous nature
+
+        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(), fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
         MongoClient client = new MongoClient(config.getHost(), config.getPort());
-        MongoDatabase database = client.getDatabase(databaseName);
+        MongoDatabase database = client.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
 
         return createMapper(config.getMapping(), config, client, database);
     }
