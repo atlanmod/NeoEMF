@@ -58,7 +58,7 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
     {
         final boolean isReadOnly = config.isReadOnly();
 
-        String databaseName = url.getPath();
+        String databaseName = url.getPath().substring(1); //the path is prefixed by a `/`
 
         //This will not throw any exception even if the connection failed
         //due to MongoDb driver's asynchronous nature
@@ -66,7 +66,6 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
         MongoDatabase database = client.getDatabase(databaseName);
 
         return createMapper(config.getMapping(), config, client, database);
-
     }
 
     /**
