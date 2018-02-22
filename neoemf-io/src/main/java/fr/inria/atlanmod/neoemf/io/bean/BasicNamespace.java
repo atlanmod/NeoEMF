@@ -32,13 +32,13 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * A simple representation of a {@link org.eclipse.emf.ecore.EPackage}.
  */
 @ParametersAreNonnullByDefault
-public class BasicNamespace {
+public class BasicNamespace implements Basic<BasicNamespace, EPackage> {
 
     /**
-     * The instance of the default {@code BasicNamespace}.
+     * The instance of the default namespace: {@code ecore @ http://www.eclipse.org/emf/2002/Ecore}.
      */
     @Nonnull
-    private static final BasicNamespace DEFAULT = Registry.getInstance().register(EcorePackage.eINSTANCE);
+    public static final BasicNamespace DEFAULT = Registry.getInstance().register(EcorePackage.eINSTANCE);
 
     /**
      * The prefix of this namespace.
@@ -53,10 +53,14 @@ public class BasicNamespace {
     private final String uri;
 
     /**
-     * The {@link EPackage} associated to this namespace.
+     * The {@link EPackage} represented by this object.
      */
     @Nonnull
-    private LazyReference<EPackage> ePackage;
+    private LazyReference<EPackage> ePackage = LazyReference.soft(() -> {
+        EPackage p = EPackage.Registry.INSTANCE.getEPackage(getUri());
+        checkNotNull(p, "EPackage %s is not registered.", getUri());
+        return p;
+    });
 
     /**
      * Constructs a new {@code BasicNamespace} with the given {@code prefix} and {@code uri}.
@@ -67,22 +71,20 @@ public class BasicNamespace {
     private BasicNamespace(String prefix, String uri) {
         this.prefix = prefix;
         this.uri = uri;
-
-        this.ePackage = LazyReference.soft(() -> {
-            EPackage p = EPackage.Registry.INSTANCE.getEPackage(uri());
-            checkNotNull(p, "EPackage %s is not registered.", uri());
-            return p;
-        });
     }
 
-    /**
-     * Returns the default namespace.
-     *
-     * @return the namespace representing "ecore @ http://www.eclipse.org/emf/2002/Ecore"
-     */
+    @Override
+    public EPackage getReal() {
+        return ePackage.get();
+    }
+
     @Nonnull
-    public static BasicNamespace getDefault() {
-        return DEFAULT;
+    @Override
+    public BasicNamespace setReal(EPackage ePackage) {
+        checkNotNull(ePackage, "ePackage");
+
+        this.ePackage.update(ePackage);
+        return this;
     }
 
     /**
@@ -91,7 +93,7 @@ public class BasicNamespace {
      * @return the prefix
      */
     @Nonnull
-    public String prefix() {
+    public String getPrefix() {
         return prefix;
     }
 
@@ -101,32 +103,8 @@ public class BasicNamespace {
      * @return the literal representation of the URI
      */
     @Nonnull
-    public String uri() {
+    public String getUri() {
         return uri;
-    }
-
-    /**
-     * Returns the {@link org.eclipse.emf.ecore.EPackage} associated to this namespace.
-     *
-     * @return the {@link org.eclipse.emf.ecore.EPackage}
-     */
-    @Nonnull
-    public EPackage ePackage() {
-        return ePackage.get();
-    }
-
-    /**
-     * Defines the {@link org.eclipse.emf.ecore.EPackage} associated to this namespace.
-     *
-     * @param ePackage the {@link org.eclipse.emf.ecore.EPackage}
-     *
-     * @return this instance (for chaining)
-     */
-    public BasicNamespace ePackage(EPackage ePackage) {
-        checkNotNull(ePackage, "ePackage");
-
-        this.ePackage.update(ePackage);
-        return this;
     }
 
     @Override
@@ -204,7 +182,10 @@ public class BasicNamespace {
          */
         @Nonnull
         public BasicNamespace get(EPackage ePackage) {
-            return Optional.ofNullable(getByUri(ePackage.getNsURI())).orElseGet(() -> register(ePackage));
+            checkNotNull(ePackage, "ePackage");
+
+            final BasicNamespace ns = getByUri(ePackage.getNsURI());
+            return Optional.ofNullable(ns).map(p -> p.setReal(ePackage)).orElseGet(() -> register(ePackage));
         }
 
         /**
@@ -244,7 +225,7 @@ public class BasicNamespace {
         public BasicNamespace register(EPackage ePackage) {
             checkNotNull(ePackage, "ePackage");
 
-            return register(ePackage.getNsPrefix(), ePackage.getNsURI()).ePackage(ePackage);
+            return register(ePackage.getNsPrefix(), ePackage.getNsURI()).setReal(ePackage);
         }
 
         /**
@@ -260,7 +241,7 @@ public class BasicNamespace {
             if (namespacesByPrefix.containsKey(prefix)) {
                 BasicNamespace ns = namespacesByPrefix.get(prefix);
 
-                if (Objects.equals(ns.uri(), uri)) {
+                if (Objects.equals(ns.getUri(), uri)) {
                     return ns;
                 }
             }

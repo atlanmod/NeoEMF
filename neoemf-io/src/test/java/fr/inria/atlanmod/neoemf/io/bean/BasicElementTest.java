@@ -29,46 +29,46 @@ class BasicElementTest extends AbstractTest {
         String name1 = "element1";
 
         BasicElement elt0 = new BasicElement();
-        elt0.name(name0);
-        assertThat(elt0.name()).isEqualTo(name0);
+        elt0.setName(name0);
+        assertThat(elt0.getName()).isEqualTo(name0);
 
         BasicElement elt1 = new BasicElement();
-        elt1.name(name1);
-        assertThat(elt1.name()).isEqualTo(name1);
+        elt1.setName(name1);
+        assertThat(elt1.getName()).isEqualTo(name1);
 
-        assertThat(elt0.name()).isNotEqualTo(elt1.name());
+        assertThat(elt0.getName()).isNotEqualTo(elt1.getName());
     }
 
     @Test
     void testId() {
         BasicElement elt0 = new BasicElement();
-        assertThat(elt0.id()).isNull();
+        assertThat(elt0.getId().isPresent()).isFalse();
 
         Id id0 = Id.getProvider().fromLong(42);
         Id id1 = Id.getProvider().fromLong(44);
 
-        elt0.id(id0);
-        assertThat(elt0.id()).isEqualTo(id0);
+        elt0.setId(Data.resolved(id0));
+        assertThat(elt0.getId().getResolved()).isEqualTo(id0);
 
-        elt0.id(id1);
-        assertThat(elt0.id()).isNotEqualTo(id0).isEqualTo(id1);
+        elt0.setId(Data.resolved(id1));
+        assertThat(elt0.getId().getResolved()).isNotEqualTo(id0).isEqualTo(id1);
     }
 
     @Test
     void testMetaclass() {
-        BasicNamespace ns = BasicNamespace.getDefault();
+        BasicNamespace ns = BasicNamespace.DEFAULT;
 
         BasicElement elt0 = new BasicElement();
-        assertThat(elt0.metaClass()).isNull();
+        assertThat(elt0.getMetaClass()).isNull();
 
-        BasicMetaclass mc0 = new BasicMetaclass(ns, "mc0");
-        BasicMetaclass mc1 = new BasicMetaclass(ns, "mc1");
+        BasicClass mc0 = new BasicClass(ns, "mc0");
+        BasicClass mc1 = new BasicClass(ns, "mc1");
 
-        elt0.metaClass(mc0);
-        assertThat(elt0.metaClass()).isEqualTo(mc0);
+        elt0.setMetaClass(mc0);
+        assertThat(elt0.getMetaClass()).isEqualTo(mc0);
 
-        elt0.metaClass(mc1);
-        assertThat(elt0.metaClass()).isNotEqualTo(mc0).isEqualTo(mc1);
+        elt0.setMetaClass(mc1);
+        assertThat(elt0.getMetaClass()).isNotEqualTo(mc0).isEqualTo(mc1);
     }
 
     @Test
@@ -76,23 +76,23 @@ class BasicElementTest extends AbstractTest {
         BasicElement elt0 = new BasicElement();
         assertThat(elt0.isRoot()).isFalse();
 
-        elt0.isRoot(true);
+        elt0.setRoot(true);
         assertThat(elt0.isRoot()).isTrue();
 
-        elt0.isRoot(false);
+        elt0.setRoot(false);
         assertThat(elt0.isRoot()).isFalse();
     }
 
     @Test
     void testHashCode() {
         BasicElement elt0 = new BasicElement();
-        elt0.id(Id.getProvider().fromLong(42));
+        elt0.setId(Data.resolved(Id.getProvider().fromLong(42)));
 
         BasicElement elt0Bis = new BasicElement();
-        elt0Bis.id(Id.getProvider().fromLong(42));
+        elt0Bis.setId(Data.resolved(Id.getProvider().fromLong(42)));
 
         BasicElement elt1 = new BasicElement();
-        elt1.id(Id.getProvider().fromLong(44));
+        elt1.setId(Data.resolved(Id.getProvider().fromLong(44)));
 
         assertThat(elt0.hashCode()).isEqualTo(elt0Bis.hashCode());
         assertThat(elt0.hashCode()).isNotEqualTo(elt1.hashCode());
@@ -102,13 +102,13 @@ class BasicElementTest extends AbstractTest {
     @Test
     void testEquals() {
         BasicElement elt0 = new BasicElement();
-        elt0.id(Id.getProvider().fromLong(42));
+        elt0.setId(Data.resolved(Id.getProvider().fromLong(42)));
 
         BasicElement elt0Bis = new BasicElement();
-        elt0Bis.id(Id.getProvider().fromLong(42));
+        elt0Bis.setId(Data.resolved(Id.getProvider().fromLong(42)));
 
         BasicElement elt1 = new BasicElement();
-        elt1.id(Id.getProvider().fromLong(44));
+        elt1.setId(Data.resolved(Id.getProvider().fromLong(44)));
 
         assertThat(elt0).isEqualTo(elt0Bis);
         assertThat(elt0).isNotEqualTo(elt1);
@@ -122,7 +122,7 @@ class BasicElementTest extends AbstractTest {
     @Test
     void testToString() {
         BasicElement elt0 = new BasicElement();
-        elt0.name("Element0");
+        elt0.setName("Element0");
 
         assertThat(elt0).hasToString("Element0");
     }

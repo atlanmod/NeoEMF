@@ -11,8 +11,8 @@ package fr.inria.atlanmod.neoemf.io.bean;
 import fr.inria.atlanmod.commons.LazyReference;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EcorePackage;
 
 import java.util.Objects;
 
@@ -27,13 +27,13 @@ import static java.util.Objects.nonNull;
  * A simple representation of a {@link org.eclipse.emf.ecore.EClass}.
  */
 @ParametersAreNonnullByDefault
-public class BasicMetaclass extends AbstractNamedElement<BasicMetaclass> {
+public class BasicClass extends AbstractNamedElement<BasicClass> implements Basic<BasicClass, EClass> {
 
     /**
-     * The instance of the default meta-class.
+     * The instance of the default meta-class: {@code http://www.eclipse.org/emf/2002/Ecore # EObject}.
      */
     @Nonnull
-    private static final BasicMetaclass DEFAULT = new BasicMetaclass(BasicNamespace.getDefault(), EObject.class.getSimpleName());
+    public static final BasicClass DEFAULT = new BasicClass(EcorePackage.eINSTANCE.getEObject());
 
     /**
      * The namespace of this meta-class.
@@ -42,49 +42,61 @@ public class BasicMetaclass extends AbstractNamedElement<BasicMetaclass> {
     private final BasicNamespace ns;
 
     /**
-     * The {@link EClass} associated to this meta-class.
+     * The {@link EClass} represented by this object.
      */
     @Nonnull
     private final LazyReference<EClass> eClass = LazyReference.soft(() -> {
-        final EPackage p = ns().ePackage();
-        final String name = name();
-
-        EClass c = EClass.class.cast(p.getEClassifier(name));
-        checkNotNull(c, "Unable to find EClass '%s' from EPackage '%s'", name, p.getNsURI());
+        final EPackage p = getNamespace().getReal();
+        final EClass c = EClass.class.cast(p.getEClassifier(getName()));
+        checkNotNull(c, "Unable to find EClass '%s' from EPackage '%s'", getName(), p.getNsURI());
         return c;
     });
 
     /**
-     * Constructs a new {@code BasicMetaclass} with the given {@code ns}.
+     * Constructs a new {@code BasicClass} from the represented meta-class.
+     *
+     * @param eClass the represented meta-class
+     */
+    public BasicClass(EClass eClass) {
+        this(BasicNamespace.Registry.getInstance().get(eClass.getEPackage()), eClass.getName());
+        this.eClass.update(eClass);
+    }
+
+    /**
+     * Constructs a new {@code BasicClass} with the given {@code ns}.
      *
      * @param ns the namespace of this meta-class
      */
-    public BasicMetaclass(BasicNamespace ns) {
+    public BasicClass(BasicNamespace ns) {
         this(ns, null);
     }
 
     /**
-     * Constructs a new {@code BasicMetaclass} with the given {@code ns} and {@code name}.
+     * Constructs a new {@code BasicClass} with the given {@code ns} and {@code name}.
      *
      * @param ns   the namespace of this meta-class
      * @param name the name of this meta-class
      */
-    public BasicMetaclass(BasicNamespace ns, @Nullable String name) {
+    public BasicClass(BasicNamespace ns, @Nullable String name) {
         this.ns = checkNotNull(ns, "ns");
 
         if (nonNull(name)) {
-            name(name);
+            setName(name);
         }
     }
 
-    /**
-     * Returns the default meta-class.
-     *
-     * @return the {@code BasicMetaclass} representing "ecore:EObject"
-     */
+    @Override
+    public EClass getReal() {
+        return eClass.get();
+    }
+
     @Nonnull
-    public static BasicMetaclass getDefault() {
-        return DEFAULT;
+    @Override
+    public BasicClass setReal(EClass eClass) {
+        checkNotNull(eClass, "eClass");
+        this.eClass.update(eClass);
+
+        return setName(eClass.getName());
     }
 
     /**
@@ -93,32 +105,8 @@ public class BasicMetaclass extends AbstractNamedElement<BasicMetaclass> {
      * @return the namespace
      */
     @Nonnull
-    public BasicNamespace ns() {
+    public BasicNamespace getNamespace() {
         return ns;
-    }
-
-    /**
-     * Returns the {@link org.eclipse.emf.ecore.EClass} associated to this meta-class.
-     *
-     * @return the {@link org.eclipse.emf.ecore.EClass}
-     */
-    @Nonnull
-    public EClass eClass() {
-        return eClass.get();
-    }
-
-    /**
-     * Defines the {@link org.eclipse.emf.ecore.EClass} associated to this meta-class.
-     *
-     * @param eClass the {@link org.eclipse.emf.ecore.EClass}
-     *
-     * @return this instance (for chaining)
-     */
-    public BasicMetaclass eClass(EClass eClass) {
-        checkNotNull(eClass, "eClass");
-        this.eClass.update(eClass);
-
-        return name(eClass.getName());
     }
 
     @Override
@@ -138,12 +126,12 @@ public class BasicMetaclass extends AbstractNamedElement<BasicMetaclass> {
             return false;
         }
 
-        BasicMetaclass that = BasicMetaclass.class.cast(o);
+        BasicClass that = BasicClass.class.cast(o);
         return Objects.equals(ns, that.ns);
     }
 
     @Override
     public String toString() {
-        return ns.prefix() + ':' + name();
+        return ns.getPrefix() + ':' + getName();
     }
 }

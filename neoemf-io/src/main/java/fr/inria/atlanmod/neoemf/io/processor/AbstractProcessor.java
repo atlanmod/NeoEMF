@@ -23,15 +23,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public abstract class AbstractProcessor extends AbstractNotifier<Processor> implements Processor {
 
-    /**
-     * Constructs a new {@code AbstractProcessor}.
-     *
-     * @param processor the next processor
-     */
-    public AbstractProcessor(Processor processor) {
-        super(processor);
-    }
-
     @Override
     public void onInitialize() throws IOException {
         notifyInitialize();

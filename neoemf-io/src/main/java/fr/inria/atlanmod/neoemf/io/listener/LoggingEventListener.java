@@ -22,10 +22,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Listener} that logs every events.
+ * A {@link EventListener} that logs every events.
  */
 @ParametersAreNonnullByDefault
-public class LoggingListener extends AbstractListener {
+public class LoggingEventListener extends AbstractEventListener {
 
     /**
      * The {@link Level} for logging.
@@ -39,18 +39,18 @@ public class LoggingListener extends AbstractListener {
     private Id currentId;
 
     /**
-     * Constructs a new {@code LoggingListener} with the default logging level.
+     * Constructs a new {@code LoggingEventListener} with the default logging level.
      */
-    public LoggingListener() {
+    public LoggingEventListener() {
         this(Level.INFO);
     }
 
     /**
-     * Constructs a new {@code LoggingListener} with the given logging {@code level}.
+     * Constructs a new {@code LoggingEventListener} with the given logging {@code level}.
      *
      * @param level the logging level to use
      */
-    public LoggingListener(Level level) {
+    public LoggingEventListener(Level level) {
         this.level = level;
     }
 
@@ -62,29 +62,29 @@ public class LoggingListener extends AbstractListener {
     @Override
     public void onStartElement(BasicElement element) {
         Log.log(level, "[E] {0} : {1} = {2}",
-                element.metaClass(),
-                element.name(),
-                element.id().toHexString());
+                element.getMetaClass(),
+                element.getName(),
+                element.getId().getResolved().toHexString());
 
-        currentId = element.id();
+        currentId = element.getId().getResolved();
     }
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
         Log.log(level, "[A]    {0}{1} = {2}",
-                attribute.name(),
+                attribute.getName(),
                 attribute.isMany() ? " many[-1]" : Strings.EMPTY,
-                attribute.value());
+                attribute.getValue().getResolved());
     }
 
     @Override
     public void onReference(BasicReference reference) {
         Log.log(level, "[R]    {0}{1} = {2} -{3}> {4}",
-                reference.name(),
+                reference.getName(),
                 reference.isMany() ? " many[-1]" : Strings.EMPTY,
-                Objects.isNull(reference.owner()) ? "this" : reference.owner().toHexString(),
+                Objects.isNull(reference.getOwner()) ? "this" : reference.getOwner().toHexString(),
                 reference.isContainment() ? 'C' : '-',
-                Objects.equals(reference.value(), currentId) ? "this" : reference.value().toHexString());
+                Objects.equals(reference.getValue().getResolved(), currentId) ? "this" : reference.getValue().getResolved().toHexString());
     }
 
     @Override

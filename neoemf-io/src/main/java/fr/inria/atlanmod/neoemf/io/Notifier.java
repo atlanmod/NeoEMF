@@ -14,28 +14,15 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
 import java.io.IOException;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An object that notifies registered {@link Handler}s of events during an I/O process.
  *
- * @param <H> the type of handlers
- *
  * @see Handler
  */
 @ParametersAreNonnullByDefault
-public interface Notifier<H extends Handler> {
-
-    /**
-     * Returns the {@link Handler}s that will be notified by this {@code Notifier}.
-     *
-     * @return the handler to notify
-     */
-    @Nonnull
-    Iterable<H> next();
+public interface Notifier {
 
     /**
      * Notifies all registered handlers of the start of a task.
@@ -43,11 +30,7 @@ public interface Notifier<H extends Handler> {
      * @see #notifyComplete()
      * @see Handler#onInitialize()
      */
-    default void notifyInitialize() throws IOException {
-        for (H h : next()) {
-            h.onInitialize();
-        }
-    }
+    void notifyInitialize() throws IOException;
 
     /**
      * Notifies all registered handlers of the start of a new element.
@@ -57,13 +40,7 @@ public interface Notifier<H extends Handler> {
      * @see #notifyEndElement()
      * @see Handler#onStartElement(BasicElement)
      */
-    default void notifyStartElement(BasicElement element) throws IOException {
-        checkNotNull(element, "element");
-
-        for (H h : next()) {
-            h.onStartElement(element);
-        }
-    }
+    void notifyStartElement(BasicElement element) throws IOException;
 
     /**
      * Notifies all registered handlers of a new attribute.
@@ -72,13 +49,7 @@ public interface Notifier<H extends Handler> {
      *
      * @see Handler#onAttribute(BasicAttribute)
      */
-    default void notifyAttribute(BasicAttribute attribute) throws IOException {
-        checkNotNull(attribute, "attribute");
-
-        for (H h : next()) {
-            h.onAttribute(attribute);
-        }
-    }
+    void notifyAttribute(BasicAttribute attribute) throws IOException;
 
     /**
      * Notifies all registered handlers of a new reference.
@@ -87,13 +58,7 @@ public interface Notifier<H extends Handler> {
      *
      * @see Handler#onReference(BasicReference)
      */
-    default void notifyReference(BasicReference reference) throws IOException {
-        checkNotNull(reference, "reference");
-
-        for (H h : next()) {
-            h.onReference(reference);
-        }
-    }
+    void notifyReference(BasicReference reference) throws IOException;
 
     /**
      * Notifies all registered handlers of the end of the current element.
@@ -101,11 +66,7 @@ public interface Notifier<H extends Handler> {
      * @see #notifyStartElement(BasicElement)
      * @see Handler#onEndElement()
      */
-    default void notifyEndElement() throws IOException {
-        for (H h : next()) {
-            h.onEndElement();
-        }
-    }
+    void notifyEndElement() throws IOException;
 
     /**
      * Notifies all registered handlers of the end of the current task.
@@ -113,9 +74,5 @@ public interface Notifier<H extends Handler> {
      * @see #notifyInitialize()
      * @see Handler#onComplete()
      */
-    default void notifyComplete() throws IOException {
-        for (H h : next()) {
-            h.onComplete();
-        }
-    }
+    void notifyComplete() throws IOException;
 }

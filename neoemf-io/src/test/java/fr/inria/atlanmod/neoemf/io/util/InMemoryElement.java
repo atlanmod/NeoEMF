@@ -10,8 +10,8 @@ package fr.inria.atlanmod.neoemf.io.util;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public final class InMemoryElement {
      * @return the name
      */
     public String name() {
-        return element.name();
+        return element.getName();
     }
 
     /**
@@ -73,7 +73,7 @@ public final class InMemoryElement {
      * @return the identifier
      */
     public Id id() {
-        return element.id();
+        return element.getId().getResolved();
     }
 
     /**
@@ -81,8 +81,8 @@ public final class InMemoryElement {
      *
      * @return the meta-class
      */
-    public BasicMetaclass metaClass() {
-        return element.metaClass();
+    public BasicClass metaClass() {
+        return element.getMetaClass();
     }
 
     /**

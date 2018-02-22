@@ -14,11 +14,10 @@ import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.bean.Data;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.EObjects;
 
@@ -58,15 +57,6 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      */
     private DataMapper mapper;
 
-    /**
-     * Constructs a new {@code DefaultMapperReader} with the given {@code processor}.
-     *
-     * @param processor the processor to notify
-     */
-    public DefaultMapperReader(Processor processor) {
-        super(processor);
-    }
-
     @Override
     public void read(DataMapper source) throws IOException {
         mapper = source;
@@ -94,8 +84,6 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                 .map(ClassBean::get)
                 .<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
 
-        BasicNamespace ns = BasicNamespace.Registry.getInstance().register(eClass.getEPackage());
-
         // Retrieve the name of the element
         // If root it's the name of the meta-class, otherwise the name of the containing feature from the previous class
         String name = isRoot ? eClass.getName() : mapper.containerOf(id)
@@ -105,15 +93,14 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                 .<IllegalStateException>orElseThrow(IllegalStateException::new);
 
         // Create the meta-class
-        BasicMetaclass metaClass = new BasicMetaclass(ns)
-                .eClass(eClass);
+        BasicClass metaClass = new BasicClass(eClass);
 
         // Create the element
         BasicElement element = new BasicElement()
-                .name(name)
-                .id(id)
-                .isRoot(isRoot)
-                .metaClass(metaClass);
+                .setName(name)
+                .setId(Data.resolved(id))
+                .setRoot(isRoot)
+                .setMetaClass(metaClass);
 
         notifyStartElement(element);
         classes.addLast(eClass);
@@ -243,10 +230,10 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
         checkFeatureMap(eAttribute);
 
         BasicAttribute attribute = new BasicAttribute()
-                .owner(feature.owner())
-                .id(feature.id())
-                .eFeature(eAttribute)
-                .value(value);
+                .setOwner(feature.owner())
+                .setId(feature.id())
+                .setReal(eAttribute)
+                .setValue(Data.resolved(value));
 
         notifyAttribute(attribute);
     }
@@ -265,10 +252,10 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
         checkFeatureMap(eReference);
 
         BasicReference reference = new BasicReference()
-                .owner(feature.owner())
-                .id(feature.id())
-                .eFeature(eReference)
-                .value(value);
+                .setOwner(feature.owner())
+                .setId(feature.id())
+                .setReal(eReference)
+                .setValue(Data.resolved(value));
 
         notifyReference(reference);
 

@@ -16,5 +16,5 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link fr.inria.atlanmod.neoemf.io.Handler} that simply listen events.
  */
 @ParametersAreNonnullByDefault
-public interface Listener extends Handler {
+public interface EventListener extends Handler {
 }

@@ -91,36 +91,40 @@ public abstract class AbstractWriter<T> implements Writer {
     public void onStartElement(BasicElement element) throws IOException {
         flushAllFeatures();
 
-        identifiers.addLast(element.id());
+        identifiers.addLast(element.getId().getResolved());
     }
 
     @Override
     public final void onAttribute(BasicAttribute attribute) throws IOException {
-        checkEqualTo(identifiers.getLast(), attribute.owner(),
-                "%s is not the owner of this attribute (%s)", identifiers.getLast(), attribute.owner());
+        checkEqualTo(identifiers.getLast(), attribute.getOwner(),
+                "%s is not the owner of this attribute (%s)", identifiers.getLast(), attribute.getOwner());
+
+        final Object value = attribute.getValue().getResolved();
 
         if (!attribute.isMany()) {
-            onAttribute(attribute, Collections.singletonList(attribute.value()));
+            onAttribute(attribute, Collections.singletonList(value));
         }
         else {
-            flushLastFeature(attribute.id());
-            attributesAccumulator.computeIfAbsent(attribute, a -> new LinkedList<>()).add(attribute.value());
+            flushLastFeature(attribute.getId());
+            attributesAccumulator.computeIfAbsent(attribute, a -> new LinkedList<>()).add(value);
         }
     }
 
     @Override
     public final void onReference(BasicReference reference) throws IOException {
         if (!reference.isContainment()) { // Containment references are processed differently from standard references
-            checkEqualTo(identifiers.getLast(), reference.owner(),
-                    "%s is not the owner of this reference (%s)", identifiers.getLast(), reference.owner());
+            checkEqualTo(identifiers.getLast(), reference.getOwner(),
+                    "%s is not the owner of this reference (%s)", identifiers.getLast(), reference.getOwner());
         }
 
+        final Id id = reference.getValue().getResolved();
+
         if (!reference.isMany()) {
-            onReference(reference, Collections.singletonList(reference.value()));
+            onReference(reference, Collections.singletonList(id));
         }
         else {
-            flushLastFeature(reference.id());
-            referencesAccumulator.computeIfAbsent(reference, r -> new LinkedList<>()).add(reference.value());
+            flushLastFeature(reference.getId());
+            referencesAccumulator.computeIfAbsent(reference, r -> new LinkedList<>()).add(id);
         }
     }
 

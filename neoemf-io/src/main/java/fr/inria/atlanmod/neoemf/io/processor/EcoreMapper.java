@@ -11,10 +11,10 @@ package fr.inria.atlanmod.neoemf.io.processor;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.bean.Data;
 import fr.inria.atlanmod.neoemf.util.EObjects;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -27,11 +27,7 @@ import org.eclipse.emf.ecore.util.FeatureMapUtil;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -47,24 +43,21 @@ import static java.util.Objects.nonNull;
 public class EcoreMapper extends AbstractProcessor {
 
     /**
-     * A LIFO that holds the current {@link BasicElement} chain. It contains the current element and the previous.
+     * A LIFO that holds the current {@link Id} chain.
      */
     @Nonnull
-    private final Deque<BasicElement> elements = new ArrayDeque<>();
+    private final Deque<Id> identifiers = new ArrayDeque<>();
 
     /**
-     * Constructs a new {@code EcoreMapper}.
-     *
-     * @param processor the next processor
+     * A LIFO that holds the current meta-class chain.
      */
-    public EcoreMapper(Processor processor) {
-        super(processor);
-    }
+    @Nonnull
+    private final Deque<EClass> metaClasses = new ArrayDeque<>();
 
     @Override
     public void onStartElement(BasicElement element) throws IOException {
         // Is root
-        if (elements.isEmpty()) {
+        if (identifiers.isEmpty()) {
             processElementAsRoot(element);
         }
         // Is a feature of parent
@@ -75,7 +68,7 @@ public class EcoreMapper extends AbstractProcessor {
 
     @Override
     public void onAttribute(BasicAttribute attribute) throws IOException {
-        final EStructuralFeature eFeature = getFeature(attribute.name());
+        final EStructuralFeature eFeature = getFeature(attribute.getName());
 
         if (isFeatureMap(eFeature)) {
             throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
@@ -87,23 +80,23 @@ public class EcoreMapper extends AbstractProcessor {
         }
         else {
             // Otherwise redirect to the reference handler
-            BasicReference reference = new BasicReference()
-                    .rawValue(attribute.rawValue());
-
+            final Object rawValue = attribute.getValue().getRaw();
+            BasicReference reference = new BasicReference().setValue(Data.raw(rawValue));
             processReference(reference, EObjects.asReference(eFeature));
         }
     }
 
     @Override
     public void onReference(BasicReference reference) throws IOException {
-        final EStructuralFeature eFeature = getFeature(reference.name());
+        final EStructuralFeature eFeature = getFeature(reference.getName());
 
         processReference(reference, EObjects.asReference(eFeature));
     }
 
     @Override
     public void onEndElement() throws IOException {
-        elements.removeLast();
+        identifiers.removeLast();
+        metaClasses.removeLast();
 
         notifyEndElement();
     }
@@ -116,20 +109,22 @@ public class EcoreMapper extends AbstractProcessor {
      * @throws NullPointerException if the {@code element} does not have a namespace
      */
     private void processElementAsRoot(BasicElement element) throws IOException {
-        checkNotNull(element.metaClass(), "The root element must have a namespace");
+        checkNotNull(element.getMetaClass(), "The root element must have a namespace");
 
         // Retrieve the current EClass & define the meta-class of the current element if not present
-        BasicMetaclass metaClass = element.metaClass();
-        metaClass.eClass(getClass(element.name(), metaClass.ns().ePackage()));
+        final BasicClass metaClass = element.getMetaClass();
+        final EClass eClass = getClass(element.getName(), metaClass.getNamespace().getReal());
+        metaClass.setReal(eClass);
 
         // Define the element as root node
-        element.isRoot(true);
+        element.setRoot(true);
 
         // Notify next handlers
         notifyStartElement(element);
 
         // Save the current element
-        elements.addLast(element);
+        identifiers.addLast(element.getId().getResolved());
+        metaClasses.addLast(eClass);
     }
 
     /**
@@ -139,7 +134,7 @@ public class EcoreMapper extends AbstractProcessor {
      * @param element the element representing the feature
      */
     private void processElementAsFeature(BasicElement element) throws IOException {
-        final EStructuralFeature feature = getFeature(element.name());
+        final EStructuralFeature feature = getFeature(element.getName());
 
         // Check if the feature is a FeatureMap.Entry
         if (isFeatureMap(feature)) {
@@ -150,18 +145,17 @@ public class EcoreMapper extends AbstractProcessor {
             throw new IllegalStateException(String.format("You should never have arrived here: The element is an attribute: %s", feature.getName()));
         }
 
-        EReference eReference = EObjects.asReference(feature);
-        EClass baseClass = EClass.class.cast(eReference.getEType());
+        final EReference eReference = EObjects.asReference(feature);
+        final EClass baseClass = EClass.class.cast(eReference.getEType());
 
         // Retrieve the type the reference
-        if (nonNull(element.metaClass())) {
+        if (nonNull(element.getMetaClass())) {
             // The meta-class was specified in the element
-            BasicMetaclass metaClass = element.metaClass();
-            metaClass.eClass(resolveClass(metaClass, baseClass));
+            BasicClass metaClass = element.getMetaClass();
+            metaClass.setReal(resolveClass(metaClass, baseClass));
         }
         else {
-            BasicNamespace ns = BasicNamespace.Registry.getInstance().get(baseClass.getEPackage());
-            element.metaClass(new BasicMetaclass(ns).eClass(baseClass));
+            element.setMetaClass(new BasicClass(baseClass));
         }
 
         processElementAsReference(element, eReference);
@@ -174,22 +168,16 @@ public class EcoreMapper extends AbstractProcessor {
      * @param eReference the associated EMF reference
      */
     private void processElementAsReference(BasicElement element, EReference eReference) throws IOException {
-        // Notify next handlers of new element
         notifyStartElement(element);
 
-        // Retrieve the identifier of the element (generated by next handlers)
-        Id currentId = element.id();
-
-        // Create a reference from the parent to this element, with the given local name
+        // Create a reference from the parent to this element
         if (eReference.isContainment()) {
-            BasicReference reference = new BasicReference()
-                    .value(currentId);
-
-            processReference(reference, eReference);
+            final Id ownerId = element.getId().getResolved();
+            processReference(new BasicReference().setValue(Data.resolved(ownerId)), eReference);
         }
 
-        // Save the current element
-        elements.addLast(element);
+        identifiers.addLast(element.getId().getResolved());
+        metaClasses.addLast(element.getMetaClass().getReal());
     }
 
     /**
@@ -199,13 +187,15 @@ public class EcoreMapper extends AbstractProcessor {
      * @param eAttribute the associated EMF attribute
      */
     private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) throws IOException {
-        BasicElement parentElement = elements.getLast();
-        EClass parentClass = parentElement.metaClass().eClass();
+        final Id ownerId = identifiers.getLast();
+        final EClass ownerClass = metaClasses.getLast();
 
-        attribute.owner(parentElement.id())
-                .id(parentClass.getFeatureID(eAttribute))
-                .eFeature(eAttribute)
-                .value(ValueConverter.INSTANCE.convert(attribute.rawValue(), eAttribute));
+        final Object resolvedValue = ValueConverter.INSTANCE.convert(attribute.getValue().getRaw(), eAttribute);
+
+        attribute.setOwner(ownerId)
+                .setId(ownerClass.getFeatureID(eAttribute))
+                .setReal(eAttribute)
+                .setValue(Data.resolved(resolvedValue));
 
         notifyAttribute(attribute);
     }
@@ -217,44 +207,34 @@ public class EcoreMapper extends AbstractProcessor {
      * @param eReference the associated EMF reference
      */
     private void processReference(BasicReference reference, EReference eReference) throws IOException {
-        BasicElement parentElement = elements.getLast();
-        EClass parentClass = parentElement.metaClass().eClass();
+        final Id ownerId = identifiers.getLast();
+        final EClass ownerClass = metaClasses.getLast();
 
-        reference.owner(parentElement.id())
-                .id(parentClass.getFeatureID(eReference))
-                .eFeature(eReference);
+        reference.setOwner(ownerId)
+                .setId(ownerClass.getFeatureID(eReference))
+                .setReal(eReference);
 
         // The unique identifier is already set
-        if (nonNull(reference.value())) {
+        if (reference.getValue().isResolved()) {
             notifyReference(reference);
         }
         else {
-            processRawReference(reference, eReference);
+            splitReference(reference);
         }
     }
 
     /**
      * Process one or several references from the raw value of the {@code reference}. If the reference is a multi-valued
-     * reference, each raw identifier will be delimited by a space.
+     * reference, each identifier will be delimited by a space.
      *
-     * @param reference  the reference to process
-     * @param eReference the associated EMF reference
+     * @param reference the reference to process
      */
-    private void processRawReference(BasicReference reference, EReference eReference) throws IOException {
-        final Function<String, BasicReference> createFunc = s -> new BasicReference()
-                .owner(reference.owner())
-                .id(reference.id())
-                .eFeature(eReference)
-                .rawValue(s);
-
-        List<BasicReference> allReferences = Arrays.stream(reference.<String>rawValue().split(Strings.SPACE))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .map(createFunc)
-                .collect(Collectors.toList());
-
-        for (BasicReference r : allReferences) {
-            notifyReference(r);
+    private void splitReference(BasicReference reference) throws IOException {
+        for (String s : reference.getValue().<String>getRaw().split(Strings.SPACE)) {
+            final String trim = s.trim();
+            if (!trim.isEmpty()) {
+                notifyReference(BasicReference.copy(reference).setValue(Data.raw(trim)));
+            }
         }
     }
 
@@ -281,11 +261,10 @@ public class EcoreMapper extends AbstractProcessor {
      */
     @Nonnull
     private EStructuralFeature getFeature(String name) {
-        BasicElement parentElement = elements.getLast();
-        EClass parentClass = parentElement.metaClass().eClass();
-        EStructuralFeature eFeature = parentClass.getEStructuralFeature(name);
+        EClass ownerClass = metaClasses.getLast();
+        EStructuralFeature eFeature = ownerClass.getEStructuralFeature(name);
 
-        checkNotNull(eFeature, "No feature named {0} has been found in class {1}", name, parentClass);
+        checkNotNull(eFeature, "No feature named {0} has been found in class {1}", name, ownerClass);
 
         return eFeature;
     }
@@ -303,7 +282,6 @@ public class EcoreMapper extends AbstractProcessor {
     @Nonnull
     private EClass getClass(String name, EPackage ePackage) {
         EClass eClass = EClass.class.cast(ePackage.getEClassifier(name));
-
         checkNotNull(eClass, "Unable to find EClass '%s' from EPackage '%s'", name, ePackage.getNsURI());
 
         return eClass;
@@ -321,12 +299,12 @@ public class EcoreMapper extends AbstractProcessor {
      * @throws IllegalArgumentException if the {@code superClass} is not the super-type of the sought class
      */
     @Nonnull
-    private EClass resolveClass(BasicMetaclass metaClass, EClass superClass) {
-        final EPackage ePackage = metaClass.ns().ePackage();
+    private EClass resolveClass(BasicClass metaClass, EClass superClass) {
+        final EPackage ePackage = metaClass.getNamespace().getReal();
 
         // Is a more specific meta-class defined ?
-        if (nonNull(metaClass.name())) {
-            EClass eClass = getClass(metaClass.name(), ePackage);
+        if (nonNull(metaClass.getName())) {
+            EClass eClass = getClass(metaClass.getName(), ePackage);
 
             // Checks that the meta-class is a subtype of the reference type
             checkArgument(superClass.isSuperTypeOf(eClass),

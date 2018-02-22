@@ -12,6 +12,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdProvider;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.bean.Data;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -66,15 +67,6 @@ public class XPathResolver extends AbstractProcessor {
      */
     private Boolean ignore;
 
-    /**
-     * Constructs a new {@code XPathResolver}.
-     *
-     * @param processor the next processor
-     */
-    public XPathResolver(Processor processor) {
-        super(processor);
-    }
-
     @Override
     public void onInitialize() throws IOException {
         paths = new XPathTree();
@@ -86,7 +78,7 @@ public class XPathResolver extends AbstractProcessor {
     public void onStartElement(BasicElement element) throws IOException {
         // If the first element has an identifier, we assume that the file is ID-based.
         if (isNull(ignore)) {
-            ignore = nonNull(element.rawId());
+            ignore = element.getId().isPresent();
         }
 
         resolve(element);
@@ -112,17 +104,17 @@ public class XPathResolver extends AbstractProcessor {
     }
 
     /**
-     * Resolves the {@link BasicElement#id() identifier} of the specified {@code element}.
+     * Resolves the identifier of the specified {@code element}.
      *
      * @param element the element to resolve
      */
     private void resolve(BasicElement element) {
-        if (nonNull(element.id())) {
+        if (element.getId().isResolved()) {
             return;
         }
 
         Id id;
-        String rawId = element.rawId();
+        String rawId = element.getId().getRaw();
 
         // An element has no identifier if it's not resolved
         if (ignore || nonNull(rawId)) {
@@ -133,7 +125,7 @@ public class XPathResolver extends AbstractProcessor {
             // Increments the number of occurrence for this path
             // Processes the raw identifier from the path of the element in XML tree
             // Defines the raw identifier as '<path>.<index>'
-            final String path = paths.path(element.name()) + INDEX_SEPARATOR + paths.createOrIncrement(element.name());
+            final String path = paths.path(element.getName()) + INDEX_SEPARATOR + paths.createOrIncrement(element.getName());
 
             // Defines the XPath start of all elements from the root element
             if (isNull(expressionStart)) {
@@ -143,21 +135,21 @@ public class XPathResolver extends AbstractProcessor {
             id = generateId(path);
         }
 
-        element.id(id).rawId(null);
+        element.setId(Data.resolved(id));
     }
 
     /**
-     * Resolves the {@link BasicReference#value identifier} of the referenced element.
+     * Resolves the identifier of the referenced element.
      *
      * @param reference the reference to resolve
      */
     private void resolve(BasicReference reference) {
-        if (nonNull(reference.value())) {
+        if (reference.getValue().isResolved()) {
             return;
         }
 
         Id referencedId;
-        String rawValue = reference.rawValue();
+        String rawValue = reference.getValue().getRaw();
         checkNotNull(rawValue, "raw value must be set");
 
         if (ignore || !rawValue.startsWith(START_EXPR) && !rawValue.startsWith(START_ELT)) {
@@ -181,7 +173,7 @@ public class XPathResolver extends AbstractProcessor {
             referencedId = generateId(path);
         }
 
-        reference.value(referencedId);
+        reference.setValue(Data.resolved(referencedId));
     }
 
     /**

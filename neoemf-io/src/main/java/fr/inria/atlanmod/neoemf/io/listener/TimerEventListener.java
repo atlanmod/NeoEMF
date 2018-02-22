@@ -15,10 +15,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Listener} that measures elapsed time between the start and the end of an I/O process.
+ * A {@link EventListener} that measures elapsed time between the start and the end of an I/O process.
  */
 @ParametersAreNonnullByDefault
-public class TimerListener extends AbstractListener {
+public class TimerEventListener extends AbstractEventListener {
 
     /**
      * The stopwatch to measure elapsed time.

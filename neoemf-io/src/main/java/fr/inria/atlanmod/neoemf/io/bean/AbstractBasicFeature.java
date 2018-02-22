@@ -24,7 +24,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * A simple representation of a {@link org.eclipse.emf.ecore.EStructuralFeature}.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, V>, F extends EStructuralFeature, V> extends AbstractNamedElement<T> {
+public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, R, V>, R extends EStructuralFeature, V> extends AbstractNamedElement<T> implements Basic<T, R> {
 
     /**
      * The identifier of element that owns this feature.
@@ -39,29 +39,38 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
     /**
      * Whether this feature is multi-valued.
      */
-    private boolean isMany = false;
+    private boolean many = false;
 
     /**
      * The value of this feature.
      */
-    private V value;
+    @Nonnull
+    private Data<V> value = Data.empty();
 
     /**
-     * The raw value of this feature, as she was read.
+     * The {@link EStructuralFeature} represented by this object.
      */
-    private Object rawValue;
+    private R eFeature;
 
-    /**
-     * The {@link EStructuralFeature} associated to this feature.
-     */
-    private F eFeature;
+    @Override
+    public R getReal() {
+        return checkNotNull(eFeature, "eFeature");
+    }
+
+    @Nonnull
+    @Override
+    public T setReal(R eFeature) {
+        this.eFeature = checkNotNull(eFeature, "eFeature");
+
+        return setName(eFeature.getName()).setMany(eFeature.isMany());
+    }
 
     /**
      * Returns the identifier of the element that owns this feature.
      *
      * @return the owner's identifier
      */
-    public Id owner() {
+    public Id getOwner() {
         return owner;
     }
 
@@ -72,7 +81,8 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
      *
      * @return this instance (for chaining)
      */
-    public T owner(Id owner) {
+    @Nonnull
+    public T setOwner(Id owner) {
         this.owner = owner;
 
         return me();
@@ -83,7 +93,7 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
      *
      * @return the feature's identifier
      */
-    public int id() {
+    public int getId() {
         return id;
     }
 
@@ -94,7 +104,8 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
      *
      * @return this instance (for chaining)
      */
-    public T id(int id) {
+    @Nonnull
+    public T setId(int id) {
         this.id = id;
 
         return me();
@@ -106,7 +117,7 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
      * @return {@code true} if this feature is multi-valued
      */
     public boolean isMany() {
-        return isMany;
+        return many;
     }
 
     /**
@@ -116,8 +127,9 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
      *
      * @return this instance (for chaining)
      */
-    public T isMany(boolean isMany) {
-        this.isMany = isMany;
+    @Nonnull
+    public T setMany(boolean isMany) {
+        this.many = isMany;
 
         return me();
     }
@@ -127,7 +139,8 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
      *
      * @return the value
      */
-    public V value() {
+    @Nonnull
+    public Data<V> getValue() {
         return value;
     }
 
@@ -138,58 +151,11 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, F, 
      *
      * @return this instance (for chaining)
      */
-    public T value(V value) {
-        this.value = value;
-        this.rawValue = null;
-
-        return me();
-    }
-
-    /**
-     * Returns the raw value of this feature, as she was read.
-     *
-     * @return the raw value
-     */
-    @SuppressWarnings("unchecked")
-    public <U> U rawValue() {
-        return (U) rawValue;
-    }
-
-    /**
-     * Defines the raw value of this feature, as she was read.
-     *
-     * @param rawValue the raw value
-     *
-     * @return this instance (for chaining)
-     */
-    public <U> T rawValue(U rawValue) {
-        this.rawValue = rawValue;
-
-        return me();
-    }
-
-    /**
-     * Returns the {@link org.eclipse.emf.ecore.EStructuralFeature} associated to this feature.
-     *
-     * @return the {@link org.eclipse.emf.ecore.EStructuralFeature}
-     */
     @Nonnull
-    public F eFeature() {
-        return checkNotNull(eFeature, "eFeature");
-    }
+    public T setValue(Data<V> value) {
+        this.value = value;
 
-    /**
-     * Defines the {@link org.eclipse.emf.ecore.EStructuralFeature} associated to this feature.
-     *
-     * @param eFeature the {@link org.eclipse.emf.ecore.EStructuralFeature}
-     *
-     * @return this instance (for chaining)
-     */
-    public T eFeature(F eFeature) {
-        this.eFeature = checkNotNull(eFeature, "eFeature");
-
-        return name(eFeature.getName())
-                .isMany(eFeature.isMany());
+        return me();
     }
 
     @Override

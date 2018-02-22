@@ -9,8 +9,13 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
+import fr.inria.atlanmod.neoemf.io.processor.AbstractProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 
+import java.util.Collections;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -21,12 +26,30 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public abstract class AbstractReader<T> extends AbstractNotifier<Processor> implements Reader<T> {
 
+    @Override
+    public void addNext(Processor processor) {
+        Processor next = processor;
+
+        final List<AbstractProcessor> processors = createProcessors();
+
+        List<AbstractProcessor> reverseProcessors = processors.subList(0, processors.size());
+        Collections.reverse(reverseProcessors);
+
+        for (AbstractProcessor p : reverseProcessors) {
+            p.addNext(next);
+            next = p;
+        }
+
+        super.addNext(next);
+    }
+
     /**
-     * Constructs a new {@code AbstractReader} with the given {@code processor}.
+     * Creates all processors required for analyzing the read source.
      *
-     * @param processor the processor to notify
+     * @return an ordered list of processors
      */
-    public AbstractReader(Processor processor) {
-        super(processor);
+    @Nonnull
+    protected List<AbstractProcessor> createProcessors() {
+        return Collections.emptyList();
     }
 }

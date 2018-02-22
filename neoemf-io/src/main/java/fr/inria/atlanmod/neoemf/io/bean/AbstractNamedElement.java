@@ -41,7 +41,7 @@ public abstract class AbstractNamedElement<T extends AbstractNamedElement<T>> {
      *
      * @return the name
      */
-    public String name() {
+    public String getName() {
         return name;
     }
 
@@ -52,7 +52,7 @@ public abstract class AbstractNamedElement<T extends AbstractNamedElement<T>> {
      *
      * @return this instance (for chaining)
      */
-    public T name(String name) {
+    public T setName(String name) {
         this.name = name;
 
         return me();

@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.io;
 import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
+import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
@@ -335,7 +335,7 @@ class XmiReaderTest extends AbstractTest {
     @Test
     void testReaderWithoutHandler() {
         assertThat(
-                catchThrowable(() -> new XmiStreamReader(null).read(null))
+                catchThrowable(() -> new XmiStreamReader().read(null))
         ).isInstanceOf(NullPointerException.class);
     }
 
@@ -399,9 +399,9 @@ class XmiReaderTest extends AbstractTest {
      * @param nsPrefix  the expected namespace prefix
      * @param name      the expected name
      */
-    private void assertValidMetaClass(BasicMetaclass metaClass, String nsPrefix, String name) {
-        assertThat(metaClass.ns().prefix()).isEqualTo(nsPrefix);
-        assertThat(metaClass.name()).isEqualTo(name);
+    private void assertValidMetaClass(BasicClass metaClass, String nsPrefix, String name) {
+        assertThat(metaClass.getNamespace().getPrefix()).isEqualTo(nsPrefix);
+        assertThat(metaClass.getName()).isEqualTo(name);
     }
 
     /**
@@ -414,8 +414,8 @@ class XmiReaderTest extends AbstractTest {
      * @param isContainment {@code true} if the {@code reference} is a containment
      */
     private void assertValidReference(BasicReference reference, String name, Id idReference, boolean isMany, boolean isContainment) {
-        assertThat(reference.name()).isEqualTo(name);
-        assertThat(reference.value()).isEqualTo(idReference);
+        assertThat(reference.getName()).isEqualTo(name);
+        assertThat(reference.getValue().getResolved()).isEqualTo(idReference);
         assertThat(reference.isContainment()).isEqualTo(isContainment);
         assertThat(reference.isMany()).isEqualTo(isMany);
     }
@@ -428,7 +428,7 @@ class XmiReaderTest extends AbstractTest {
      * @param value     the expected value
      */
     private void assertValidAttribute(BasicAttribute attribute, String name, Object value) {
-        assertThat(attribute.name()).isEqualTo(name);
-        assertThat(attribute.value()).isEqualTo(value);
+        assertThat(attribute.getName()).isEqualTo(name);
+        assertThat(attribute.getValue().getResolved()).isEqualTo(value);
     }
 }

@@ -11,16 +11,17 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.bean.Data;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,8 +32,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkState;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link Reader} that reads data from an {@link InputStream}.
@@ -55,6 +54,12 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     private final Deque<Id> identifiers = new ArrayDeque<>();
 
     /**
+     * A collection that holds all attributes of the {@link #currentElement}.
+     */
+    @Nonnull
+    private final Deque<BasicAttribute> currentAttributes = new ArrayDeque<>();
+
+    /**
      * The current element.
      *
      * @see #readStartElement(String, String)
@@ -63,39 +68,18 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     private BasicElement currentElement;
 
     /**
-     * A collection that holds all attributes of the {@link #currentElement}.
-     */
-    private Deque<BasicAttribute> currentAttributes;
-
-    /**
      * Whether the current element has to be ignored.
      * <p>
      * Used when a special or unmanaged feature is encountered.
      */
     private boolean ignoredElement;
 
-    /**
-     * Whether the current element was not an element.
-     * <p>
-     * Used when a multi-valued feature is encountered.
-     */
-    private boolean ignoredId;
-
-    /**
-     * Constructs a new {@code AbstractStreamReader} with the given {@code processor}.
-     *
-     * @param processor the processor to notify
-     */
-    public AbstractStreamReader(Processor processor) {
-        super(processor);
-    }
-
     @Override
     public final void read(InputStream source) throws IOException {
         checkNotNull(source, "source");
 
         try (InputStream in = new BufferedInputStream(source)) {
-            run(in);
+            parse(in);
         }
         finally {
             BasicNamespace.Registry.getInstance().clean();
@@ -103,13 +87,13 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     }
 
     /**
-     * Runs the reading on the {@code stream}.
+     * Parses the content of the {@code stream}.
      *
      * @param stream the stream to read
      *
      * @throws IOException if an error occurred during the I/O process
      */
-    public abstract void run(InputStream stream) throws IOException;
+    public abstract void parse(InputStream stream) throws IOException;
 
     /**
      * Returns the identifier of the previous element.
@@ -147,7 +131,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     }
 
     /**
-     * Reads a new element.
+     * Reads the start of a new element.
      * <p>
      * <b>Note:</b> An element must be flushed with the {@link #flushCurrentElement()} method after analysing all its
      * attributes.
@@ -156,16 +140,13 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * @param name the name of the element
      */
     protected final void readStartElement(@Nullable String uri, String name) {
-        BasicNamespace ns = BasicNamespace.Registry.getInstance().getByUri(Strings.emptyToNull(uri));
+        currentElement = new BasicElement().setName(name);
 
-        currentElement = new BasicElement()
-                .name(name);
+        Optional.ofNullable(BasicNamespace.Registry.getInstance().getByUri(Strings.emptyToNull(uri)))
+                .map(BasicClass::new)
+                .ifPresent(c -> currentElement.setMetaClass(c));
 
-        if (nonNull(ns)) {
-            currentElement.metaClass(new BasicMetaclass(ns));
-        }
-
-        currentAttributes = new ArrayDeque<>();
+        currentAttributes.clear();
     }
 
     /**
@@ -176,11 +157,9 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * @param value the literal value of the element
      */
     protected final void readSimpleElement(@Nullable String uri, String name, String value) throws IOException {
-        BasicAttribute attribute = new BasicAttribute()
-                .name(name)
-                .rawValue(value);
+        checkState(!identifiers.isEmpty(), "Trying to process an empty root element");
 
-        notifyAttribute(attribute);
+        notifyAttribute(new BasicAttribute().setName(name).setValue(Data.raw(value)));
     }
 
     /**
@@ -199,23 +178,15 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * Finalizes the current element and sends all delayed notifications to handlers.
      */
     protected final void flushCurrentElement() throws IOException {
-        if (!ignoredElement) {
-            // Notifies the current element
-            notifyStartElement(currentElement);
+        if (ignoredElement) {
+            return;
+        }
 
-            if (isNull(currentElement.id())) {
-                // The element is probably a multi-valued attribute
-                checkState(currentAttributes.isEmpty(), "The element is not supposed to have attributes");
-                ignoredId = true;
-            }
-            else {
-                identifiers.addLast(currentElement.id());
+        notifyStartElement(currentElement);
+        identifiers.addLast(currentElement.getId().getResolved());
 
-                // Notifies the attributes
-                for (BasicAttribute a : currentAttributes) {
-                    notifyAttribute(a);
-                }
-            }
+        for (BasicAttribute a : currentAttributes) {
+            notifyAttribute(a);
         }
     }
 
@@ -227,26 +198,12 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * @param value  the value of the attribute
      */
     protected final void readAttribute(@Nullable String prefix, String name, String value) throws IOException {
-        if (!ignoredElement && !isSpecialAttribute(prefix, name, value)) {
-            BasicAttribute attribute = new BasicAttribute()
-                    .name(name)
-                    .rawValue(value);
-
-            currentAttributes.add(attribute);
+        if (ignoredElement || isSpecialAttribute(prefix, name, value)) {
+            return;
         }
-    }
 
-    /**
-     * Defines if the attribute represented with the parameters is a special attribute as 'xsi:type', 'xmi:id' or
-     * 'xmi:idref'.
-     *
-     * @param prefix the prefix of the attribute
-     * @param name   the name of the attribute
-     * @param value  the value of the attribute
-     *
-     * @return {@code true} if the given feature is a special feature
-     */
-    protected abstract boolean isSpecialAttribute(@Nullable String prefix, String name, String value) throws IOException;
+        currentAttributes.add(new BasicAttribute().setName(name).setValue(Data.raw(value)));
+    }
 
     /**
      * Reads a meta-class attribute from the {@code prefixedValue}, and defines is as the meta-class of the given {@code
@@ -263,23 +220,20 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
         BasicNamespace ns = BasicNamespace.Registry.getInstance().getByPrefix(m.group(1));
         String name = m.group(2);
 
-        currentElement.metaClass(new BasicMetaclass(ns, name));
+        currentElement.setMetaClass(new BasicClass(ns, name));
     }
 
     /**
      * Reads the end of an element.
      */
     protected final void readEndElement() throws IOException {
-        if (!ignoredElement) {
-            notifyEndElement();
+        if (ignoredElement) {
+            ignoredElement = false;
+            return;
         }
 
-        if (!ignoredId) {
-            identifiers.removeLast();
-        }
-
-        ignoredElement = false;
-        ignoredId = false;
+        notifyEndElement();
+        identifiers.removeLast();
     }
 
     /**
@@ -288,4 +242,16 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     protected final void readEndDocument() throws IOException {
         notifyComplete();
     }
+
+    /**
+     * Defines if the attribute represented with the parameters is a special attribute as 'xsi:type', 'xmi:id' or
+     * 'xmi:idref'.
+     *
+     * @param prefix the prefix of the attribute
+     * @param name   the name of the attribute
+     * @param value  the value of the attribute
+     *
+     * @return {@code true} if the given feature is a special feature
+     */
+    protected abstract boolean isSpecialAttribute(@Nullable String prefix, String name, String value) throws IOException;
 }

@@ -29,69 +29,69 @@ class BasicAttributeTest extends AbstractTest {
         String name1 = "attribute1";
 
         BasicAttribute attr0 = new BasicAttribute();
-        attr0.name(name0);
-        assertThat(attr0.name()).isEqualTo(name0);
+        attr0.setName(name0);
+        assertThat(attr0.getName()).isEqualTo(name0);
 
         BasicAttribute attr1 = new BasicAttribute();
-        attr1.name(name1);
-        assertThat(attr1.name()).isEqualTo(name1);
+        attr1.setName(name1);
+        assertThat(attr1.getName()).isEqualTo(name1);
 
-        assertThat(attr0.name()).isNotEqualTo(attr1.name());
+        assertThat(attr0.getName()).isNotEqualTo(attr1.getName());
     }
 
     @Test
     void testId() {
         BasicAttribute attr0 = new BasicAttribute();
-        attr0.name("attribute0");
-        assertThat(attr0.owner()).isNull();
+        attr0.setName("attribute0");
+        assertThat(attr0.getOwner()).isNull();
 
         Id id0 = Id.getProvider().fromLong(42);
         Id id1 = Id.getProvider().fromLong(44);
 
-        attr0.owner(id0);
-        assertThat(attr0.owner()).isEqualTo(id0);
+        attr0.setOwner(id0);
+        assertThat(attr0.getOwner()).isEqualTo(id0);
 
-        attr0.owner(id1);
-        assertThat(attr0.owner()).isNotEqualTo(id0).isEqualTo(id1);
+        attr0.setOwner(id1);
+        assertThat(attr0.getOwner()).isNotEqualTo(id0).isEqualTo(id1);
     }
 
     @Test
     void testMany() {
         BasicAttribute attr0 = new BasicAttribute();
-        attr0.name("attribute0");
+        attr0.setName("attribute0");
         assertThat(attr0.isMany()).isFalse();
 
-        attr0.isMany(true);
+        attr0.setMany(true);
         assertThat(attr0.isMany()).isTrue();
 
-        attr0.isMany(false);
+        attr0.setMany(false);
         assertThat(attr0.isMany()).isFalse();
     }
 
     @Test
     void testValue() {
         BasicAttribute attr0 = new BasicAttribute();
-        attr0.name("attribute0");
-        assertThat(attr0.value()).isNull();
+        attr0.setName("attribute0");
+        assertThat(attr0.getValue().isPresent()).isFalse();
 
         String value0 = "value0";
         String value1 = "value1";
 
-        attr0.value(value0);
-        assertThat(attr0.value()).isEqualTo(value0);
+        attr0.setValue(Data.resolved(value0));
+        assertThat(attr0.getValue().getResolved()).isEqualTo(value0);
 
-        attr0.value(value1);
-        assertThat(attr0.value()).isNotEqualTo(value0).isEqualTo(value1);
+        attr0.setValue(Data.resolved(value1));
+        assertThat(attr0.getValue().getResolved()).isNotEqualTo(value0).isEqualTo(value1);
     }
 
     @Test
     void testHashCode() {
         BasicAttribute attr0 = new BasicAttribute();
-        attr0.name("attribute0");
+        attr0.setName("attribute0");
         BasicAttribute attr0Bis = new BasicAttribute();
-        attr0Bis.name("attribute0");
+        attr0Bis.setName("attribute0");
         BasicAttribute attr1 = new BasicAttribute();
-        attr1.name("attribute1");
+        attr1.setName("attribute1");
 
         assertThat(attr0.hashCode()).isEqualTo(attr0Bis.hashCode());
         assertThat(attr0.hashCode()).isNotEqualTo(attr1.hashCode());
@@ -101,11 +101,11 @@ class BasicAttributeTest extends AbstractTest {
     @Test
     void testEquals() {
         BasicAttribute attr0 = new BasicAttribute();
-        attr0.name("attribute0");
+        attr0.setName("attribute0");
         BasicAttribute attr0Bis = new BasicAttribute();
-        attr0Bis.name("attribute0");
+        attr0Bis.setName("attribute0");
         BasicAttribute attr1 = new BasicAttribute();
-        attr1.name("attribute1");
+        attr1.setName("attribute1");
 
         assertThat(attr0).isEqualTo(attr0Bis);
         assertThat(attr0).isNotEqualTo(attr1);

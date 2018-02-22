@@ -12,8 +12,8 @@ import fr.inria.atlanmod.commons.annotation.Beta;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.processor.ValueConverter;
@@ -76,30 +76,31 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
     public final void onStartElement(BasicElement element) throws IOException {
         super.onStartElement(element);
 
-        BasicMetaclass metaClass = element.metaClass();
-        BasicNamespace ns = metaClass.ns();
+        final Id id = element.getId().getResolved();
+        final BasicClass metaClass = element.getMetaClass();
+        final BasicNamespace ns = metaClass.getNamespace();
 
         if (element.isRoot()) {
-            writeStartElement(XmiConstants.format(ns.prefix(), element.name()));
+            writeStartElement(XmiConstants.format(ns.getPrefix(), element.getName()));
 
             // Namespaces
-            writeNamespace(ns.prefix(), ns.uri());
+            writeNamespace(ns.getPrefix(), ns.getUri());
             writeNamespace(XMI_NS, XMI_URI);
 
             // XMI version
             writeAttribute(XMI_VERSION_ATTR, XMI_VERSION);
         }
         else {
-            writeStartElement(element.name());
+            writeStartElement(element.getName());
         }
 
         if (requiresExplicitType(element)) {
-            writeAttribute(XMI_TYPE, XmiConstants.format(ns.prefix(), metaClass.name()));
+            writeAttribute(XMI_TYPE, XmiConstants.format(ns.getPrefix(), metaClass.getName()));
         }
 
-        writeAttribute(XMI_ID, element.id().toHexString());
+        writeAttribute(XMI_ID, id.toHexString());
 
-        classes.add(metaClass.eClass());
+        classes.add(metaClass.getReal());
     }
 
     @Override
@@ -113,14 +114,16 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
 
     @Override
     public final void onAttribute(BasicAttribute attribute, List<Object> values) throws IOException {
-        EAttribute eAttribute = attribute.eFeature();
+        final ValueConverter converter = ValueConverter.INSTANCE;
+
+        final EAttribute eAttribute = attribute.getReal();
         if (!attribute.isMany()) {
-            writeAttribute(attribute.name(), ValueConverter.INSTANCE.revert(values.get(0), eAttribute));
+            writeAttribute(attribute.getName(), converter.revert(values.get(0), eAttribute));
         }
         else {
             for (Object v : values) {
-                writeStartElement(attribute.name());
-                writeCharacters(ValueConverter.INSTANCE.revert(v, eAttribute));
+                writeStartElement(attribute.getName());
+                writeCharacters(converter.revert(v, eAttribute));
                 writeEndElement();
             }
         }
@@ -133,10 +136,10 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
         }
 
         if (!reference.isMany()) {
-            writeAttribute(reference.name(), values.get(0).toHexString());
+            writeAttribute(reference.getName(), values.get(0).toHexString());
         }
         else {
-            writeAttribute(reference.name(), values.stream().map(Id::toHexString).collect(Collectors.joining(Strings.SPACE)));
+            writeAttribute(reference.getName(), values.stream().map(Id::toHexString).collect(Collectors.joining(Strings.SPACE)));
         }
     }
 
@@ -156,10 +159,10 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
         }
 
         final EClass containerClass = classes.getLast();
-        final EStructuralFeature referencingFeature = containerClass.getEStructuralFeature(element.name());
+        final EStructuralFeature referencingFeature = containerClass.getEStructuralFeature(element.getName());
 
-        EClass baseType = EClass.class.cast(referencingFeature.getEType());
-        EClass specificType = element.metaClass().eClass();
+        final EClass baseType = EClass.class.cast(referencingFeature.getEType());
+        final EClass specificType = element.getMetaClass().getReal();
 
         return specificType != baseType;
     }

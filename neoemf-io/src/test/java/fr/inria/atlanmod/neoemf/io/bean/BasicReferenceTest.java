@@ -29,65 +29,65 @@ class BasicReferenceTest extends AbstractTest {
         String name1 = "reference1";
 
         BasicReference ref0 = new BasicReference();
-        ref0.name(name0);
-        assertThat(ref0.name()).isEqualTo(name0);
+        ref0.setName(name0);
+        assertThat(ref0.getName()).isEqualTo(name0);
 
         BasicReference ref1 = new BasicReference();
-        ref1.name(name1);
-        assertThat(ref1.name()).isEqualTo(name1);
+        ref1.setName(name1);
+        assertThat(ref1.getName()).isEqualTo(name1);
 
-        assertThat(ref0.name()).isNotEqualTo(ref1.name());
+        assertThat(ref0.getName()).isNotEqualTo(ref1.getName());
     }
 
     @Test
     void testId() {
         BasicReference ref0 = new BasicReference();
-        ref0.name("reference0");
-        assertThat(ref0.owner()).isNull();
+        ref0.setName("reference0");
+        assertThat(ref0.getOwner()).isNull();
 
         Id id0 = Id.getProvider().fromLong(42);
         Id id1 = Id.getProvider().fromLong(44);
 
-        ref0.owner(id0);
-        assertThat(ref0.owner()).isEqualTo(id0);
+        ref0.setOwner(id0);
+        assertThat(ref0.getOwner()).isEqualTo(id0);
 
-        ref0.owner(id1);
-        assertThat(ref0.owner()).isNotEqualTo(id0).isEqualTo(id1);
+        ref0.setOwner(id1);
+        assertThat(ref0.getOwner()).isNotEqualTo(id0).isEqualTo(id1);
     }
 
     @Test
     void testMany() {
         BasicReference ref0 = new BasicReference();
-        ref0.name("reference0");
+        ref0.setName("reference0");
         assertThat(ref0.isMany()).isFalse();
 
-        ref0.isMany(true);
+        ref0.setMany(true);
         assertThat(ref0.isMany()).isTrue();
 
-        ref0.isMany(false);
+        ref0.setMany(false);
         assertThat(ref0.isMany()).isFalse();
     }
 
     @Test
     void testIdReference() {
         BasicReference ref0 = new BasicReference();
-        ref0.name("reference0");
-        assertThat(ref0.value()).isNull();
+        ref0.setName("reference0");
+        assertThat(ref0.getValue().isPresent()).isFalse();
 
         Id idRef0 = Id.getProvider().fromLong(42);
         Id idRef1 = Id.getProvider().fromLong(44);
 
-        ref0.value(idRef0);
-        assertThat(ref0.value()).isEqualTo(idRef0);
+        ref0.setValue(Data.resolved(idRef0));
+        assertThat(ref0.getValue().getResolved()).isEqualTo(idRef0);
 
-        ref0.value(idRef1);
-        assertThat(ref0.value()).isNotEqualTo(idRef0).isEqualTo(idRef1);
+        ref0.setValue(Data.resolved(idRef1));
+        assertThat(ref0.getValue().getResolved()).isNotEqualTo(idRef0).isEqualTo(idRef1);
     }
 
     @Test
     void testContainment() {
         BasicReference ref0 = new BasicReference();
-        ref0.name("reference0");
+        ref0.setName("reference0");
         assertThat(ref0.isContainment()).isFalse();
 
         ref0.isContainment(true);
@@ -100,11 +100,11 @@ class BasicReferenceTest extends AbstractTest {
     @Test
     void testHashCode() {
         BasicReference ref0 = new BasicReference();
-        ref0.name("reference0");
+        ref0.setName("reference0");
         BasicReference ref0Bis = new BasicReference();
-        ref0Bis.name("reference0");
+        ref0Bis.setName("reference0");
         BasicReference ref1 = new BasicReference();
-        ref1.name("reference1");
+        ref1.setName("reference1");
 
         assertThat(ref0.hashCode()).isEqualTo(ref0Bis.hashCode());
         assertThat(ref0.hashCode()).isNotEqualTo(ref1.hashCode());
@@ -114,11 +114,11 @@ class BasicReferenceTest extends AbstractTest {
     @Test
     void testEquals() {
         BasicReference ref0 = new BasicReference();
-        ref0.name("reference0");
+        ref0.setName("reference0");
         BasicReference ref0Bis = new BasicReference();
-        ref0Bis.name("reference0");
+        ref0Bis.setName("reference0");
         BasicReference ref1 = new BasicReference();
-        ref1.name("reference1");
+        ref1.setName("reference1");
 
         assertThat(ref0).isEqualTo(ref0Bis);
         assertThat(ref0).isNotEqualTo(ref1);

@@ -30,11 +30,11 @@ class BasicNamespaceTest extends AbstractTest {
 
     @Test
     void testGetDefault() {
-        BasicNamespace ns0 = BasicNamespace.getDefault();
+        BasicNamespace ns0 = BasicNamespace.DEFAULT;
         assertThat(ns0).isNotNull();
-        assertThat(ns0.prefix()).isEqualTo("ecore");
+        assertThat(ns0.getPrefix()).isEqualTo("ecore");
 
-        BasicNamespace ns1 = BasicNamespace.getDefault();
+        BasicNamespace ns1 = BasicNamespace.DEFAULT;
         assertThat(ns0).isSameAs(ns1);
     }
 
@@ -47,12 +47,12 @@ class BasicNamespaceTest extends AbstractTest {
         String uri1 = "uri1";
 
         BasicNamespace ns0 = BasicNamespace.Registry.getInstance().register(prefix0, uri0);
-        assertThat(ns0.prefix()).isEqualTo(prefix0);
-        assertThat(ns0.uri()).isEqualTo(uri0);
+        assertThat(ns0.getPrefix()).isEqualTo(prefix0);
+        assertThat(ns0.getUri()).isEqualTo(uri0);
 
         BasicNamespace ns1 = BasicNamespace.Registry.getInstance().register(prefix1, uri1);
-        assertThat(ns1.prefix()).isNotEqualTo(prefix0).isEqualTo(prefix1);
-        assertThat(ns1.uri()).isNotEqualTo(uri0).isEqualTo(uri1);
+        assertThat(ns1.getPrefix()).isNotEqualTo(prefix0).isEqualTo(prefix1);
+        assertThat(ns1.getUri()).isNotEqualTo(uri0).isEqualTo(uri1);
     }
 
     @Test

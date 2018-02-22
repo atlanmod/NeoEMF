@@ -17,19 +17,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case about {@link BasicMetaclass}.
+ * A test-case about {@link BasicClass}.
  */
 @ParametersAreNonnullByDefault
-class BasicMetaclassTest extends AbstractTest {
+class BasicClassTest extends AbstractTest {
 
     @Test
     void testGetDefault() {
-        BasicMetaclass mc0 = BasicMetaclass.getDefault();
+        BasicClass mc0 = BasicClass.DEFAULT;
         assertThat(mc0).isNotNull();
-        assertThat(mc0.name()).isEqualTo("EObject");
-        assertThat(mc0.ns()).isSameAs(BasicNamespace.getDefault());
+        assertThat(mc0.getName()).isEqualTo("EObject");
+        assertThat(mc0.getNamespace()).isSameAs(BasicNamespace.DEFAULT);
 
-        BasicMetaclass mc1 = BasicMetaclass.getDefault();
+        BasicClass mc1 = BasicClass.DEFAULT;
         assertThat(mc0).isSameAs(mc1);
     }
 
@@ -38,15 +38,15 @@ class BasicMetaclassTest extends AbstractTest {
         String name0 = "mc0";
         String name1 = "mc1";
 
-        BasicNamespace ns = BasicNamespace.getDefault();
+        BasicNamespace ns = BasicNamespace.DEFAULT;
 
-        BasicMetaclass mc0 = new BasicMetaclass(ns, name0);
-        assertThat(mc0.name()).isEqualTo(name0);
+        BasicClass mc0 = new BasicClass(ns, name0);
+        assertThat(mc0.getName()).isEqualTo(name0);
 
-        BasicMetaclass mc1 = new BasicMetaclass(ns, name1);
-        assertThat(mc1.name()).isEqualTo(name1);
+        BasicClass mc1 = new BasicClass(ns, name1);
+        assertThat(mc1.getName()).isEqualTo(name1);
 
-        assertThat(mc0.name()).isNotEqualTo(mc1.name());
+        assertThat(mc0.getName()).isNotEqualTo(mc1.getName());
     }
 
     @Test
@@ -54,16 +54,16 @@ class BasicMetaclassTest extends AbstractTest {
         String name0 = "mc0";
         String name1 = "mc1";
 
-        BasicNamespace ns0 = BasicNamespace.getDefault();
+        BasicNamespace ns0 = BasicNamespace.DEFAULT;
         BasicNamespace ns1 = BasicNamespace.Registry.getInstance().register("prefix0", "uri0");
 
-        BasicMetaclass mc0 = new BasicMetaclass(ns0, name0);
-        assertThat(mc0.ns()).isEqualTo(ns0);
+        BasicClass mc0 = new BasicClass(ns0, name0);
+        assertThat(mc0.getNamespace()).isEqualTo(ns0);
 
-        BasicMetaclass mc1 = new BasicMetaclass(ns1, name1);
-        assertThat(mc1.ns()).isEqualTo(ns1);
+        BasicClass mc1 = new BasicClass(ns1, name1);
+        assertThat(mc1.getNamespace()).isEqualTo(ns1);
 
-        assertThat(mc0.ns()).isNotEqualTo(mc1.ns());
+        assertThat(mc0.getNamespace()).isNotEqualTo(mc1.getNamespace());
     }
 
     @Test
@@ -71,11 +71,11 @@ class BasicMetaclassTest extends AbstractTest {
         String name0 = "mc0";
         String name1 = "mc1";
 
-        BasicNamespace ns0 = BasicNamespace.getDefault();
+        BasicNamespace ns0 = BasicNamespace.DEFAULT;
 
-        BasicMetaclass mc0 = new BasicMetaclass(ns0, name0);
-        BasicMetaclass mc0Bis = new BasicMetaclass(ns0, name0);
-        BasicMetaclass mc1 = new BasicMetaclass(ns0, name1);
+        BasicClass mc0 = new BasicClass(ns0, name0);
+        BasicClass mc0Bis = new BasicClass(ns0, name0);
+        BasicClass mc1 = new BasicClass(ns0, name1);
 
         assertThat(mc0.hashCode()).isEqualTo(mc0Bis.hashCode());
         assertThat(mc0.hashCode()).isNotEqualTo(mc1.hashCode());
@@ -87,11 +87,11 @@ class BasicMetaclassTest extends AbstractTest {
         String name0 = "mc0";
         String name1 = "mc1";
 
-        BasicNamespace ns0 = BasicNamespace.getDefault();
+        BasicNamespace ns0 = BasicNamespace.DEFAULT;
 
-        BasicMetaclass mc0 = new BasicMetaclass(ns0, name0);
-        BasicMetaclass mc0Bis = new BasicMetaclass(ns0, name0);
-        BasicMetaclass mc1 = new BasicMetaclass(ns0, name1);
+        BasicClass mc0 = new BasicClass(ns0, name0);
+        BasicClass mc0Bis = new BasicClass(ns0, name0);
+        BasicClass mc1 = new BasicClass(ns0, name1);
 
         assertThat(mc0).isEqualTo(mc0Bis);
         assertThat(mc0).isNotEqualTo(mc1);
@@ -109,7 +109,7 @@ class BasicMetaclassTest extends AbstractTest {
 
         BasicNamespace ns0 = BasicNamespace.Registry.getInstance().register(prefix0, "uri0");
 
-        BasicMetaclass mc0 = new BasicMetaclass(ns0, name0);
+        BasicClass mc0 = new BasicClass(ns0, name0);
 
         assertThat(mc0).hasToString("uri0:mc0");
     }

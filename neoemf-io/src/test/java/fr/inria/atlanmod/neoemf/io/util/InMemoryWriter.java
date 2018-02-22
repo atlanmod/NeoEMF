@@ -80,20 +80,20 @@ public final class InMemoryWriter implements Writer {
             previousElements.getLast().children().add(e);
         }
 
-        Optional.ofNullable(element.id()).ifPresent(v -> identifiers.put(element.id(), e));
+        Optional.ofNullable(element.getId().getResolved()).ifPresent(v -> identifiers.put(element.getId().getResolved(), e));
 
         previousElements.addLast(e);
     }
 
     @Override
     public void onAttribute(BasicAttribute attribute) {
-        if (isNull(attribute.owner()) || attribute.owner().equals(previousElements.getLast().id())) {
+        if (isNull(attribute.getOwner()) || attribute.getOwner().equals(previousElements.getLast().id())) {
             previousElements.getLast().attributes().add(attribute);
         }
         else {
-            InMemoryElement e = identifiers.get(attribute.owner());
-            checkNotNull(e, "identifiers.get(%s)", attribute.owner());
-            checkEqualTo(e.id(), attribute.owner(), "%s is not owner of this attribute (%s)", e.id(), attribute.owner());
+            InMemoryElement e = identifiers.get(attribute.getOwner());
+            checkNotNull(e, "identifiers.get(%s)", attribute.getOwner());
+            checkEqualTo(e.id(), attribute.getOwner(), "%s is not owner of this attribute (%s)", e.id(), attribute.getOwner());
 
             e.attributes().add(attribute);
         }
@@ -101,13 +101,13 @@ public final class InMemoryWriter implements Writer {
 
     @Override
     public void onReference(BasicReference reference) {
-        if (isNull(reference.owner()) || reference.owner().equals(previousElements.getLast().id())) {
+        if (isNull(reference.getOwner()) || reference.getOwner().equals(previousElements.getLast().id())) {
             previousElements.getLast().references().add(reference);
         }
         else {
-            InMemoryElement e = identifiers.get(reference.owner());
-            checkNotNull(e, "identifiers.get(%s)", reference.owner());
-            checkEqualTo(e.id(), reference.owner(), "%s is not the owner of this reference (%s)", e.id(), reference.owner());
+            InMemoryElement e = identifiers.get(reference.getOwner());
+            checkNotNull(e, "identifiers.get(%s)", reference.getOwner());
+            checkEqualTo(e.id(), reference.getOwner(), "%s is not the owner of this reference (%s)", e.id(), reference.getOwner());
 
             e.references().add(reference);
         }

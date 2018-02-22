@@ -12,6 +12,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -24,29 +25,26 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
     /**
      * The identifier of this element.
      */
-    private Id id;
-
-    /**
-     * The string representation of the identifier.
-     */
-    private String rawId;
+    @Nonnull
+    private Data<Id> id = Data.empty();
 
     /**
      * The meta-class of this element.
      */
-    private BasicMetaclass metaClass;
+    private BasicClass metaClass;
 
     /**
      * Whether this element is the root of a structure.
      */
-    private boolean isRoot;
+    private boolean root;
 
     /**
      * Returns the identifier of this element.
      *
      * @return the identifier
      */
-    public Id id() {
+    @Nonnull
+    public Data<Id> getId() {
         return id;
     }
 
@@ -57,30 +55,9 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
      *
      * @return this instance (for chaining)
      */
-    public BasicElement id(Id id) {
+    @Nonnull
+    public BasicElement setId(Data<Id> id) {
         this.id = id;
-
-        return me();
-    }
-
-    /**
-     * Returns the string representation of the identifier.
-     *
-     * @return the string representation of the identifier
-     */
-    public String rawId() {
-        return rawId;
-    }
-
-    /**
-     * Defines the string representation of the identifier.
-     *
-     * @param rawId the string representation of the identifier
-     *
-     * @return this instance (for chaining)
-     */
-    public BasicElement rawId(@Nullable String rawId) {
-        this.rawId = rawId;
 
         return me();
     }
@@ -90,7 +67,7 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
      *
      * @return the meta-class
      */
-    public BasicMetaclass metaClass() {
+    public BasicClass getMetaClass() {
         return metaClass;
     }
 
@@ -101,7 +78,8 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
      *
      * @return this instance (for chaining)
      */
-    public BasicElement metaClass(BasicMetaclass metaClass) {
+    @Nonnull
+    public BasicElement setMetaClass(BasicClass metaClass) {
         this.metaClass = metaClass;
 
         return me();
@@ -113,7 +91,7 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
      * @return {@code true} if this element is the root of a structure
      */
     public boolean isRoot() {
-        return isRoot;
+        return root;
     }
 
     /**
@@ -123,8 +101,9 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
      *
      * @return this instance (for chaining)
      */
-    public BasicElement isRoot(boolean isRoot) {
-        this.isRoot = isRoot;
+    @Nonnull
+    public BasicElement setRoot(boolean isRoot) {
+        this.root = isRoot;
 
         return me();
     }

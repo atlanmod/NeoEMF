@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -30,8 +31,13 @@ public final class NoopProcessor extends AbstractNotifier<Handler> implements Pr
      *
      * @param handlers the handlers to notify
      */
-    public NoopProcessor(Handler... handlers) {
-        super(handlers);
+    public NoopProcessor(Collection<Handler> handlers) {
+        addNext(handlers);
+    }
+
+    @Override
+    protected boolean supportsMultiTargets() {
+        return true;
     }
 
     @Override

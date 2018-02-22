@@ -8,18 +8,18 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.io.listener.CountingListener;
-import fr.inria.atlanmod.neoemf.io.listener.Listener;
-import fr.inria.atlanmod.neoemf.io.listener.LoggingListener;
-import fr.inria.atlanmod.neoemf.io.listener.ProgressListener;
-import fr.inria.atlanmod.neoemf.io.listener.TimerListener;
+import fr.inria.atlanmod.neoemf.io.listener.CountingEventListener;
+import fr.inria.atlanmod.neoemf.io.listener.EventListener;
+import fr.inria.atlanmod.neoemf.io.listener.LoggingEventListener;
+import fr.inria.atlanmod.neoemf.io.listener.ProgressEventListener;
+import fr.inria.atlanmod.neoemf.io.listener.TimerEventListener;
 import fr.inria.atlanmod.neoemf.io.processor.NoopProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.reader.AbstractReader;
 import fr.inria.atlanmod.neoemf.io.reader.DefaultMapperReader;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -78,7 +77,7 @@ public final class Migrator<T> {
      * The class of the {@link Reader} to use.
      */
     @Nonnull
-    private final Class<? extends Reader<T>> readerClass;
+    private final AbstractReader<T> reader;
 
     /**
      * The source to read.
@@ -92,7 +91,7 @@ public final class Migrator<T> {
      * Essential processors must be placed at the end of this queue, while the rest must be placed at the beginning.
      */
     @Nonnull
-    private final Set<Listener> listeners = new HashSet<>();
+    private final Set<EventListener> listeners = new HashSet<>();
 
     /**
      * The set that holds all {@link Writer} to use.
@@ -109,11 +108,11 @@ public final class Migrator<T> {
     /**
      * Constructs a new {@code Migrator} with the given arguments.
      *
-     * @param readerClass the class of the {@link Reader} to use
-     * @param source      the source to read
+     * @param reader the reader to use
+     * @param source the source to read
      */
-    private Migrator(Class<? extends Reader<T>> readerClass, T source) {
-        this.readerClass = readerClass;
+    private Migrator(AbstractReader<T> reader, T source) {
+        this.reader = reader;
         this.source = source;
     }
 
@@ -148,7 +147,7 @@ public final class Migrator<T> {
      */
     @Nonnull
     public static Migrator<InputStream> fromXmi(InputStream stream) throws IOException {
-        return new Migrator<>(XmiStreamReader.class, adaptStream(stream));
+        return new Migrator<>(new XmiStreamReader(), uncompressIfNecessary(stream));
     }
 
     /**
@@ -160,7 +159,7 @@ public final class Migrator<T> {
      */
     @Nonnull
     public static Migrator<DataMapper> fromMapper(DataMapper mapper) {
-        return new Migrator<>(DefaultMapperReader.class, mapper);
+        return new Migrator<>(new DefaultMapperReader(), mapper);
     }
 
     /**
@@ -174,17 +173,15 @@ public final class Migrator<T> {
      * @return the adapted {@code stream}
      */
     @Nonnull
-    private static InputStream adaptStream(@WillNotClose InputStream stream) throws IOException {
+    private static InputStream uncompressIfNecessary(@WillNotClose InputStream stream) throws IOException {
         final PushbackInputStream pbis = new PushbackInputStream(stream, 4);
 
-        // Read file signature
+        // Read stream signature
         final byte[] sign = new byte[4];
         pbis.unread(sign, 0, pbis.read(sign));
 
         // Check the ZIP signature (== 0x04034b50 in little endian order)
-        final int header = ByteBuffer.wrap(sign)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .getInt();
+        final int header = ByteBuffer.wrap(sign).order(ByteOrder.LITTLE_ENDIAN).getInt();
 
         if (header == ZIP_HEADER) {
             ZipInputStream zis = new ZipInputStream(pbis);
@@ -196,11 +193,10 @@ public final class Migrator<T> {
                 }
             }
 
-            throw new FileNotFoundException(String.format("Malformed ZXMI file: missing '%s' entry", ZXMI_CONTENT));
+            throw new FileNotFoundException(String.format("Malformed compressed file: missing '%s' entry", ZXMI_CONTENT));
         }
-        else {
-            return pbis;
-        }
+
+        return pbis;
     }
 
     //endregion
@@ -300,7 +296,7 @@ public final class Migrator<T> {
      * @return this migrator (for chaining)
      */
     @Nonnull
-    public Migrator<T> with(Listener listener) {
+    public Migrator<T> with(EventListener listener) {
         listeners.add(listener);
         return this;
     }
@@ -312,7 +308,7 @@ public final class Migrator<T> {
      */
     @Nonnull
     public Migrator<T> withLogger() {
-        return with(new LoggingListener());
+        return with(new LoggingEventListener());
     }
 
     /**
@@ -324,7 +320,7 @@ public final class Migrator<T> {
      */
     @Nonnull
     public Migrator<T> withLogger(Level level) {
-        return with(new LoggingListener(level));
+        return with(new LoggingEventListener(level));
     }
 
     /**
@@ -334,7 +330,7 @@ public final class Migrator<T> {
      */
     @Nonnull
     public Migrator<T> withCounter() {
-        return with(new CountingListener());
+        return with(new CountingEventListener());
     }
 
     /**
@@ -344,7 +340,7 @@ public final class Migrator<T> {
      */
     @Nonnull
     public Migrator<T> withTimer() {
-        return with(new TimerListener());
+        return with(new TimerEventListener());
     }
 
     /**
@@ -357,7 +353,7 @@ public final class Migrator<T> {
     @Nonnull
     public Migrator<T> withProgress() {
         checkState(InputStream.class.isInstance(source), "Progress feature can only be used when reading a file or stream");
-        return with(new ProgressListener(InputStream.class.cast(source)));
+        return with(new ProgressEventListener(InputStream.class.cast(source)));
     }
 
     //endregion
@@ -370,18 +366,14 @@ public final class Migrator<T> {
     public void migrate() throws IOException {
         checkNotNull(writers, "writers");
 
-        Collection<Handler> handlers = new ArrayList<>();
-        handlers.addAll(listeners);
-        handlers.addAll(writers);
-
         try {
-            Processor processor = new NoopProcessor(handlers.toArray(new Handler[handlers.size()]));
-            Reader<T> reader = readerClass.getConstructor(Processor.class).newInstance(processor);
+            // Bind handlers and notifiers
+            Collection<Handler> handlers = new ArrayList<>(listeners.size() + writers.size());
+            handlers.addAll(listeners);
+            handlers.addAll(writers);
+            reader.addNext(new NoopProcessor(handlers));
 
             reader.read(source);
-        }
-        catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw Throwables.shouldNeverHappen(e);
         }
         finally {
             closeAll();
@@ -395,8 +387,7 @@ public final class Migrator<T> {
         for (Closeable closeable : streamsToClose) {
             try {
                 if (ZipOutputStream.class.isInstance(closeable)) {
-                    ZipOutputStream zos = ZipOutputStream.class.cast(closeable);
-                    zos.closeEntry();
+                    ZipOutputStream.class.cast(closeable).closeEntry();
                 }
 
                 closeable.close();

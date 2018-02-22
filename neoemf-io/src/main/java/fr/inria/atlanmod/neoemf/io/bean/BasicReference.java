@@ -12,6 +12,7 @@ import fr.inria.atlanmod.neoemf.core.Id;
 
 import org.eclipse.emf.ecore.EReference;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -23,7 +24,25 @@ public class BasicReference extends AbstractBasicFeature<BasicReference, ERefere
     /**
      * Whether this reference is a containment.
      */
-    private boolean isContainment = false;
+    private boolean containment = false;
+
+    /**
+     * Creates a new {@code BasicReference} from another, without its values.
+     *
+     * @param base the reference to copy
+     *
+     * @return a new {@code BasicReference}
+     */
+    @Nonnull
+    public static BasicReference copy(BasicReference base) {
+        return new BasicReference().setOwner(base.getOwner()).setId(base.getId()).setReal(base.getReal());
+    }
+
+    @Nonnull
+    @Override
+    public BasicReference setReal(EReference eReference) {
+        return super.setReal(eReference).isContainment(eReference.isContainment());
+    }
 
     /**
      * Returns {@code true} if this reference is a containment.
@@ -31,7 +50,7 @@ public class BasicReference extends AbstractBasicFeature<BasicReference, ERefere
      * @return {@code true} if this reference is a containment
      */
     public boolean isContainment() {
-        return isContainment;
+        return containment;
     }
 
     /**
@@ -41,15 +60,10 @@ public class BasicReference extends AbstractBasicFeature<BasicReference, ERefere
      *
      * @return this instance (for chaining)
      */
+    @Nonnull
     public BasicReference isContainment(boolean isContainment) {
-        this.isContainment = isContainment;
+        this.containment = isContainment;
 
         return me();
-    }
-
-    @Override
-    public BasicReference eFeature(EReference eFeature) {
-        return super.eFeature(eFeature)
-                .isContainment(eFeature.isContainment());
     }
 }

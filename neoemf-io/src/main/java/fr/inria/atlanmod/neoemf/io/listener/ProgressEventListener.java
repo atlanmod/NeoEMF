@@ -19,10 +19,10 @@ import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Listener} that logs the progress of a migration.
+ * A {@link EventListener} that logs the progress of a migration.
  */
 @ParametersAreNonnullByDefault
-public class ProgressListener extends AbstractListener {
+public class ProgressEventListener extends AbstractEventListener {
 
     /**
      * The stream to watch.
@@ -45,21 +45,21 @@ public class ProgressListener extends AbstractListener {
     private Timer task;
 
     /**
-     * Constructs a new {@code ProgressListener} with the default period.
+     * Constructs a new {@code ProgressEventListener} with the default period.
      *
      * @param stream the stream to watch
      */
-    public ProgressListener(InputStream stream) {
+    public ProgressEventListener(InputStream stream) {
         this(stream, 20_000);
     }
 
     /**
-     * Constructs a new {@code ProgressListener} with the given {@code period}.
+     * Constructs a new {@code ProgressEventListener} with the given {@code period}.
      *
      * @param stream the stream to watch
      * @param period the time between progress analysis, in milliseconds
      */
-    public ProgressListener(InputStream stream, @Nonnegative long period) {
+    public ProgressEventListener(InputStream stream, @Nonnegative long period) {
         this.stream = stream;
         this.period = period;
 

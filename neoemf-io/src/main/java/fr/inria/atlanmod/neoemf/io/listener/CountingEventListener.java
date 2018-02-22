@@ -19,10 +19,10 @@ import javax.annotation.Nonnegative;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Listener} that counts the number of different element.
+ * A {@link EventListener} that counts the number of different element.
  */
 @ParametersAreNonnullByDefault
-public class CountingListener extends AbstractListener {
+public class CountingEventListener extends AbstractEventListener {
 
     /**
      * The current number of element.

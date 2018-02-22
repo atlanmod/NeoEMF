@@ -11,9 +11,6 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import com.ctc.wstx.api.WstxInputProperties;
 
 import fr.inria.atlanmod.commons.primitive.Strings;
-import fr.inria.atlanmod.neoemf.io.processor.EcoreMapper;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
-import fr.inria.atlanmod.neoemf.io.processor.XPathResolver;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
 import org.codehaus.stax2.XMLInputFactory2;
@@ -55,17 +52,8 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
      */
     private boolean skipNext;
 
-    /**
-     * Constructs a new {@code XmiStreamReader} with the given {@code processor}.
-     *
-     * @param processor the processor to notify
-     */
-    public XmiStreamReader(Processor processor) {
-        super(new EcoreMapper(new XPathResolver(processor)));
-    }
-
     @Override
-    public void run(InputStream stream) throws IOException {
+    public void parse(InputStream stream) throws IOException {
         XMLInputFactory factory = XMLInputFactory2.newInstance();
         configure(factory);
 
@@ -124,6 +112,7 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
         int attributeCount = reader.getAttributeCount();
 
         if (attributeCount > 0) {
+            // The element has at least one attribute: it's a complex element
             readStartElement(uri, name);
 
             for (int i = 0; i < attributeCount; i++) {

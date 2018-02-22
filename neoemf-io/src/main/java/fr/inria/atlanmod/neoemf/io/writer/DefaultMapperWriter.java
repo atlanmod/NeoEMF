@@ -13,9 +13,10 @@ import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
+import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicMetaclass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.bean.Data;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import java.io.IOException;
@@ -45,8 +46,8 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
     public void onInitialize() {
         // Create the 'ROOT' node with the default meta-class
         BasicElement rootElement = new BasicElement()
-                .id(PersistentResource.ROOT_ID)
-                .metaClass(BasicMetaclass.getDefault());
+                .setId(Data.resolved(PersistentResource.ROOT_ID))
+                .setMetaClass(BasicClass.DEFAULT);
 
         createElement(rootElement, true);
     }
@@ -65,7 +66,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
 
     @Override
     public void onAttribute(BasicAttribute attribute, List<Object> values) {
-        SingleFeatureBean bean = SingleFeatureBean.of(attribute.owner(), attribute.id());
+        SingleFeatureBean bean = SingleFeatureBean.of(attribute.getOwner(), attribute.getId());
 
         if (!attribute.isMany()) {
             target.valueFor(bean, values.get(0));
@@ -77,7 +78,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
 
     @Override
     public void onReference(BasicReference reference, List<Id> values) {
-        SingleFeatureBean bean = SingleFeatureBean.of(reference.owner(), reference.id());
+        SingleFeatureBean bean = SingleFeatureBean.of(reference.getOwner(), reference.getId());
 
         // Update the containment reference if needed
         if (reference.isContainment()) {
@@ -101,20 +102,20 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
      * @throws NullPointerException if the {@code element} is {@code null}
      */
     protected void createElement(BasicElement element, boolean ignoreFailure) {
-        BasicMetaclass metaClass = element.metaClass();
-        boolean success = target.metaClassFor(element.id(), ClassBean.of(metaClass.name(), metaClass.ns().uri()));
+        BasicClass metaClass = element.getMetaClass();
+        boolean success = target.metaClassFor(element.getId().getResolved(), ClassBean.of(metaClass.getName(), metaClass.getNamespace().getUri()));
 
-        checkState(success || ignoreFailure, "An element with the same Id (%s) is already defined", element.id().toHexString());
+        checkState(success || ignoreFailure, "An element with the same Id (%s) is already defined", element.getId().getResolved().toHexString());
 
         // Add the current element as content of the 'ROOT' node
         if (element.isRoot()) {
             BasicReference rootReference = new BasicReference()
-                    .owner(PersistentResource.ROOT_ID)
-                    .name(PersistentResource.ROOT_REFERENCE_NAME)
-                    .id(-1)
-                    .isMany(true);
+                    .setOwner(PersistentResource.ROOT_ID)
+                    .setName(PersistentResource.ROOT_REFERENCE_NAME)
+                    .setId(-1)
+                    .setMany(true);
 
-            onReference(rootReference, Collections.singletonList(element.id()));
+            onReference(rootReference, Collections.singletonList(element.getId().getResolved()));
         }
     }
 }

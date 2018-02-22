@@ -15,10 +15,10 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Listener} that does nothing.
+ * A {@link EventListener} that does nothing.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractListener implements Listener {
+public abstract class AbstractEventListener implements EventListener {
 
     @Override
     public void onInitialize() {

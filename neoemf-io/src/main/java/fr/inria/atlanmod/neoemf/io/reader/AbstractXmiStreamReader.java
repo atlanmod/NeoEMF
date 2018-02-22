@@ -11,12 +11,18 @@ package fr.inria.atlanmod.neoemf.io.reader;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
-import fr.inria.atlanmod.neoemf.io.processor.Processor;
+import fr.inria.atlanmod.neoemf.io.bean.Data;
+import fr.inria.atlanmod.neoemf.io.processor.AbstractProcessor;
+import fr.inria.atlanmod.neoemf.io.processor.EcoreMapper;
+import fr.inria.atlanmod.neoemf.io.processor.XPathResolver;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -28,13 +34,10 @@ import static java.util.Objects.nonNull;
 @ParametersAreNonnullByDefault
 public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
-    /**
-     * Constructs a new {@code AbstractXmiStreamReader} with the given {@code processor}.
-     *
-     * @param processor the processor to notify
-     */
-    public AbstractXmiStreamReader(Processor processor) {
-        super(processor);
+    @Nonnull
+    @Override
+    protected List<AbstractProcessor> createProcessors() {
+        return Arrays.asList(new EcoreMapper(), new XPathResolver());
     }
 
     @Override
@@ -51,9 +54,9 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
 
             if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // A reference of the previous element
                 BasicReference reference = new BasicReference()
-                        .name(getCurrentElement().name())
-                        .owner(getPreviousId())
-                        .rawValue(value);
+                        .setName(getCurrentElement().getName())
+                        .setOwner(getPreviousId())
+                        .setValue(Data.raw(value));
 
                 notifyReference(reference);
 
@@ -62,7 +65,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             }
 
             if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) { // The identifier of the current element
-                getCurrentElement().rawId(value);
+                getCurrentElement().setId(Data.raw(value));
 
                 return true;
             }
