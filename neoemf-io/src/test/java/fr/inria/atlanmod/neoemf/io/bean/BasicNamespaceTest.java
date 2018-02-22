@@ -33,9 +33,6 @@ class BasicNamespaceTest extends AbstractTest {
         BasicNamespace ns0 = BasicNamespace.DEFAULT;
         assertThat(ns0).isNotNull();
         assertThat(ns0.getPrefix()).isEqualTo("ecore");
-
-        BasicNamespace ns1 = BasicNamespace.DEFAULT;
-        assertThat(ns0).isSameAs(ns1);
     }
 
     @Test
