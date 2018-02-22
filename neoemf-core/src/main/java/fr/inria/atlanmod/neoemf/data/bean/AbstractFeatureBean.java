@@ -51,8 +51,8 @@ public abstract class AbstractFeatureBean implements FeatureBean {
     /**
      * Constructs a new {@code AbstractFeatureBean} with the given {@code owner} and the given {@code id}.
      *
-     * @param owner the identifier of the {@link fr.inria.atlanmod.neoemf.core.PersistentEObject} using the feature
-     * @param id    the identifier of the {@link org.eclipse.emf.ecore.EStructuralFeature} of the {@code owner}
+     * @param owner the identifier of the object using the feature
+     * @param id    the identifier of the feature of the {@code owner}
      *
      * @throws NullPointerException if any argument is {@code null}
      */
@@ -65,9 +65,9 @@ public abstract class AbstractFeatureBean implements FeatureBean {
      * a simple representation of a feature of an object. The "multi-valued" characteristic is identified with the
      * {@code position}.
      *
-     * @param owner    the identifier of the {@link fr.inria.atlanmod.neoemf.core.PersistentEObject} using the feature
-     * @param id       the identifier of the {@link org.eclipse.emf.ecore.EStructuralFeature} of the {@code owner}
-     * @param position the position of the {@link org.eclipse.emf.ecore.EStructuralFeature} in the {@code owner}
+     * @param owner    the identifier of the object using the feature
+     * @param id       the identifier of the feature of the {@code owner}
+     * @param position the position of the feature
      *
      * @throws NullPointerException     if any argument is {@code null}
      * @throws IllegalArgumentException if the {@code position} is negative when {@code isMany() == true}
@@ -103,7 +103,7 @@ public abstract class AbstractFeatureBean implements FeatureBean {
      * Creates a new {@link ManyFeatureBean} with the {@link fr.inria.atlanmod.neoemf.core.Id} and the name of this
      * {@code FeatureBean}, and adding the given {@code position}.
      *
-     * @param position the position of the {@link org.eclipse.emf.ecore.EStructuralFeature}
+     * @param position the position of the feature
      *
      * @return a new {@link ManyFeatureBean}
      *

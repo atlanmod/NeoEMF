@@ -33,8 +33,8 @@ public class SingleFeatureBean extends AbstractFeatureBean {
      * Constructs a new {@code SingleFeatureBean} with the given {@code owner} and the given {@code id}, which are used
      * as a simple representation of a feature of an object.
      *
-     * @param owner the identifier of the {@link fr.inria.atlanmod.neoemf.core.PersistentEObject} using the feature
-     * @param id    the identifier of the {@link org.eclipse.emf.ecore.EStructuralFeature} of the {@code owner}
+     * @param owner the identifier of the object using the feature
+     * @param id    the identifier of the feature of the {@code owner}
      *
      * @throws NullPointerException if any argument is {@code null}
      */
@@ -47,9 +47,8 @@ public class SingleFeatureBean extends AbstractFeatureBean {
      * <p>
      * This method behaves like: {@code from(PersistentEObject.from(owner), feature)}.
      *
-     * @param owner   the {@link org.eclipse.emf.ecore.InternalEObject} that will be adapted as {@link
-     *                fr.inria.atlanmod.neoemf.core.PersistentEObject}
-     * @param feature the {@link org.eclipse.emf.ecore.EStructuralFeature} of the {@code owner}
+     * @param owner   the object that will be adapted to retrieve its identifier
+     * @param feature the feature of the {@code owner} from which the name will be extracted
      *
      * @return a new {@code SingleFeatureBean}
      *
@@ -68,9 +67,8 @@ public class SingleFeatureBean extends AbstractFeatureBean {
      * <p>
      * This method behaves like: {@code of(owner.id(), feature.getName())}.
      *
-     * @param owner   the {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}
-     * @param feature the {@link org.eclipse.emf.ecore.EStructuralFeature} of the {@link
-     *                fr.inria.atlanmod.neoemf.core.PersistentEObject}
+     * @param owner   the object from which the identifier will be extracted
+     * @param feature the feature of the {@code owner} from which the name will be extracted
      *
      * @return a new {@code SingleFeatureBean}
      *
@@ -88,8 +86,8 @@ public class SingleFeatureBean extends AbstractFeatureBean {
      * Creates a new {@code SingleFeatureBean} with the given {@code owner} and the given {@code id}, which are used as
      * a simple representation of a feature of an object.
      *
-     * @param owner the identifier of the {@link fr.inria.atlanmod.neoemf.core.PersistentEObject} using the feature
-     * @param id    the identifier of the {@link org.eclipse.emf.ecore.EStructuralFeature} of the {@code owner}
+     * @param owner the identifier of the object
+     * @param id    the identifier of the feature of the {@code owner}
      *
      * @return a new {@code SingleFeatureBean}
      *

@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -204,13 +205,17 @@ public class ClassBean implements Serializable {
      */
     @Nonnull
     public Set<ClassBean> inheritedBy() {
-        return get().getEPackage().getEClassifiers()
+        final EClass eClass = get();
+
+        final Predicate<EClass> isInheritedBy = c -> !c.isInterface()
+                && !c.isAbstract()
+                && eClass.isSuperTypeOf(c);
+
+        return eClass.getEPackage().getEClassifiers()
                 .parallelStream()
                 .filter(EClass.class::isInstance)
                 .map(EClass.class::cast)
-                .filter(c -> get().isSuperTypeOf(c))
-                .filter(c -> !c.isAbstract())
-                .filter(c -> !c.isInterface())
+                .filter(isInheritedBy)
                 .map(ClassBean::from)
                 .collect(Collectors.toSet());
     }
