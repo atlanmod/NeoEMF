@@ -27,7 +27,7 @@ class BasicClassTest extends AbstractTest {
         BasicClass mc0 = BasicClass.DEFAULT;
         assertThat(mc0).isNotNull();
         assertThat(mc0.getName()).isEqualTo("EObject");
-        assertThat(mc0.getNamespace()).isSameAs(BasicNamespace.DEFAULT);
+        assertThat(mc0.getNamespace()).isEqualTo(BasicNamespace.DEFAULT);
     }
 
     @Test
