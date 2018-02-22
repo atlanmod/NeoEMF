@@ -228,6 +228,7 @@ class StoreFactoryTest extends AbstractTest {
                 .autoSave(expectedChunk)
                 .cacheContainers()
                 .cacheMetaClasses()
+                .readOnly()
                 .recordStats(new StoreStats());
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
@@ -238,6 +239,9 @@ class StoreFactoryTest extends AbstractTest {
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(ListeningStore.class);
+
+        store = getInnerStore(store);
+        assertThat(store).isExactlyInstanceOf(ReadOnlyStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isInstanceOf(AbstractCachingStore.class);

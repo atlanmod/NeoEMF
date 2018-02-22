@@ -41,7 +41,7 @@ public class ReadOnlyStore extends AbstractStore {
      * Constructs a new {@code ReadOnlyStore}.
      */
     public ReadOnlyStore() {
-        super(0);
+        super(20);
     }
 
     @Override
