@@ -30,12 +30,10 @@ public abstract class AbstractCachingStore<K, V> extends AbstractStore {
             .build();
 
     /**
-     * Constructs a new {@code AbstractCachingStore} on the given {@code store}.
-     *
-     * @param store the inner store
+     * Constructs a new {@code AbstractCachingStore}.
      */
-    protected AbstractCachingStore(Store store) {
-        super(store);
+    protected AbstractCachingStore() {
+        super(100);
     }
 
     @Override

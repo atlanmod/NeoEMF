@@ -11,8 +11,6 @@ package fr.inria.atlanmod.neoemf.data.store;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
 
-import java.util.Collections;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -33,18 +31,12 @@ public class NoopStore extends AbstractMapperDecorator<Backend> implements Store
      * @param backend the back-end used to store the model
      */
     public NoopStore(Backend backend) {
-        super(backend);
+        next(backend);
     }
 
     @Nonnull
     @Override
     public Backend backend() {
         return next();
-    }
-
-    @Nonnull
-    @Override
-    public StoreStats stats() {
-        return new StoreStats(Collections.emptyMap());
     }
 }

@@ -6,10 +6,12 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.store;
+package fr.inria.atlanmod.neoemf.data.store.listener;
 
-import java.util.AbstractMap;
+import fr.inria.atlanmod.neoemf.data.store.Store;
+
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -17,39 +19,34 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.annotation.concurrent.Immutable;
-
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * Statistics about the usage of a {@link Store} chain.
  */
-@Immutable
 @ParametersAreNonnullByDefault
-// TODO Include CacheStats
 public final class StoreStats {
 
     /**
      * A map of the method calls made in a {@link Store} chain with their number of invocation.
      */
     @Nonnull
-    private final Map<String, Long> methodCalls;
+    private final Map<String, AtomicLong> methodInvocations = new HashMap<>();
 
     /**
-     * Constructs a new {@code StoreStats} with the given arguments.
+     * TODO
      *
-     * @param methodCalls the map of method calls with their number of invocation; the values ​​will remain unchanged
+     * @param map
+     * @return
      */
-    public StoreStats(Map<String, AtomicLong> methodCalls) {
-        checkNotNull(methodCalls, "methodCalls");
-
-        this.methodCalls = Collections.unmodifiableMap(sortMethodCalls(methodCalls));
+    @Nonnull
+    private static Map<String, Long> atomicToPrimitive(Map<String, AtomicLong> map) {
+        return map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue().get()));
     }
 
     /**
-     * Sort the {@code methodCalls} in descending order of values.
+     * Sort the {@code map} in descending order of values.
      *
-     * @param methodCalls the map to sort
+     * @param map the map to sort
      *
      * @return a new sorted map
      *
@@ -58,31 +55,36 @@ public final class StoreStats {
      * were inserted into the map (insertion-order)."
      */
     @Nonnull
-    private static Map<String, Long> sortMethodCalls(Map<String, AtomicLong> methodCalls) {
-        return methodCalls.entrySet()
-                .stream()
-                .map(e -> new AbstractMap.SimpleImmutableEntry<>(e.getKey(), e.getValue().get()))
+    private static Map<String, Long> sort(Map<String, Long> map) {
+        return map.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                         (e1, e2) -> { throw new IllegalStateException(String.format("Duplicate key %s", e1)); },
                         LinkedHashMap::new)); // Use LinkedHashMap to keep the order
     }
 
     /**
-     * Returns a map of the different calls made in a {@link Store} chain with their number of calls.
+     * Increments the invocation number for the specified {@code method}.
      *
-     * @return an immutable map
+     * @param method the invoked method
+     */
+    void hasBeenInvoked(String method) {
+        methodInvocations.computeIfAbsent(method, s -> new AtomicLong()).incrementAndGet();
+    }
+
+    /**
+     * Returns a map of the different calls made in a {@link Store} chain with their number of invocations.
+     *
+     * @return an immutable map view
      */
     @Nonnull
-    public Map<String, Long> methodCalls() {
-        return methodCalls;
+    public Map<String, Long> methodInvocations() {
+        return Collections.unmodifiableMap(atomicToPrimitive(methodInvocations));
     }
 
     @Override
     public String toString() {
-        return methodCalls().entrySet().stream()
+        return sort(methodInvocations()).entrySet().stream()
                 .map(e -> e.getKey() + " = " + e.getValue())
                 .collect(Collectors.joining("\n"));
     }

@@ -13,7 +13,18 @@ import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.bind.BindingEngine;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+import fr.inria.atlanmod.neoemf.data.store.AutoSavingStore;
+import fr.inria.atlanmod.neoemf.data.store.ClassCachingStore;
+import fr.inria.atlanmod.neoemf.data.store.ContainerCachingStore;
+import fr.inria.atlanmod.neoemf.data.store.FeatureCachingStore;
+import fr.inria.atlanmod.neoemf.data.store.ListeningStore;
+import fr.inria.atlanmod.neoemf.data.store.ReadOnlyStore;
+import fr.inria.atlanmod.neoemf.data.store.SizeCachingStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.listener.LoggingStoreListener;
+import fr.inria.atlanmod.neoemf.data.store.listener.RecordingStoreListener;
+import fr.inria.atlanmod.neoemf.data.store.listener.StoreListener;
+import fr.inria.atlanmod.neoemf.data.store.listener.StoreStats;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -79,7 +90,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
 
     // endregion
 
-    // region Store configuration
+    // region Store/Listener configuration
 
     /**
      * The base prefix for all internal options key related to {@link fr.inria.atlanmod.neoemf.data.store.Store}s
@@ -88,33 +99,34 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     static final String STORE = createKey(BASE_PREFIX, "store");
 
     /**
-     * The key identifying all defined store definitions.
+     * The key identifying all defined stores.
      */
     static final String STORE_TYPES = createKey(STORE, "types");
 
     /**
-     * The key identifying the number of operations between each save in auto-save mode.
+     * The key identifying all defined store listeners.
      */
-    static final String STORE_AUTOSAVE_CHUNK = createKey(STORE, "autosave", "chunk");
-
-    /**
-     * The key identifying the logging level in log mode.
-     */
-    static final String STORE_LOG_LEVEL = createKey(STORE, "log", "level");
+    static final String STORE_LISTENERS = createKey(STORE, "listeners");
 
     // endregion
 
     /**
-     * Map that holds all defined key/value options.
+     * A map that holds all defined key/value options.
      */
     @Nonnull
     private final Map<String, Object> options = new TreeMap<>();
 
     /**
-     * List that holds all defined store definitions.
+     * A set that holds all defined stores.
      */
     @Nonnull
-    private final Set<ConfigType<? extends Store>> stores = new HashSet<>();
+    private final Set<Store> stores = new HashSet<>();
+
+    /**
+     * A set that holds all defined store listeners.
+     */
+    @Nonnull
+    private final Set<StoreListener> listeners = new HashSet<>();
 
     /**
      * Constructs a new {@code BaseConfig}.
@@ -171,7 +183,8 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Override
     public final Map<String, ?> toMap() {
         Map<String, Object> view = new TreeMap<>(options);
-        view.put(STORE_TYPES, getStoreTypes());
+        view.put(STORE_TYPES, new HashSet<>(stores));
+        view.put(STORE_LISTENERS, new HashSet<>(listeners));
         return Collections.unmodifiableMap(view);
     }
 
@@ -232,11 +245,15 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
 
     @Nonnull
     @Override
-    public C addStoreType(ConfigType<? extends Store> storeType) {
-        checkNotNull(storeType, "storeType");
+    public C addStore(Store store) {
+        checkNotNull(store, "store");
 
-        if (!stores.add(storeType)) {
-            Log.debug("The store has already been defined ({0})", storeType);
+        if (ListeningStore.class.isInstance(store)) {
+            throw new InvalidConfigException(String.format("Cannot add %s: Use #addListener() instead", store.getClass().getName()));
+        }
+
+        if (!stores.add(store)) {
+            Log.debug("The store has already been defined ({0})", store.getClass().getSimpleName());
         }
 
         return me();
@@ -245,37 +262,37 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Nonnull
     @Override
     public C cacheFeatures() {
-        return addStoreType(DefaultStoreTypes.CACHE_FEATURE);
+        return addStore(new FeatureCachingStore());
     }
 
     @Nonnull
     @Override
     public C cacheContainers() {
-        return addStoreType(DefaultStoreTypes.CACHE_CONTAINER);
+        return addStore(new ContainerCachingStore());
     }
 
     @Nonnull
     @Override
     public C cacheMetaClasses() {
-        return addStoreType(DefaultStoreTypes.CACHE_METACLASS);
+        return addStore(new ClassCachingStore());
     }
 
     @Nonnull
     @Override
     public C cacheSizes() {
-        return addStoreType(DefaultStoreTypes.CACHE_SIZE);
+        return addStore(new SizeCachingStore());
     }
 
     @Nonnull
     @Override
     public C readOnly() {
-        return addStoreType(DefaultStoreTypes.READONLY);
+        return addStore(new ReadOnlyStore());
     }
 
     @Nonnull
     @Override
     public C autoSave() {
-        return addStoreType(DefaultStoreTypes.AUTOSAVE);
+        return addStore(new AutoSavingStore());
     }
 
     @Nonnull
@@ -285,26 +302,44 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
             throw new InvalidConfigException(String.format("The auto-save chunk cannot be lower than 0 (but it was %d)", chunk));
         }
 
-        return autoSave().addOption(STORE_AUTOSAVE_CHUNK, chunk);
+        return addStore(new AutoSavingStore(chunk));
+    }
+
+    // endregion
+
+    // region Listeners
+
+    @Nonnull
+    @Override
+    public C addListener(StoreListener listener) {
+        checkNotNull(listener, "listener");
+
+        if (!listeners.add(listener)) {
+            Log.debug("The listener has already been defined ({0})", listener.getClass().getSimpleName());
+        }
+
+        return me();
     }
 
     @Nonnull
     @Override
     public C log() {
-        return addStoreType(DefaultStoreTypes.LOG);
+        return addListener(new LoggingStoreListener());
     }
 
     @Nonnull
     @Override
     public C log(Level level) {
-        return log().addOption(STORE_LOG_LEVEL, level);
+        return addListener(new LoggingStoreListener(level));
     }
 
     @Nonnull
     @Override
-    public C recordStats() {
-        return addStoreType(DefaultStoreTypes.STATS);
+    public C recordStats(StoreStats stats) {
+        return addListener(new RecordingStoreListener(stats));
     }
+
+    // endregion
 
     @Nonnull
     @Override
@@ -314,8 +349,12 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
 
     @Nonnull
     @Override
-    public Set<ConfigType<? extends Store>> getStoreTypes() {
-        return Collections.unmodifiableSet(stores);
+    public Set<Store> getStores() {
+        final Set<Store> view = new HashSet<>(stores);
+        if (!listeners.isEmpty()) {
+            view.add(new ListeningStore(listeners));
+        }
+        return Collections.unmodifiableSet(view);
     }
 
     // endregion
@@ -329,10 +368,15 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
         // Copy the map to a mutable map
         final Map<String, Object> mutableMap = new TreeMap<>(map);
 
+        // Process the defined listeners
+        Optional.ofNullable(mutableMap.remove(STORE_LISTENERS))
+                .map(s -> (Iterable<StoreListener>) s)
+                .ifPresent(s -> s.forEach(this::addListener));
+
         // Process the defined stores
         Optional.ofNullable(mutableMap.remove(STORE_TYPES))
-                .map(s -> (Set<ConfigType<Store>>) s)
-                .ifPresent(s -> s.forEach(this::addStoreType));
+                .map(s -> (Iterable<Store>) s)
+                .ifPresent(s -> s.forEach(this::addStore));
 
         // Process all other options
         mutableMap.forEach(this::addOption);

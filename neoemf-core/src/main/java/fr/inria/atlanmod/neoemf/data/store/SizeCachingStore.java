@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -24,18 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches the size data.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("unused") // Called dynamically
 public class SizeCachingStore extends AbstractCachingStore<SingleFeatureBean, Optional<Integer>> {
-
-    /**
-     * Constructs a new {@code SizeCachingStore}.
-     *
-     * @param store the inner store
-     */
-    @VisibleForReflection
-    public SizeCachingStore(Store store) {
-        super(store);
-    }
 
     @Override
     public void removeValue(SingleFeatureBean feature) {

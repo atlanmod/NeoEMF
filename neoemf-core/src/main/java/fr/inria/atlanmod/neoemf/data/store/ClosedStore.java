@@ -34,10 +34,4 @@ public final class ClosedStore extends InvalidDataMapper implements Store {
     public Backend backend() {
         throw e.get();
     }
-
-    @Nonnull
-    @Override
-    public StoreStats stats() {
-        throw e.get();
-    }
 }

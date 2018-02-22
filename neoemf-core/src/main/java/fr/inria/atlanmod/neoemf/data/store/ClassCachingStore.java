@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 
@@ -21,18 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches {@link fr.inria.atlanmod.neoemf.data.bean.ClassBean}s.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("unused") // Called dynamically
 public class ClassCachingStore extends AbstractCachingStore<Id, Optional<ClassBean>> {
-
-    /**
-     * Constructs a new {@code ClassCachingStore} on the given {@code store}.
-     *
-     * @param store the inner store
-     */
-    @VisibleForReflection
-    protected ClassCachingStore(Store store) {
-        super(store);
-    }
 
     @Nonnull
     @Override

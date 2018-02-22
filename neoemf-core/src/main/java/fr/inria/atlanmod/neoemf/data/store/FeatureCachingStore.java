@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -26,18 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that caches {@link org.eclipse.emf.ecore.EStructuralFeature} values.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("unused") // Called dynamically
 public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Object> {
-
-    /**
-     * Constructs a new {@code FeatureCachingStore}.
-     *
-     * @param store the inner store
-     */
-    @VisibleForReflection
-    public FeatureCachingStore(Store store) {
-        super(store);
-    }
 
     @Nonnull
     @Override

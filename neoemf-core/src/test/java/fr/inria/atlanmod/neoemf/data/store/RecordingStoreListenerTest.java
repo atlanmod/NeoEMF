@@ -16,6 +16,8 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.store.listener.RecordingStoreListener;
+import fr.inria.atlanmod.neoemf.data.store.listener.StoreStats;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,18 +36,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 /**
- * A test-case about {@link StatsRecorderStore}.
+ * A test-case about {@link RecordingStoreListener}.
  */
 @ParametersAreNonnullByDefault
-class StatsRecorderStoreTest extends AbstractTest {
+class RecordingStoreListenerTest extends AbstractTest {
 
     private static final long CALLS_COUNT = 2L;
 
     private Store store;
 
+    private StoreStats stats;
+
     @BeforeEach
     void setUp() {
-        ImmutableConfig config = BaseConfig.newConfig().recordStats();
+        stats = new StoreStats();
+        ImmutableConfig config = BaseConfig.newConfig().recordStats(stats);
 
         store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
     }
@@ -73,8 +78,7 @@ class StatsRecorderStoreTest extends AbstractTest {
             runnable.run();
         }
 
-        StoreStats stats = store.stats();
-        assertThat(stats.methodCalls()).containsOnly(createEntry(name, count));
+        assertThat(stats.methodInvocations()).containsOnly(createEntry(name, count));
     }
 
     @Test
@@ -86,9 +90,7 @@ class StatsRecorderStoreTest extends AbstractTest {
         // Do a call
         store.save();
 
-        StoreStats stats = store.stats();
-        assertThat(stats).isNotNull();
-        assertThat(stats.methodCalls()).isEmpty();
+        assertThat(stats.methodInvocations()).isEmpty();
     }
 
     @Test

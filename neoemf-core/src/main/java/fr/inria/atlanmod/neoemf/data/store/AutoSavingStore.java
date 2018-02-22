@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
@@ -30,7 +29,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link Store} wrapper that automatically saves modifications as calls are made.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("unused") // Called dynamically
 public class AutoSavingStore extends AbstractStore {
 
     /**
@@ -53,23 +51,18 @@ public class AutoSavingStore extends AbstractStore {
     /**
      * Constructs a new {@code AutoSavingStore} with the given {@code chunk}.
      *
-     * @param store the inner store
      * @param chunk the number of modifications between saves
      */
-    @VisibleForReflection
-    public AutoSavingStore(Store store, Long chunk) {
-        super(store);
+    public AutoSavingStore(Long chunk) {
+        super(0);
         this.chunk = chunk;
     }
 
     /**
      * Constructs a new {@code AutoSavingStore} with the default number of modifications between saves.
-     *
-     * @param store the underlying store
      */
-    @VisibleForReflection
-    public AutoSavingStore(Store store) {
-        this(store, DEFAULT_CHUNK);
+    public AutoSavingStore() {
+        this(DEFAULT_CHUNK);
     }
 
     @Override

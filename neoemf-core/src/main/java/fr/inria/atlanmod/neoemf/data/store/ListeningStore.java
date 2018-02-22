@@ -19,6 +19,8 @@ import fr.inria.atlanmod.neoemf.data.store.listener.FailureCallReport;
 import fr.inria.atlanmod.neoemf.data.store.listener.StoreListener;
 import fr.inria.atlanmod.neoemf.data.store.listener.SuccessCallReport;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -34,10 +36,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An abstract {@link Store} that listen and intercept calls made on this store chain.
+ * An {@link Store} that listen calls made on this store chain and notify defined {@link StoreListener}s.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractListeningStore extends AbstractStore implements StoreListener {
+public class ListeningStore extends AbstractStore {
 
     /**
      * Information about the listened {@link fr.inria.atlanmod.neoemf.data.Backend}.
@@ -46,19 +48,39 @@ public abstract class AbstractListeningStore extends AbstractStore implements St
     private final Lazy<BackendReport> backendReport = Lazy.with(() -> new BackendReport(next().backend()));
 
     /**
-     * Constructs a new {@code AbstractListeningStore} on the given {@code store}.
-     *
-     * @param store the inner store
+     * All listeners to notify.
      */
-    protected AbstractListeningStore(Store store) {
-        super(store);
-        onInitialize();
+    @Nonnull
+    private final List<StoreListener> listeners = new ArrayList<>();
+
+    /**
+     * Constructs a new {@code ListeningStore} with the given {@code listener}.
+     *
+     * @param listeners the store listeners to notify
+     */
+    public ListeningStore(Collection<StoreListener> listeners) {
+        super(10);
+        this.listeners.addAll(listeners);
+    }
+
+    @Override
+    public void next(Store next) {
+        super.next(next);
+        notifyListeners(StoreListener::onInitialize);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + listeners.stream()
+                .map(StoreListener::getClass)
+                .map(Class::getSimpleName)
+                .collect(Collectors.joining(", ", " [", "]"));
     }
 
     @Override
     public void close() {
         super.close();
-        onClose();
+        notifyListeners(StoreListener::onClose);
     }
 
     @Override
@@ -323,11 +345,13 @@ public abstract class AbstractListeningStore extends AbstractStore implements St
                 resultToLog = list;
             }
 
-            onSuccess(new SuccessCallReport<>(backendReport.get(), getCallingMethod(), key, value, resultToLog));
+            final SuccessCallReport<K, V, Object> report = new SuccessCallReport<>(backendReport.get(), getCallingMethod(), key, value, resultToLog);
+            notifyListeners(l -> l.onSuccess(report));
             return result;
         }
         catch (Exception e) {
-            onFailure(new FailureCallReport<>(backendReport.get(), getCallingMethod(), key, value, e));
+            final FailureCallReport<K, V> report = new FailureCallReport<>(backendReport.get(), getCallingMethod(), key, value, e);
+            notifyListeners(l -> l.onFailure(report));
             throw e;
         }
     }
@@ -348,5 +372,14 @@ public abstract class AbstractListeningStore extends AbstractStore implements St
         }
 
         throw new IllegalStateException(); // Should never happen
+    }
+
+    /**
+     * Notifies all listeners.
+     *
+     * @param func the function defining the notification
+     */
+    private void notifyListeners(Consumer<StoreListener> func) {
+        listeners.forEach(func);
     }
 }

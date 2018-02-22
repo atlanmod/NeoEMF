@@ -10,15 +10,11 @@ package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.neoemf.config.ConfigType;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.config.InvalidConfigException;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperFactory;
 
-import java.util.ArrayDeque;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +28,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  */
 @Singleton
 @ParametersAreNonnullByDefault
-public final class StoreFactory extends AbstractMapperFactory {
+public final class StoreFactory {
 
     /**
      * Constructs a new {@code StoreFactory}.
@@ -67,56 +63,24 @@ public final class StoreFactory extends AbstractMapperFactory {
     public Store createStore(Backend backend, ImmutableConfig baseConfig) {
         checkNotNull(baseConfig, "baseConfig");
 
-        // The tail of the store chain
-        Store currentStore = createDefaultStore(backend);
-
         try {
-            List<ConfigType<? extends Store>> storeTypes = baseConfig.getStoreTypes().stream()
+            // The tail of the store chain
+            Store currentStore = new NoopStore(backend);
+
+            final List<Store> reverseStores = baseConfig.getStores().stream()
                     .sorted(Collections.reverseOrder())
                     .collect(Collectors.toList());
 
-            for (ConfigType<? extends Store> st : storeTypes) {
-                Deque<Object> parameters = findValuesFor(st, baseConfig);
-
-                // Each store has a store as first argument
-                parameters.addFirst(currentStore);
-
-                currentStore = createMapper(st.typeName(), parameters.toArray(new Object[parameters.size()]));
+            for (Store s : reverseStores) {
+                AbstractStore.class.cast(s).next(currentStore);
+                currentStore = s;
             }
+
+            return currentStore;
         }
         catch (Exception e) {
             throw new InvalidStoreException(e);
         }
-
-        return currentStore;
-    }
-
-    /**
-     * Creates the default store in front of the {@code backend}.
-     *
-     * @param backend the back-end where to store data
-     *
-     * @return the default store
-     */
-    @Nonnull
-    protected Store createDefaultStore(Backend backend) {
-        return new NoopStore(backend);
-    }
-
-    /**
-     * Finds the values of all defined parameters of {@code type} in the {@code baseConfig}.
-     *
-     * @param type       the store declaration
-     * @param baseConfig the configuration that defines the behaviour of the store
-     *
-     * @return a set of values
-     */
-    @Nonnull
-    private Deque<Object> findValuesFor(ConfigType<?> type, ImmutableConfig baseConfig) {
-        return type.parameterKeys().stream()
-                .filter(baseConfig::hasOption)
-                .map(p -> baseConfig.getOption(p).<InvalidConfigException>orElseThrow(InvalidConfigException::new))
-                .collect(Collectors.toCollection(ArrayDeque::new));
     }
 
     /**

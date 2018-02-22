@@ -11,6 +11,8 @@ package fr.inria.atlanmod.neoemf.config;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.neoemf.bind.BindingEngine;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+import fr.inria.atlanmod.neoemf.data.store.listener.StoreListener;
+import fr.inria.atlanmod.neoemf.data.store.listener.StoreStats;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -154,14 +156,14 @@ public interface Config extends ImmutableConfig {
     // region Stores
 
     /**
-     * Adds a feature defined by the given {@code storeType} in this configuration.
+     * Adds a feature defined by the given {@code store} in this configuration.
      *
-     * @param storeType the store declaration to add
+     * @param store the store declaration to add
      *
      * @return this configuration (for chaining)
      */
     @Nonnull
-    Config addStoreType(ConfigType<? extends Store> storeType);
+    Config addStore(Store store);
 
     /**
      * Adds the {@code cache-features} feature in this configuration.
@@ -225,6 +227,20 @@ public interface Config extends ImmutableConfig {
     @Nonnull
     Config autoSave(@Nonnegative long chunk);
 
+    // endregion
+
+    // region Listeners
+
+    /**
+     * Adds a store listener in this configuration.
+     *
+     * @param listener the sotre listener to add
+     *
+     * @return this configuration (for chaining)
+     */
+    @Nonnull
+    Config addListener(StoreListener listener);
+
     /**
      * Adds the {@code log} feature in this configuration.
      *
@@ -248,10 +264,12 @@ public interface Config extends ImmutableConfig {
     /**
      * Adds the {@code stats} feature in this configuration.
      *
+     * @param stats the stats that will be updated
+     *
      * @return this configuration (for chaining)
      */
     @Nonnull
-    Config recordStats();
+    Config recordStats(StoreStats stats);
 
     // endregion
 }

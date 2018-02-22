@@ -34,27 +34,28 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataMapper {
 
     /**
-     * The inner mapper.
+     * The next mapper to notify.
      */
-    private final M next;
+    private M next;
 
     /**
-     * Constructs a new {@code AbstractMapperDecorator} on the given {@code mapper}.
+     * Returns the nexy mapper to notify.
      *
-     * @param mapper the inner mapper
+     * @return the next mapper
      */
-    protected AbstractMapperDecorator(M mapper) {
-        this.next = checkNotNull(mapper, "mapper");
+    @Nonnull
+    protected M next() {
+        return next;
     }
 
     /**
-     * Returns the inner mapper.
+     * Defines the next mapper to notify.
      *
-     * @return the inner mapper
+     * @param next the next mapper
      */
-    @Nonnull
-    protected final M next() {
-        return next;
+    protected void next(M next) {
+        checkNotNull(next, "next");
+        this.next = next;
     }
 
     @Override

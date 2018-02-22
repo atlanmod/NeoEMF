@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
@@ -23,18 +22,7 @@ import static java.util.Objects.nonNull;
  * A {@link Store} wrapper that caches containers.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("unused") // Called dynamically
 public class ContainerCachingStore extends AbstractCachingStore<Id, Optional<SingleFeatureBean>> {
-
-    /**
-     * Constructs a new {@code ContainerCachingStore} on the given {@code store}.
-     *
-     * @param store the inner store
-     */
-    @VisibleForReflection
-    protected ContainerCachingStore(Store store) {
-        super(store);
-    }
 
     @Nonnull
     @Override

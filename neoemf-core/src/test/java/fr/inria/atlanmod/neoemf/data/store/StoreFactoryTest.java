@@ -17,6 +17,8 @@ import fr.inria.atlanmod.neoemf.config.InvalidConfigException;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
+import fr.inria.atlanmod.neoemf.data.store.listener.RecordingStoreListener;
+import fr.inria.atlanmod.neoemf.data.store.listener.StoreStats;
 
 import org.junit.jupiter.api.Test;
 
@@ -79,7 +81,7 @@ class StoreFactoryTest extends AbstractTest {
     }
 
     /**
-     * Checks the setup of the {@link LoggingStore}.
+     * Checks the setup of the {@link fr.inria.atlanmod.neoemf.data.store.listener.LoggingStoreListener}.
      */
     @Test
     void testLogging() {
@@ -87,7 +89,7 @@ class StoreFactoryTest extends AbstractTest {
                 .log();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isInstanceOf(LoggingStore.class);
+        assertThat(store).isInstanceOf(ListeningStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);
@@ -154,15 +156,15 @@ class StoreFactoryTest extends AbstractTest {
     }
 
     /**
-     * Checks the setup of the {@link StatsRecorderStore}.
+     * Checks the setup of the {@link RecordingStoreListener}.
      */
     @Test
     void testStatsCaching() {
         ImmutableConfig config = BaseConfig.newConfig()
-                .recordStats();
+                .recordStats(new StoreStats());
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
-        assertThat(store).isInstanceOf(StatsRecorderStore.class);
+        assertThat(store).isInstanceOf(ListeningStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);
@@ -226,7 +228,7 @@ class StoreFactoryTest extends AbstractTest {
                 .autoSave(expectedChunk)
                 .cacheContainers()
                 .cacheMetaClasses()
-                .recordStats();
+                .recordStats(new StoreStats());
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(AutoSavingStore.class);
@@ -235,25 +237,19 @@ class StoreFactoryTest extends AbstractTest {
         assertThat(actualChunk).isEqualTo(expectedChunk);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(StatsRecorderStore.class);
+        assertThat(store).isExactlyInstanceOf(ListeningStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(LoggingStore.class);
-
-        Level actualLevel = getValue(store, "level", LoggingStore.class, Level.class);
-        assertThat(actualLevel).isEqualTo(Level.DEBUG);
+        assertThat(store).isInstanceOf(AbstractCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(ClassCachingStore.class);
+        assertThat(store).isInstanceOf(AbstractCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(ContainerCachingStore.class);
+        assertThat(store).isInstanceOf(AbstractCachingStore.class);
 
         store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(FeatureCachingStore.class);
-
-        store = getInnerStore(store);
-        assertThat(store).isExactlyInstanceOf(SizeCachingStore.class);
+        assertThat(store).isInstanceOf(AbstractCachingStore.class);
 
         store = getInnerStore(store);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);

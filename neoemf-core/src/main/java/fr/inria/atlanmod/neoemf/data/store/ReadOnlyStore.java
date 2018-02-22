@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -30,7 +29,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * called, preventing resource corruption.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("unused") // Called dynamically
 public class ReadOnlyStore extends AbstractStore {
 
     /**
@@ -40,13 +38,10 @@ public class ReadOnlyStore extends AbstractStore {
     private final Supplier<RuntimeException> e = () -> new UnsupportedOperationException("Operation forbidden in read-only mode");
 
     /**
-     * Constructs a new {@code ReadOnlyStore} on the given {@code store}.
-     *
-     * @param store the inner store
+     * Constructs a new {@code ReadOnlyStore}.
      */
-    @VisibleForReflection
-    public ReadOnlyStore(Store store) {
-        super(store);
+    public ReadOnlyStore() {
+        super(0);
     }
 
     @Override

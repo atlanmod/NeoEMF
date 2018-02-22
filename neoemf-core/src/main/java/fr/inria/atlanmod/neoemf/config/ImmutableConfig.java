@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.config;
 
+import fr.inria.atlanmod.neoemf.data.store.ReadOnlyStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import java.io.IOException;
@@ -125,23 +126,12 @@ public interface ImmutableConfig {
     Map<String, ?> getOptions();
 
     /**
-     * Checks that the {@code storeType} is defined in this configuration.
-     *
-     * @param storeType the store declaration to check the presence
-     *
-     * @return {@code true} if the {@code storeType} is defined
-     */
-    default boolean hasStoreType(ConfigType<? extends Store> storeType) {
-        return getStoreTypes().contains(storeType);
-    }
-
-    /**
-     * Returns a set of all defined {@link ConfigType}.
+     * Returns a set of all defined {@link Store}.
      *
      * @return an immutable collection of stores declaration
      */
     @Nonnull
-    Set<ConfigType<? extends Store>> getStoreTypes();
+    Set<Store> getStores();
 
     /**
      * Returns {@code true} if the "read-only" mode is defined.
@@ -149,6 +139,6 @@ public interface ImmutableConfig {
      * @return {@code true} if the "read-only" mode is defined
      */
     default boolean isReadOnly() {
-        return hasStoreType(DefaultStoreTypes.READONLY);
+        return getStores().stream().anyMatch(c -> ReadOnlyStore.class == c.getClass());
     }
 }

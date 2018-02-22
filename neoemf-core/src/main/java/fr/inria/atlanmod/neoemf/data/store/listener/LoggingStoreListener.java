@@ -6,17 +6,12 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.store;
+package fr.inria.atlanmod.neoemf.data.store.listener;
 
-import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.log.Logger;
-import fr.inria.atlanmod.neoemf.data.store.listener.AbstractCallReport;
-import fr.inria.atlanmod.neoemf.data.store.listener.BackendReport;
-import fr.inria.atlanmod.neoemf.data.store.listener.FailureCallReport;
-import fr.inria.atlanmod.neoemf.data.store.listener.StoreListener;
-import fr.inria.atlanmod.neoemf.data.store.listener.SuccessCallReport;
+import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -24,12 +19,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link Store} wrapper that logs every calls in the {@link fr.inria.atlanmod.commons.log.Log}.
+ * A {@link Store} wrapper that logs every calls in the {@link Log}.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("unused") // Called dynamically
-// TODO Declare this class as a simple listener, and registers it in a ListeningStore
-public class LoggingStore extends AbstractListeningStore implements StoreListener {
+public class LoggingStoreListener implements StoreListener {
 
     /**
      * The default logging level.
@@ -41,7 +34,7 @@ public class LoggingStore extends AbstractListeningStore implements StoreListene
      * The logger to use.
      */
     @Nonnull
-    private final Logger logger;
+    private final Logger logger = Log.forName("neoemf.data");
 
     /**
      * The default {@link Level} for logging.
@@ -50,26 +43,18 @@ public class LoggingStore extends AbstractListeningStore implements StoreListene
     private final Level level;
 
     /**
-     * Constructs a new {@code LoggingStore}.
-     *
-     * @param store the inner store
+     * Constructs a new {@code LoggingStoreListener}.
      */
-    @VisibleForReflection
-    public LoggingStore(Store store) {
-        this(store, DEFAULT_LEVEL);
+    public LoggingStoreListener() {
+        this(DEFAULT_LEVEL);
     }
 
     /**
-     * Constructs a new {@code LoggingStore} with the given logging {@code level}.
+     * Constructs a new {@code LoggingStoreListener} with the given logging {@code level}.
      *
-     * @param store the underlying store
      * @param level the logging level
      */
-    @VisibleForReflection
-    public LoggingStore(Store store, Level level) {
-        super(store);
-
-        this.logger = Log.forName(store.backend().toString());
+    public LoggingStoreListener(Level level) {
         this.level = level;
     }
 
