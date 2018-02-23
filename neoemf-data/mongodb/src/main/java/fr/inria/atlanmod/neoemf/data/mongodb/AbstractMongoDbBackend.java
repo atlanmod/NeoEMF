@@ -96,6 +96,9 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     @Override
     protected void internalClose() throws IOException {
+        if (this.mongoDatabase.getName().contains("test"))
+            this.mongoDatabase.drop();
+        
         this.mongoClient.close();
     }
 
