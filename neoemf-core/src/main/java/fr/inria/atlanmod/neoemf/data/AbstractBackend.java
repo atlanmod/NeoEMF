@@ -21,6 +21,7 @@ import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -28,7 +29,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 
 /**
  * An abstract {@link Backend} that provides a global behavior about the closure.
@@ -227,6 +227,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + (isNull(name) ? ("@" + hashCode()) : ("#" + name));
+        final String identifier = Optional.ofNullable(name).map(n -> "#" + name).orElseGet(() -> "@" + hashCode());
+        return getClass().getSimpleName() + identifier;
     }
 }

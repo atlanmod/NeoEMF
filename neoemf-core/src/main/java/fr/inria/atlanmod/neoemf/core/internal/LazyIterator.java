@@ -53,7 +53,7 @@ public class LazyIterator<L extends List<E>, E> implements Iterator<E> {
      * The current position of the iterator.
      */
     @Nonnegative
-    protected int cursor = 0;
+    protected int cursor;
 
     /**
      * The previous position of the iterator.

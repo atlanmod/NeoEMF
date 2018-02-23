@@ -36,6 +36,7 @@ public final class StoreStats {
      * TODO
      *
      * @param map
+     *
      * @return
      */
     @Nonnull

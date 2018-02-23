@@ -31,7 +31,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * @param <M> the type of the inner {@link DataMapper}
  */
 @ParametersAreNonnullByDefault
-public class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataMapper {
+public abstract class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataMapper {
 
     /**
      * The next mapper to notify.

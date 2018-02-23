@@ -24,7 +24,7 @@ public class BasicReference extends AbstractBasicFeature<BasicReference, ERefere
     /**
      * Whether this reference is a containment.
      */
-    private boolean containment = false;
+    private boolean containment;
 
     /**
      * Creates a new {@code BasicReference} from another, without its values.

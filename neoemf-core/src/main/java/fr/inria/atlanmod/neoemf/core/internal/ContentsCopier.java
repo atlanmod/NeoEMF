@@ -15,7 +15,6 @@ import fr.inria.atlanmod.neoemf.util.EObjects;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.resource.Resource;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -150,7 +149,7 @@ public final class ContentsCopier implements Copier<StoreAdapter> {
      *
      * @return the {@code value}
      *
-     * @see PersistentEObject#resource(Resource.Internal)
+     * @see PersistentEObject#resource(org.eclipse.emf.ecore.resource.Resource.Internal)
      */
     @Nullable
     private Object attach(@Nullable Object value) {

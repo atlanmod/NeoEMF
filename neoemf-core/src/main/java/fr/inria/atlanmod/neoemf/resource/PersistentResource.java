@@ -20,7 +20,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -75,7 +74,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
      * @param config the save configuration
      *
      * @throws IOException if an I/O error occurs during saving
-     * @see #save(Map)
+     * @see #save(java.util.Map)
      */
     void save(ImmutableConfig config) throws IOException;
 
@@ -85,7 +84,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
      * @param config the load configuration
      *
      * @throws IOException if an I/O error occurs during loading
-     * @see #load(Map)
+     * @see #load(java.util.Map)
      */
     void load(ImmutableConfig config) throws IOException;
 

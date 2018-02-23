@@ -11,13 +11,11 @@ package fr.inria.atlanmod.neoemf.data.mapping;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static java.util.Objects.nonNull;
 
 /**
  * An abstract factory that helps the creation of {@link DataMapper} instances.
@@ -124,19 +122,9 @@ public abstract class AbstractMapperFactory {
      * @return a formatted string
      */
     @Nonnull
-    private String argumentTypesToString(@Nullable Class<?>... argTypes) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        if (nonNull(argTypes)) {
-            for (int i = 0; i < argTypes.length; i++) {
-                if (i > 0) {
-                    sb.append(", ");
-                }
-                Class<?> c = argTypes[i];
-                sb.append((c == null) ? "null" : c.getName());
-            }
-        }
-        sb.append(")");
-        return sb.toString();
+    private String argumentTypesToString(Class<?>... argTypes) {
+        return Arrays.stream(argTypes)
+                .map(Class::getSimpleName)
+                .collect(Collectors.joining(", ", "(", ")"));
     }
 }
