@@ -8,11 +8,14 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
+import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.Throwables;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -22,12 +25,15 @@ import fr.inria.atlanmod.neoemf.data.mongodb.model.SingleFeature;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
@@ -108,8 +114,10 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     @Override
     protected void internalClose() throws IOException {
-        if (SHOULD_DELETE_TEST_DATABASES && this.mongoDatabase.getName().contains("test"))
+        if (SHOULD_DELETE_TEST_DATABASES && this.mongoDatabase.getName().contains("test")) {
+            Log.info("Deleting test database " + this.mongoDatabase.getName());
             this.mongoDatabase.drop();
+        }
         
         this.mongoClient.close();
     }
@@ -225,7 +233,21 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     @Nonnull
     @Override
     public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("allInstancesOf");
+        List<Id> list = new ArrayList<>();
+
+        for (ClassBean bean : metaClasses)
+        {
+             instancesCollection.find(
+                    and(
+                            eq("metaClass.name", bean.name()),
+                            eq("metaClass.uri", bean.uri())
+                    )
+            ).forEach((Block<StoredInstance>) storedInstance -> {
+                Id id = IdConverters.withHexString().revert(storedInstance.getId());
+                list.add(id);
+            });
+        }
+
+        return list;
     }
 }
