@@ -3,6 +3,7 @@ package fr.inria.atlanmod.neoemf.data.mongodb.model;
 import org.bson.codecs.pojo.annotations.BsonId;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Model for the "instances" MongoDb collection
@@ -40,9 +41,17 @@ public class StoredInstance
     private SingleFeature container;
 
     /**
-     * The instance's attributes
+     * The references
      */
-    private HashMap<String, String> attributes;
+    private Map<Integer, String> references =  new HashMap<>();
+
+    public Map<Integer, String> getReferences() {
+        return references;
+    }
+
+    public void setReferences(Map<Integer, String> references) {
+        this.references = references;
+    }
 
     public MetaClass getMetaClass() {
         return metaClass;
@@ -58,13 +67,5 @@ public class StoredInstance
 
     public void setContainer(SingleFeature container) {
         this.container = container;
-    }
-
-    public HashMap<String, String> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(HashMap<String, String> attributes) {
-        this.attributes = attributes;
     }
 }

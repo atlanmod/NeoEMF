@@ -13,9 +13,12 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
+import fr.inria.atlanmod.neoemf.data.mongodb.model.MetaClass;
+import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -28,6 +31,9 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -96,8 +102,37 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("referenceFor");
+        String hexId = key.owner().toHexString();
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+        if (instance == null)
+        {
+            instance = new StoredInstance();
+            instance.setId(hexId);
+
+            instance.getReferences().put(key.id(), reference.toHexString());
+
+            instancesCollection.insertOne(instance);
+
+            return Optional.empty();
+        }
+        else
+        {
+            instancesCollection.updateOne(
+                    eq("_id", hexId),
+                    set("references." + key.id(), reference.toHexString()));
+
+            if (instance.getReferences().containsKey(key.id()))
+            {
+                return Optional.of(IdConverters.withHexString().revert(instance.getReferences().get(key.id())));
+            }
+            else
+            {
+
+                return Optional.empty();
+            }
+
+        }
     }
 
     @Override
