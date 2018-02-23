@@ -67,12 +67,14 @@ public class MongoDbContext extends AbstractContext {
     @Nonnull
     @Override
     public URI createUri(URI uri) {
-        return UriBuilder.forScheme(uriScheme()).fromServer(this.config.getHost(), this.config.getPort(), "/" + uri);
+        return UriBuilder.forScheme(uriScheme()).fromServer(this.config.getHost(), this.config.getPort(), uri);
     }
 
     @Nonnull
     @Override
     public URI createUri(File file) {
-        return UriBuilder.forScheme(uriScheme()).fromServer(this.config.getHost(), this.config.getPort(), "/" + file.getName());
+        return UriBuilder.forScheme(uriScheme()).fromServer(this.config.getHost(), this.config.getPort(), file.getName());
     }
+
+
 }

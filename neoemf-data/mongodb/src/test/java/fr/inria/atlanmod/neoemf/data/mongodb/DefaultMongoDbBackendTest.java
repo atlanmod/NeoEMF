@@ -12,6 +12,7 @@ import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
 import fr.inria.atlanmod.neoemf.data.mongodb.context.MongoDbContext;
+import org.junit.jupiter.api.AfterAll;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
