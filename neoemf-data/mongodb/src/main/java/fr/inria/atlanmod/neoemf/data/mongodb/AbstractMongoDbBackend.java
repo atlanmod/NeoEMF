@@ -17,7 +17,10 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
+import fr.inria.atlanmod.neoemf.data.mongodb.model.MetaClass;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -26,6 +29,9 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -39,6 +45,12 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
      * The name of the collection containing the instances
      */
     private static final String INSTANCES_COLLECTION_NAME = "instances";
+
+    /**
+     * If set to true, the test databases will be deleted once the tests are done
+     */
+    private static final boolean SHOULD_DELETE_TEST_DATABASES = false;
+
 
     private MongoDatabase mongoDatabase;
     private MongoClient mongoClient;
@@ -96,7 +108,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     @Override
     protected void internalClose() throws IOException {
-        if (this.mongoDatabase.getName().contains("test"))
+        if (SHOULD_DELETE_TEST_DATABASES && this.mongoDatabase.getName().contains("test"))
             this.mongoDatabase.drop();
         
         this.mongoClient.close();
@@ -133,8 +145,18 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     public Optional<ClassBean> metaClassOf(Id id) {
         checkNotNull(id, "id");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("metaClassOf");
+        String hexId = id.toHexString();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+
+        if (instance == null || instance.getMetaClass() == null)
+        {
+            return Optional.empty();
+        }
+        else
+        {
+            return Optional.of(ClassBean.of(instance.getMetaClass().getName(), instance.getMetaClass().getUri()));
+        }
+
     }
 
     @Override
@@ -142,8 +164,29 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(id, "id");
         checkNotNull(metaClass, "metaClass");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("metaClassFor");
+        String hexId = id.toHexString();
+        MetaClass newMetaClass = new MetaClass(metaClass.name(), metaClass.uri());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+        if (instance == null)
+        {
+            instance = new StoredInstance();
+            instance.setId(hexId);
+
+            instance.setMetaClass(newMetaClass);
+
+            instancesCollection.insertOne(instance);
+        }
+        else
+        {
+            instancesCollection.updateOne(
+                    eq("_id", hexId),
+                    combine(
+                            set("metaClass.name", metaClass.name()),
+                            set("metaClass.uri", metaClass.uri())));
+        }
+
+        return true;
     }
 
     @Nonnull
