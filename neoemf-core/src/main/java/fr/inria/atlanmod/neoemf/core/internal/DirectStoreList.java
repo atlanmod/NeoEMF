@@ -240,42 +240,6 @@ public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> implemen
 
     // endregion
 
-    // region Overrides from `DelegatingEcoreEList`
-
-    @Nonnull
-    @Override
-    // FIXME Does not resolve
-    public Object[] toArray() {
-        return delegateToArray();
-    }
-
-    @Nonnull
-    @Override
-    // FIXME Does not resolve
-    public <T> T[] toArray(T[] array) {
-        return delegateToArray(array);
-    }
-
-    @Override
-    // FIXME Does not resolve
-    public boolean contains(Object object) {
-        return delegateContains(object);
-    }
-
-    @Override
-    // FIXME Does not resolve
-    public int indexOf(Object object) {
-        return delegateIndexOf(object);
-    }
-
-    @Override
-    // FIXME Does not resolve
-    public int lastIndexOf(Object object) {
-        return delegateLastIndexOf(object);
-    }
-
-    // endregion
-
     // region Overrides from `DelegatingNotifyingListImpl`
 
     @Override
