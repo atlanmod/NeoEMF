@@ -12,6 +12,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -65,6 +66,8 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
         final boolean isReadOnly = config.isReadOnly();
 
         String databaseName = url.getPath().substring(1);
+
+        Log.info("Opening MongoDb database " + databaseName);
 
         //This will not throw any exception even if the connection failed
         //due to MongoDb driver's asynchronous nature

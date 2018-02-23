@@ -1,7 +1,6 @@
 package fr.inria.atlanmod.neoemf.data.mongodb.model;
 
 import org.bson.codecs.pojo.annotations.BsonId;
-import org.bson.types.ObjectId;
 
 import java.util.HashMap;
 
@@ -36,9 +35,9 @@ public class StoredInstance
     private MetaClass metaClass;
 
     /**
-     * The ID of this instance's container
+     * This instance's container
      */
-    private String containerId;
+    private SingleFeature container;
 
     /**
      * The instance's attributes
@@ -53,12 +52,12 @@ public class StoredInstance
         this.metaClass = metaClass;
     }
 
-    public String getContainerId() {
-        return containerId;
+    public SingleFeature getContainer() {
+        return container;
     }
 
-    public void setContainerId(String containerId) {
-        this.containerId = containerId;
+    public void setContainer(SingleFeature container) {
+        this.container = container;
     }
 
     public HashMap<String, String> getAttributes() {

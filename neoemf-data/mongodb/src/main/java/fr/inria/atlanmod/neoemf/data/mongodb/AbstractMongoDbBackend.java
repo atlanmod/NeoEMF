@@ -18,9 +18,8 @@ import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.MetaClass;
+import fr.inria.atlanmod.neoemf.data.mongodb.model.SingleFeature;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -32,6 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
+import static com.mongodb.client.model.Updates.unset;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -49,7 +49,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     /**
      * If set to true, the test databases will be deleted once the tests are done
      */
-    private static final boolean SHOULD_DELETE_TEST_DATABASES = false;
+    private static final boolean SHOULD_DELETE_TEST_DATABASES = true;
 
 
     private MongoDatabase mongoDatabase;
@@ -119,8 +119,17 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     public Optional<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id, "id");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("containerOf");
+        String hexId = id.toHexString();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+
+        if (instance == null || instance.getContainer() == null)
+        {
+            return Optional.empty();
+        }
+        else
+        {
+            return Optional.of(instance.getContainer().toSingleFeatureBean());
+        }
     }
 
     @Override
@@ -128,16 +137,40 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(id, "id");
         checkNotNull(container, "container");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("containerFor");
+        String hexId = id.toHexString();
+        SingleFeature newContainer = SingleFeature.fromSingleFeatureBean(container);
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+        if (instance == null)
+        {
+            instance = new StoredInstance();
+            instance.setId(hexId);
+
+            instance.setContainer(newContainer);
+
+            instancesCollection.insertOne(instance);
+        }
+        else
+        {
+            instancesCollection.updateOne(
+                    eq("_id", hexId),
+                    combine(
+                            set("container.owner", newContainer.getOwner()),
+                            set("container.id", newContainer.getId())));
+        }
     }
 
     @Override
     public void removeContainer(Id id) {
         checkNotNull(id, "id");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("removeContainer");
+        String hexId = id.toHexString();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+
+        if (instance != null && instance.getContainer() != null)
+        {
+            instancesCollection.updateOne(eq("_id", hexId), unset("container"));
+        }
     }
 
     @Nonnull
@@ -154,7 +187,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         }
         else
         {
-            return Optional.of(ClassBean.of(instance.getMetaClass().getName(), instance.getMetaClass().getUri()));
+            return Optional.of(instance.getMetaClass().toClassBean());
         }
 
     }
@@ -165,7 +198,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(metaClass, "metaClass");
 
         String hexId = id.toHexString();
-        MetaClass newMetaClass = new MetaClass(metaClass.name(), metaClass.uri());
+        MetaClass newMetaClass = MetaClass.fromClassBean(metaClass);
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
         if (instance == null)

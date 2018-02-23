@@ -1,5 +1,7 @@
 package fr.inria.atlanmod.neoemf.data.mongodb.model;
 
+import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+
 /**
  * Represents a meta class
  */
@@ -31,5 +33,15 @@ public class MetaClass {
 
     public void setUri(String uri) {
         this.uri = uri;
+    }
+
+    public static MetaClass fromClassBean(ClassBean bean)
+    {
+        return new MetaClass(bean.name(), bean.uri());
+    }
+
+    public ClassBean toClassBean()
+    {
+        return ClassBean.of(name, uri);
     }
 }
