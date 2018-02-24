@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.core.internal;
 
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.EObjects;
+import fr.inria.atlanmod.neoemf.util.EFeatures;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -165,8 +165,8 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
 
         return nonNull(entry.getValue())
                 && isIncluded(f)
-                && EObjects.isReference(f)
-                && EObjects.asReference(f).isContainment();
+                && EFeatures.isReference(f)
+                && EFeatures.asReference(f).isContainment();
     }
 
     @Override

@@ -62,8 +62,8 @@ public class LazyMatchEngineFactory extends MatchEngineFactoryImpl {
     /**
      * Constructs a new {@code LazyMatchEngineFactory} with the given parameters.
      *
-     * @param matcher           the matcher that will be in charge of pairing EObjects together for this comparison
-     *                          process.
+     * @param matcher           the matcher that will be in charge of pairing {@link org.eclipse.emf.ecore.EObject}s
+     *                          together for this comparison process.
      * @param comparisonFactory factory that will be use to instantiate Comparison as return by match() methods.
      */
     public LazyMatchEngineFactory(IEObjectMatcher matcher, IComparisonFactory comparisonFactory) {

@@ -22,18 +22,18 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 
 /**
- * A test-case about {@link EObjects}.
+ * A test-case about {@link EFeatures}.
  */
 @ParametersAreNonnullByDefault
-class EObjectsTest extends AbstractTest {
+class EFeaturesTest extends AbstractTest {
 
     @Test
     void testIsAttribute() {
         EStructuralFeature attribute = mock(EAttribute.class);
         EStructuralFeature reference = mock(EReference.class);
 
-        assertThat(EObjects.isAttribute(attribute)).isTrue();
-        assertThat(EObjects.isAttribute(reference)).isFalse();
+        assertThat(EFeatures.isAttribute(attribute)).isTrue();
+        assertThat(EFeatures.isAttribute(reference)).isFalse();
     }
 
     @Test
@@ -41,8 +41,8 @@ class EObjectsTest extends AbstractTest {
         EStructuralFeature attribute = mock(EAttribute.class);
         EStructuralFeature reference = mock(EReference.class);
 
-        assertThat(EObjects.isReference(reference)).isTrue();
-        assertThat(EObjects.isReference(attribute)).isFalse();
+        assertThat(EFeatures.isReference(reference)).isTrue();
+        assertThat(EFeatures.isReference(attribute)).isFalse();
     }
 
     @Test
@@ -50,10 +50,10 @@ class EObjectsTest extends AbstractTest {
         EStructuralFeature attribute = mock(EAttribute.class);
         EStructuralFeature reference = mock(EReference.class);
 
-        assertThat(EObjects.asAttribute(attribute)).isInstanceOf(EAttribute.class);
+        assertThat(EFeatures.asAttribute(attribute)).isInstanceOf(EAttribute.class);
 
         assertThat(catchThrowable(() ->
-                EObjects.asAttribute(reference)
+                EFeatures.asAttribute(reference)
         )).isExactlyInstanceOf(ClassCastException.class);
     }
 
@@ -62,10 +62,10 @@ class EObjectsTest extends AbstractTest {
         EStructuralFeature attribute = mock(EAttribute.class);
         EStructuralFeature reference = mock(EReference.class);
 
-        assertThat(EObjects.asReference(reference)).isInstanceOf(EReference.class);
+        assertThat(EFeatures.asReference(reference)).isInstanceOf(EReference.class);
 
         assertThat(catchThrowable(() ->
-                EObjects.asReference(attribute))
+                EFeatures.asReference(attribute))
         ).isExactlyInstanceOf(ClassCastException.class);
     }
 }

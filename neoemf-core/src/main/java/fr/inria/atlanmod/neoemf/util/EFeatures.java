@@ -12,27 +12,21 @@ import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
-import java.util.Arrays;
-
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
-
 /**
- * Static utility methods related to {@link org.eclipse.emf.ecore.EObject}s.
+ * Static utility methods related to {@link EStructuralFeature}s.
  */
 @Static
 @ParametersAreNonnullByDefault
-public final class EObjects {
+// TODO Use ExtendedMetaData to handle features whose kind differs from their instance
+public final class EFeatures {
 
-    private EObjects() {
+    private EFeatures() {
         throw Throwables.notInstantiableClass(getClass());
     }
 
@@ -44,7 +38,7 @@ public final class EObjects {
      * @return {@code true} if the {@code feature} represents an attribute
      */
     public static boolean isAttribute(EStructuralFeature feature) {
-        return are(EAttribute.class, feature);
+        return EAttribute.class.isInstance(feature);
     }
 
     /**
@@ -55,7 +49,7 @@ public final class EObjects {
      * @return {@code true} if the {@code feature} represents an reference
      */
     public static boolean isReference(EStructuralFeature feature) {
-        return are(EReference.class, feature);
+        return EReference.class.isInstance(feature);
     }
 
     /**
@@ -70,7 +64,7 @@ public final class EObjects {
      */
     @Nonnull
     public static EAttribute asAttribute(EStructuralFeature feature) {
-        return as(EAttribute.class, feature);
+        return EAttribute.class.cast(feature);
     }
 
     /**
@@ -85,39 +79,6 @@ public final class EObjects {
      */
     @Nonnull
     public static EReference asReference(EStructuralFeature feature) {
-        return as(EReference.class, feature);
-    }
-
-    /**
-     * Determines if all of the specified {@code objects} are assignable to the {@code cls}.
-     *
-     * @param cls     the expected instance
-     * @param objects the objects to check
-     * @param <T>     the type of the {@link EObject}
-     *
-     * @return {@code true} if the specified {@code objects} are assignable to the {@code cls}
-     *
-     * @throws NullPointerException if any argument is {@code null}
-     */
-    private static <T extends EObject> boolean are(Class<T> cls, @Nullable Object... objects) {
-        return nonNull(objects)
-                && Arrays.stream(objects).allMatch(cls::isInstance);
-
-    }
-
-    /**
-     * Casts the specified {@code object} to a {@code cls}.
-     *
-     * @param cls    the expected instance
-     * @param object the object to cast
-     * @param <T>    the type of the {@link EObject}
-     *
-     * @return the {@code object} after casting
-     *
-     * @throws NullPointerException if any argument is {@code null}
-     * @throws ClassCastException   if the {@code object} is not an instance of {@code cls}
-     */
-    private static <T extends EObject> T as(Class<T> cls, Object object) {
-        return cls.cast(checkNotNull(object, "object"));
+        return EReference.class.cast(feature);
     }
 }

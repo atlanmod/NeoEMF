@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.core.internal;
 import fr.inria.atlanmod.commons.function.Copier;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
-import fr.inria.atlanmod.neoemf.util.EObjects;
+import fr.inria.atlanmod.neoemf.util.EFeatures;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -138,7 +138,7 @@ public final class ContentsCopier implements Copier<StoreAdapter> {
      * @see #attach(Object)
      */
     private boolean requireAttachment(EStructuralFeature feature) {
-        return EObjects.isReference(feature) && EObjects.asReference(feature).isContainment();
+        return EFeatures.isReference(feature) && EFeatures.asReference(feature).isContainment();
     }
 
     /**

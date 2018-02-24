@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.store.adapter;
 import fr.inria.atlanmod.commons.function.BiConverter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.EObjects;
+import fr.inria.atlanmod.neoemf.util.EFeatures;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -81,8 +81,8 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
         EStructuralFeature entryFeature = entry.getEStructuralFeature();
         String value;
 
-        if (EObjects.isAttribute(entryFeature)) {
-            EAttribute entryAttribute = EObjects.asAttribute(entryFeature);
+        if (EFeatures.isAttribute(entryFeature)) {
+            EAttribute entryAttribute = EFeatures.asAttribute(entryFeature);
             value = EcoreUtil.convertToString(entryAttribute.getEAttributeType(), entry.getValue());
         }
         else {
@@ -120,8 +120,8 @@ public class FeatureMapConverter implements BiConverter<FeatureMap.Entry, EAttri
 
         Object value;
 
-        if (EObjects.isAttribute(entryFeature)) {
-            EAttribute entryAttribute = EObjects.asAttribute(entryFeature);
+        if (EFeatures.isAttribute(entryFeature)) {
+            EAttribute entryAttribute = EFeatures.asAttribute(entryFeature);
             value = EcoreUtil.createFromString(entryAttribute.getEAttributeType(), splitValues[1]);
         }
         else {
