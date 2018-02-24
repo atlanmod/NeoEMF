@@ -715,6 +715,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Nonnull
     private PersistentEObject rebuild(Id id) {
         final EClass eClass = resolveInstanceOf(id).<IllegalStateException>orElseThrow(IllegalStateException::new); // Should never happen
-        return PersistenceFactory.getInstance().create(eClass, id);
+        return PersistenceFactory.newInstance(eClass, id);
     }
 }

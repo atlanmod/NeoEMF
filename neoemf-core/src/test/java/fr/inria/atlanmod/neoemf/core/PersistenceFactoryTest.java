@@ -11,18 +11,16 @@ package fr.inria.atlanmod.neoemf.core;
 import fr.inria.atlanmod.commons.AbstractTest;
 
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EFactory;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EcoreFactory;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.stubbing.Answer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * A test-case about {@link PersistenceFactory}.
@@ -34,24 +32,26 @@ class PersistenceFactoryTest extends AbstractTest {
 
     @BeforeAll
     static void initMocks() {
-        EFactory eFactory = mock(EFactory.class);
-        when(eFactory.create(any(EClass.class))).thenAnswer((Answer<PersistentEObject>) i -> {
-            PersistentEObject result = new DefaultPersistentEObject();
-            result.eSetClass(i.getArgument(0));
-            return result;
-        });
+        EcoreFactory coreFactory = EcoreFactory.eINSTANCE;
 
-        EPackage ePackage = mock(EPackage.class);
-        when(ePackage.getEFactoryInstance()).thenReturn(eFactory);
+        EPackage ePackage = coreFactory.createEPackage();
+        ePackage.setName("MyPackage");
+        ePackage.setNsPrefix("my");
+        ePackage.setNsURI("http://example.org/my");
 
-        eClass = mock(EClass.class);
-        when(eClass.getEPackage()).thenReturn(ePackage);
-        when(eClass.getName()).thenReturn("MyClass");
+        eClass = coreFactory.createEClass();
+        eClass.setName("MyClass");
+
+        ePackage.getEClassifiers().add(eClass);
+
+        assertThat(eClass.getEPackage()).isEqualTo(ePackage);
+
+        PersistenceFactory.updateIfDynamic(ePackage);
     }
 
     @Test
     void createWithClassOnly() {
-        PersistentEObject object = PersistenceFactory.getInstance().create(eClass);
+        PersistentEObject object = PersistenceFactory.newInstance(eClass, Id.UNDEFINED);
 
         assertThat(object.eClass()).isEqualTo(eClass);
     }
@@ -60,9 +60,17 @@ class PersistenceFactoryTest extends AbstractTest {
     void createWithClassAndId() {
         Id id = Id.getProvider().fromLong(17L);
 
-        PersistentEObject object = PersistenceFactory.getInstance().create(eClass, id);
+        PersistentEObject object = PersistenceFactory.newInstance(eClass, id);
 
         assertThat(object.eClass()).isEqualTo(eClass);
         assertThat(object.id()).isEqualTo(id);
+    }
+
+    @Test
+    void createStandard() {
+        EObject object = EcoreUtil.create(eClass);
+
+        assertThat(object).isInstanceOf(PersistentEObject.class);
+        assertThat(object.eClass()).isEqualTo(eClass);
     }
 }

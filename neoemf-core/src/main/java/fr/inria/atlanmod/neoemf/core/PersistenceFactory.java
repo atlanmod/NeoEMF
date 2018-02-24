@@ -8,75 +8,40 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.commons.annotation.Singleton;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.log.Log;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+
 /**
  * The factory that creates {@link PersistentEObject} instances from {@link org.eclipse.emf.ecore.EClass}es.
  */
-@Singleton
 @ParametersAreNonnullByDefault
 public class PersistenceFactory extends EFactoryImpl implements EFactory {
 
     /**
      * Constructs a new {@code PersistenceFactory}.
      */
-    private PersistenceFactory() {
+    protected PersistenceFactory() {
     }
 
     /**
-     * Returns the instance of this class.
+     * Constructs a new {@code PersistenceFactory} for the given {@code ePackage}.
      *
-     * @return the instance of this class
+     * @param ePackage the package associated to this factory
      */
-    @Nonnull
-    public static PersistenceFactory getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    @Nonnull
-    @Override
-    public PersistentEObject create(EClass eClass) {
-        return create(eClass, Id.UNDEFINED);
-    }
-
-    /**
-     * Creates a new instance of the class and returns it.
-     *
-     * @param eClass the class of the new instance
-     * @param id     the identifier of the new instance
-     *
-     * @return a new instance of the class
-     */
-    @Nonnull
-    public PersistentEObject create(EClass eClass, Id id) {
-        PersistentEObject newObject;
-
-        if (eClass.getEPackage().getClass() == EPackageImpl.class) {
-            newObject = new DefaultPersistentEObject(id);
-        }
-        else {
-            newObject = PersistentEObject.from(newInstance(eClass));
-            newObject.id(id);
-        }
-
-        if (!Objects.equals(newObject.eClass(), eClass)) {
-            newObject.eSetClass(eClass);
-        }
-
-        return newObject;
+    protected PersistenceFactory(EPackage ePackage) {
+        this.ePackage = ePackage;
     }
 
     /**
@@ -85,37 +50,45 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
      * @param eClass the class to instantiate
      *
      * @return a new instance of the class
+     *
+     * @see EcoreUtil#create(EClass)
      */
     @Nonnull
-    private EObject newInstance(EClass eClass) {
-        final EFactory factory = eClass.getEPackage().getEFactoryInstance();
-        checkFactory(factory);
+    public static PersistentEObject newInstance(EClass eClass, Id id) {
+        updateIfDynamic(eClass.getEPackage());
 
-        return factory.create(eClass);
+        final EObject base = EcoreUtil.create(eClass);
+
+        final PersistentEObject object = PersistentEObject.from(base);
+        object.id(id);
+
+        return object;
     }
 
     /**
-     * Ensures that the factory is the real instance to avoid creating a {@link org.eclipse.emf.ecore.impl.DynamicEObjectImpl}
-     * instance.
+     * Updates the {@link EFactory} of the specified {@code ePackage} if it's a {@link EPackageImpl}.
      *
-     * @param eFactory the factory to test
+     * @param ePackage the package to update
+     *
+     * @return {@code true} if the package has been updated
      */
-    private void checkFactory(EFactory eFactory) {
-        // EFactoryImpl can creates DynamicEObjectImpl instances
-        if (eFactory.getClass() == EFactoryImpl.class) {
-            Log.warn("Creating a new instance using {0}; This could lead to a dynamic instance that is not supported", eFactory);
+    public static boolean updateIfDynamic(EPackage ePackage) {
+        checkNotNull(ePackage, "ePackage");
+
+        boolean updated = false;
+
+        if (ePackage.getClass() == EPackageImpl.class && !PersistenceFactory.class.isInstance(ePackage.getEFactoryInstance())) {
+            ePackage.setEFactoryInstance(new PersistenceFactory(ePackage));
+            updated = true;
         }
+
+        return updated;
     }
 
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final PersistenceFactory INSTANCE = new PersistenceFactory();
+    @Override
+    protected PersistentEObject basicCreate(EClass eClass) {
+        return Objects.equals(eClass.getInstanceClassName(), java.util.Map.Entry.class.getName())
+                ? new DynamicPersistentEObject.MapEntry<String, String>(eClass)
+                : new DynamicPersistentEObject(eClass);
     }
 }
