@@ -51,7 +51,7 @@ class PersistenceFactoryTest extends AbstractTest {
 
     @Test
     void createWithClassOnly() {
-        PersistentEObject object = PersistenceFactory.newInstance(eClass, Id.UNDEFINED);
+        PersistentEObject object = PersistenceFactory.newInstance(eClass);
 
         assertThat(object.eClass()).isEqualTo(eClass);
     }

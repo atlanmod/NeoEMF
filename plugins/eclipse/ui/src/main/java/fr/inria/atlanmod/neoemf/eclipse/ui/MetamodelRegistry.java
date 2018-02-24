@@ -11,6 +11,7 @@ package fr.inria.atlanmod.neoemf.eclipse.ui;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
+import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -277,6 +278,8 @@ public final class MetamodelRegistry {
         if (isNull(prefix)) {
             ePackage.setNsPrefix(ePackage.getName());
         }
+
+        PersistenceFactory.updateIfDynamic(ePackage);
 
         return ePackage;
     }

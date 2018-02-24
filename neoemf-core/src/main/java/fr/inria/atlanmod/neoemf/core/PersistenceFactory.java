@@ -54,6 +54,21 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
      * @see EcoreUtil#create(EClass)
      */
     @Nonnull
+    public static PersistentEObject newInstance(EClass eClass) {
+        return newInstance(eClass, Id.UNDEFINED);
+    }
+
+    /**
+     * Creates a new instance of the {@code eClass}.
+     *
+     * @param eClass the class to instantiate
+     * @param id     the identifier of the new object
+     *
+     * @return a new instance of the class
+     *
+     * @see EcoreUtil#create(EClass)
+     */
+    @Nonnull
     public static PersistentEObject newInstance(EClass eClass, Id id) {
         updateIfDynamic(eClass.getEPackage());
 

@@ -186,7 +186,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
                         resource = resourceSet.createResource(uri);
 
                         // Add the initial model object to the contents.
-                        EObject rootObject = PersistenceFactory.getInstance().create(eClass);
+                        EObject rootObject = PersistenceFactory.newInstance(eClass);
                         resource.getContents().add(rootObject);
 
                         // Save the contents of the resource to the file system.
