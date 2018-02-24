@@ -264,7 +264,7 @@ public class EcoreMapper extends AbstractProcessor {
         EClass ownerClass = metaClasses.getLast();
         EStructuralFeature eFeature = ownerClass.getEStructuralFeature(name);
 
-        checkNotNull(eFeature, "No feature named {0} has been found in class {1}", name, ownerClass);
+        checkNotNull(eFeature, "No feature named '%s' has been found in class '%s'", name, ownerClass.getName());
 
         return eFeature;
     }
@@ -307,8 +307,7 @@ public class EcoreMapper extends AbstractProcessor {
             EClass eClass = getClass(metaClass.getName(), ePackage);
 
             // Checks that the meta-class is a subtype of the reference type
-            checkArgument(superClass.isSuperTypeOf(eClass),
-                    "%s is not a subclass of %s", eClass.getName(), superClass.getName());
+            checkArgument(superClass.isSuperTypeOf(eClass), "%s is not a subclass of %s", eClass.getName(), superClass.getName());
 
             return eClass;
         }
