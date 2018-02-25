@@ -23,8 +23,9 @@
     </modules>
 
     <properties>
-        <cdo.version>4.6.2</cdo.version>
+        <maven.deploy.skip>true</maven.deploy.skip>
 
+        <cdo.version>4.6.2</cdo.version>
         <jmh.version>1.20</jmh.version>
     </properties>
 
