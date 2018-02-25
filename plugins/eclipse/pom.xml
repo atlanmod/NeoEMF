@@ -23,8 +23,8 @@
 
     <modules>
         <module>ui</module>
-        <module>features</module>
         <module>examples</module>
+        <module>features</module>
         <module>update</module>
     </modules>
 

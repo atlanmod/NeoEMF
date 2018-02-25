@@ -13,10 +13,7 @@
     <packaging>pom</packaging>
 
     <name>NeoEMF Eclipse Features</name>
-    <description>
-        Parent project for the feature plugin generation. Is responsible of Base, Graph (and Blueprints
-        connectors), and Map feature generation.
-    </description>
+    <description>Parent project for the generation of features.</description>
 
     <modules>
         <module>fr.inria.atlanmod.neoemf.core.feature</module>

@@ -1,0 +1,9 @@
+# Exclude Eclipse files only for this project, not for its children
+!**/.project
+!**/.classpath
+
+/.project
+/.classpath
+
+# Exclude generated sources
+**/src-gen
