@@ -11,9 +11,6 @@ package fr.inria.atlanmod.neoemf.context;
 import fr.inria.atlanmod.neoemf.bind.BindingEngine;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
-
-import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,44 +26,19 @@ public abstract class AbstractContext implements Context {
 
     @Nonnull
     @Override
-    public String uriScheme() {
+    public final String uriScheme() {
         return BindingEngine.schemeOf(factory().getClass());
     }
 
-    @Override
-    public boolean isPersistent() {
-        return true;
-    }
-
     @Nonnull
     @Override
-    public URI createUri(URI uri) {
-        return UriBuilder.forScheme(uriScheme()).fromUri(uri);
-    }
-
-    @Nonnull
-    @Override
-    public URI createUri(File file) {
-        return UriBuilder.forScheme(uriScheme()).fromFile(file);
-    }
-
-    @Nonnull
-    @Override
-    public PersistentResource createPersistentResource(File file) throws IOException {
+    public final PersistentResource createPersistentResource(File file) throws IOException {
         return new ContextualResourceBuilder(this).persistent().file(file).createResource();
     }
 
     @Nonnull
     @Override
-    public PersistentResource createTransientResource(File file) throws IOException {
-        return factory().supportsTransient()
-                ? new ContextualResourceBuilder(this).file(file).createResource()
-                : createPersistentResource(file);
-    }
-
-    @Nonnull
-    @Override
-    public PersistentResource loadResource(File file) throws IOException {
+    public final PersistentResource loadPersistentResource(File file) throws IOException {
         if (!isPersistent()) {
             throw new UnsupportedOperationException(String.format("%s cannot load an existing resource", getClass().getSimpleName()));
         }
@@ -76,13 +48,21 @@ public abstract class AbstractContext implements Context {
 
     @Nonnull
     @Override
-    public DataMapper createMapper(File file) {
+    public final PersistentResource createTransientResource(File file) throws IOException {
+        return factory().supportsTransient()
+                ? new ContextualResourceBuilder(this).file(file).createResource()
+                : createPersistentResource(file);
+    }
+
+    @Nonnull
+    @Override
+    public final DataMapper createMapper(File file) {
         return new ContextualResourceBuilder(this).file(file).createMapper();
     }
 
     @Nonnull
     @Override
-    public String toString() {
+    public final String toString() {
         return name();
     }
 }

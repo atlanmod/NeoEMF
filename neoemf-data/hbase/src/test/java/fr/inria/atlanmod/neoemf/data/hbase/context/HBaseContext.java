@@ -9,16 +9,11 @@
 package fr.inria.atlanmod.neoemf.data.hbase.context;
 
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.context.AbstractContext;
+import fr.inria.atlanmod.neoemf.context.AbstractRemoteContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
-
-import org.eclipse.emf.common.util.URI;
-
-import java.io.File;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -27,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A specific {@link Context} for the HBase implementation.
  */
 @ParametersAreNonnullByDefault
-public abstract class HBaseContext extends AbstractContext {
+public abstract class HBaseContext extends AbstractRemoteContext {
 
     /**
      * Creates a new {@code HBaseContext} with a mapping with arrays and strings.
@@ -70,13 +65,12 @@ public abstract class HBaseContext extends AbstractContext {
 
     @Nonnull
     @Override
-    public URI createUri(URI uri) {
-        return UriBuilder.forScheme(uriScheme()).fromServer(HBaseCluster.host(), HBaseCluster.port(), uri);
+    protected String getHost() {
+        return HBaseCluster.host();
     }
 
-    @Nonnull
     @Override
-    public URI createUri(File file) {
-        return UriBuilder.forScheme(uriScheme()).fromServer(HBaseCluster.host(), HBaseCluster.port(), file.getName());
+    protected int getPort() {
+        return HBaseCluster.port();
     }
 }

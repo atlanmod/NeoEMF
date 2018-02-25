@@ -241,6 +241,8 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      */
     protected final void readEndDocument() throws IOException {
         notifyComplete();
+
+        checkState(identifiers.isEmpty(), "Stream analysis is complete, but some elements are not complete: %s", identifiers);
     }
 
     /**

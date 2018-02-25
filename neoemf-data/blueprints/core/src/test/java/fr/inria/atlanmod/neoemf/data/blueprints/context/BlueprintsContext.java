@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.context;
 
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.context.AbstractContext;
+import fr.inria.atlanmod.neoemf.context.AbstractLocalContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A specific {@link Context} for the Blueprints implementation.
  */
 @ParametersAreNonnullByDefault
-public abstract class BlueprintsContext extends AbstractContext {
+public abstract class BlueprintsContext extends AbstractLocalContext {
 
     /**
      * Creates a new {@code BlueprintsContext} with a mapping with indices.
