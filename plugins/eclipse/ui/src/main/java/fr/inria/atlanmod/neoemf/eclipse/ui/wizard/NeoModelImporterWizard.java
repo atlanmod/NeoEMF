@@ -15,6 +15,9 @@ import org.eclipse.emf.importer.ui.contribution.base.ModelImporterDetailPage;
 import org.eclipse.emf.importer.ui.contribution.base.ModelImporterPackagePage;
 import org.eclipse.emf.importer.ui.contribution.base.ModelImporterWizard;
 
+/**
+ * A wizard to import models with a {@link NeoModelImporter}.
+ */
 public class NeoModelImporterWizard extends ModelImporterWizard {
 
     @Override
@@ -25,14 +28,20 @@ public class NeoModelImporterWizard extends ModelImporterWizard {
     @Override
     public void addPages() {
         ModelImporterDetailPage detailPage = new ModelImporterDetailPage(getModelImporter(), "EcoreModel");
+
+        final String baseDescription = "Specify one or more '.ecore' or '.emof' URIs";
+        final String description = detailPage.showGenModel()
+                ? baseDescription + ", try to load them, and choose a file name for the generator model"
+                : baseDescription + " and try to load them";
+
         detailPage.setTitle("Ecore &Import");
-        detailPage.setDescription(detailPage.showGenModel()
-                ? "Specify one or more '.ecore' or '.emof' URIs, try to load them, and choose a file name for the generator model"
-                : "Specify one or more '.ecore' or '.emof' URIs and try to load them");
+        detailPage.setDescription(description);
+
         addPage(detailPage);
 
         ModelImporterPackagePage packagePage = new ModelImporterPackagePage(getModelImporter(), "EcorePackages");
         packagePage.setShowReferencedGenModels(true);
+
         addPage(packagePage);
     }
 }

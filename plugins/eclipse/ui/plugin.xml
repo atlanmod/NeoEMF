@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
 
-    <!-- Editor -->
+    <!-- Editors -->
 
     <extension point="org.eclipse.ui.editors">
         <editor class="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor"
@@ -14,7 +14,7 @@
         </editor>
     </extension>
 
-    <!-- Model importer -->
+    <!-- Importers -->
 
     <extension point="org.eclipse.emf.importer.modelImporterDescriptors">
         <modelImporterDescriptor description="Create the Ecore model, based on other Ecore or EMOF models"
@@ -43,8 +43,7 @@
                     </visibleWhen>
                 </command>
 
-                <command commandId="fr.inria.atlanmod.neoemf.eclipse.ui.openDB"
-                         style="push">
+                <command commandId="fr.inria.atlanmod.neoemf.eclipse.ui.openDB" style="push">
                     <visibleWhen>
                         <with variable="activeMenuSelection">
                             <iterate ifEmpty="false">
@@ -59,8 +58,7 @@
         </menuContribution>
 
         <menuContribution allPopups="false" locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-            <command commandId="fr.inria.atlanmod.neoemf.eclipse.ui.createDynamicInstance"
-                     style="push">
+            <command commandId="fr.inria.atlanmod.neoemf.eclipse.ui.createDynamicInstance" style="push">
                 <visibleWhen>
                     <with variable="activeMenuSelection">
                         <iterate ifEmpty="false">
@@ -114,7 +112,7 @@
                         type="org.eclipse.core.resources.IFolder" />
     </extension>
 
-    <!-- Decorator -->
+    <!-- Decorators -->
 
     <extension point="org.eclipse.ui.decorators">
         <decorator adaptable="true"

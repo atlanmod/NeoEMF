@@ -82,8 +82,7 @@ public class OpenBackendCommand extends AbstractHandler {
         return Config.load(directory)
                 .map(Config::getName)
                 .map(UriBuilder::forName)
-                .<FileNotFoundException>orElseThrow(() -> new FileNotFoundException(
-                        String.format("Unable to find the configuration from %s", directory)));
+                .<FileNotFoundException>orElseThrow(() -> new FileNotFoundException(String.format("Unable to find the configuration from %s", directory)));
     }
 
     /**
@@ -98,7 +97,7 @@ public class OpenBackendCommand extends AbstractHandler {
          * @param display the display to execute the asyncExec in
          */
         public OpenBackendJob(Display display) {
-            super(display, "Create Dynamic Instance");
+            super(display, "Opening Model Database");
         }
 
         @Override

@@ -56,9 +56,8 @@ public class CreateDynamicInstanceCommand extends AbstractHandler {
             }
         }
 
-        EPackage.Registry.INSTANCE.putIfAbsent(
-                currentClass.getEPackage().getNsURI(),
-                currentClass.getEPackage());
+        EPackage ePackage = currentClass.getEPackage();
+        EPackage.Registry.INSTANCE.putIfAbsent(ePackage.getNsURI(), ePackage);
 
         DynamicModelWizard wizard = new DynamicModelWizard(currentClass);
         wizard.init(PlatformUI.getWorkbench(), selection);
@@ -79,15 +78,15 @@ public class CreateDynamicInstanceCommand extends AbstractHandler {
                     .getSelectionService()
                     .getSelection();
 
-            Optional<EClass> newClass = Optional.ofNullable(selection)
+            currentClass = Optional.ofNullable(selection)
                     .filter(IStructuredSelection.class::isInstance)
                     .map(IStructuredSelection.class::cast)
                     .map(IStructuredSelection::getFirstElement)
                     .filter(EClass.class::isInstance)
-                    .map(EClass.class::cast);
+                    .map(EClass.class::cast)
+                    .orElse(null);
 
-            currentClass = newClass.orElse(null);
-            setEnabled(newClass.isPresent() && !currentClass.isAbstract());
+            setEnabled(nonNull(currentClass) && !currentClass.isAbstract());
         }
         catch (ExecutionException e) {
             Log.error(e);
