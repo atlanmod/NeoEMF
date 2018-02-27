@@ -8,32 +8,27 @@
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>org.eclipse.gmt.modisco.java</artifactId>
+    <artifactId>fr.inria.atlanmod.neoemf.eclipse.examples.demo</artifactId>
 
-    <name>NeoEMF Eclipse Examples : Java</name>
+    <name>NeoEMF Eclipse Examples : Demo</name>
 
     <packaging>eclipse-plugin</packaging>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+            <artifactId>org.eclipse.gmt.modisco.java</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.eclipse.xtext</groupId>
-                <artifactId>xtext-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

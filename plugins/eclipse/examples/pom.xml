@@ -8,7 +8,6 @@
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 
-    <groupId>fr.inria.atlanmod.neoemf.plugins.examples</groupId>
     <artifactId>fr.inria.atlanmod.neoemf.eclipse.examples</artifactId>
 
     <packaging>pom</packaging>
@@ -18,9 +17,9 @@
 
     <modules>
         <module>core</module>
-        <module>fr.inria.atlanmod.neoemf.demo</module>
-        <module>fr.inria.atlanmod.neoemf.tutorial</module>
         <module>org.eclipse.gmt.modisco.java</module>
+        <module>fr.inria.atlanmod.neoemf.eclipse.examples.demo</module>
+        <module>fr.inria.atlanmod.neoemf.eclipse.examples.tutorial</module>
     </modules>
 
     <properties>
@@ -112,8 +111,6 @@
     </dependencies>
 
     <build>
-        <directory>bin</directory>
-
         <pluginManagement>
             <plugins>
 

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf.plugins.examples</groupId>
+        <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
         <artifactId>fr.inria.atlanmod.neoemf.eclipse.examples</artifactId>
         <version>1.0.3-SNAPSHOT</version>
     </parent>
@@ -18,66 +18,26 @@
     <dependencies>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins.examples</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.demo</artifactId>
+            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+            <artifactId>fr.inria.atlanmod.neoemf.eclipse.examples.demo</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins.examples</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.tutorial</artifactId>
+            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+            <artifactId>fr.inria.atlanmod.neoemf.eclipse.examples.tutorial</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins.examples</groupId>
+            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
             <artifactId>org.eclipse.gmt.modisco.java</artifactId>
             <version>${project.version}</version>
             <type>pom</type>
         </dependency>
 
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>tycho-packaging-plugin</artifactId>
-                <configuration>
-                    <additionalFileSets>
-                        <fileSet>
-                            <directory>${project.build.directory}/lib/</directory>
-                        </fileSet>
-                    </additionalFileSets>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib/</outputDirectory>
-                            <excludeTransitive>true</excludeTransitive>
-                            <includeScope>compile</includeScope>
-                            <includeScope>runtime</includeScope>
-                            <excludeGroupIds>
-                                fr.inria.atlanmod.neoemf
-                            </excludeGroupIds>
-                            <stripVersion>true</stripVersion>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

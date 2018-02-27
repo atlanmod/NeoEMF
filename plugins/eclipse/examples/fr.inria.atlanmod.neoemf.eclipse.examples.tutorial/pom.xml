@@ -8,9 +8,9 @@
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>org.eclipse.gmt.modisco.java</artifactId>
+    <artifactId>fr.inria.atlanmod.neoemf.eclipse.examples.tutorial</artifactId>
 
-    <name>NeoEMF Eclipse Examples : Java</name>
+    <name>NeoEMF Eclipse Examples : Tutorial</name>
 
     <packaging>eclipse-plugin</packaging>
 
