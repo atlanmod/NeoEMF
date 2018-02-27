@@ -11,7 +11,7 @@
       <package
             uri="http://www.eclipse.org/MoDisco/Java/0.2.incubation/java-neoemf"
             class="org.eclipse.gmt.modisco.java.JavaPackage"
-            genModel="models/java.xcore"/>
+            genModel="model/java.xcore"/>
    </extension>
 
 </plugin>

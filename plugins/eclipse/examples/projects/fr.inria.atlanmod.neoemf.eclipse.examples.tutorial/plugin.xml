@@ -5,7 +5,7 @@
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated graph -->
       <package
-            uri="http://atlanmod.org/tutorial"
+            uri="http://atlanmod.org/neoemf/tutorial"
             class="graph.GraphPackage"
             genModel="model/graph.xcore"/>
    </extension>
