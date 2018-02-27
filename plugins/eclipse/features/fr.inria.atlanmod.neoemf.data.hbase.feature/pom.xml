@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+        <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
         <artifactId>fr.inria.atlanmod.neoemf.eclipse.features</artifactId>
         <version>1.0.3-SNAPSHOT</version>
     </parent>
@@ -23,7 +23,7 @@
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+            <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
