@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated java -->
+      <package
+            uri="http://www.eclipse.org/MoDisco/Java/0.2.incubation/java-neoemf"
+            class="org.eclipse.gmt.modisco.java.JavaPackage"
+            genModel="models/java.xcore"/>
+   </extension>
+
+</plugin>

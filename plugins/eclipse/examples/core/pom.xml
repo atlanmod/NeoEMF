@@ -15,29 +15,86 @@
     <name>NeoEMF Eclipse Examples : Core</name>
     <description>Examples integrated in Eclipse.</description>
 
+    <properties>
+        <projects.location>projects</projects.location>
+        <projects.classifier>eclipse-project</projects.classifier>
+        <projects.type>zip</projects.type>
+    </properties>
+
     <dependencies>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.eclipse.examples.demo</artifactId>
             <version>${project.version}</version>
-            <type>pom</type>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.eclipse.examples.tutorial</artifactId>
             <version>${project.version}</version>
-            <type>pom</type>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
             <artifactId>org.eclipse.gmt.modisco.java</artifactId>
             <version>${project.version}</version>
-            <type>pom</type>
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- Archive packaging -->
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/dependency</directory>
+                                    <targetPath>${projects.location}</targetPath>
+                                    <includes>
+                                        <include>*.${projects.type}</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <type>${projects.type}</type>
+                    <classifier>${projects.classifier}</classifier>
+                    <stripClassifier>true</stripClassifier>
+                    <stripVersion>true</stripVersion>
+                    <includeGroupIds>${project.groupId}</includeGroupIds>
+                    <includeParents>false</includeParents>
+                    <excludeTransitive>true</excludeTransitive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>copy-assemblies</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
