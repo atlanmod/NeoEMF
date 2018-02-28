@@ -92,8 +92,27 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public Optional<Id> referenceOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("referenceOf");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+
+        if (instance == null || instance.getReferences() == null)
+        {
+            return Optional.empty();
+        }
+        else
+        {
+            if (instance.getReferences().containsKey(stringKeyId))
+            {
+                return Optional.of(IdConverters.withHexString().revert(instance.getReferences().get(stringKeyId)));
+            }
+            else
+            {
+
+                return Optional.empty();
+            }
+        }
     }
 
     @Nonnull
@@ -103,6 +122,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(reference, "reference");
 
         String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
         if (instance == null)
@@ -110,7 +130,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             instance = new StoredInstance();
             instance.setId(hexId);
 
-            instance.getReferences().put(String.valueOf(key.id()), reference.toHexString());
+            instance.getReferences().put(stringKeyId, reference.toHexString());
 
             instancesCollection.insertOne(instance);
 
@@ -120,15 +140,14 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         {
             instancesCollection.updateOne(
                     eq("_id", hexId),
-                    set("references." + key.id(), reference.toHexString()));
+                    set("references." + stringKeyId, reference.toHexString()));
 
-            if (instance.getReferences().containsKey(key.id()))
+            if (instance.getReferences().containsKey(stringKeyId))
             {
-                return Optional.of(IdConverters.withHexString().revert(instance.getReferences().get(key.id())));
+                return Optional.of(IdConverters.withHexString().revert(instance.getReferences().get(stringKeyId)));
             }
             else
             {
-
                 return Optional.empty();
             }
 
