@@ -110,7 +110,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             instance = new StoredInstance();
             instance.setId(hexId);
 
-            instance.getReferences().put(key.id(), reference.toHexString());
+            instance.getReferences().put(String.valueOf(key.id()), reference.toHexString());
 
             instancesCollection.insertOne(instance);
 

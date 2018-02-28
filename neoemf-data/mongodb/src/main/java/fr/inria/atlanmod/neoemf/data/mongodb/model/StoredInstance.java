@@ -43,13 +43,11 @@ public class StoredInstance
     /**
      * The references
      */
-    private Map<Integer, String> references =  new HashMap<>();
+    private Map<String, String> references =  new HashMap<>();
 
-    public Map<Integer, String> getReferences() {
-        return references;
-    }
+    public Map<String, String> getReferences() { return references; }
 
-    public void setReferences(Map<Integer, String> references) {
+    public void setReferences(Map<String, String> references) {
         this.references = references;
     }
 
