@@ -34,6 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
+import static com.mongodb.client.model.Updates.unset;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -158,8 +159,18 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public void removeReference(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("removeReference");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+
+
+        if (!(instance == null || instance.getReferences() == null) && instance.getReferences().containsKey(stringKeyId))
+        {
+            instancesCollection.updateOne(
+                    eq("_id", hexId),
+                    unset("references." + stringKeyId));
+        }
     }
 
     //endregion
