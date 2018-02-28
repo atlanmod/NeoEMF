@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -17,22 +16,16 @@ import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
-import fr.inria.atlanmod.neoemf.data.mongodb.model.MetaClass;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
-import org.bson.Document;
-import org.bson.conversions.Bson;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 import static com.mongodb.client.model.Updates.unset;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
@@ -322,8 +315,18 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public void removeAllReferences(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("removeAllReferences");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+
+
+        if (!(instance == null || instance.getReferences() == null))
+        {
+            instancesCollection.updateOne(
+                    eq("_id", hexId),
+                    unset("references"));
+        }
     }
 
     @Nonnull
@@ -331,8 +334,19 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("sizeOfReference");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+
+        if (instance == null || instance.getReferences() == null)
+        {
+            return Optional.empty();
+        }
+        else
+        {
+            return Optional.of(instance.getReferences().size());
+        }
     }
 
     //endregion
