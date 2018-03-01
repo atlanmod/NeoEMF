@@ -49,8 +49,8 @@ public class QueryFactory {
     }
 
     /**
-     * Returns the orphan and non-primitive types of a {@link Model}.
-     * This is a common query to all both standard and customized methods.
+     * Returns the orphan and non-primitive types of a {@link Model}. This is a common query to all both standard and
+     * customized methods.
      *
      * @return a new query
      */
