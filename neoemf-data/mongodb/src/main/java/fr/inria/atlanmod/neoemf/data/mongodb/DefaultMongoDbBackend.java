@@ -11,16 +11,20 @@ package fr.inria.atlanmod.neoemf.data.mongodb;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.Throwables;
+import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
+import fr.inria.atlanmod.neoemf.data.store.Store;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -92,7 +96,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("references")).first();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("references." + key.id())).first();
 
         if (instance == null || instance.getReferences() == null)
         {
@@ -121,7 +125,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("references")).first();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("references." + key.id())).first();
         if (instance == null)
         {
             instance = new StoredInstance();
@@ -158,7 +162,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("references")).first();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("references." + key.id())).first();
 
 
         if (!(instance == null || instance.getReferences() == null) && instance.getReferences().containsKey(stringKeyId))
@@ -268,8 +272,21 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public Stream<Id> allReferencesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("allReferencesOf");
+        List<Id> list = new ArrayList<>();
+
+        StoredInstance instance = (StoredInstance) instancesCollection
+                .find(
+                        eq("_id", key.owner().toHexString()))
+                .projection(include("multivaluedReferences." + key.id()))
+                .first();
+
+        if (instance == null || instance.getMultivaluedReferences().size() == 0)
+            return Stream.empty();
+
+        List<String> refs = instance.getMultivaluedReferences().get(String.valueOf(key.id()));
+
+        return MoreIterables.stream(refs).
+                map(v -> IdConverters.withHexString().revert(v));
     }
 
     @Nonnull
