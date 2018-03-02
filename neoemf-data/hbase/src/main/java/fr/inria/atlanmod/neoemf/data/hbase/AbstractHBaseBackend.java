@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.commons.function.Converter;
-import fr.inria.atlanmod.commons.io.serializer.Serializer;
+import fr.inria.atlanmod.commons.io.serializer.BinarySerializer;
 import fr.inria.atlanmod.commons.primitive.Bytes;
 import fr.inria.atlanmod.commons.primitive.Ints;
 import fr.inria.atlanmod.commons.primitive.Strings;
@@ -79,7 +79,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
     private static final byte[] QUALIFIER_CONTAINING_FEATURE = Strings.toBytes("g");
 
     /**
-     * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
+     * The {@link BeanSerializerFactory} to use for creating the {@link BinarySerializer} instances.
      */
     @Nonnull
     private static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();

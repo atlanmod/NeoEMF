@@ -45,7 +45,7 @@ import static java.util.Objects.isNull;
 abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBackend, AllReferenceAs<Long> {
 
     /**
-     * The {@link BeanSerializerFactory} to use for creating the {@link fr.inria.atlanmod.commons.io.serializer.Serializer}
+     * The {@link BeanSerializerFactory} to use for creating the {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer}
      * instances.
      */
     @Nonnull
@@ -280,7 +280,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     }
 
     /**
-     * A MapDB serializer that delegates its processing to an internal {@link fr.inria.atlanmod.commons.io.serializer.Serializer}.
+     * A MapDB serializer that delegates its processing to an internal {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer}.
      *
      * @param <T> the type of the (de)serialized value
      */
@@ -292,14 +292,14 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
          * The serializer where to delegate the serialization process.
          */
         @Nonnull
-        private final fr.inria.atlanmod.commons.io.serializer.Serializer<T> delegate;
+        private final fr.inria.atlanmod.commons.io.serializer.BinarySerializer<T> delegate;
 
         /**
          * Constructs a new {@code SerializerDecorator} on the specified {@code delegate}.
          *
          * @param delegate the serializer where to delegate the serialization process
          */
-        public SerializerDecorator(fr.inria.atlanmod.commons.io.serializer.Serializer<T> delegate) {
+        public SerializerDecorator(fr.inria.atlanmod.commons.io.serializer.BinarySerializer<T> delegate) {
             checkNotNull(delegate, "delegate");
 
             this.delegate = delegate;

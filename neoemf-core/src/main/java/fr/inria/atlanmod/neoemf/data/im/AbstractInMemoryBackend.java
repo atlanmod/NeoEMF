@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.im;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.function.Converter;
-import fr.inria.atlanmod.commons.io.serializer.Serializer;
+import fr.inria.atlanmod.commons.io.serializer.BinarySerializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
@@ -47,7 +47,7 @@ import static java.util.Objects.isNull;
 public abstract class AbstractInMemoryBackend extends AbstractBackend implements InMemoryBackend, ManyValueWithLists, AllReferenceAs<Long> {
 
     /**
-     * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
+     * The {@link BeanSerializerFactory} to use for creating the {@link BinarySerializer} instances.
      */
     @Nonnull
     protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
@@ -238,7 +238,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
     }
 
     /**
-     * A ChronicleMap serializer that delegates its processing to an internal {@link Serializer}.
+     * A ChronicleMap serializer that delegates its processing to an internal {@link BinarySerializer}.
      *
      * @param <T> the type of the (de)serialized value
      */
@@ -250,14 +250,14 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
          * The serializer where to delegate the serialization process.
          */
         @Nonnull
-        private final Serializer<T> delegate;
+        private final BinarySerializer<T> delegate;
 
         /**
          * Constructs a new {@code SerializerDecorator} on the specified {@code delegate}.
          *
          * @param delegate the serializer where to delegate the serialization process
          */
-        public BeanMarshaller(Serializer<T> delegate) {
+        public BeanMarshaller(BinarySerializer<T> delegate) {
             this.delegate = delegate;
         }
 
