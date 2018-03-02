@@ -3,6 +3,7 @@ package fr.inria.atlanmod.neoemf.data.mongodb.model;
 import org.bson.codecs.pojo.annotations.BsonId;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,6 +51,18 @@ public class StoredInstance
     public void setReferences(Map<String, String> references) {
         this.references = references;
     }
+
+    /**
+     * The Multivalued references
+     */
+    private Map<String, List<String>> multivaluedReferences =  new HashMap<>();
+
+    public Map<String, List<String>> getMultivaluedReferences() { return multivaluedReferences; }
+
+    public void setMultivaluedReferences(Map<String, List<String>> references) {
+        this.multivaluedReferences = references;
+    }
+
 
     public MetaClass getMetaClass() {
         return metaClass;
