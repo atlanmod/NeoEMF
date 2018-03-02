@@ -61,8 +61,7 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
 
     @Nonnull
     @Override
-    protected Backend createRemoteBackend(URL url, MongoDbConfig config) throws Exception
-    {
+    protected Backend createRemoteBackend(URL url, MongoDbConfig config) throws Exception {
         final boolean isReadOnly = config.isReadOnly();
 
         String databaseName = url.getPath().substring(1);

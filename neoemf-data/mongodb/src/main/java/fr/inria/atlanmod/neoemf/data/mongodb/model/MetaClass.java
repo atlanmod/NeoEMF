@@ -9,12 +9,11 @@ public class MetaClass {
     private String name;
     private String uri;
 
-    public MetaClass(){
+    public MetaClass() {
 
     }
 
-    public MetaClass(String name, String uri)
-    {
+    public MetaClass(String name, String uri) {
         this.name = name;
         this.uri = uri;
     }
@@ -35,13 +34,11 @@ public class MetaClass {
         this.uri = uri;
     }
 
-    public static MetaClass fromClassBean(ClassBean bean)
-    {
+    public static MetaClass fromClassBean(ClassBean bean) {
         return new MetaClass(bean.name(), bean.uri());
     }
 
-    public ClassBean toClassBean()
-    {
+    public ClassBean toClassBean() {
         return ClassBean.of(name, uri);
     }
 }

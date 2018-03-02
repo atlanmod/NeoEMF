@@ -22,8 +22,7 @@ public class SingleFeature {
 
     }
 
-    public SingleFeature(String owner, int id)
-    {
+    public SingleFeature(String owner, int id) {
         this.featureOwner = owner;
         this.featureId = id;
     }
@@ -44,13 +43,11 @@ public class SingleFeature {
         this.featureId = id;
     }
 
-    public static SingleFeature fromSingleFeatureBean(SingleFeatureBean bean)
-    {
+    public static SingleFeature fromSingleFeatureBean(SingleFeatureBean bean) {
         return new SingleFeature(bean.owner().toHexString(), bean.id());
     }
 
-    public SingleFeatureBean toSingleFeatureBean()
-    {
+    public SingleFeatureBean toSingleFeatureBean() {
         return SingleFeatureBean.of(IdConverters.withHexString().revert(featureOwner), featureId);
     }
 }

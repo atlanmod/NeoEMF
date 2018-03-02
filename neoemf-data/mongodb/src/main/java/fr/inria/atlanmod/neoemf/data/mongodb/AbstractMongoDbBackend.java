@@ -83,12 +83,12 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     /**
      * Gets a collection and creates it if needed
-     * @param name the name of the collection
+     *
+     * @param name       the name of the collection
      * @param modelClass the class of the model to use for this collection
      * @return the corresponding {@link MongoCollection} instance
      */
-    private MongoCollection getOrCreateCollection(String name, Class modelClass)
-    {
+    private MongoCollection getOrCreateCollection(String name, Class modelClass) {
         if (!hasCollection(name))
             this.mongoDatabase.createCollection(name);
 
@@ -98,13 +98,12 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     /**
      * Checks if the database has a certain collection
+     *
      * @param collection the collection name
      * @return true if the database contains the collection, false otherwise
      */
-    private boolean hasCollection(String collection)
-    {
-        for (String c : this.mongoDatabase.listCollectionNames())
-        {
+    private boolean hasCollection(String collection) {
+        for (String c : this.mongoDatabase.listCollectionNames()) {
             if (c.equals(collection))
                 return true;
         }
@@ -118,7 +117,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
             Log.info("Deleting test database " + this.mongoDatabase.getName());
             this.mongoDatabase.drop();
         }
-        
+
         this.mongoClient.close();
     }
 
@@ -130,12 +129,9 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         String hexId = id.toHexString();
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
 
-        if (instance == null || instance.getContainer() == null)
-        {
+        if (instance == null || instance.getContainer() == null) {
             return Optional.empty();
-        }
-        else
-        {
+        } else {
             return Optional.of(instance.getContainer().toSingleFeatureBean());
         }
     }
@@ -149,17 +145,14 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         SingleFeature newContainer = SingleFeature.fromSingleFeatureBean(container);
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
-        if (instance == null)
-        {
+        if (instance == null) {
             instance = new StoredInstance();
             instance.setId(hexId);
 
             instance.setContainer(newContainer);
 
             instancesCollection.insertOne(instance);
-        }
-        else
-        {
+        } else {
             instancesCollection.updateOne(
                     eq("_id", hexId),
                     combine(
@@ -175,8 +168,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         String hexId = id.toHexString();
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
 
-        if (instance != null && instance.getContainer() != null)
-        {
+        if (instance != null && instance.getContainer() != null) {
             instancesCollection.updateOne(eq("_id", hexId), unset("container"));
         }
     }
@@ -189,12 +181,9 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         String hexId = id.toHexString();
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
 
-        if (instance == null || instance.getMetaClass() == null)
-        {
+        if (instance == null || instance.getMetaClass() == null) {
             return Optional.empty();
-        }
-        else
-        {
+        } else {
             return Optional.of(instance.getMetaClass().toClassBean());
         }
 
@@ -209,17 +198,14 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         MetaClass newMetaClass = MetaClass.fromClassBean(metaClass);
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
-        if (instance == null)
-        {
+        if (instance == null) {
             instance = new StoredInstance();
             instance.setId(hexId);
 
             instance.setMetaClass(newMetaClass);
 
             instancesCollection.insertOne(instance);
-        }
-        else
-        {
+        } else {
             instancesCollection.updateOne(
                     eq("_id", hexId),
                     combine(
@@ -235,9 +221,8 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         List<Id> list = new ArrayList<>();
 
-        for (ClassBean bean : metaClasses)
-        {
-             instancesCollection.find(
+        for (ClassBean bean : metaClasses) {
+            instancesCollection.find(
                     and(
                             eq("metaClass.name", bean.name()),
                             eq("metaClass.uri", bean.uri())

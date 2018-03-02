@@ -32,16 +32,14 @@ public class MongoDbConfig extends BaseConfig<MongoDbConfig> {
     /**
      * @return the MongoDb server host
      */
-    public String getHost()
-    {
+    public String getHost() {
         return host;
     }
 
     /**
      * @return the MongoDb server port
      */
-    public int getPort()
-    {
+    public int getPort() {
         return port;
     }
 

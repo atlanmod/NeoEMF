@@ -78,19 +78,14 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
                 : Optional.empty();
     }
 
-    private String serializeValue(Object o)
-    {
+    private String serializeValue(Object o) {
         return Bytes.toStringBinary(SERIALIZER.convert(o));
     }
 
-    private Object deserializeValue(String value)
-    {
-        try
-        {
+    private Object deserializeValue(String value) {
+        try {
             return SERIALIZER.deserialize(Strings.toBytesBinary(value));
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
@@ -106,8 +101,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("values")).first();
 
-        if (instance == null)
-        {
+        if (instance == null) {
             instance = new StoredInstance();
             instance.setId(hexId);
 
@@ -116,20 +110,15 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             instancesCollection.insertOne(instance);
 
             return Optional.empty();
-        }
-        else
-        {
+        } else {
             instancesCollection.updateOne(
                     eq("_id", hexId),
                     set("values." + key.id(), serializeValue(value))
             );
 
-            if (instance.getValues().containsKey(String.valueOf(key.id())))
-            {
+            if (instance.getValues().containsKey(String.valueOf(key.id()))) {
                 return Optional.of((V) deserializeValue(instance.getValues().get(String.valueOf(key.id()))));
-            }
-            else
-            {
+            } else {
                 return Optional.empty();
             }
         }
@@ -159,18 +148,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
                 .projection(include("references." + key.id())).first();
 
-        if (instance == null || instance.getReferences() == null)
-        {
+        if (instance == null || instance.getReferences() == null) {
             return Optional.empty();
-        }
-        else
-        {
-            if (instance.getReferences().containsKey(stringKeyId))
-            {
+        } else {
+            if (instance.getReferences().containsKey(stringKeyId)) {
                 return Optional.of(IdConverters.withHexString().revert(instance.getReferences().get(stringKeyId)));
-            }
-            else
-            {
+            } else {
 
                 return Optional.empty();
             }
@@ -188,8 +171,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
                 .projection(include("references." + key.id())).first();
-        if (instance == null)
-        {
+        if (instance == null) {
             instance = new StoredInstance();
             instance.setId(hexId);
 
@@ -198,19 +180,14 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             instancesCollection.insertOne(instance);
 
             return Optional.empty();
-        }
-        else
-        {
+        } else {
             instancesCollection.updateOne(
                     eq("_id", hexId),
                     set("references." + stringKeyId, reference.toHexString()));
 
-            if (instance.getReferences().containsKey(stringKeyId))
-            {
+            if (instance.getReferences().containsKey(stringKeyId)) {
                 return Optional.of(IdConverters.withHexString().revert(instance.getReferences().get(stringKeyId)));
-            }
-            else
-            {
+            } else {
                 return Optional.empty();
             }
 
@@ -357,19 +334,13 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         addReference(key, reference);
 
-        if (instance == null)
-        {
+        if (instance == null) {
             return Optional.empty();
-        }
-        else
-        {
+        } else {
             if (instance.getMultivaluedReferences().containsKey(stringKeyId) &&
-                    instance.getMultivaluedReferences().get(stringKeyId).indexOf(reference.toHexString()) == key.position())
-            {
+                    instance.getMultivaluedReferences().get(stringKeyId).indexOf(reference.toHexString()) == key.position()) {
                 return Optional.of(IdConverters.withHexString().revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
-            }
-            else
-            {
+            } else {
                 throw new NoSuchElementException();
             }
 
@@ -393,7 +364,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             multivaluedReference = new ArrayList<>();
         }
 
-        multivaluedReference.add(key.position(),reference.toHexString());
+        multivaluedReference.add(key.position(), reference.toHexString());
 
         if (instance != null) {
             instancesCollection.updateOne(
@@ -446,12 +417,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
                 .projection(include("references")).first();
 
-        if (instance == null || instance.getReferences() == null)
-        {
+        if (instance == null || instance.getReferences() == null) {
             return Optional.empty();
-        }
-        else
-        {
+        } else {
             return Optional.of(instance.getReferences().size());
         }
     }

@@ -10,10 +10,8 @@ import java.util.Map;
  * Model for the "instances" MongoDb collection
  * Represents an instance stored by the backend
  */
-public class StoredInstance
-{
-    public StoredInstance()
-    {
+public class StoredInstance {
+    public StoredInstance() {
 
     }
 
@@ -44,9 +42,11 @@ public class StoredInstance
     /**
      * The references
      */
-    private Map<String, String> references =  new HashMap<>();
+    private Map<String, String> references = new HashMap<>();
 
-    public Map<String, String> getReferences() { return references; }
+    public Map<String, String> getReferences() {
+        return references;
+    }
 
     public void setReferences(Map<String, String> references) {
         this.references = references;
@@ -70,7 +70,9 @@ public class StoredInstance
         this.values = values;
     }
 
-    public Map<String, List<String>> getMultivaluedReferences() { return multivaluedReferences; }
+    public Map<String, List<String>> getMultivaluedReferences() {
+        return multivaluedReferences;
+    }
 
     public void setMultivaluedReferences(Map<String, List<String>> references) {
         this.multivaluedReferences = references;
