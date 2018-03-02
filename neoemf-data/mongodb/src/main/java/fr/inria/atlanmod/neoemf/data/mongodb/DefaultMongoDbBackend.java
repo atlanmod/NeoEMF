@@ -338,8 +338,25 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("addReference");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("multivaluedReferences")).first();
+
+        //TODO vérifier si franchement, ya pas mieux
+        List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
+        if (multivaluedReference == null) {
+            multivaluedReference = new ArrayList<String>();
+        }
+
+        multivaluedReference.add(key.position(),reference.toHexString());
+
+        if (instance != null) {
+            instancesCollection.updateOne(
+                    eq("_id", hexId),
+                    set("multivaluedReferences." + stringKeyId, multivaluedReference));
+        }
     }
 
     @Override
