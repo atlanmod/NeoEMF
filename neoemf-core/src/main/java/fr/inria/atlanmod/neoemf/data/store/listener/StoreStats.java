@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store.listener;
 
+import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import java.util.Collections;
@@ -87,6 +88,6 @@ public final class StoreStats {
     public String toString() {
         return sort(methodInvocations()).entrySet().stream()
                 .map(e -> e.getKey() + " = " + e.getValue())
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining(Strings.LR));
     }
 }
