@@ -134,8 +134,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public void removeValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("removeValue");
+        instancesCollection.updateOne(
+                eq("_id", key.owner().toHexString()),
+                unset("values." + key.id()));
     }
 
     //endregion
