@@ -96,7 +96,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("references." + key.id())).first();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("references." + key.id())).first();
 
         if (instance == null || instance.getReferences() == null)
         {
@@ -125,7 +126,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("references." + key.id())).first();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("references." + key.id())).first();
         if (instance == null)
         {
             instance = new StoredInstance();
@@ -162,7 +164,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("references." + key.id())).first();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("references." + key.id())).first();
 
 
         if (!(instance == null || instance.getReferences() == null) && instance.getReferences().containsKey(stringKeyId))
@@ -295,39 +298,30 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
+        System.out.println("passe par ici");
+
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("multivaluedReferences")).first();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("multivaluedReferences")).first();
+
+        addReference(key, reference);
 
         if (instance == null)
         {
-            instance = new StoredInstance();
-            instance.setId(hexId);
-
-            ArrayList<String> multivaluedReference = new ArrayList<String>(key.position()+1);
-            multivaluedReference.add(key.position(),reference.toHexString());
-
-            instance.getMultivaluedReferences().put(stringKeyId, multivaluedReference);
-
-            instancesCollection.insertOne(instance);
-
             return Optional.empty();
         }
         else
         {
-            instancesCollection.updateOne(
-                    and(eq("_id", hexId),eq(stringKeyId,key.position())),
-                    set("multivaluedReferences." + stringKeyId + ".$", reference.toHexString()));
-
-            if (instance.getMultivaluedReferences().containsKey(stringKeyId))
+            if (instance.getMultivaluedReferences().containsKey(stringKeyId) &&
+                    instance.getMultivaluedReferences().get(stringKeyId).indexOf(reference.toHexString()) == key.position())
             {
                 return Optional.of(IdConverters.withHexString().revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
             }
             else
             {
                 throw new NoSuchElementException();
-                //return Optional.empty();
             }
 
         }
@@ -389,7 +383,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("references")).first();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("references")).first();
 
         if (!(instance == null || instance.getReferences() == null))
         {
@@ -407,7 +402,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("references")).first();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("references")).first();
 
         if (instance == null || instance.getReferences() == null)
         {
