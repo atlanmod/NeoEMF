@@ -23,14 +23,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Projections.include;
-import static com.mongodb.client.model.Updates.inc;
-import static com.mongodb.client.model.Updates.set;
-import static com.mongodb.client.model.Updates.unset;
+import static com.mongodb.client.model.Updates.*;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -278,8 +278,42 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("referenceFor");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("multivaluedReferences")).first();
+
+        if (instance == null)
+        {
+            instance = new StoredInstance();
+            instance.setId(hexId);
+
+            ArrayList<String> multivaluedReference = new ArrayList<String>(key.position()+1);
+            multivaluedReference.add(key.position(),reference.toHexString());
+
+            instance.getMultivaluedReferences().put(stringKeyId, multivaluedReference);
+
+            instancesCollection.insertOne(instance);
+
+            return Optional.empty();
+        }
+        else
+        {
+            instancesCollection.updateOne(
+                    and(eq("_id", hexId),eq(stringKeyId,key.position())),
+                    set("multivaluedReferences." + stringKeyId + ".$", reference.toHexString()));
+
+            if (instance.getMultivaluedReferences().containsKey(stringKeyId))
+            {
+                return Optional.of(IdConverters.withHexString().revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
+            }
+            else
+            {
+                throw new NoSuchElementException();
+                //return Optional.empty();
+            }
+
+        }
     }
 
     @Override
