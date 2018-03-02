@@ -12,19 +12,21 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
+import fr.inria.atlanmod.commons.io.serializer.Serializer;
+import fr.inria.atlanmod.commons.io.serializer.SerializerFactory;
+import fr.inria.atlanmod.commons.primitive.Bytes;
+import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
-import fr.inria.atlanmod.neoemf.data.store.Store;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -34,7 +36,8 @@ import java.util.stream.Stream;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Projections.include;
-import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Updates.set;
+import static com.mongodb.client.model.Updates.unset;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -45,6 +48,8 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  */
 @ParametersAreNonnullByDefault
 class DefaultMongoDbBackend extends AbstractMongoDbBackend {
+
+    private static final Serializer SERIALIZER = SerializerFactory.getInstance().forAny();
 
     /**
      * Constructs a new {@code DefaultMongoDbBackend}.
@@ -62,8 +67,31 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("valueOf");
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", key.owner().toHexString())).projection(include("values")).first();
+
+        String kid = String.valueOf(key.id());
+
+        return instance != null && instance.getValues().containsKey(kid)
+                ? Optional.of((V) deserializeValue(instance.getValues().get(kid)))
+                : Optional.empty();
+    }
+
+    private String serializeValue(Object o)
+    {
+        return Bytes.toStringBinary(SERIALIZER.convert(o));
+    }
+
+    private Object deserializeValue(String value)
+    {
+        try
+        {
+            return SERIALIZER.deserialize(Strings.toBytesBinary(value));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Nonnull
@@ -72,16 +100,47 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("valueFor");
+        String hexId = key.owner().toHexString();
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("values")).first();
+
+        if (instance == null)
+        {
+            instance = new StoredInstance();
+            instance.setId(hexId);
+
+            instance.getValues().put(String.valueOf(key.id()), serializeValue(value));
+
+            instancesCollection.insertOne(instance);
+
+            return Optional.empty();
+        }
+        else
+        {
+            instancesCollection.updateOne(
+                    eq("_id", hexId),
+                    set("values." + key.id(), serializeValue(value))
+            );
+
+            if (instance.getValues().containsKey(String.valueOf(key.id())))
+            {
+                return Optional.of((V) deserializeValue(instance.getValues().get(String.valueOf(key.id()))));
+            }
+            else
+            {
+                System.out.println("poubelle");
+                return Optional.empty();
+            }
+        }
     }
 
     @Override
     public void removeValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("removeValue");
+        instancesCollection.updateOne(
+                eq("_id", key.owner().toHexString()),
+                unset("values." + key.id()));
     }
 
     //endregion
