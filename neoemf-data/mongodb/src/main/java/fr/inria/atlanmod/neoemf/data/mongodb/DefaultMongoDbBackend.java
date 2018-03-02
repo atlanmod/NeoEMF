@@ -67,7 +67,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", key.owner().toHexString())).projection(include("values")).first();
+        StoredInstance instance = (StoredInstance) instancesCollection
+                .find(eq("_id", key.owner().toHexString()))
+                .projection(include("values")).first();
 
         String kid = String.valueOf(key.id());
 
@@ -128,7 +130,6 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             }
             else
             {
-                System.out.println("poubelle");
                 return Optional.empty();
             }
         }
@@ -223,16 +224,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
-                .projection(include("references." + key.id())).first();
-
-
-        if (!(instance == null || instance.getReferences() == null) && instance.getReferences().containsKey(stringKeyId))
-        {
-            instancesCollection.updateOne(
-                    eq("_id", hexId),
-                    unset("references." + stringKeyId));
-        }
+        instancesCollection.updateOne(
+                eq("_id", hexId),
+                unset("references." + stringKeyId));
     }
 
     //endregion
@@ -334,8 +328,6 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public Stream<Id> allReferencesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        List<Id> list = new ArrayList<>();
-
         StoredInstance instance = (StoredInstance) instancesCollection
                 .find(
                         eq("_id", key.owner().toHexString()))
@@ -356,8 +348,6 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
         checkNotNull(key, "key");
         checkNotNull(reference, "reference");
-
-        System.out.println("passe par ici");
 
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
@@ -397,10 +387,10 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
                 .projection(include("multivaluedReferences")).first();
 
-        //TODO vérifier si franchement, ya pas mieux
+        //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
         List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
         if (multivaluedReference == null) {
-            multivaluedReference = new ArrayList<String>();
+            multivaluedReference = new ArrayList<>();
         }
 
         multivaluedReference.add(key.position(),reference.toHexString());
@@ -440,17 +430,10 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
 
         String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
-                .projection(include("references")).first();
-
-        if (!(instance == null || instance.getReferences() == null))
-        {
-            instancesCollection.updateOne(
-                    eq("_id", hexId),
-                    unset("references"));
-        }
+        instancesCollection.updateOne(
+                eq("_id", hexId),
+                unset("references"));
     }
 
     @Nonnull
@@ -459,7 +442,6 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
 
         String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
                 .projection(include("references")).first();
