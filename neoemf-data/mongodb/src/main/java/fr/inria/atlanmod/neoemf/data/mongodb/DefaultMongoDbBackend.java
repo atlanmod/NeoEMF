@@ -12,8 +12,10 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
+import fr.inria.atlanmod.commons.io.serializer.BinarySerializerFactory;
 import fr.inria.atlanmod.commons.io.serializer.Serializer;
-import fr.inria.atlanmod.commons.io.serializer.SerializerFactory;
+import fr.inria.atlanmod.commons.io.serializer.StringSerializer;
+import fr.inria.atlanmod.commons.io.serializer.StringSerializerFactory;
 import fr.inria.atlanmod.commons.primitive.Bytes;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -49,7 +51,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 @ParametersAreNonnullByDefault
 class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
-    private static final Serializer SERIALIZER = SerializerFactory.getInstance().forAny();
+    private static final StringSerializer<Object> SERIALIZER = StringSerializerFactory.base64(BinarySerializerFactory.getInstance().forAny());
 
     /**
      * Constructs a new {@code DefaultMongoDbBackend}.
@@ -79,12 +81,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     }
 
     private String serializeValue(Object o) {
-        return Bytes.toStringBinary(SERIALIZER.convert(o));
+        return SERIALIZER.convert(o);
     }
 
     private Object deserializeValue(String value) {
         try {
-            return SERIALIZER.deserialize(Strings.toBytesBinary(value));
+            return SERIALIZER.deserialize(value);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
