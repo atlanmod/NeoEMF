@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A specific {@link Context} for the core.
  */
 @ParametersAreNonnullByDefault
-public abstract class InMemoryContext extends AbstractContext {
+public abstract class InMemoryContext extends AbstractLocalContext {
 
     /**
      * Returns the instance of this class.

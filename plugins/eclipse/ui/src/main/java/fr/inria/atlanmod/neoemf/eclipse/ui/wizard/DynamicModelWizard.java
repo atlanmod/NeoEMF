@@ -175,7 +175,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
                     if (isNull(progressMonitor)) {
                         progressMonitor = new NullProgressMonitor();
                     }
-                    progressMonitor.beginTask("Create NeoEMF resource", 2);
+                    progressMonitor.beginTask("Creating NeoEMF resource", 2);
                     Resource resource = null;
                     try {
                         // Create a resource set
@@ -186,7 +186,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
                         resource = resourceSet.createResource(uri);
 
                         // Add the initial model object to the contents.
-                        EObject rootObject = PersistenceFactory.getInstance().create(eClass);
+                        EObject rootObject = PersistenceFactory.newInstance(eClass);
                         resource.getContents().add(rootObject);
 
                         // Save the contents of the resource to the file system.
@@ -229,7 +229,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
                 page.openEditor(new URIEditorInput(uri), NeoEditor.EDITOR_ID);
             }
             catch (PartInitException exception) {
-                MessageDialog.openError(window.getShell(), "Open Editor", exception.getMessage());
+                MessageDialog.openError(window.getShell(), "Opening NeoEMF Editor", exception.getMessage());
                 return false;
             }
 

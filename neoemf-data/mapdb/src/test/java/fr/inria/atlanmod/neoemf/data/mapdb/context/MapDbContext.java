@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb.context;
 
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.context.AbstractContext;
+import fr.inria.atlanmod.neoemf.context.AbstractLocalContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A specific {@link Context} for the MapDB implementation.
  */
 @ParametersAreNonnullByDefault
-public abstract class MapDbContext extends AbstractContext {
+public abstract class MapDbContext extends AbstractLocalContext {
 
     /**
      * Creates a new {@code MapDbContext} with a mapping with indices.

@@ -11,7 +11,6 @@ package fr.inria.atlanmod.neoemf.eclipse.ui.importer;
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.Diagnostic;
-import org.eclipse.emf.common.util.DiagnosticException;
 import org.eclipse.emf.common.util.Monitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.common.util.UniqueEList;
@@ -19,6 +18,7 @@ import org.eclipse.emf.converter.ConverterPlugin;
 import org.eclipse.emf.converter.util.ConverterUtil;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -36,7 +36,7 @@ import static java.util.Objects.nonNull;
 public class NeoModelImporter extends ModelImporter {
 
     /**
-     *
+     * The unique identifier of this importer.
      */
     public static final String IMPORTER_ID = NeoModelImporter.class.getName();
 
@@ -102,8 +102,11 @@ public class NeoModelImporter extends ModelImporter {
 
     @Override
     public void addToResource(EPackage ePackage, ResourceSet resourceSet) {
-        if (nonNull(ePackage.eResource()) && nonNull(getGenModel().eResource()) && !Objects.equals(ePackage.eResource().getURI().trimSegments(1), getGenModel().eResource().getURI().trimSegments(1))) {
-            ePackage.eResource().getContents().remove(ePackage);
+        Resource packageResource = ePackage.eResource();
+        Resource genResource = getGenModel().eResource();
+
+        if (nonNull(packageResource) && nonNull(genResource) && !Objects.equals(packageResource.getURI().trimSegments(1), genResource.getURI().trimSegments(1))) {
+            packageResource.getContents().remove(ePackage);
         }
 
         super.addToResource(ePackage, resourceSet);
@@ -121,6 +124,6 @@ public class NeoModelImporter extends ModelImporter {
                 .map(u -> makeRelative(u, genModelUri).toString())
                 .forEach(u -> genModel.getForeignModel().add(u));
 
-        GenModels.adjust(genModel);
+        new GenModelAdapter(genModel).adapt();
     }
 }

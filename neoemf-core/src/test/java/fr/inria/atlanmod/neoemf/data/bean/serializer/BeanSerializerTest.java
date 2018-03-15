@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
 import fr.inria.atlanmod.commons.io.serializer.AbstractSerializerTest;
-import fr.inria.atlanmod.commons.io.serializer.Serializer;
+import fr.inria.atlanmod.commons.io.serializer.BinarySerializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -24,14 +24,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case about {@link Serializer} implementations.
+ * A test-case about {@link BinarySerializer} implementations.
  */
 @ParametersAreNonnullByDefault
 class BeanSerializerTest extends AbstractSerializerTest {
 
     @Test
     void testSerializeDeserializeId() throws IOException {
-        Serializer<Id> serializer = BeanSerializerFactory.getInstance().forId();
+        BinarySerializer<Id> serializer = BeanSerializerFactory.getInstance().forId();
 
         Id object = Id.getProvider().fromLong(42);
         Id result = process(object, serializer);
@@ -41,7 +41,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
 
     @Test
     void testSerializeDeserializeIdWithStream() throws IOException {
-        Serializer<Id> serializer = BeanSerializerFactory.getInstance().forId();
+        BinarySerializer<Id> serializer = BeanSerializerFactory.getInstance().forId();
 
         Id object = Id.getProvider().fromLong(42);
         Id result = processWithStream(object, serializer);
@@ -51,7 +51,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
 
     @Test
     void testSerializeDeserializeClass() throws IOException {
-        Serializer<ClassBean> serializer = BeanSerializerFactory.getInstance().forClass();
+        BinarySerializer<ClassBean> serializer = BeanSerializerFactory.getInstance().forClass();
 
         ClassBean object = ClassBean.of("name0", "uri0");
         ClassBean result = process(object, serializer);
@@ -61,7 +61,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
 
     @Test
     void testSerializeDeserializeClassWithStream() throws IOException {
-        Serializer<ClassBean> serializer = BeanSerializerFactory.getInstance().forClass();
+        BinarySerializer<ClassBean> serializer = BeanSerializerFactory.getInstance().forClass();
 
         ClassBean object = ClassBean.of("name0", "uri0");
         ClassBean result = processWithStream(object, serializer);
@@ -71,7 +71,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
 
     @Test
     void testSerializeDeserializeFeatureKey() throws IOException {
-        Serializer<SingleFeatureBean> serializer = BeanSerializerFactory.getInstance().forSingleFeature();
+        BinarySerializer<SingleFeatureBean> serializer = BeanSerializerFactory.getInstance().forSingleFeature();
 
         SingleFeatureBean object = SingleFeatureBean.of(Id.getProvider().fromLong(42), 10);
         SingleFeatureBean result = process(object, serializer);
@@ -81,7 +81,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
 
     @Test
     void testSerializeDeserializeFeatureKeyWithStream() throws IOException {
-        Serializer<SingleFeatureBean> serializer = BeanSerializerFactory.getInstance().forSingleFeature();
+        BinarySerializer<SingleFeatureBean> serializer = BeanSerializerFactory.getInstance().forSingleFeature();
 
         SingleFeatureBean object = SingleFeatureBean.of(Id.getProvider().fromLong(42), 10);
         SingleFeatureBean result = processWithStream(object, serializer);
@@ -91,7 +91,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
 
     @Test
     void testSerializeDeserializeManyFeatureKey() throws IOException {
-        Serializer<ManyFeatureBean> serializer = BeanSerializerFactory.getInstance().forManyFeature();
+        BinarySerializer<ManyFeatureBean> serializer = BeanSerializerFactory.getInstance().forManyFeature();
 
         ManyFeatureBean object = ManyFeatureBean.of(Id.getProvider().fromLong(42), 10, 0);
         ManyFeatureBean result = process(object, serializer);
@@ -101,7 +101,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
 
     @Test
     void testSerializeDeserializeManyFeatureKeyWithStream() throws IOException {
-        Serializer<ManyFeatureBean> serializer = BeanSerializerFactory.getInstance().forManyFeature();
+        BinarySerializer<ManyFeatureBean> serializer = BeanSerializerFactory.getInstance().forManyFeature();
 
         ManyFeatureBean object = ManyFeatureBean.of(Id.getProvider().fromLong(42), 10, 44);
         ManyFeatureBean result = processWithStream(object, serializer);

@@ -171,7 +171,7 @@ public final class Resources {
             return properties.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().toString()));
         }
         catch (IOException e) {
-            throw Throwables.wrap(e, IllegalStateException.class);
+            throw Throwables.shouldNeverHappen(e);
         }
     }
 

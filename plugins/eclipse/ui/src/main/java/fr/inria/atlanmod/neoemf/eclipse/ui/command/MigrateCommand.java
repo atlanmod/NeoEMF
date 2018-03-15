@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
-import fr.inria.atlanmod.neoemf.eclipse.ui.importer.GenModels;
+import fr.inria.atlanmod.neoemf.eclipse.ui.importer.GenModelAdapter;
 import fr.inria.atlanmod.neoemf.eclipse.ui.importer.NeoModelImporter;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -110,7 +110,7 @@ public class MigrateCommand extends AbstractHandler {
          * Constructs a new {@code MigrateJob}.
          */
         public MigrateJob() {
-            super("Migrating EMF model");
+            super("Migrating EMF Model");
         }
 
         @Override
@@ -120,7 +120,7 @@ public class MigrateCommand extends AbstractHandler {
                 if (file.isPresent()) {
                     Optional<GenModel> genModel = genModelFrom(file.get());
                     if (genModel.isPresent()) {
-                        String msg = GenModels.adjust(genModel.get());
+                        String msg = new GenModelAdapter(genModel.get()).adapt();
                         if (nonNull(msg)) {
                             genModel.get().eResource().save(Collections.emptyMap());
                             showMessage("The selected generator model has been migrated:\n" + msg, false);
@@ -154,12 +154,13 @@ public class MigrateCommand extends AbstractHandler {
             Display display = PlatformUI.getWorkbench().getDisplay();
 
             display.syncExec(() -> {
+                String title = "NeoEMF Migrator";
                 Shell shell = new Shell(display);
                 if (error) {
-                    MessageDialog.openError(shell, "NeoEMF Migrator", msg);
+                    MessageDialog.openError(shell, title, msg);
                 }
                 else {
-                    MessageDialog.openInformation(shell, "NeoEMF Migrator", msg);
+                    MessageDialog.openInformation(shell, title, msg);
                 }
             });
         }

@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-        <artifactId>neoemf-eclipse</artifactId>
+        <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
+        <artifactId>fr.inria.atlanmod.neoemf.eclipse</artifactId>
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 
@@ -17,37 +17,37 @@
     <dependencies>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+            <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+            <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.core.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+            <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+            <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.data.mapdb.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+            <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.data.berkeleydb.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+            <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
             <artifactId>fr.inria.atlanmod.neoemf.data.hbase.feature</artifactId>
             <version>${project.version}</version>
         </dependency>

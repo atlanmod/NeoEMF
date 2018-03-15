@@ -1,0 +1,5 @@
+# Exclude Eclipse files only for this project, not for its children
+!**/.project
+!**/.classpath
+
+**/databases/

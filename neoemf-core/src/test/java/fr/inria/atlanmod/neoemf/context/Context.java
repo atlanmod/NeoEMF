@@ -82,18 +82,20 @@ public interface Context {
     String uriScheme();
 
     /**
-     * Returns {@code true} if the context is persistent.
+     * Returns {@code true} if this context is persistent.
      *
-     * @return {@code true}
+     * @return {@code true} if this context is persistent
      */
-    boolean isPersistent();
+    default boolean isPersistent() {
+        return true;
+    }
 
     /**
      * Creates a new {@link URI} from the given {@code uri}, according to this context.
      *
-     * @param uri the base {@link URI}
+     * @param uri the base URI
      *
-     * @return the created {@link URI}
+     * @return the created URI
      */
     @Nonnull
     URI createUri(URI uri);
@@ -101,19 +103,19 @@ public interface Context {
     /**
      * Creates a new {@link URI} from the given {@code file}, according to this context.
      *
-     * @param file the {@link File} to build a {@link URI} from
+     * @param file the file to build a URI from
      *
-     * @return the created {@link URI}
+     * @return the created URI
      */
     @Nonnull
     URI createUri(File file);
 
     /**
-     * Creates a new persistent resource from the given {@code ePackage} on the given {@code file}.
+     * Creates a new persistent resource in the given {@code file}.
      *
-     * @param file the file from which to load/save data
+     * @param file the file from which to save data
      *
-     * @return a new {@link PersistentResource}
+     * @return a new persistent resource
      *
      * @see ContextualResourceBuilder
      */
@@ -121,11 +123,23 @@ public interface Context {
     PersistentResource createPersistentResource(File file) throws IOException;
 
     /**
-     * Creates a new transient resource from the given {@code ePackage} on the given {@code file}.
+     * Loads an existing persistent resource from the given {@code file}.
      *
-     * @param file the file from which to load/save data
+     * @param file the file from which to load data
      *
-     * @return a new {@link PersistentResource}
+     * @return a new persistent resource
+     *
+     * @see ContextualResourceBuilder
+     */
+    @Nonnull
+    PersistentResource loadPersistentResource(File file) throws IOException;
+
+    /**
+     * Creates a new transient resource on the given {@code file}.
+     *
+     * @param file the file where to save data when the resource will persist
+     *
+     * @return a new transient resource
      *
      * @see ContextualResourceBuilder
      */
@@ -133,23 +147,11 @@ public interface Context {
     PersistentResource createTransientResource(File file) throws IOException;
 
     /**
-     * Loads an existing resource from the given {@code file}.
+     * Creates a new data mapper on the given {@code uri}.
      *
-     * @param file the file from which to load/save data
+     * @param file the file to build a URI from
      *
-     * @return a new {@link PersistentResource}
-     *
-     * @see ContextualResourceBuilder
-     */
-    @Nonnull
-    PersistentResource loadResource(File file) throws IOException;
-
-    /**
-     * Creates a new {@link DataMapper} on the given {@code uri}.
-     *
-     * @param file the URI of the backend
-     *
-     * @return a new {@link DataMapper}
+     * @return a new data mapper
      *
      * @see ContextualResourceBuilder
      */

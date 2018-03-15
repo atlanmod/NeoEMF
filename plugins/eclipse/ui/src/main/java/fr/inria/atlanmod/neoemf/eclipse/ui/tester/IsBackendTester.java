@@ -27,11 +27,7 @@ public class IsBackendTester extends PropertyTester {
             return false;
         }
 
-        Path directory = IFolder.class.cast(receiver)
-                .getLocation()
-                .toFile()
-                .toPath();
-
+        Path directory = IFolder.class.cast(receiver).getLocation().toFile().toPath();
         return Config.exists(directory) == Boolean.class.cast(expectedValue);
     }
 }

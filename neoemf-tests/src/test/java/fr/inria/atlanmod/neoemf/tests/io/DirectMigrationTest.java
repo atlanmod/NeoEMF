@@ -69,7 +69,7 @@ class DirectMigrationTest extends AbstractResourceBasedTest {
         }
 
         // Comparing with EMF
-        EObject actual = context.loadResource(sourceFile).getContents().get(0);
+        EObject actual = context.loadPersistentResource(sourceFile).getContents().get(0);
         EObject expected = ResourceManager.load(uri);
 
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
@@ -147,10 +147,10 @@ class DirectMigrationTest extends AbstractResourceBasedTest {
             }
         }
 
-        EObject actual = targetContext.loadResource(targetFile).getContents().get(0);
+        EObject actual = targetContext.loadPersistentResource(targetFile).getContents().get(0);
 
         // Comparing back-ends
-        EObject expected = sourceContext.loadResource(sourceFile).getContents().get(0);
+        EObject expected = sourceContext.loadPersistentResource(sourceFile).getContents().get(0);
         ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
 
         // Comparing with EMF

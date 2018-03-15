@@ -10,8 +10,8 @@ package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.io.serializer.Serializer;
-import fr.inria.atlanmod.commons.io.serializer.SerializerFactory;
+import fr.inria.atlanmod.commons.io.serializer.BinarySerializer;
+import fr.inria.atlanmod.commons.io.serializer.BinarySerializerFactory;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -21,31 +21,31 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The factory that creates {@link fr.inria.atlanmod.commons.io.serializer.Serializer} instances.
+ * The factory that creates {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer} instances.
  */
 @Singleton
 @ParametersAreNonnullByDefault
-public class BeanSerializerFactory extends SerializerFactory {
+public class BeanSerializerFactory extends BinarySerializerFactory {
 
     /**
      * The instance of {@link IdSerializer}.
      */
-    private final Serializer<Id> idSerializer = new IdSerializer();
+    private final BinarySerializer<Id> idSerializer = new IdSerializer();
 
     /**
      * The instance of {@link ClassSerializer}.
      */
-    private final Serializer<ClassBean> classSerializer = new ClassSerializer();
+    private final BinarySerializer<ClassBean> classSerializer = new ClassSerializer();
 
     /**
      * The instance of {@link SingleFeatureSerializer}.
      */
-    private final Serializer<SingleFeatureBean> singleFeatureSerializer = new SingleFeatureSerializer();
+    private final BinarySerializer<SingleFeatureBean> singleFeatureSerializer = new SingleFeatureSerializer();
 
     /**
      * The instance of {@link ManyFeatureSerializer}.
      */
-    private final Serializer<ManyFeatureBean> manyFeatureSerializer = new ManyFeatureSerializer();
+    private final BinarySerializer<ManyFeatureBean> manyFeatureSerializer = new ManyFeatureSerializer();
 
     /**
      * Constructs a new {@code BeanSerializerFactory}.
@@ -64,46 +64,46 @@ public class BeanSerializerFactory extends SerializerFactory {
     }
 
     /**
-     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.Serializer} for {@link
+     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer} for {@link
      * fr.inria.atlanmod.neoemf.core.Id}s.
      *
      * @return a serializer
      */
     @Nonnull
-    public Serializer<Id> forId() {
+    public BinarySerializer<Id> forId() {
         return idSerializer;
     }
 
     /**
-     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.Serializer} for {@link
+     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer} for {@link
      * fr.inria.atlanmod.neoemf.data.bean.ClassBean}s.
      *
      * @return a serializer
      */
     @Nonnull
-    public Serializer<ClassBean> forClass() {
+    public BinarySerializer<ClassBean> forClass() {
         return classSerializer;
     }
 
     /**
-     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.Serializer} for {@link
+     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer} for {@link
      * fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean}s.
      *
      * @return a serializer
      */
     @Nonnull
-    public Serializer<SingleFeatureBean> forSingleFeature() {
+    public BinarySerializer<SingleFeatureBean> forSingleFeature() {
         return singleFeatureSerializer;
     }
 
     /**
-     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.Serializer} for {@link
+     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer} for {@link
      * fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean}s.
      *
      * @return a serializer
      */
     @Nonnull
-    public Serializer<ManyFeatureBean> forManyFeature() {
+    public BinarySerializer<ManyFeatureBean> forManyFeature() {
         return manyFeatureSerializer;
     }
 

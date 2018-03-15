@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.bean.Data;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
-import fr.inria.atlanmod.neoemf.util.EObjects;
+import fr.inria.atlanmod.neoemf.util.EFeatures;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -147,12 +147,12 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     private List<Id> readFeature(Id id, EClass eClass, EStructuralFeature eFeature) throws IOException {
         final SingleFeatureBean bean = SingleFeatureBean.of(id, eClass.getFeatureID(eFeature));
 
-        if (EObjects.isAttribute(eFeature)) {
-            readAttribute(bean, EObjects.asAttribute(eFeature));
+        if (EFeatures.isAttribute(eFeature)) {
+            readAttribute(bean, EFeatures.asAttribute(eFeature));
             return Collections.emptyList();
         }
         else {
-            return readReference(bean, EObjects.asReference(eFeature));
+            return readReference(bean, EFeatures.asReference(eFeature));
         }
     }
 

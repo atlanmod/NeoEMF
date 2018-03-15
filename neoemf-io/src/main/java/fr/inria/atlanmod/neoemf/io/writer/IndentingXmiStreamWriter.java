@@ -117,6 +117,6 @@ public class IndentingXmiStreamWriter extends XmiStreamWriter {
     private String indent() {
         return IntStream.range(0, level)
                 .mapToObj(i -> indent)
-                .collect(Collectors.joining(Strings.EMPTY, "\n", Strings.EMPTY));
+                .collect(Collectors.joining(Strings.EMPTY, Strings.LR, Strings.EMPTY));
     }
 }

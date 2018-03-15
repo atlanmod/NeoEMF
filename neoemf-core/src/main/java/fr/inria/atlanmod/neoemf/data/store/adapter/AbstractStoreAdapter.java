@@ -19,7 +19,7 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.store.ClosedStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
-import fr.inria.atlanmod.neoemf.util.EObjects;
+import fr.inria.atlanmod.neoemf.util.EFeatures;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -173,7 +173,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
-        if (EObjects.isAttribute(feature)) {
+        if (EFeatures.isAttribute(feature)) {
             Optional<Object> value;
             if (!feature.isMany()) {
                 value = store.valueOf(bean);
@@ -183,7 +183,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
             }
 
             return value
-                    .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
+                    .map(v -> attrConverter.revert(v, EFeatures.asAttribute(feature)))
                     .orElse(null);
         }
         else {
@@ -218,17 +218,17 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
-        if (EObjects.isAttribute(feature)) {
+        if (EFeatures.isAttribute(feature)) {
             Optional<Object> previousValue;
             if (!feature.isMany()) {
-                previousValue = store.valueFor(bean, attrConverter.convert(value, EObjects.asAttribute(feature)));
+                previousValue = store.valueFor(bean, attrConverter.convert(value, EFeatures.asAttribute(feature)));
             }
             else {
-                previousValue = store.valueFor(bean.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature)));
+                previousValue = store.valueFor(bean.withPosition(index), attrConverter.convert(value, EFeatures.asAttribute(feature)));
             }
 
             return previousValue
-                    .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
+                    .map(v -> attrConverter.revert(v, EFeatures.asAttribute(feature)))
                     .orElse(null);
         }
         else {
@@ -259,7 +259,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
-        if (EObjects.isAttribute(feature)) {
+        if (EFeatures.isAttribute(feature)) {
             if (!feature.isMany()) {
                 return store.valueOf(bean).isPresent();
             }
@@ -287,7 +287,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
-        if (EObjects.isAttribute(feature)) {
+        if (EFeatures.isAttribute(feature)) {
             if (!feature.isMany()) {
                 store.removeValue(bean);
             }
@@ -329,7 +329,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         Optional<Integer> size;
-        if (EObjects.isAttribute(feature)) {
+        if (EFeatures.isAttribute(feature)) {
             size = store.sizeOfValue(bean);
         }
         else {
@@ -354,8 +354,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
-        if (EObjects.isAttribute(feature)) {
-            return store.allValuesOf(bean).anyMatch(attrConverter.convert(value, EObjects.asAttribute(feature))::equals);
+        if (EFeatures.isAttribute(feature)) {
+            return store.allValuesOf(bean).anyMatch(attrConverter.convert(value, EFeatures.asAttribute(feature))::equals);
         }
         else {
             return store.allReferencesOf(bean).anyMatch(refConverter.convert(PersistentEObject.from(value))::equals);
@@ -379,8 +379,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         Optional<Integer> index;
-        if (EObjects.isAttribute(feature)) {
-            index = MoreStreams.indexOf(store.allValuesOf(bean), attrConverter.convert(value, EObjects.asAttribute(feature)));
+        if (EFeatures.isAttribute(feature)) {
+            index = MoreStreams.indexOf(store.allValuesOf(bean), attrConverter.convert(value, EFeatures.asAttribute(feature)));
         }
         else {
             index = MoreStreams.indexOf(store.allReferencesOf(bean), refConverter.convert(PersistentEObject.from(value)));
@@ -405,8 +405,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
         Optional<Integer> index;
-        if (EObjects.isAttribute(feature)) {
-            index = MoreStreams.lastIndexOf(store.allValuesOf(bean), attrConverter.convert(value, EObjects.asAttribute(feature)));
+        if (EFeatures.isAttribute(feature)) {
+            index = MoreStreams.lastIndexOf(store.allValuesOf(bean), attrConverter.convert(value, EFeatures.asAttribute(feature)));
         }
         else {
             index = MoreStreams.lastIndexOf(store.allReferencesOf(bean), refConverter.convert(PersistentEObject.from(value)));
@@ -427,12 +427,12 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
-        if (EObjects.isAttribute(feature)) {
+        if (EFeatures.isAttribute(feature)) {
             if (index == EStore.NO_INDEX) {
-                store.appendValue(bean, attrConverter.convert(value, EObjects.asAttribute(feature)));
+                store.appendValue(bean, attrConverter.convert(value, EFeatures.asAttribute(feature)));
             }
             else {
-                store.addValue(bean.withPosition(index), attrConverter.convert(value, EObjects.asAttribute(feature)));
+                store.addValue(bean.withPosition(index), attrConverter.convert(value, EFeatures.asAttribute(feature)));
             }
         }
         else {
@@ -461,9 +461,9 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         ManyFeatureBean bean = ManyFeatureBean.from(object, feature, index);
 
-        if (EObjects.isAttribute(feature)) {
+        if (EFeatures.isAttribute(feature)) {
             return store.removeValue(bean)
-                    .map(v -> attrConverter.revert(v, EObjects.asAttribute(feature)))
+                    .map(v -> attrConverter.revert(v, EFeatures.asAttribute(feature)))
                     .orElse(null);
         }
         else {
@@ -495,7 +495,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
-        if (EObjects.isAttribute(feature)) {
+        if (EFeatures.isAttribute(feature)) {
             store.removeAllValues(bean);
         }
         else {
@@ -548,7 +548,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         return store.containerOf(refConverter.convert(object))
                 .map(c -> refConverter.revert(c.owner()).eClass().getEStructuralFeature(c.id()))
-                .map(EObjects::asReference)
+                .map(EFeatures::asReference)
                 .orElse(null);
     }
 
@@ -563,7 +563,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
-        if (EObjects.isAttribute(feature)) {
+        if (EFeatures.isAttribute(feature)) {
             Stream<Object> stream;
             if (!feature.isMany()) {
                 stream = store.valueOf(bean)
@@ -574,7 +574,7 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
                 stream = store.allValuesOf(bean);
             }
 
-            EAttribute attribute = EObjects.asAttribute(feature);
+            EAttribute attribute = EFeatures.asAttribute(feature);
 
             return stream
                     .map(v -> attrConverter.revert(v, attribute))
@@ -623,8 +623,8 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
         SingleFeatureBean bean = SingleFeatureBean.from(object, feature);
 
-        if (EObjects.isAttribute(feature)) {
-            EAttribute attribute = EObjects.asAttribute(feature);
+        if (EFeatures.isAttribute(feature)) {
+            EAttribute attribute = EFeatures.asAttribute(feature);
 
             List<Object> valuesToAdd = values.stream()
                     .map(v -> attrConverter.convert(v, attribute))
@@ -715,6 +715,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Nonnull
     private PersistentEObject rebuild(Id id) {
         final EClass eClass = resolveInstanceOf(id).<IllegalStateException>orElseThrow(IllegalStateException::new); // Should never happen
-        return PersistenceFactory.getInstance().create(eClass, id);
+        return PersistenceFactory.newInstance(eClass, id);
     }
 }

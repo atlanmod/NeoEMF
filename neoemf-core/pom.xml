@@ -15,12 +15,12 @@
     <name>NeoEMF Core</name>
     <description>
         NeoEMF core component.
-        Specialize the standard EMF classes and provide abstract classes for dedicated backend extensions.
+        Specialize the standard EMF classes and provide abstract classes for dedicated back-end extensions.
     </description>
 
     <properties>
         <chronicle-map.version>3.14.5</chronicle-map.version>
-        <chronicle-bytes.version>1.10.9</chronicle-bytes.version>
+        <chronicle-bytes.version>1.11.2</chronicle-bytes.version>
 
         <log4j.version>2.8.2</log4j.version><!-- 2.9.0+ : compatibility issue with maven-bundle-plugin (JDK9) -->
 

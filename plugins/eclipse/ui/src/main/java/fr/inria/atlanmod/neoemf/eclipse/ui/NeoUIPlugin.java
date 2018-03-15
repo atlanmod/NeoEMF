@@ -15,37 +15,40 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.framework.BundleContext;
 
+/**
+ * The NeoEMF plugin.
+ */
 public class NeoUIPlugin extends AbstractUIPlugin {
 
     /**
-     * The plug-in ID.
+     * The unique identifier of this plugin.
      */
     public static final String PLUGIN_ID = "fr.inria.atlanmod.neoemf.eclipse.ui";
 
     /**
-     * The NeoEMF ID.
+     * The unique identifier of NeoEMF.
      */
     public static final String CORE_ID = "fr.inria.atlanmod.neoemf.core";
 
     /**
+     * The shared instance of this plug-in.
+     */
+    private static NeoUIPlugin sharedInstance;
+
+    /**
      * The global logger listener that handles all logging events, and eventually transforms them into a UI callback.
      */
-    private static final ILogListener LOG_LISTENER = (status, listener) -> {
+    private final ILogListener logListener = (status, listener) -> {
         if (status.matches(IStatus.ERROR)) {
             StatusManager.getManager().handle(status, StatusManager.BLOCK);
         }
     };
 
     /**
-     * The shared instance of this plug-in.
-     */
-    private static NeoUIPlugin SHARED_INSTANCE;
-
-    /**
      * Constructs a new {@code NeoUIPlugin}.
      */
     public NeoUIPlugin() {
-        SHARED_INSTANCE = this;
+        sharedInstance = this;
     }
 
     /**
@@ -54,7 +57,7 @@ public class NeoUIPlugin extends AbstractUIPlugin {
      * @return the shared instance
      */
     public static NeoUIPlugin getDefault() {
-        return SHARED_INSTANCE;
+        return sharedInstance;
     }
 
     /**
@@ -72,7 +75,7 @@ public class NeoUIPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
 
-        getLog().addLogListener(LOG_LISTENER);
+        getLog().addLogListener(logListener);
 
         // Initialize the metamodel registry
         MetamodelRegistry.getInstance().registerAll();
@@ -80,7 +83,7 @@ public class NeoUIPlugin extends AbstractUIPlugin {
 
     @Override
     public void stop(BundleContext context) throws Exception {
-        getLog().removeLogListener(LOG_LISTENER);
+        getLog().removeLogListener(logListener);
 
         super.stop(context);
     }

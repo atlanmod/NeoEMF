@@ -156,7 +156,7 @@ public class RunnerState {
             adapter = type.newInstance();
         }
         catch (InstantiationException | IllegalAccessException e) {
-            throw Throwables.wrap(e, IllegalStateException.class);
+            throw Throwables.shouldNeverHappen(e);
         }
 
         baseConfig = ConfigParser.parse(o);
@@ -188,7 +188,7 @@ public class RunnerState {
                     }));
         }
         catch (IOException e) {
-            throw Throwables.wrap(e, IllegalStateException.class);
+            throw Throwables.shouldNeverHappen(e);
         }
     }
 }

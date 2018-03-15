@@ -136,7 +136,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * <b>Note:</b> An element must be flushed with the {@link #flushCurrentElement()} method after analysing all its
      * attributes.
      *
-     * @param uri  the URI of the element
+     * @param uri  the namespace's URI of the element
      * @param name the name of the element
      */
     protected final void readStartElement(@Nullable String uri, String name) {
@@ -152,7 +152,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     /**
      * Reads a new simple element, as {@code <name>value</name>}.
      *
-     * @param uri   the URI of the element
+     * @param uri   the namespace's URI of the element
      * @param name  the name of the element
      * @param value the literal value of the element
      */
@@ -165,8 +165,8 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     /**
      * Reads a {@link fr.inria.atlanmod.neoemf.io.bean.BasicNamespace} declaration.
      *
-     * @param prefix the prefix
-     * @param uri    the URI associated with the {@code prefix}
+     * @param prefix the prefix of the namespace
+     * @param uri    the URI of the namespace
      *
      * @see BasicNamespace.Registry#register(String, String)
      */
@@ -193,7 +193,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     /**
      * Reads a new attribute of the current element.
      *
-     * @param prefix the prefix of the attribute
+     * @param prefix the namespace's prefix of the attribute
      * @param name   the name of the attribute
      * @param value  the value of the attribute
      */
@@ -241,13 +241,15 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      */
     protected final void readEndDocument() throws IOException {
         notifyComplete();
+
+        checkState(identifiers.isEmpty(), "Stream analysis is complete, but some elements are not complete: %s", identifiers);
     }
 
     /**
      * Defines if the attribute represented with the parameters is a special attribute as 'xsi:type', 'xmi:id' or
      * 'xmi:idref'.
      *
-     * @param prefix the prefix of the attribute
+     * @param prefix the namespace's prefix of the attribute
      * @param name   the name of the attribute
      * @param value  the value of the attribute
      *

@@ -39,7 +39,7 @@ public interface PersistentEObject extends InternalEObject, Storable, Iterable<P
      */
     @Nonnull
     static PersistentEObject from(Object object) {
-        return PersistentEObjectAdapter.adapt(object);
+        return PersistenceAdapter.getInstance().adapt(object);
     }
 
     /**

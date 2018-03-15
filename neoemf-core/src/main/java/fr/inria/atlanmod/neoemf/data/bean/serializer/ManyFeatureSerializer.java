@@ -8,8 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
-import fr.inria.atlanmod.commons.io.serializer.AbstractSerializer;
-import fr.inria.atlanmod.commons.io.serializer.Serializer;
+import fr.inria.atlanmod.commons.io.serializer.AbstractBinarySerializer;
+import fr.inria.atlanmod.commons.io.serializer.BinarySerializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 
@@ -22,10 +22,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.WillNotClose;
 
 /**
- * A {@link Serializer} for {@link ManyFeatureBean}s.
+ * A {@link BinarySerializer} for {@link ManyFeatureBean}s.
  */
 @ParametersAreNonnullByDefault
-final class ManyFeatureSerializer extends AbstractSerializer<ManyFeatureBean> {
+final class ManyFeatureSerializer extends AbstractBinarySerializer<ManyFeatureBean> {
 
     @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -8503200234566675439L;

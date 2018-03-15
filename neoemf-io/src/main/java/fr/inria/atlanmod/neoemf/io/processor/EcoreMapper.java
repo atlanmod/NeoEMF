@@ -15,7 +15,7 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.bean.Data;
-import fr.inria.atlanmod.neoemf.util.EObjects;
+import fr.inria.atlanmod.neoemf.util.EFeatures;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -74,15 +74,15 @@ public class EcoreMapper extends AbstractProcessor {
             throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
         }
 
-        if (EObjects.isAttribute(eFeature)) {
+        if (EFeatures.isAttribute(eFeature)) {
             // The attribute is well a attribute
-            processAttribute(attribute, EObjects.asAttribute(eFeature));
+            processAttribute(attribute, EFeatures.asAttribute(eFeature));
         }
         else {
             // Otherwise redirect to the reference handler
             final Object rawValue = attribute.getValue().getRaw();
             BasicReference reference = new BasicReference().setValue(Data.raw(rawValue));
-            processReference(reference, EObjects.asReference(eFeature));
+            processReference(reference, EFeatures.asReference(eFeature));
         }
     }
 
@@ -90,7 +90,7 @@ public class EcoreMapper extends AbstractProcessor {
     public void onReference(BasicReference reference) throws IOException {
         final EStructuralFeature eFeature = getFeature(reference.getName());
 
-        processReference(reference, EObjects.asReference(eFeature));
+        processReference(reference, EFeatures.asReference(eFeature));
     }
 
     @Override
@@ -141,11 +141,11 @@ public class EcoreMapper extends AbstractProcessor {
             throw new UnsupportedOperationException("FeatureMaps are not supported yet: Use standard EMF to import your model");
         }
 
-        if (EObjects.isAttribute(feature)) {
+        if (EFeatures.isAttribute(feature)) {
             throw new IllegalStateException(String.format("You should never have arrived here: The element is an attribute: %s", feature.getName()));
         }
 
-        final EReference eReference = EObjects.asReference(feature);
+        final EReference eReference = EFeatures.asReference(feature);
         final EClass baseClass = EClass.class.cast(eReference.getEType());
 
         // Retrieve the type the reference
@@ -264,7 +264,7 @@ public class EcoreMapper extends AbstractProcessor {
         EClass ownerClass = metaClasses.getLast();
         EStructuralFeature eFeature = ownerClass.getEStructuralFeature(name);
 
-        checkNotNull(eFeature, "No feature named {0} has been found in class {1}", name, ownerClass);
+        checkNotNull(eFeature, "No feature named '%s' has been found in class '%s'", name, ownerClass.getName());
 
         return eFeature;
     }
@@ -307,8 +307,7 @@ public class EcoreMapper extends AbstractProcessor {
             EClass eClass = getClass(metaClass.getName(), ePackage);
 
             // Checks that the meta-class is a subtype of the reference type
-            checkArgument(superClass.isSuperTypeOf(eClass),
-                    "%s is not a subclass of %s", eClass.getName(), superClass.getName());
+            checkArgument(superClass.isSuperTypeOf(eClass), "%s is not a subclass of %s", eClass.getName(), superClass.getName());
 
             return eClass;
         }

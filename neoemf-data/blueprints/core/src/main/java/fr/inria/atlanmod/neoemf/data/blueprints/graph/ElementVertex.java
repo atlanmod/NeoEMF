@@ -519,13 +519,15 @@ public class ElementVertex extends IdVertex<ModelGraph> {
      */
     @Nonnull
     private String format(FeatureBean feature) {
-        String label = Integer.toString(feature.id());
+        StringBuilder sb = new StringBuilder();
 
         if (graph.requiresUniqueLabels()) {
-            label = getClassVertex().map(ClassVertex::getName).orElse(DELIMITER) + DELIMITER + label;
+            final String className = getClassVertex().map(ClassVertex::getName).orElse(DELIMITER);
+            sb.append(className).append(DELIMITER);
         }
+        sb.append(feature.id());
 
-        return label;
+        return sb.toString();
     }
 
     /**
@@ -538,7 +540,7 @@ public class ElementVertex extends IdVertex<ModelGraph> {
      */
     @Nonnull
     private String format(FeatureBean feature, Object suffix) {
-        return format(feature) + DELIMITER + String.valueOf(suffix);
+        return format(feature) + DELIMITER + suffix;
     }
 
     /**

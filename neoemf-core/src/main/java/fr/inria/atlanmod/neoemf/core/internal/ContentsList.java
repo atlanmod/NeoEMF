@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.core.internal;
 import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.commons.primitive.Booleans;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.util.EObjects;
+import fr.inria.atlanmod.neoemf.util.EFeatures;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -164,8 +164,8 @@ public class ContentsList<E extends EObject> extends AbstractSequentialInternalE
 
         return nonNull(entry.getValue())
                 && isIncluded(feature)
-                && EObjects.isReference(feature)
-                && EObjects.asReference(feature).isContainment();
+                && EFeatures.isReference(feature)
+                && EFeatures.asReference(feature).isContainment();
     }
 
     @Nonnull

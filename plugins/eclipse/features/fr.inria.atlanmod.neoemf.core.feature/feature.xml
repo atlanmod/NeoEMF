@@ -37,7 +37,7 @@
             unpack="false" />
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.eclipse.examples"
+            id="fr.inria.atlanmod.neoemf.eclipse.examples.core"
             download-size="0"
             install-size="0"
             version="1.0.3.qualifier"

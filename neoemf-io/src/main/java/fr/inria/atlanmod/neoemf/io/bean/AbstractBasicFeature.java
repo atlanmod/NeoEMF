@@ -39,7 +39,7 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, R, 
     /**
      * Whether this feature is multi-valued.
      */
-    private boolean many = false;
+    private boolean many;
 
     /**
      * The value of this feature.

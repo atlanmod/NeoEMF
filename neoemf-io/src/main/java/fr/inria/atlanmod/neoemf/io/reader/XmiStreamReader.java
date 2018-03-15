@@ -19,8 +19,12 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -45,12 +49,8 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
      *
      * @see javax.xml.stream.XMLStreamConstants
      */
+    @Nonnegative
     private int event;
-
-    /**
-     * {@code true} if the next call to {@link XMLStreamReader#next()} must be skipped.
-     */
-    private boolean skipNext;
 
     @Override
     public void parse(InputStream stream) throws IOException {
@@ -62,7 +62,7 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
 
             readStartDocument();
             while (reader.hasNext()) {
-                event = readNextEvent();
+                readNextEvent();
                 if (event == START_ELEMENT) {
                     readStartElement();
                 }
@@ -72,6 +72,7 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
             }
             readEndDocument();
 
+            event = 0;
             reader.close();
         }
         catch (XMLStreamException e) {
@@ -84,60 +85,135 @@ public class XmiStreamReader extends AbstractXmiStreamReader {
      *
      * @return the next event
      *
-     * @throws XMLStreamException if there is an error with the underlying XML
+     * @throws IOException if there is an error processing the XML source
      */
-    private int readNextEvent() throws XMLStreamException {
-        if (skipNext) {
-            skipNext = false;
+    @Nonnegative
+    private int readNextEvent() throws IOException {
+        try {
+            event = reader.next();
             return event;
         }
-        else {
-            return reader.next();
+        catch (XMLStreamException e) {
+            throw new IOException(e);
         }
     }
 
     /**
-     * Reads the start of an element from the current reader.
+     * Reads the start of an element.
      *
-     * @throws XMLStreamException if there is an error with the underlying XML
+     * @throws IOException if there is an error processing the XML source
      */
-    private void readStartElement() throws IOException, XMLStreamException {
+    private void readStartElement() throws IOException {
         for (int i = 0, size = reader.getNamespaceCount(); i < size; i++) {
             readNamespace(reader.getNamespacePrefix(i), reader.getNamespaceURI(i));
         }
 
-        final String uri = reader.getNamespaceURI();
+        @Nullable final String uri = reader.getNamespaceURI();
         final String name = reader.getLocalName();
 
-        int attributeCount = reader.getAttributeCount();
+        @Nonnegative final int attributeCount = reader.getAttributeCount();
 
         if (attributeCount > 0) {
-            // The element has at least one attribute: it's a complex element
-            readStartElement(uri, name);
-
-            for (int i = 0; i < attributeCount; i++) {
-                readAttribute(reader.getAttributePrefix(i), reader.getAttributeLocalName(i), reader.getAttributeValue(i));
-            }
-
-            flushCurrentElement();
+            readComplexElement(uri, name, attributeCount);
         }
         else {
-            event = reader.next();
-            skipNext = true;
+            readSimpleElement(uri, name);
+        }
+    }
 
-            if (event == CHARACTERS) {
-                final String characters = reader.getText();
+    /**
+     * Reads the start of a complex element with its attributes.
+     * <p>
+     * A complex element is an element that may contain attributes, and other elements.
+     *
+     * @param uri            the namespace's URI of the element
+     * @param name           the name of the element
+     * @param attributeCount the number of attributes of the element
+     *
+     * @throws IOException if there is an error processing the XML source
+     */
+    private void readComplexElement(@Nullable String uri, String name, @Nonnegative int attributeCount) throws IOException {
+        readStartElement(uri, name);
 
-                checkState(reader.next() == END_ELEMENT, "The next event should have been END_ELEMENT");
-                skipNext = false;
+        for (int i = 0; i < attributeCount; i++) {
+            readAttribute(reader.getAttributePrefix(i), reader.getAttributeLocalName(i), reader.getAttributeValue(i));
+        }
 
+        flushCurrentElement();
+    }
+
+    /**
+     * Reads a simple element.
+     * <p>
+     * A simple element is an element without any attribute that may contain characters, but no element.
+     *
+     * @param uri  the namespace's URI of the element
+     * @param name the name of the element
+     *
+     * @throws IOException if there is an error processing the XML source
+     */
+    private void readSimpleElement(@Nullable String uri, String name) throws IOException {
+        readNextEvent();
+
+        if (event == CHARACTERS) {
+            final String characters = reader.getText();
+
+            if (characters.trim().isEmpty()) {
+                // Formatting spaces: redirecting
+                readComplexElement(uri, name, 0);
+            }
+            else {
+                checkState(readNextEvent() == END_ELEMENT, "Expected event END_ELEMENT but was %s", name, getEventName(event));
                 readSimpleElement(uri, name, characters);
             }
-            else if (event == END_ELEMENT) {
-                skipNext = false;
+        }
+        else if (event == END_ELEMENT) {
+            readSimpleElement(uri, name, Strings.EMPTY);
+        }
+    }
 
-                readSimpleElement(uri, name, Strings.EMPTY);
-            }
+    /**
+     * Returns the name of the {@code event}.
+     *
+     * @param event the event
+     *
+     * @return the name of the event
+     */
+    @Nonnull
+    private String getEventName(@Nonnegative int event) {
+        switch (event) {
+            case XMLStreamConstants.START_ELEMENT:
+                return "START_ELEMENT";
+            case XMLStreamConstants.END_ELEMENT:
+                return "END_ELEMENT";
+            case XMLStreamConstants.PROCESSING_INSTRUCTION:
+                return "PROCESSING_INSTRUCTION";
+            case XMLStreamConstants.CHARACTERS:
+                return "CHARACTERS";
+            case XMLStreamConstants.COMMENT:
+                return "COMMENT";
+            case XMLStreamConstants.SPACE:
+                return "SPACE";
+            case XMLStreamConstants.START_DOCUMENT:
+                return "START_DOCUMENT";
+            case XMLStreamConstants.END_DOCUMENT:
+                return "END_DOCUMENT";
+            case XMLStreamConstants.ENTITY_REFERENCE:
+                return "ENTITY_REFERENCE";
+            case XMLStreamConstants.ATTRIBUTE:
+                return "ATTRIBUTE";
+            case XMLStreamConstants.DTD:
+                return "DTD";
+            case XMLStreamConstants.CDATA:
+                return "CDATA";
+            case XMLStreamConstants.NAMESPACE:
+                return "NAMESPACE";
+            case XMLStreamConstants.NOTATION_DECLARATION:
+                return "NOTATION_DECLARATION";
+            case XMLStreamConstants.ENTITY_DECLARATION:
+                return "ENTITY_DECLARATION";
+            default:
+                return "UNKNOWN (" + event + ')';
         }
     }
 

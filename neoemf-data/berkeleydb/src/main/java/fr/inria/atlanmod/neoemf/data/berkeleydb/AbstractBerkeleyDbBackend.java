@@ -17,7 +17,7 @@ import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
 import fr.inria.atlanmod.commons.function.Converter;
-import fr.inria.atlanmod.commons.io.serializer.Serializer;
+import fr.inria.atlanmod.commons.io.serializer.BinarySerializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
@@ -45,7 +45,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements BerkeleyDbBackend, AllReferenceAs<Long> {
 
     /**
-     * The {@link BeanSerializerFactory} to use for creating the {@link Serializer} instances.
+     * The {@link BeanSerializerFactory} to use for creating the {@link BinarySerializer} instances.
      */
     @Nonnull
     protected static final BeanSerializerFactory SERIALIZER_FACTORY = BeanSerializerFactory.getInstance();
@@ -225,7 +225,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      * found
      */
     @Nonnull
-    protected <K, V> Optional<V> get(Database database, K key, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
+    protected <K, V> Optional<V> get(Database database, K key, BinarySerializer<K> keySerializer, BinarySerializer<V> valueSerializer) {
         try {
             DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
             DatabaseEntry dbValue = new DatabaseEntry();
@@ -254,7 +254,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      * @param <K>             the type of the key
      * @param <V>             the type of the value
      */
-    protected <K, V> void put(Database database, K key, V value, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
+    protected <K, V> void put(Database database, K key, V value, BinarySerializer<K> keySerializer, BinarySerializer<V> valueSerializer) {
         try {
             DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
             DatabaseEntry dbValue = new DatabaseEntry(valueSerializer.serialize(value));
@@ -279,7 +279,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      *
      * @return {@code true} if the {@code value} has been saved
      */
-    protected <K, V> boolean putIfAbsent(Database database, K key, V value, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
+    protected <K, V> boolean putIfAbsent(Database database, K key, V value, BinarySerializer<K> keySerializer, BinarySerializer<V> valueSerializer) {
         try {
             DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
             DatabaseEntry dbValue = new DatabaseEntry(valueSerializer.serialize(value));
@@ -299,7 +299,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
      * @param keySerializer the serializer to serialize the {@code key}
      * @param <K>           the type of the key
      */
-    protected <K> void delete(Database database, K key, Serializer<K> keySerializer) {
+    protected <K> void delete(Database database, K key, BinarySerializer<K> keySerializer) {
         try {
             DatabaseEntry dbKey = new DatabaseEntry(keySerializer.serialize(key));
 

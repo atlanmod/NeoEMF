@@ -12,6 +12,7 @@ import fr.inria.atlanmod.commons.concurrent.MoreThreads;
 import fr.inria.atlanmod.commons.log.Log;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 
 import javax.annotation.Nonnegative;
@@ -82,18 +83,20 @@ final class HBaseCluster {
         try {
             Log.info("Initializing the Hadoop cluster... (This may take several minutes)");
 
-            hbase = new HBaseTestingUtility();
+            Configuration clusterConfig = HBaseConfiguration.create();
+
+            hbase = new HBaseTestingUtility(clusterConfig);
             hbase.startMiniCluster();
 
-            Configuration conf = hbase.getConnection().getConfiguration();
-            host = conf.get(HOST_CONFIG);
-            port = Integer.parseInt(conf.get(PORT_CONFIG));
+            Configuration connectionConfig = hbase.getConnection().getConfiguration();
+            host = connectionConfig.get(HOST_CONFIG);
+            port = Integer.parseInt(connectionConfig.get(PORT_CONFIG));
 
             Log.info("Hadoop cluster running at {0}:{1,number,#}", host, port);
 
             MoreThreads.executeAtExit(HBaseCluster::close);
         }
-        catch (Exception | UnsatisfiedLinkError e) {
+        catch (Throwable e) {
             reset();
             Log.error(e, "Unable to create the Hadoop cluster");
         }
@@ -112,7 +115,7 @@ final class HBaseCluster {
 
             reset();
         }
-        catch (Exception ignored) {
+        catch (Throwable ignored) {
         }
     }
 

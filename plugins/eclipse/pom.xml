@@ -9,8 +9,8 @@
         <relativePath>../..</relativePath>
     </parent>
 
-    <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-    <artifactId>neoemf-eclipse</artifactId>
+    <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
+    <artifactId>fr.inria.atlanmod.neoemf.eclipse</artifactId>
     <version>1.0.3-SNAPSHOT</version>
 
     <packaging>pom</packaging>
@@ -23,12 +23,15 @@
 
     <modules>
         <module>ui</module>
-        <module>features</module>
         <module>examples</module>
+        <module>features</module>
         <module>update</module>
     </modules>
 
     <properties>
+        <maven.test.skip>true</maven.test.skip>
+        <maven.deploy.skip>true</maven.deploy.skip>
+
         <tycho-plugin.version>1.1.0</tycho-plugin.version>
     </properties>
 
@@ -81,6 +84,7 @@
                     <artifactId>tycho-compiler-plugin</artifactId>
                     <version>${tycho-plugin.version}</version>
                     <configuration>
+                        <copyResources>false</copyResources>
                         <useProjectSettings>false</useProjectSettings>
                     </configuration>
                 </plugin>

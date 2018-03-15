@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb.context;
 
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.context.AbstractContext;
+import fr.inria.atlanmod.neoemf.context.AbstractLocalContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A specific {@link Context} for the BerkeleyDB implementation.
  */
 @ParametersAreNonnullByDefault
-public abstract class BerkeleyDbContext extends AbstractContext {
+public abstract class BerkeleyDbContext extends AbstractLocalContext {
 
     /**
      * Creates a new {@code BerkeleyDbContext} with a mapping with indices.

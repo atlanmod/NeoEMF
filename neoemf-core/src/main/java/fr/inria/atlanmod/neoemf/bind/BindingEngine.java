@@ -302,7 +302,7 @@ public final class BindingEngine {
 
         // Ensure that only one type is relevant
         if (relevantTypes.isEmpty()) {
-            throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; No relevant type found", type.getName(), value, variantOrDefault));
+            throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; No relevant type found in %s", type.getName(), value, variantOrDefault, ClasspathCollector.getInstance().get()));
         }
         else if (relevantTypes.size() > 1) {
             throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; Several relevant types found : %s", type.getName(), value, variantOrDefault, relevantTypes));
