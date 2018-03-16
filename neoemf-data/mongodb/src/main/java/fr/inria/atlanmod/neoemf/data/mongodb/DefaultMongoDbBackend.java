@@ -503,7 +503,6 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         instancesCollection.updateOne(
                 eq("_id", hexId),
                 set("multivaluedReferences." + stringKeyId, multivaluedReference));
-
     }
 
     @Nonnull
