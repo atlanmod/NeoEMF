@@ -442,6 +442,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             multivaluedReference = new ArrayList<>();
         }
 
+        if (key.position() > multivaluedReference.size())
+            throw new IndexOutOfBoundsException();
+
         multivaluedReference.add(key.position(), reference.toHexString());
 
         if (instance != null) {
@@ -473,6 +476,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         if (multivaluedReference == null) {
             multivaluedReference = new ArrayList<>();
         }
+
+        if (key.position() > multivaluedReference.size())
+            throw new IndexOutOfBoundsException();
 
         List<String> toAdd = new ArrayList<String>();
         for(Id id : collection){
