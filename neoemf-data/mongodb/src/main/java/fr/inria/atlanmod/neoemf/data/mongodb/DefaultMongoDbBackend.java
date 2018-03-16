@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Projections.include;
+import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 import static com.mongodb.client.model.Updates.unset;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
@@ -431,8 +432,33 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public Optional<Id> removeReference(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("removeReference");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("multivaluedReferences")).first();
+
+        if(instance == null){
+            return Optional.empty();
+        }
+
+        //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
+        List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
+        if (multivaluedReference == null) {
+            return Optional.empty();
+        }
+
+        Optional<Id> res = Optional.of(IdConverters.withHexString().revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
+
+        multivaluedReference.remove(key.position());
+
+        if (instance != null) {
+            instancesCollection.updateOne(
+                    eq("_id", hexId),
+                    set("multivaluedReferences." + stringKeyId, multivaluedReference));
+        }
+
+        return res;
     }
 
     @Override
@@ -443,7 +469,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         instancesCollection.updateOne(
                 eq("_id", hexId),
-                unset("singlevaluedReferences"));
+                combine(unset("references"), unset("multivaluedReferences")));
     }
 
     @Nonnull
