@@ -241,8 +241,25 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("valueFor");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("multivaluedValues")).first();
+
+        addValue(key, value);
+
+        if (instance == null) {
+            return Optional.empty();
+        } else {
+            if (instance.getMultivaluedValues().containsKey(stringKeyId) &&
+                    instance.getMultivaluedValues().get(stringKeyId).indexOf(serializeValue(value)) == key.position()) {
+                return Optional.of((V) IdConverters.withHexString().revert(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
+            } else {
+                throw new NoSuchElementException();
+            }
+
+        }
     }
 
     @Override
