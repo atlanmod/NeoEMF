@@ -13,11 +13,8 @@ import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.io.serializer.BinarySerializerFactory;
-import fr.inria.atlanmod.commons.io.serializer.Serializer;
 import fr.inria.atlanmod.commons.io.serializer.StringSerializer;
 import fr.inria.atlanmod.commons.io.serializer.StringSerializerFactory;
-import fr.inria.atlanmod.commons.primitive.Bytes;
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -35,7 +32,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Projections.include;
 import static com.mongodb.client.model.Updates.set;
@@ -306,8 +302,22 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public Optional<Id> referenceOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("referenceOf");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("multivaluedreferences." + key.id())).first();
+
+        if (instance == null || instance.getMultivaluedReferences() == null) {
+            return Optional.empty();
+        } else {
+            if (instance.getMultivaluedReferences().containsKey(stringKeyId)) {
+                return Optional.of(IdConverters.withHexString()
+                        .revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
+            } else {
+                return Optional.empty();
+            }
+        }
     }
 
     @Nonnull
