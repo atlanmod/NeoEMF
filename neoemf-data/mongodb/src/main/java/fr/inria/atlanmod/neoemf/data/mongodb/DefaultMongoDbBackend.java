@@ -241,8 +241,6 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        System.out.println("Poubelle malgache");
-
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
