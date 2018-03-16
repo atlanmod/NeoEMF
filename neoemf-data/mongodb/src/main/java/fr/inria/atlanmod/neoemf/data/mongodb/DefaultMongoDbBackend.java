@@ -404,8 +404,30 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             return;
         }
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("addAllReferences");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("multivaluedReferences")).first();
+
+        //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
+        List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
+        
+        if (multivaluedReference == null) {
+            multivaluedReference = new ArrayList<>();
+        }
+
+        List<String> toAdd = new ArrayList<String>();
+        for(Id id : collection){
+            toAdd.add(id.toHexString());
+        }
+        multivaluedReference.addAll(key.position(), toAdd);
+
+        if (instance != null) {
+            instancesCollection.updateOne(
+                    eq("_id", hexId),
+                    set("multivaluedReferences." + stringKeyId, multivaluedReference));
+        }
     }
 
     @Nonnull
