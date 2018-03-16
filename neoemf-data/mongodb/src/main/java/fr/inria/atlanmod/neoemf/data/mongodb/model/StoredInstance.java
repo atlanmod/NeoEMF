@@ -40,30 +40,30 @@ public class StoredInstance {
     private SingleFeature container;
 
     /**
-     * The references
+     * The singlevaluedReferences
      */
-    private Map<String, String> references = new HashMap<>();
+    private Map<String, String> singlevaluedReferences = new HashMap<>();
 
-    public Map<String, String> getReferences() {
-        return references;
+    public Map<String, String> getSinglevaluedReferences() {
+        return singlevaluedReferences;
     }
 
-    public void setReferences(Map<String, String> references) {
-        this.references = references;
+    public void setSinglevaluedReferences(Map<String, String> singlevaluedReferences) {
+        this.singlevaluedReferences = singlevaluedReferences;
     }
 
     /**
-     * The Multivalued references
+     * The Multivalued singlevaluedReferences
      */
     private Map<String, List<String>> multivaluedReferences = new HashMap<>();
 
     /**
-     * Singlevalued values
+     * Singlevalued singlevaluedValues
      */
-    private Map<String, String> values = new HashMap<>();
+    private Map<String, String> singlevaluedValues = new HashMap<>();
 
     /**
-     * Multivalued values
+     * Multivalued singlevaluedValues
      */
     private HashMap<String, List<String>> multivaluedValues = new HashMap<>();
 
@@ -75,12 +75,12 @@ public class StoredInstance {
         this.multivaluedValues = multivaluedValues;
     }
 
-    public Map<String, String> getValues() {
-        return values;
+    public Map<String, String> getSinglevaluedValues() {
+        return singlevaluedValues;
     }
 
-    public void setValues(Map<String, String> values) {
-        this.values = values;
+    public void setSinglevaluedValues(Map<String, String> singlevaluedValues) {
+        this.singlevaluedValues = singlevaluedValues;
     }
 
     public Map<String, List<String>> getMultivaluedReferences() {

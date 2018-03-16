@@ -67,12 +67,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         StoredInstance instance = (StoredInstance) instancesCollection
                 .find(eq("_id", key.owner().toHexString()))
-                .projection(include("values")).first();
+                .projection(include("singlevaluedValues")).first();
 
         String kid = String.valueOf(key.id());
 
-        return instance != null && instance.getValues().containsKey(kid)
-                ? Optional.of((V) deserializeValue(instance.getValues().get(kid)))
+        return instance != null && instance.getSinglevaluedValues().containsKey(kid)
+                ? Optional.of((V) deserializeValue(instance.getSinglevaluedValues().get(kid)))
                 : Optional.empty();
     }
 
@@ -97,13 +97,13 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         String hexId = key.owner().toHexString();
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("values")).first();
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).projection(include("singlevaluedValues")).first();
 
         if (instance == null) {
             instance = new StoredInstance();
             instance.setId(hexId);
 
-            instance.getValues().put(String.valueOf(key.id()), serializeValue(value));
+            instance.getSinglevaluedValues().put(String.valueOf(key.id()), serializeValue(value));
 
             instancesCollection.insertOne(instance);
 
@@ -111,11 +111,11 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         } else {
             instancesCollection.updateOne(
                     eq("_id", hexId),
-                    set("values." + key.id(), serializeValue(value))
+                    set("singlevaluedValues." + key.id(), serializeValue(value))
             );
 
-            if (instance.getValues().containsKey(String.valueOf(key.id()))) {
-                return Optional.of((V) deserializeValue(instance.getValues().get(String.valueOf(key.id()))));
+            if (instance.getSinglevaluedValues().containsKey(String.valueOf(key.id()))) {
+                return Optional.of((V) deserializeValue(instance.getSinglevaluedValues().get(String.valueOf(key.id()))));
             } else {
                 return Optional.empty();
             }
@@ -128,7 +128,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         instancesCollection.updateOne(
                 eq("_id", key.owner().toHexString()),
-                unset("values." + key.id()));
+                unset("singlevaluedValues." + key.id()));
     }
 
     //endregion
@@ -144,13 +144,13 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
-                .projection(include("references." + key.id())).first();
+                .projection(include("singlevaluedReferences." + key.id())).first();
 
-        if (instance == null || instance.getReferences() == null) {
+        if (instance == null || instance.getSinglevaluedReferences() == null) {
             return Optional.empty();
         } else {
-            if (instance.getReferences().containsKey(stringKeyId)) {
-                return Optional.of(IdConverters.withHexString().revert(instance.getReferences().get(stringKeyId)));
+            if (instance.getSinglevaluedReferences().containsKey(stringKeyId)) {
+                return Optional.of(IdConverters.withHexString().revert(instance.getSinglevaluedReferences().get(stringKeyId)));
             } else {
 
                 return Optional.empty();
@@ -168,12 +168,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
-                .projection(include("references." + key.id())).first();
+                .projection(include("singlevaluedReferences." + key.id())).first();
         if (instance == null) {
             instance = new StoredInstance();
             instance.setId(hexId);
 
-            instance.getReferences().put(stringKeyId, reference.toHexString());
+            instance.getSinglevaluedReferences().put(stringKeyId, reference.toHexString());
 
             instancesCollection.insertOne(instance);
 
@@ -181,10 +181,10 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         } else {
             instancesCollection.updateOne(
                     eq("_id", hexId),
-                    set("references." + stringKeyId, reference.toHexString()));
+                    set("singlevaluedReferences." + stringKeyId, reference.toHexString()));
 
-            if (instance.getReferences().containsKey(stringKeyId)) {
-                return Optional.of(IdConverters.withHexString().revert(instance.getReferences().get(stringKeyId)));
+            if (instance.getSinglevaluedReferences().containsKey(stringKeyId)) {
+                return Optional.of(IdConverters.withHexString().revert(instance.getSinglevaluedReferences().get(stringKeyId)));
             } else {
                 return Optional.empty();
             }
@@ -201,7 +201,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         instancesCollection.updateOne(
                 eq("_id", hexId),
-                unset("references." + stringKeyId));
+                unset("singlevaluedReferences." + stringKeyId));
     }
 
     //endregion
@@ -240,8 +240,27 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
         checkNotNull(value, "value");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("addValue");
+        System.out.println("Poubelle malgache");
+
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("multivaluedValues")).first();
+
+        //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
+        List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
+        if (multivaluedValues == null) {
+            multivaluedValues = new ArrayList<>();
+        }
+
+        multivaluedValues.add(key.position(), serializeValue(value));
+
+        if (instance != null) {
+            instancesCollection.updateOne(
+                    eq("_id", hexId),
+                    set("multivaluedValues." + stringKeyId, multivaluedValues));
+        }
     }
 
     @Override
@@ -284,12 +303,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
-                .projection(include("values")).first();
+                .projection(include("singlevaluedValues")).first();
 
-        if (instance == null || instance.getValues() == null) {
+        if (instance == null || instance.getSinglevaluedValues() == null) {
             return Optional.empty();
         } else {
-            return Optional.of(instance.getValues().size());
+            return Optional.of(instance.getSinglevaluedValues().size());
         }
     }
 
@@ -424,7 +443,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         instancesCollection.updateOne(
                 eq("_id", hexId),
-                unset("references"));
+                unset("singlevaluedReferences"));
     }
 
     @Nonnull
@@ -435,12 +454,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
-                .projection(include("references")).first();
+                .projection(include("singlevaluedReferences")).first();
 
-        if (instance == null || instance.getReferences() == null) {
+        if (instance == null || instance.getSinglevaluedReferences() == null) {
             return Optional.empty();
         } else {
-            return Optional.of(instance.getReferences().size());
+            return Optional.of(instance.getSinglevaluedReferences().size());
         }
     }
 
