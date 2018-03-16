@@ -285,8 +285,16 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("sizeOfValue");
+        String hexId = key.owner().toHexString();
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("values")).first();
+
+        if (instance == null || instance.getValues() == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(instance.getValues().size());
+        }
     }
 
     //endregion
