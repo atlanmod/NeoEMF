@@ -34,9 +34,7 @@ import java.util.stream.Stream;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Projections.include;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
-import static com.mongodb.client.model.Updates.unset;
+import static com.mongodb.client.model.Updates.*;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
@@ -460,25 +458,17 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
                 .projection(include("multivaluedReferences")).first();
 
-        if(instance == null){
+        if(instance == null || instance.getMultivaluedReferences().get(stringKeyId)==null){
             return Optional.empty();
         }
 
-        //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
-        List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
-        if (multivaluedReference == null) {
-            return Optional.empty();
-        }
+        String item = instance.getMultivaluedReferences().get(stringKeyId).get(key.position());
 
-        Optional<Id> res = Optional.of(IdConverters.withHexString().revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
+        Optional<Id> res = Optional.of(IdConverters.withHexString().revert(item));
 
-        multivaluedReference.remove(key.position());
-
-        if (instance != null) {
-            instancesCollection.updateOne(
-                    eq("_id", hexId),
-                    set("multivaluedReferences." + stringKeyId, multivaluedReference));
-        }
+        instancesCollection.updateOne(
+                eq("_id", hexId),
+                pull("multivaluedReferences." + stringKeyId, item));
 
         return res;
     }
