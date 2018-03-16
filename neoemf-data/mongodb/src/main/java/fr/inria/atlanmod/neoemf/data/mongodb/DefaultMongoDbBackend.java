@@ -221,8 +221,19 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("allValuesOf");
+        StoredInstance instance = (StoredInstance) instancesCollection
+                .find(
+                        eq("_id", key.owner().toHexString()))
+                .projection(include("multivaluedValues." + key.id()))
+                .first();
+
+        if (instance == null || instance.getMultivaluedReferences().size() == 0)
+            return Stream.empty();
+
+        List<String> refs = instance.getMultivaluedValues().get(String.valueOf(key.id()));
+
+        return MoreIterables.stream(refs).
+                map(v -> (V)deserializeValue(v));
     }
 
     @Nonnull
