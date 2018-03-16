@@ -58,9 +58,22 @@ public class StoredInstance {
     private Map<String, List<String>> multivaluedReferences = new HashMap<>();
 
     /**
-     * The values
+     * Singlevalued values
      */
     private Map<String, String> values = new HashMap<>();
+
+    /**
+     * Multivalued values
+     */
+    private HashMap<String, List<String>> multivaluedValues = new HashMap<>();
+
+    public HashMap<String, List<String>> getMultivaluedValues() {
+        return multivaluedValues;
+    }
+
+    public void setMultivaluedValues(HashMap<String, List<String>> multivaluedValues) {
+        this.multivaluedValues = multivaluedValues;
+    }
 
     public Map<String, String> getValues() {
         return values;
