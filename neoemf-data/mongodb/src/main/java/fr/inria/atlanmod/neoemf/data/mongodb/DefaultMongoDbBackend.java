@@ -212,8 +212,22 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public <V> Optional<V> valueOf(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("valueOf");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("multivaluedValues." + key.id())).first();
+
+        if (instance == null || instance.getMultivaluedValues() == null) {
+            return Optional.empty();
+        } else {
+            if (instance.getMultivaluedValues().containsKey(stringKeyId)) {
+                return Optional.of((V)IdConverters.withHexString()
+                        .revert(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
+            } else {
+                return Optional.empty();
+            }
+        }
     }
 
     @Nonnull
@@ -339,7 +353,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
-                .projection(include("multivaluedreferences." + key.id())).first();
+                .projection(include("multivaluedReferences." + key.id())).first();
 
         if (instance == null || instance.getMultivaluedReferences() == null) {
             return Optional.empty();
