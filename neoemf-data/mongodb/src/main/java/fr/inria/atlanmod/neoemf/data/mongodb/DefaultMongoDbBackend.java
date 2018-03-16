@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Projections.include;
+import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 import static com.mongodb.client.model.Updates.unset;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
@@ -416,7 +417,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         instancesCollection.updateOne(
                 eq("_id", hexId),
-                unset("references"));
+                combine(unset("references"), unset("multivaluedReferences")));
     }
 
     @Nonnull
