@@ -7,6 +7,7 @@ NeoEMF
 [![Javadoc](https://img.shields.io/badge/javadoc--blue.svg)](https://atlanmod.github.io/NeoEMF/releases/latest/doc/)
 [![Plugin](https://img.shields.io/badge/plugin--blue.svg)](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/)
 [![Licence](https://img.shields.io/badge/licence-EPL--2.0-blue.svg)](https://www.eclipse.org/legal/epl-2.0/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fatlanmod%2FNeoEMF.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fatlanmod%2FNeoEMF?ref=badge_shield)
 
 Check out our [wiki][wiki] for further information on the installation, usages, supported backends, code examples, developer resources, etc.
 
@@ -139,3 +140,7 @@ Performance problems and memory leaks are diagnosed with [Java Profiler](https:/
 
 [snapshot-doc]: https://atlanmod.github.io/NeoEMF/releases/snapshot/doc/
 [snapshot-plugin]: https://atlanmod.github.io/NeoEMF/releases/snapshot/plugin/
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fatlanmod%2FNeoEMF.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fatlanmod%2FNeoEMF?ref=badge_large)
