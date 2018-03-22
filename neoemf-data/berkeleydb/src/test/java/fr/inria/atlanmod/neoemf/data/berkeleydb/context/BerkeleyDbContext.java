@@ -41,7 +41,7 @@ public abstract class BerkeleyDbContext extends AbstractLocalContext {
             @Nonnull
             @Override
             public ImmutableConfig config() {
-                return BerkeleyDbConfig.newConfig().withIndices();
+                return new BerkeleyDbConfig().withIndices();
             }
         };
     }
@@ -63,7 +63,7 @@ public abstract class BerkeleyDbContext extends AbstractLocalContext {
             @Nonnull
             @Override
             public ImmutableConfig config() {
-                return BerkeleyDbConfig.newConfig().withArrays();
+                return new BerkeleyDbConfig().withArrays();
             }
         };
     }
@@ -85,7 +85,7 @@ public abstract class BerkeleyDbContext extends AbstractLocalContext {
             @Nonnull
             @Override
             public ImmutableConfig config() {
-                return BerkeleyDbConfig.newConfig().withLists();
+                return new BerkeleyDbConfig().withLists();
             }
         };
     }
@@ -99,6 +99,6 @@ public abstract class BerkeleyDbContext extends AbstractLocalContext {
     @Nonnull
     @Override
     public BackendFactory factory() {
-        return BerkeleyDbBackendFactory.getInstance();
+        return new BerkeleyDbBackendFactory();
     }
 }

@@ -29,18 +29,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class InMemoryUri extends AbstractUriBuilder {
 
     /**
-     * Constructs a new {@code InMemoryUri}.
-     */
-    private InMemoryUri() {
-    }
-
-    /**
-     * Creates a new {@link fr.inria.atlanmod.neoemf.util.UriBuilder} with the pre-configured scheme.
-     *
-     * @return a new builder
+     * @deprecated Use the default constructor instead.
      */
     @Nonnull
-    @SuppressWarnings("unused") // Called dynamically
+    @Deprecated
     public static UriBuilder builder() {
         return new InMemoryUri();
     }

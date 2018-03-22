@@ -28,18 +28,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BerkeleyDbUri extends AbstractUriBuilder {
 
     /**
-     * Constructs a new {@code BerkeleyDbUri}.
-     */
-    private BerkeleyDbUri() {
-    }
-
-    /**
-     * Creates a new {@link fr.inria.atlanmod.neoemf.util.UriBuilder} with the pre-configured scheme.
-     *
-     * @return a new builder
+     * @deprecated Use the default constructor instead.
      */
     @Nonnull
-    @SuppressWarnings("unused") // Called dynamically
+    @Deprecated
     public static UriBuilder builder() {
         return new BerkeleyDbUri();
     }

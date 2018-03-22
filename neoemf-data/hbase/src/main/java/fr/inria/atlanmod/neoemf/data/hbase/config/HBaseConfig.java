@@ -25,18 +25,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class HBaseConfig extends BaseConfig<HBaseConfig> {
 
     /**
-     * Constructs a new {@code HBaseConfig}.
+     * Constructs a new {@code HBaseConfig} with default settings.
      */
-    protected HBaseConfig() {
+    public HBaseConfig() {
         withDefault();
     }
 
     /**
-     * Constructs a new {@code HBaseConfig} instance with default settings.
-     *
-     * @return a new configuration
+     * @deprecated Use the default constructor instead.
      */
     @Nonnull
+    @Deprecated
     public static HBaseConfig newConfig() {
         return new HBaseConfig();
     }

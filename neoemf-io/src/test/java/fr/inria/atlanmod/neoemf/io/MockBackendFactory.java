@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.Config;
@@ -49,21 +50,19 @@ public final class MockBackendFactory extends AbstractBackendFactory<MockBackend
 
     /**
      * Constructs a new {@code MockBackendFactory}.
+     */
+    @VisibleForReflection
+    public MockBackendFactory() {
+        this(new InvalidBackend("You need to register the instance you want to use with BackendFactoryRegistry.register() first"));
+    }
+
+    /**
+     * Constructs a new {@code MockBackendFactory} that always returns the specified {@code backend}.
      *
      * @param backend the back-end returned by {@link #createBackend(URI, ImmutableConfig)}
      */
     public MockBackendFactory(Backend backend) {
         this.backend = backend;
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
-     */
-    @Nonnull
-    public static BackendFactory getInstance() {
-        return new MockBackendFactory(new InvalidBackend("You need to register the instance you want to use with BackendFactoryRegistry.register() first"));
     }
 
     @Override
@@ -83,16 +82,6 @@ public final class MockBackendFactory extends AbstractBackendFactory<MockBackend
     @FactoryBinding(factory = MockBackendFactory.class)
     @ParametersAreNonnullByDefault
     public static final class MockConfig extends BaseConfig<MockConfig> {
-
-        /**
-         * Constructs a new {@code MockConfig} instance with default settings.
-         *
-         * @return a new configuration
-         */
-        @Nonnull
-        public static MockConfig newConfig() {
-            return new MockConfig();
-        }
     }
 
     /**
@@ -101,16 +90,6 @@ public final class MockBackendFactory extends AbstractBackendFactory<MockBackend
     @FactoryBinding(factory = MockBackendFactory.class)
     @ParametersAreNonnullByDefault
     public static final class MockUri extends AbstractUriBuilder {
-
-        /**
-         * Creates a new {@link UriBuilder} with the pre-configured scheme.
-         *
-         * @return a new builder
-         */
-        @Nonnull
-        public static UriBuilder builder() {
-            return new MockUri();
-        }
 
         @Override
         public boolean supportsFile() {

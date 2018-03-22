@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -45,19 +44,12 @@ public class HBaseBackendFactory extends AbstractBackendFactory<HBaseConfig> {
     private static final String NAME = "hbase";
 
     /**
-     * Constructs a new {@code HBaseBackendFactory}.
-     */
-    protected HBaseBackendFactory() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
+     * @deprecated Use the default constructor instead.
      */
     @Nonnull
+    @Deprecated
     public static BackendFactory getInstance() {
-        return Holder.INSTANCE;
+        return new HBaseBackendFactory();
     }
 
     @Override
@@ -94,17 +86,5 @@ public class HBaseBackendFactory extends AbstractBackendFactory<HBaseConfig> {
         Table table = connection.getTable(tableName);
 
         return createMapper(config.getMapping(), table);
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final BackendFactory INSTANCE = new HBaseBackendFactory();
     }
 }

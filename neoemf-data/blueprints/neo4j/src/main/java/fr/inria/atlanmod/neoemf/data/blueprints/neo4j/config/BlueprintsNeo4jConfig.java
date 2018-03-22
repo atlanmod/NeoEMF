@@ -38,18 +38,17 @@ public class BlueprintsNeo4jConfig extends BaseBlueprintsConfig<BlueprintsNeo4jC
     static final String NEO4J_PREFIX = createKey(BLUEPRINTS_PREFIX, "neo4j");
 
     /**
-     * Constructs a new {@code BlueprintsNeo4jConfig}.
+     * Constructs a new {@code BlueprintsNeo4jConfig} with default settings.
      */
-    protected BlueprintsNeo4jConfig() {
+    public BlueprintsNeo4jConfig() {
         setGraph(Neo4j2Graph.class);
     }
 
     /**
-     * Constructs a new {@code BlueprintsNeo4jConfig} instance with default settings.
-     *
-     * @return a new configuration
+     * @deprecated Use the default constructor instead.
      */
     @Nonnull
+    @Deprecated
     public static BlueprintsNeo4jConfig newConfig() {
         return new BlueprintsNeo4jConfig();
     }

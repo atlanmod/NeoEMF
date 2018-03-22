@@ -36,7 +36,7 @@ class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
     @Override
     protected Stream<Arguments> allMappings() {
         return Stream.of(
-                Arguments.of(BlueprintsTinkerConfig.newConfig(), DefaultBlueprintsBackend.class)
+                Arguments.of(new BlueprintsTinkerConfig(), DefaultBlueprintsBackend.class)
         );
     }
 }

@@ -13,7 +13,6 @@ import com.tinkerpop.blueprints.GraphFactory;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph;
 
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -38,19 +37,12 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory<BaseBluepri
     private static final String NAME = "blueprints";
 
     /**
-     * Constructs a new {@code BlueprintsBackendFactory}.
-     */
-    protected BlueprintsBackendFactory() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
+     * @deprecated Use the default constructor instead.
      */
     @Nonnull
+    @Deprecated
     public static BackendFactory getInstance() {
-        return Holder.INSTANCE;
+        return new BlueprintsBackendFactory();
     }
 
     @Override
@@ -71,17 +63,5 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory<BaseBluepri
         }
 
         return createMapper(config.getMapping(), graph);
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final BackendFactory INSTANCE = new BlueprintsBackendFactory();
     }
 }

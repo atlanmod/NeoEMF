@@ -34,19 +34,18 @@ public class BlueprintsTinkerConfig extends BaseBlueprintsConfig<BlueprintsTinke
     static final String TINKER_PREFIX = createKey(BLUEPRINTS_PREFIX, "tg");
 
     /**
-     * Constructs a new {@code BlueprintsTinkerConfig}.
+     * Constructs a new {@code BlueprintsTinkerConfig} with default settings.
      */
-    protected BlueprintsTinkerConfig() {
+    public BlueprintsTinkerConfig() {
         setGraph(TinkerGraph.class);
         setFileType(TinkerGraph.FileType.GRAPHML);
     }
 
     /**
-     * Constructs a new {@code BlueprintsTinkerConfig} instance with default settings.
-     *
-     * @return a new configuration
+     * @deprecated Use the default constructor instead.
      */
     @Nonnull
+    @Deprecated
     public static BlueprintsTinkerConfig newConfig() {
         return new BlueprintsTinkerConfig();
     }

@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.commons.Lazy;
-import fr.inria.atlanmod.commons.annotation.Builder;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.bind.BindingEngine;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -31,7 +30,6 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  * An abstract {@link UriBuilder} that manages the assembly and the construction of {@link
  * org.eclipse.emf.common.util.URI}s.
  */
-@Builder("builder")
 @ParametersAreNonnullByDefault
 public abstract class AbstractUriBuilder implements UriBuilder {
 
@@ -66,7 +64,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
      */
     @Nonnull
     @VisibleForTesting
-    public static UriBuilder builder(String scheme) {
+    public static UriBuilder withScheme(String scheme) {
         return new AbstractUriBuilder(scheme) {
 
             @Override

@@ -37,7 +37,7 @@ public abstract class BlueprintsNeo4jContext extends BlueprintsContext {
             @Nonnull
             @Override
             public ImmutableConfig config() {
-                return BlueprintsNeo4jConfig.newConfig();
+                return new BlueprintsNeo4jConfig();
             }
         };
     }

@@ -28,18 +28,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class InMemoryConfig extends BaseConfig<InMemoryConfig> {
 
     /**
-     * Constructs a new {@code BerkeleyDbConfig}.
+     * Constructs a new {@code BerkeleyDbConfig} with default settings.
      */
-    protected InMemoryConfig() {
+    public InMemoryConfig() {
         // Don't set a default mapping for a multi-mapping configuration.
     }
 
     /**
-     * Constructs a new {@code InMemoryConfig} instance with default settings.
-     *
-     * @return a new configuration
+     * @deprecated Use the default constructor instead.
      */
     @Nonnull
+    @Deprecated
     public static InMemoryConfig newConfig() {
         return new InMemoryConfig();
     }

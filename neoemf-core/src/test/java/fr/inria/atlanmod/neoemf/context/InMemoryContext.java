@@ -42,13 +42,13 @@ public abstract class InMemoryContext extends AbstractLocalContext {
     @Nonnull
     @Override
     public BackendFactory factory() {
-        return InMemoryBackendFactory.getInstance();
+        return new InMemoryBackendFactory();
     }
 
     @Nonnull
     @Override
     public ImmutableConfig config() {
-        return InMemoryConfig.newConfig();
+        return new InMemoryConfig();
     }
 
     @Override

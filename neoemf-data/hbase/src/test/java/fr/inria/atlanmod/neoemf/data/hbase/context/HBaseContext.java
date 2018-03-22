@@ -35,7 +35,7 @@ public abstract class HBaseContext extends AbstractRemoteContext {
             @Nonnull
             @Override
             public ImmutableConfig config() {
-                return HBaseConfig.newConfig();
+                return new HBaseConfig();
             }
         };
     }
@@ -60,7 +60,7 @@ public abstract class HBaseContext extends AbstractRemoteContext {
     @Nonnull
     @Override
     public BackendFactory factory() {
-        return HBaseBackendFactory.getInstance();
+        return new HBaseBackendFactory();
     }
 
     @Nonnull

@@ -42,7 +42,7 @@ class HBaseBackendFactoryTest extends AbstractBackendFactoryTest {
     @Override
     protected Stream<Arguments> allMappings() {
         return Stream.of(
-                Arguments.of(HBaseConfig.newConfig(), DefaultHBaseBackend.class)
+                Arguments.of(new HBaseConfig(), DefaultHBaseBackend.class)
         );
     }
 }

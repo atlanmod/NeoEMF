@@ -77,7 +77,7 @@ final class ContextualResourceBuilder {
      */
     @Nonnull
     private ImmutableConfig defaultConfig() {
-        return BaseConfig.newConfig().merge(context.config())
+        return new BaseConfig<>().merge(context.config())
                 .log(Level.DEBUG)
                 .autoSave(100)
                 .cacheSizes()

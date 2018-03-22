@@ -36,9 +36,9 @@ class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
     @Override
     protected Stream<Arguments> allMappings() {
         return Stream.of(
-                Arguments.of(BerkeleyDbConfig.newConfig().withIndices(), BerkeleyDbBackendIndices.class),
-                Arguments.of(BerkeleyDbConfig.newConfig().withArrays(), BerkeleyDbBackendArrays.class),
-                Arguments.of(BerkeleyDbConfig.newConfig().withLists(), BerkeleyDbBackendLists.class)
+                Arguments.of(new BerkeleyDbConfig().withIndices(), BerkeleyDbBackendIndices.class),
+                Arguments.of(new BerkeleyDbConfig().withArrays(), BerkeleyDbBackendArrays.class),
+                Arguments.of(new BerkeleyDbConfig().withLists(), BerkeleyDbBackendLists.class)
         );
     }
 }

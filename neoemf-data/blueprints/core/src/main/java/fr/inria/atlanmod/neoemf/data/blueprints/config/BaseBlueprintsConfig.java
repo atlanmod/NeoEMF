@@ -41,7 +41,7 @@ public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends Bas
     /**
      * Constructs a new {@code BaseBlueprintsConfig}.
      */
-    protected BaseBlueprintsConfig() {
+    public BaseBlueprintsConfig() {
         withDefault();
     }
 

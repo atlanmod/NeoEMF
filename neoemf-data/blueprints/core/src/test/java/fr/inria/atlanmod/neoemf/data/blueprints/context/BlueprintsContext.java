@@ -35,7 +35,7 @@ public abstract class BlueprintsContext extends AbstractLocalContext {
             @Nonnull
             @Override
             public ImmutableConfig config() {
-                return BlueprintsTinkerConfig.newConfig();
+                return new BlueprintsTinkerConfig();
             }
         };
     }
@@ -49,6 +49,6 @@ public abstract class BlueprintsContext extends AbstractLocalContext {
     @Nonnull
     @Override
     public BackendFactory factory() {
-        return BlueprintsBackendFactory.getInstance();
+        return new BlueprintsBackendFactory();
     }
 }

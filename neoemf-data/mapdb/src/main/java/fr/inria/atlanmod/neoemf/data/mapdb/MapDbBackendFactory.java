@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -35,19 +34,12 @@ public class MapDbBackendFactory extends AbstractBackendFactory<MapDbConfig> {
     private static final String NAME = "mapdb";
 
     /**
-     * Constructs a new {@code MapDbBackendFactory}.
-     */
-    protected MapDbBackendFactory() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
+     * @deprecated Use the default constructor instead.
      */
     @Nonnull
+    @Deprecated
     public static BackendFactory getInstance() {
-        return Holder.INSTANCE;
+        return new MapDbBackendFactory();
     }
 
     @Override
@@ -73,17 +65,5 @@ public class MapDbBackendFactory extends AbstractBackendFactory<MapDbConfig> {
         DB db = dbBuilder.make();
 
         return createMapper(config.getMapping(), db);
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final BackendFactory INSTANCE = new MapDbBackendFactory();
     }
 }

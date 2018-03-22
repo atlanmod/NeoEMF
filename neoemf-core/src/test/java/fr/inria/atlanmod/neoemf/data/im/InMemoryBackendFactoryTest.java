@@ -40,7 +40,7 @@ class InMemoryBackendFactoryTest extends AbstractBackendFactoryTest {
     @Override
     protected Stream<Arguments> allMappings() {
         return Stream.of(
-                Arguments.of(InMemoryConfig.newConfig(), DefaultInMemoryBackend.class)
+                Arguments.of(new InMemoryConfig(), DefaultInMemoryBackend.class)
         );
     }
 }

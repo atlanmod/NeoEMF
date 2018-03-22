@@ -263,11 +263,11 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         ImmutableConfig config;
 
         if (factory.supportsTransient()) {
-            config = InMemoryConfig.newConfig();
-            backend = InMemoryBackendFactory.getInstance().createBackend(uri, config);
+            config = new InMemoryConfig();
+            backend = new InMemoryBackendFactory().createBackend(uri, config);
         }
         else {
-            config = BaseConfig.newConfig();
+            config = new BaseConfig<>();
             backend = new InvalidBackend("This back-end does not provide a transient layer: you must save/load the associated resource before using it");
         }
 
@@ -304,7 +304,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Nonnull
     @SuppressWarnings("unchecked")
     private ImmutableConfig createConfig(Map<?, ?> options) {
-        return BaseConfig.newConfig().merge((Map<String, Object>) options);
+        return new BaseConfig<>().merge((Map<String, Object>) options);
     }
 
     /**

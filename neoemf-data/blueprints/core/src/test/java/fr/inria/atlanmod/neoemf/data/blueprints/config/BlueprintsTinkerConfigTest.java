@@ -56,7 +56,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
      */
     @BeforeEach
     public void initResource() throws IOException {
-        URI uri = BlueprintsUri.builder().fromFile(currentTempFile());
+        URI uri = new BlueprintsUri().fromFile(currentTempFile());
         resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
     }
 
@@ -73,7 +73,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
      */
     @Test
     public void testGraphOption() throws IOException {
-        resource.save(BlueprintsTinkerConfig.newConfig());
+        resource.save(new BlueprintsTinkerConfig());
 
         ImmutableConfig config = loadConfig();
         assertConfigurationHasEntry(config, "blueprints.graph", TinkerGraph.class.getName());

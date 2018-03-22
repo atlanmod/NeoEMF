@@ -41,7 +41,7 @@ public abstract class MapDbContext extends AbstractLocalContext {
             @Nonnull
             @Override
             public ImmutableConfig config() {
-                return MapDbConfig.newConfig().withIndices();
+                return new MapDbConfig().withIndices();
             }
         };
     }
@@ -63,7 +63,7 @@ public abstract class MapDbContext extends AbstractLocalContext {
             @Nonnull
             @Override
             public ImmutableConfig config() {
-                return MapDbConfig.newConfig().withArrays();
+                return new MapDbConfig().withArrays();
             }
         };
     }
@@ -85,7 +85,7 @@ public abstract class MapDbContext extends AbstractLocalContext {
             @Nonnull
             @Override
             public ImmutableConfig config() {
-                return MapDbConfig.newConfig().withLists();
+                return new MapDbConfig().withLists();
             }
         };
     }
@@ -99,6 +99,6 @@ public abstract class MapDbContext extends AbstractLocalContext {
     @Nonnull
     @Override
     public BackendFactory factory() {
-        return MapDbBackendFactory.getInstance();
+        return new MapDbBackendFactory();
     }
 }

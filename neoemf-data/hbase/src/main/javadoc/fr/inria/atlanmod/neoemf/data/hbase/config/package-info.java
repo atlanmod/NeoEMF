@@ -20,7 +20,7 @@
  * defined at the core level.
  * <pre>{@code
  * // Create the option map
- * Map<String, Object> options = HBaseConfig.newConfig()
+ * Map<String, Object> options = new HBaseConfig()
  *     .readOnly()
  *     .cacheFeatures()
  *     .toMap();

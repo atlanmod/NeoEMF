@@ -36,9 +36,9 @@ class MapDbBackendFactoryTest extends AbstractBackendFactoryTest {
     @Override
     protected Stream<Arguments> allMappings() {
         return Stream.of(
-                Arguments.of(MapDbConfig.newConfig().withIndices(), MapDbBackendIndices.class),
-                Arguments.of(MapDbConfig.newConfig().withArrays(), MapDbBackendArrays.class),
-                Arguments.of(MapDbConfig.newConfig().withLists(), MapDbBackendLists.class)
+                Arguments.of(new MapDbConfig().withIndices(), MapDbBackendIndices.class),
+                Arguments.of(new MapDbConfig().withArrays(), MapDbBackendArrays.class),
+                Arguments.of(new MapDbConfig().withLists(), MapDbBackendLists.class)
         );
     }
 }

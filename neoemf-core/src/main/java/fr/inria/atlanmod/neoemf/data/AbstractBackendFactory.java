@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
@@ -32,15 +31,8 @@ import static java.util.Objects.isNull;
 /**
  * An abstract {@link BackendFactory}.
  */
-@Singleton
 @ParametersAreNonnullByDefault
 public abstract class AbstractBackendFactory<C extends Config> extends AbstractMapperFactory implements BackendFactory {
-
-    /**
-     * Constructs a new {@code AbstractBackendFactory}.
-     */
-    protected AbstractBackendFactory() {
-    }
 
     /**
      * Creates a {@link Path} from the given {@code uri}.

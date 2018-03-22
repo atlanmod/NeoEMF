@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.im;
 
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
@@ -33,20 +32,12 @@ public class InMemoryBackendFactory extends AbstractBackendFactory<InMemoryConfi
     private static final String NAME = "im"; // In-Memory
 
     /**
-     * Constructs a new {@code InMemoryBackendFactory}.
-     */
-    protected InMemoryBackendFactory() {
-        super();
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
+     * @deprecated Use the default constructor instead.
      */
     @Nonnull
+    @Deprecated
     public static BackendFactory getInstance() {
-        return Holder.INSTANCE;
+        return new InMemoryBackendFactory();
     }
 
     @Override
@@ -63,17 +54,5 @@ public class InMemoryBackendFactory extends AbstractBackendFactory<InMemoryConfi
     @Override
     public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
         return new DefaultInMemoryBackend();
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final BackendFactory INSTANCE = new InMemoryBackendFactory();
     }
 }

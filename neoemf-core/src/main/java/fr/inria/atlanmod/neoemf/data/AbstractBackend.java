@@ -193,7 +193,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
     private void defaultCopyTo(Backend target) {
         final Copier<DataMapper> copier = findDirectCopier();
 
-        Store store = StoreFactory.getInstance().createStore(target, BaseConfig.newConfig().autoSave());
+        Store store = StoreFactory.getInstance().createStore(target, new BaseConfig<>().autoSave());
         copier.copy(this, store);
     }
 

@@ -39,31 +39,31 @@ class UriBuilderTest extends AbstractUriTest {
 
     @Test
     void testCreateUriWithoutScheme() {
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(null)))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.withScheme(null)))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void testCreateUriFromUriWithNull() {
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromUri(null)))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.withScheme(SCHEME).fromUri(null)))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void testCreateUriFromFileWithNull() {
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromFile((File) null)))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.withScheme(SCHEME).fromFile((File) null)))
                 .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void testCreateUriFromServerWithNull() {
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromServer(null, 0, URI.createURI("uri0"))))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.withScheme(SCHEME).fromServer(null, 0, URI.createURI("uri0"))))
                 .isInstanceOf(NullPointerException.class);
 
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromServer("localhost", -1, URI.createURI("uri0"))))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.withScheme(SCHEME).fromServer("localhost", -1, URI.createURI("uri0"))))
                 .isInstanceOf(IllegalArgumentException.class);
 
-        assertThat(catchThrowable(() -> AbstractUriBuilder.builder(SCHEME).fromServer("localhost", 0, (URI) null)))
+        assertThat(catchThrowable(() -> AbstractUriBuilder.withScheme(SCHEME).fromServer("localhost", 0, (URI) null)))
                 .isInstanceOf(NullPointerException.class);
     }
 }

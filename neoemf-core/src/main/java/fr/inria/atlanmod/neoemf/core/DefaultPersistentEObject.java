@@ -313,7 +313,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
         // Create a new transient store
         else {
-            ImmutableConfig config = BaseConfig.newConfig();
+            ImmutableConfig config = new BaseConfig<>();
 
             Backend backend = new BoundInMemoryBackend(id());
             Store baseStore = StoreFactory.getInstance().createStore(backend, config);

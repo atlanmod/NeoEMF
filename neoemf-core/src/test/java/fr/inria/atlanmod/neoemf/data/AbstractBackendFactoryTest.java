@@ -45,7 +45,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateTransientStore() throws IOException {
-        try (Backend backend = InMemoryBackendFactory.getInstance().createBackend(InMemoryUri.builder().fromFile(currentTempFile()), InMemoryConfig.newConfig())) {
+        try (Backend backend = new InMemoryBackendFactory().createBackend(new InMemoryUri().fromFile(currentTempFile()), new InMemoryConfig())) {
             try (Store store = StoreFactory.getInstance().createStore(backend, context().config())) {
                 assertThat(store).isInstanceOf(NoopStore.class);
 
@@ -76,7 +76,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
         ImmutableConfig config = context().config();
 
         File file = currentTempFile();
-        try (Backend transientBackend = InMemoryBackendFactory.getInstance().createBackend(InMemoryUri.builder().fromFile(file), InMemoryConfig.newConfig())) {
+        try (Backend transientBackend = new InMemoryBackendFactory().createBackend(new InMemoryUri().fromFile(file), new InMemoryConfig())) {
             try (Backend persistentBackend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
                 transientBackend.copyTo(persistentBackend);
             }

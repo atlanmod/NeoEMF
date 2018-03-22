@@ -25,24 +25,23 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BerkeleyDbConfig extends BaseConfig<BerkeleyDbConfig> {
 
     /**
-     * Constructs a new {@code BerkeleyDbConfig}.
-     */
-    protected BerkeleyDbConfig() {
-        // Don't set a default mapping for a multi-mapping configuration.
-    }
-
-    /**
-     * Constructs a new {@code BerkeleyDbConfig} instance with default settings.
+     * Constructs a new {@code BerkeleyDbConfig} with default settings.
      * <p>
      * <b>NOTE:</b> This configuration has several possible mappings: no mapping is defined by default.
-     *
-     * @return a new configuration
      *
      * @see #withIndices()
      * @see #withLists()
      * @see #withArrays()
      */
+    public BerkeleyDbConfig() {
+        // Don't set a default mapping for a multi-mapping configuration.
+    }
+
+    /**
+     * @deprecated Use the default constructor instead.
+     */
     @Nonnull
+    @Deprecated
     public static BerkeleyDbConfig newConfig() {
         return new BerkeleyDbConfig();
     }
