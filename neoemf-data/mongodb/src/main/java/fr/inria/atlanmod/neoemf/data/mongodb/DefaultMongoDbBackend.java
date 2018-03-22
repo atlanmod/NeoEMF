@@ -215,7 +215,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
-                .projection(include("multivaluedValues." + key.id())).first();
+                .projection(include("multivaluedValues." + stringKeyId)).first();
 
         if (instance == null || instance.getMultivaluedValues() == null) {
             return Optional.empty();
@@ -258,16 +258,16 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
-                .projection(include("multivaluedValues")).first();
+                .projection(include(("multivaluedValues"))).first();
 
         addValue(key, value);
 
         if (instance == null) {
             return Optional.empty();
         } else {
-            if (instance.getMultivaluedValues().containsKey(stringKeyId) &&
-                    instance.getMultivaluedValues().get(stringKeyId).indexOf(serializeValue(value)) == key.position()) {
-                return Optional.of((V) IdConverters.withHexString().revert(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
+            if (instance.getMultivaluedValues().containsKey(stringKeyId)) {
+
+                return Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
             } else {
                 throw new NoSuchElementException();
             }
@@ -284,7 +284,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
-                .projection(include("multivaluedValues")).first();
+                .projection(include(("multivaluedValues."+stringKeyId))).first();
 
         //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
         List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
@@ -292,13 +292,20 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             multivaluedValues = new ArrayList<>();
         }
 
-        multivaluedValues.add(key.position(), serializeValue(value));
+        if (key.position() >= multivaluedValues.size())
+            throw new IndexOutOfBoundsException();
+        if (key.position() < multivaluedValues.size()) {
+            multivaluedValues.set(key.position(), serializeValue(value));
+        } else {
+            multivaluedValues.add(key.position(), serializeValue(value));
+        }
 
         if (instance != null) {
             instancesCollection.updateOne(
                     eq("_id", hexId),
-                    set("multivaluedValues." + stringKeyId, multivaluedValues));
+                    set("multivaluedReferences." + stringKeyId, multivaluedValues));
         }
+
     }
 
     @Override
@@ -311,8 +318,35 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             return;
         }
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("addAllValues");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include(("multivaluedValues."+stringKeyId))).first();
+
+        List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
+        if (multivaluedValues == null) {
+            multivaluedValues = new ArrayList<>();
+        }
+
+
+        if(key.position() > multivaluedValues.size()){
+            throw new IndexOutOfBoundsException();
+        }
+
+        List<String> toAdd = new ArrayList<String>();
+        for(V value : collection){
+            toAdd.add(serializeValue(value));
+        }
+        multivaluedValues.addAll(key.position(), toAdd);
+
+        if (instance != null) {
+            instancesCollection.updateOne(
+                    eq("_id", hexId),
+                    set("multivaluedValues." + stringKeyId, multivaluedValues));
+        }
+
+
     }
 
     @Nonnull
