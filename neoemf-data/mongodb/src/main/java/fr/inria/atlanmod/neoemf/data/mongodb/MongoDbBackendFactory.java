@@ -8,8 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
+import com.mongodb.*;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.log.Log;
@@ -74,7 +73,8 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(), fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
         MongoClient client = new MongoClient(config.getHost(), config.getPort());
-        MongoDatabase database = client.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
+        MongoDatabase database = client.getDatabase(databaseName)
+                .withCodecRegistry(pojoCodecRegistry);
 
         return createMapper(config.getMapping(), config, client, database);
     }
