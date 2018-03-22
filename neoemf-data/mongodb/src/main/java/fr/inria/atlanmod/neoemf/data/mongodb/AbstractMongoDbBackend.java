@@ -8,10 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
-import com.mongodb.Block;
-import com.mongodb.MongoClient;
+import com.mongodb.*;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -57,6 +58,13 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
      */
     private static final boolean SHOULD_DELETE_TEST_DATABASES = true;
 
+    private boolean isTestDatabase;
+
+    protected boolean isTestDatabase()
+    {
+        return isTestDatabase;
+    }
+
 
     private MongoDatabase mongoDatabase;
     private MongoClient mongoClient;
@@ -66,7 +74,45 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     @Override
     protected void internalSave() throws IOException {
-        //Nothing to do, save is automatic
+        //Nothing to do, save is automatic... or is it ?
+    }
+
+    /**
+     * If in a test database, will wait for completion of the update operation
+     * before returning, otherwise does nothing
+     * @param result the pending update operation
+     */
+    protected void waitForUpdateCompletion(UpdateResult result)
+    {
+        if (!isTestDatabase())
+            return;
+
+        while (!result.wasAcknowledged()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * If in a test database, will wait for completion of the delete operation
+     * before returning, otherwise does nothing
+     * @param result the pending delete operation
+     */
+    protected void waitForDeleteCompletion(DeleteResult result)
+    {
+        if (!isTestDatabase())
+            return;
+
+        while (!result.wasAcknowledged()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -79,6 +125,9 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
         //Create and get the needed collections
         this.instancesCollection = getOrCreateCollection(INSTANCES_COLLECTION_NAME, StoredInstance.class);
+
+        //Are we in a test database ?
+        this.isTestDatabase = this.mongoDatabase.getName().contains("test");
     }
 
     /**
@@ -113,7 +162,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     @Override
     protected void internalClose() throws IOException {
-        if (SHOULD_DELETE_TEST_DATABASES && this.mongoDatabase.getName().contains("test")) {
+        if (SHOULD_DELETE_TEST_DATABASES && isTestDatabase()) {
             Log.info("Deleting test database " + this.mongoDatabase.getName());
             this.mongoDatabase.drop();
         }
@@ -153,11 +202,11 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
             instancesCollection.insertOne(instance);
         } else {
-            instancesCollection.updateOne(
+            waitForUpdateCompletion(instancesCollection.updateOne(
                     eq("_id", hexId),
                     combine(
                             set("container.owner", newContainer.getOwner()),
-                            set("container.id", newContainer.getId())));
+                            set("container.id", newContainer.getId()))));
         }
     }
 
@@ -169,7 +218,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
 
         if (instance != null && instance.getContainer() != null) {
-            instancesCollection.updateOne(eq("_id", hexId), unset("container"));
+            waitForUpdateCompletion(instancesCollection.updateOne(eq("_id", hexId), unset("container")));
         }
     }
 
@@ -206,11 +255,11 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
             instancesCollection.insertOne(instance);
         } else {
-            instancesCollection.updateOne(
+            waitForUpdateCompletion(instancesCollection.updateOne(
                     eq("_id", hexId),
                     combine(
                             set("metaClass.name", metaClass.name()),
-                            set("metaClass.uri", metaClass.uri())));
+                            set("metaClass.uri", metaClass.uri()))));
         }
 
         return true;

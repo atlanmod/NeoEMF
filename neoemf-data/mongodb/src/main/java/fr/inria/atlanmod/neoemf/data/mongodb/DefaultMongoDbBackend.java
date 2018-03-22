@@ -30,7 +30,6 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.in;
 import static com.mongodb.client.model.Projections.include;
 import static com.mongodb.client.model.Updates.*;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
@@ -106,10 +105,10 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
             return Optional.empty();
         } else {
-            instancesCollection.updateOne(
+            waitForUpdateCompletion(instancesCollection.updateOne(
                     eq("_id", hexId),
                     set("singlevaluedValues." + key.id(), serializeValue(value))
-            );
+            ));
 
             if (instance.getSinglevaluedValues().containsKey(String.valueOf(key.id()))) {
                 return Optional.of((V) deserializeValue(instance.getSinglevaluedValues().get(String.valueOf(key.id()))));
@@ -123,9 +122,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public void removeValue(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        instancesCollection.updateOne(
+        waitForUpdateCompletion(instancesCollection.updateOne(
                 eq("_id", key.owner().toHexString()),
-                unset("singlevaluedValues." + key.id()));
+                unset("singlevaluedValues." + key.id())));
     }
 
     //endregion
@@ -177,9 +176,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
             return Optional.empty();
         } else {
-            instancesCollection.updateOne(
+            waitForUpdateCompletion(instancesCollection.updateOne(
                     eq("_id", hexId),
-                    set("singlevaluedReferences." + stringKeyId, reference.toHexString()));
+                    set("singlevaluedReferences." + stringKeyId, reference.toHexString())));
 
             if (instance.getSinglevaluedReferences().containsKey(stringKeyId)) {
                 return Optional.of(IdConverters.withHexString().revert(instance.getSinglevaluedReferences().get(stringKeyId)));
@@ -197,9 +196,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        instancesCollection.updateOne(
+        waitForUpdateCompletion(instancesCollection.updateOne(
                 eq("_id", hexId),
-                unset("singlevaluedReferences." + stringKeyId));
+                unset("singlevaluedReferences." + stringKeyId)));
     }
 
     //endregion
@@ -221,7 +220,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             return Optional.empty();
         } else {
             if (instance.getMultivaluedValues().containsKey(stringKeyId)) {
-                return Optional.of((V)IdConverters.withHexString()
+                return Optional.of((V) IdConverters.withHexString()
                         .revert(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
             } else {
                 return Optional.empty();
@@ -246,7 +245,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         List<String> refs = instance.getMultivaluedValues().get(String.valueOf(key.id()));
 
         return MoreIterables.stream(refs).
-                map(v -> (V)deserializeValue(v));
+                map(v -> (V) deserializeValue(v));
     }
 
     @Nonnull
@@ -301,9 +300,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         }
 
         if (instance != null) {
-            instancesCollection.updateOne(
+            waitForUpdateCompletion(instancesCollection.updateOne(
                     eq("_id", hexId),
-                    set("multivaluedReferences." + stringKeyId, multivaluedValues));
+                    set("multivaluedValues." + stringKeyId, multivaluedValues)));
         }
 
     }
@@ -377,7 +376,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
                 .projection(include("singlevaluedValues")).first();
 
-        if (instance == null || instance.getSinglevaluedValues() == null) {
+        if (instance == null || instance.getSinglevaluedValues() == null || instance.getSinglevaluedValues().isEmpty()) {
             return Optional.empty();
         } else {
             return Optional.of(instance.getSinglevaluedValues().size());
@@ -401,14 +400,14 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         if (instance == null || instance.getMultivaluedReferences() == null) {
             return Optional.empty();
-        } else {
-            if (instance.getMultivaluedReferences().containsKey(stringKeyId)) {
-                return Optional.of(IdConverters.withHexString()
-                        .revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
-            } else {
-                return Optional.empty();
-            }
+        } else if (!instance.getMultivaluedReferences().containsKey(stringKeyId)) {
+            return Optional.empty();
+        } else if (instance.getMultivaluedReferences().get(stringKeyId).size() <= key.position()) {
+            return Optional.empty();
         }
+
+        return Optional.of(IdConverters.withHexString()
+                .revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
     }
 
     @Nonnull
@@ -450,7 +449,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         }
 
         if (instance.getMultivaluedReferences().containsKey(stringKeyId) &&
-                    instance.getMultivaluedReferences().get(stringKeyId).size() > key.position()) {
+                instance.getMultivaluedReferences().get(stringKeyId).size() > key.position()) {
             return Optional.of(IdConverters.withHexString().revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
         }
 
@@ -483,9 +482,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         }
 
         if (instance != null) {
-            instancesCollection.updateOne(
+            waitForUpdateCompletion(instancesCollection.updateOne(
                     eq("_id", hexId),
-                    set("multivaluedReferences." + stringKeyId, multivaluedReference));
+                    set("multivaluedReferences." + stringKeyId, multivaluedReference)));
         }
     }
 
@@ -511,7 +510,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
         List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
-        
+
         if (multivaluedReference == null) {
             multivaluedReference = new ArrayList<>();
         }
@@ -520,23 +519,23 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             throw new IndexOutOfBoundsException();
 
         List<String> toAdd = new ArrayList<String>();
-        for(Id id : collection){
+        for (Id id : collection) {
             toAdd.add(id.toHexString());
         }
 
-        if (key.position() + toAdd.size() > multivaluedReference.size()){
+        if (key.position() + toAdd.size() > multivaluedReference.size()) {
             multivaluedReference.addAll(Collections.nCopies(key.position() + toAdd.size() - multivaluedReference.size(), null));
         }
 
         int i = key.position();
-        for (String a: toAdd){
+        for (String a : toAdd) {
             multivaluedReference.set(i, a);
             i++;
         }
 
-        instancesCollection.updateOne(
+        waitForUpdateCompletion(instancesCollection.updateOne(
                 eq("_id", hexId),
-                set("multivaluedReferences." + stringKeyId, multivaluedReference));
+                set("multivaluedReferences." + stringKeyId, multivaluedReference)));
     }
 
     @Nonnull
@@ -550,16 +549,16 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
                 .projection(include("multivaluedReferences")).first();
 
-        if(instance == null || instance.getMultivaluedReferences().get(stringKeyId)==null){
+        if (instance == null || instance.getMultivaluedReferences().get(stringKeyId) == null) {
             return Optional.empty();
         }
 
         String item = instance.getMultivaluedReferences().get(stringKeyId).get(key.position());
         Optional<Id> res = Optional.of(IdConverters.withHexString().revert(item));
 
-        instancesCollection.updateOne(
+        waitForUpdateCompletion(instancesCollection.updateOne(
                 eq("_id", hexId),
-                pull("multivaluedReferences." + stringKeyId, item));
+                pull("multivaluedReferences." + stringKeyId, item)));
 
         return res;
     }
@@ -570,9 +569,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         String hexId = key.owner().toHexString();
 
-        instancesCollection.updateOne(
+        waitForUpdateCompletion(instancesCollection.updateOne(
                 eq("_id", hexId),
-                combine(unset("references"), unset("multivaluedReferences")));
+                combine(unset("references"), unset("multivaluedReferences"))));
     }
 
     @Nonnull
@@ -585,7 +584,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
                 .projection(include("singlevaluedReferences")).first();
 
-        if (instance == null || instance.getSinglevaluedReferences() == null) {
+        if (instance == null || instance.getSinglevaluedReferences() == null || instance.getSinglevaluedReferences().isEmpty()) {
             return Optional.empty();
         } else {
             return Optional.of(instance.getSinglevaluedReferences().size());
