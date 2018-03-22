@@ -132,9 +132,12 @@ public class ClasspathCollector implements URLCollector {
      *
      * @param urlCollector the {@link URLCollector} to analyze
      *
+     * @return this instance (for chaining)
+     *
      * @throws NullPointerException if {@code urlCollector} is {@code null}
      */
-    public void register(URLCollector urlCollector) {
+    @Nonnull
+    public ClasspathCollector register(URLCollector urlCollector) {
         checkNotNull(urlCollector, "urlCollector");
 
         phaser.register();
@@ -161,6 +164,8 @@ public class ClasspathCollector implements URLCollector {
                 Log.debug("Stopping a classpath analysis [phase = {0}]", phaser.getRegisteredParties());
             }
         });
+
+        return this;
     }
 
     /**

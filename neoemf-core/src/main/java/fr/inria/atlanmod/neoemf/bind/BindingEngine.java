@@ -60,8 +60,9 @@ public final class BindingEngine {
 
     static {
         // Add the default URLs for scanning
-        ClasspathCollector.getInstance().register(new SimpleCollector(ClasspathHelper::forJavaClassPath));
-        ClasspathCollector.getInstance().register(new SimpleCollector(ClasspathHelper::forManifest));
+        ClasspathCollector.getInstance()
+                .register(new SimpleCollector(ClasspathHelper::forJavaClassPath))
+                .register(new SimpleCollector(ClasspathHelper::forManifest));
     }
 
     private BindingEngine() {
@@ -286,7 +287,7 @@ public final class BindingEngine {
         final String variantOrDefault = Optional.ofNullable(variant).orElse(FactoryBinding.DEFAULT_VARIANT);
 
         // Predicate to filter types according to their annotation
-        final Predicate<Class<? extends T>> predicate = t -> {
+        final Predicate<Class<? extends T>> isRelevant = t -> {
             FactoryBinding a = t.getDeclaredAnnotation(FactoryBinding.class);
 
             return nonNull(a)
@@ -297,7 +298,7 @@ public final class BindingEngine {
         // Find all types that match the value and variant
         List<Class<? extends T>> relevantTypes = BindingEngine.<T>typesAnnotatedWith(FactoryBinding.class, type)
                 .stream()
-                .filter(predicate)
+                .filter(isRelevant)
                 .collect(Collectors.toList());
 
         // Ensure that only one type is relevant
