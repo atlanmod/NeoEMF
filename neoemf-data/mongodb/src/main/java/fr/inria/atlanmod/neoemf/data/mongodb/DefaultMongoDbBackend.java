@@ -25,6 +25,7 @@ import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
@@ -268,15 +269,15 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             }
             else{
                 List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
-                multivaluedValues.set(key.position(), serializeValue(value));
-                return Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
-            }
-            /*if (instance.getMultivaluedValues().containsKey(stringKeyId)) {
-                return Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
-            } else {
-                throw new NoSuchElementException();
-            }*/
+                Optional<V> toReturn = Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
 
+                multivaluedValues.set(key.position(), serializeValue(value));
+
+                updateOne(eq("_id", hexId),
+                        set("multivaluedValues." + stringKeyId, multivaluedValues));
+
+                return toReturn;
+            }
         }
     }
 
@@ -297,11 +298,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             multivaluedValues = new ArrayList<>();
         }
 
-        if (key.position()==0 && multivaluedValues.size()==0){
-            multivaluedValues.add(key.position(),serializeValue(value));
-        }
-        else if (key.position() > multivaluedValues.size()) {
+        if (key.position() != 0 && key.position() > multivaluedValues.size()){
             throw new IndexOutOfBoundsException();
+        }
+
+        if (key.position() == multivaluedValues.size()){
+            multivaluedValues.add(serializeValue(value));
         } else {
             multivaluedValues.add(key.position(), serializeValue(value));
         }
