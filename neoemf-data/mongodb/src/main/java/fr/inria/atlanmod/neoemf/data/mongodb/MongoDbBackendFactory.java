@@ -76,7 +76,7 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
         MongoDatabase database = client.getDatabase(databaseName)
                 .withCodecRegistry(pojoCodecRegistry);
 
-        return createMapper(config.getMapping(), config, client, database);
+        return createMapper(config.getMapping(), client, database);
     }
 
     /**

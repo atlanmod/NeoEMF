@@ -70,7 +70,6 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     private MongoDatabase mongoDatabase;
     private MongoClient mongoClient;
-    private MongoDbConfig mongoDbConfig;
 
     private MongoCollection instancesCollection;
 
@@ -137,8 +136,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     /**
      * Constructs a new {@code AbstractMongoDbBackend}.
      */
-    protected AbstractMongoDbBackend(MongoDbConfig config, MongoClient client, MongoDatabase database) {
-        this.mongoDbConfig = config;
+    protected AbstractMongoDbBackend(MongoClient client, MongoDatabase database) {
         this.mongoClient = client;
         this.mongoDatabase = database;
 

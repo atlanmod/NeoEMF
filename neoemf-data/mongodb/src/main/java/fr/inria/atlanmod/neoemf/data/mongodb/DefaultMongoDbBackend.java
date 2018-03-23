@@ -49,8 +49,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
      *
      * @see MongoDbBackendFactory
      */
-    protected DefaultMongoDbBackend(MongoDbConfig config, MongoClient client, MongoDatabase database) {
-        super(config, client, database);
+    protected DefaultMongoDbBackend(MongoClient client, MongoDatabase database) {
+        super(client, database);
     }
 
     //region Single-valued attributes
