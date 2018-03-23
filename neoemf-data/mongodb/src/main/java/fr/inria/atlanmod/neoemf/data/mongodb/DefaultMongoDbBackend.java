@@ -353,8 +353,28 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public <V> Optional<V> removeValue(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("removeValue");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("multivaluedValues")).first();
+
+        Optional<V> res = Optional.empty();
+
+        res = (instance != null && instance.getMultivaluedValues().containsKey(stringKeyId) && instance.getMultivaluedValues().get(stringKeyId).size() < key.position())
+                ? Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())))
+                : Optional.empty();
+
+        if (res == Optional.empty()) return res;
+
+
+        waitForUpdateCompletion(instancesCollection.updateOne(
+                eq("_id", hexId),
+                pull("multivaluedValues." + stringKeyId, res)));
+
+        return res;
     }
 
     @Override
