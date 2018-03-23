@@ -8,14 +8,15 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
-import com.mongodb.*;
+import com.mongodb.Block;
+import com.mongodb.ClientSessionOptions;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import com.mongodb.session.ClientSession;
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
@@ -26,23 +27,19 @@ import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.MetaClass;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.SingleFeature;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 import org.bson.conversions.Bson;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Updates.combine;
-import static com.mongodb.client.model.Updates.set;
-import static com.mongodb.client.model.Updates.unset;
+import static com.mongodb.client.model.Updates.*;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -66,8 +63,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     private ClientSession clientSession;
 
-    protected boolean isTestDatabase()
-    {
+    protected boolean isTestDatabase() {
         return isTestDatabase;
     }
 
@@ -86,10 +82,10 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     /**
      * If in a test database, will wait for completion of the update operation
      * before returning, otherwise does nothing
+     *
      * @param result the pending update operation
      */
-    protected void waitForUpdateCompletion(UpdateResult result)
-    {
+    protected void waitForUpdateCompletion(UpdateResult result) {
         if (!isTestDatabase())
             return;
 
@@ -105,11 +101,11 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     /**
      * Performs an updateOne on the instances collection
      * Provides causal consistency and acknowledgment waiting
+     *
      * @param var1 the first update one parameter
      * @param var2 the second update one parameter
      */
-    protected void updateOne(Bson var1, Bson var2)
-    {
+    protected void updateOne(Bson var1, Bson var2) {
         waitForUpdateCompletion(
                 clientSession == null ?
                         instancesCollection.updateOne(var1, var2) :
@@ -117,8 +113,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         );
     }
 
-    protected FindIterable<StoredInstance> find(Bson var1)
-    {
+    protected FindIterable<StoredInstance> find(Bson var1) {
         if (clientSession == null)
             return instancesCollection.find(var1);
         else
@@ -129,10 +124,10 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     /**
      * Insert a new stored instance in the collection
      * Provides causal consistency and acknowledgment waiting
+     *
      * @param var the instance to store
      */
-    protected void insertOne(StoredInstance var)
-    {
+    protected void insertOne(StoredInstance var) {
         if (clientSession == null)
             instancesCollection.insertOne(var);
         else
@@ -154,12 +149,9 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         this.isTestDatabase = this.mongoDatabase.getName().contains("test");
 
         //Causally Consistent Client Session
-        try
-        {
+        try {
             this.clientSession = mongoClient.startSession(ClientSessionOptions.builder().causallyConsistent(true).build());
-        }
-        catch (MongoClientException ex)
-        {
+        } catch (MongoClientException ex) {
             Log.info("MongoDB server does not support sessions, disabling sessions support");
         }
     }

@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.io.serializer.BinarySerializerFactory;
 import fr.inria.atlanmod.commons.io.serializer.StringSerializer;
@@ -25,7 +24,6 @@ import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
@@ -216,15 +214,18 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("multivaluedValues." + stringKeyId)).first();
 
-        if (instance == null || instance.getMultivaluedValues() == null) {
-            return Optional.empty();
-        } else {
-            if (instance.getMultivaluedValues().containsKey(stringKeyId)) {
-                return Optional.of((V) IdConverters.withHexString()
-                        .revert(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
-            } else {
+        try {
+            if (instance == null || instance.getMultivaluedValues() == null) {
                 return Optional.empty();
+            } else {
+                if (instance.getMultivaluedValues().containsKey(stringKeyId)) {
+                    return Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
+                } else {
+                    return Optional.empty();
+                }
             }
+        } catch (IndexOutOfBoundsException ex) {
+            return Optional.empty();
         }
     }
 
@@ -234,7 +235,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
 
         StoredInstance instance = find(
-                        eq("_id", key.owner().toHexString()))
+                eq("_id", key.owner().toHexString()))
                 .projection(include("multivaluedValues." + key.id()))
                 .first();
 
@@ -242,6 +243,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             return Stream.empty();
 
         List<String> refs = instance.getMultivaluedValues().get(String.valueOf(key.id()));
+
+        if (refs.size() == 0)
+            return Stream.empty();
 
         return MoreIterables.stream(refs).
                 map(v -> (V) deserializeValue(v));
@@ -261,13 +265,11 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         if (instance == null) {
             return Optional.empty();
         } else {
-            if (!instance.getMultivaluedValues().containsKey(stringKeyId)){
+            if (!instance.getMultivaluedValues().containsKey(stringKeyId)) {
                 throw new NoSuchElementException();
-            }
-            else if (key.position() >= instance.getMultivaluedValues().get(stringKeyId).size()) {
+            } else if (key.position() >= instance.getMultivaluedValues().get(stringKeyId).size()) {
                 throw new NoSuchElementException();
-            }
-            else{
+            } else {
                 List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
                 Optional<V> toReturn = Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
 
@@ -290,7 +292,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = find(eq("_id", hexId))
-                .projection(include(("multivaluedValues."+stringKeyId))).first();
+                .projection(include(("multivaluedValues." + stringKeyId))).first();
 
         //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
         List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
@@ -298,11 +300,11 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             multivaluedValues = new ArrayList<>();
         }
 
-        if (key.position() != 0 && key.position() > multivaluedValues.size()){
+        if (key.position() != 0 && key.position() > multivaluedValues.size()) {
             throw new IndexOutOfBoundsException();
         }
 
-        if (key.position() == multivaluedValues.size()){
+        if (key.position() == multivaluedValues.size()) {
             multivaluedValues.add(serializeValue(value));
         } else {
             multivaluedValues.add(key.position(), serializeValue(value));
@@ -330,7 +332,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = find(eq("_id", hexId))
-                .projection(include(("multivaluedValues."+stringKeyId))).first();
+                .projection(include(("multivaluedValues." + stringKeyId))).first();
 
         List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
         if (multivaluedValues == null) {
@@ -338,12 +340,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         }
 
 
-        if(key.position() > multivaluedValues.size()){
+        if (key.position() > multivaluedValues.size()) {
             throw new IndexOutOfBoundsException();
         }
 
         List<String> toAdd = new ArrayList<String>();
-        for(V value : collection){
+        for (V value : collection) {
             toAdd.add(serializeValue(value));
         }
         multivaluedValues.addAll(key.position(), toAdd);
@@ -366,22 +368,24 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String stringKeyId = String.valueOf(key.id());
 
 
-
         StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("multivaluedValues")).first();
 
         Optional<V> res = Optional.empty();
 
-        res = (instance != null && instance.getMultivaluedValues().containsKey(stringKeyId) && instance.getMultivaluedValues().get(stringKeyId).size() < key.position())
+        res = (instance != null && instance.getMultivaluedValues().containsKey(stringKeyId) && key.position() < instance.getMultivaluedValues().get(stringKeyId).size())
                 ? Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())))
                 : Optional.empty();
 
         if (res == Optional.empty()) return res;
 
+        List<String> multivaluedValues = instance.getMultivaluedValues().get(String.valueOf(key.id()));
+
+        multivaluedValues.remove(key.position());
 
         updateOne(
                 eq("_id", hexId),
-                pull("multivaluedValues." + stringKeyId, res));
+                set("multivaluedValues." + stringKeyId, multivaluedValues));
 
         return res;
     }
@@ -449,7 +453,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(key, "key");
 
         StoredInstance instance = find(
-                        eq("_id", key.owner().toHexString()))
+                eq("_id", key.owner().toHexString()))
                 .projection(include("multivaluedReferences." + key.id()))
                 .first();
 
@@ -483,7 +487,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         if (instance.getMultivaluedReferences().containsKey(stringKeyId) &&
                 key.position() < instance.getMultivaluedReferences().get(stringKeyId).size()) {
             res = Optional.of(IdConverters.withHexString().revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
-            instance.getMultivaluedReferences().get(stringKeyId).set(key.position(),reference.toHexString());
+            instance.getMultivaluedReferences().get(stringKeyId).set(key.position(), reference.toHexString());
             return res;
         }
 
