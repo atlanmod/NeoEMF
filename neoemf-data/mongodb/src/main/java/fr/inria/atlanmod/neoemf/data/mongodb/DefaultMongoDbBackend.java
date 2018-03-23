@@ -420,6 +420,61 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         }
     }
 
+    @Override
+    public <V> int appendValue(SingleFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
+        checkNotNull(value, "value");
+
+        String hexId = feature.owner().toHexString();
+        String stringKeyId = String.valueOf(feature.id());
+
+        StoredInstance instance = find(eq("_id", hexId))
+                .projection(include("multivaluedValues")).first();
+
+        List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
+        if (multivaluedValues == null) {
+            multivaluedValues = new ArrayList<>();
+        }
+        int res = multivaluedValues.size();
+        multivaluedValues.add(serializeValue(value));
+        updateOne(
+                eq("_id", hexId),
+                set("multivaluedValues." + stringKeyId, multivaluedValues));
+        return res;
+    }
+
+    @Override
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
+        checkNotNull(feature, "feature");
+        checkNotNull(values, "values");
+
+        String hexId = feature.owner().toHexString();
+        String stringKeyId = String.valueOf(feature.id());
+
+        StoredInstance instance = find(eq("_id", hexId))
+                .projection(include("multivaluedValues")).first();
+
+        List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
+        if (multivaluedValues == null) {
+            multivaluedValues = new ArrayList<>();
+        }
+
+        int res = multivaluedValues.size();
+
+        List<String> toAdd = new ArrayList<String>();
+        for (V value : values) {
+            toAdd.add(serializeValue(value));
+        }
+
+        multivaluedValues.addAll(toAdd);
+
+        updateOne(
+                eq("_id", hexId),
+                set("multivaluedValues." + stringKeyId, multivaluedValues));
+
+        return res;
+    }
+
     //endregion
 
     //region Multi-valued references
@@ -684,29 +739,6 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
                 eq("_id", hexId),
                 set("multivaluedReferences." + stringKeyId, multivaluedReference));
 
-        return res;
-    }
-
-    @Override
-    public <V> int appendValue(SingleFeatureBean feature, V value) {
-        checkNotNull(feature, "key");
-        checkNotNull(value, "reference");
-
-        String hexId = feature.owner().toHexString();
-        String stringKeyId = String.valueOf(feature.id());
-
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedValues")).first();
-
-        List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
-        if (multivaluedValues == null) {
-            multivaluedValues = new ArrayList<>();
-        }
-        int res = multivaluedValues.size();
-        multivaluedValues.add(serializeValue(value));
-        updateOne(
-                eq("_id", hexId),
-                set("multivaluedValues." + stringKeyId, multivaluedValues));
         return res;
     }
 
