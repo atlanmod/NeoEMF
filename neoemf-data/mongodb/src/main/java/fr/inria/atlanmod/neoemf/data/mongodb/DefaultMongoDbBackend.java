@@ -496,10 +496,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             multivaluedReference = new ArrayList<>();
         }
 
-        if (key.position() > multivaluedReference.size())
+        if (key.position() != 0 && key.position() > multivaluedReference.size()) {
             throw new IndexOutOfBoundsException();
-        if (key.position() < multivaluedReference.size()) {
-            multivaluedReference.set(key.position(), reference.toHexString());
+        }
+
+        if (key.position() == multivaluedReference.size()) {
+            multivaluedReference.add(reference.toHexString());
         } else {
             multivaluedReference.add(key.position(), reference.toHexString());
         }
