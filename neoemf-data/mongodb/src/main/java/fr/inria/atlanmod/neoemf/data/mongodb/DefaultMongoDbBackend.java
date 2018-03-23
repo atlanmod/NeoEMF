@@ -93,7 +93,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         String hexId = key.owner().toHexString();
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId)).projection(include("singlevaluedValues")).first();
+        StoredInstance instance = find(eq("_id", hexId)).projection(include("singlevaluedValues")).first();
 
         if (instance == null) {
             instance = new StoredInstance();
@@ -139,7 +139,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("singlevaluedReferences." + key.id())).first();
 
         if (instance == null || instance.getSinglevaluedReferences() == null) {
@@ -163,7 +163,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("singlevaluedReferences." + key.id())).first();
 
         if (instance == null) {
@@ -213,7 +213,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("multivaluedValues." + stringKeyId)).first();
 
         if (instance == null || instance.getMultivaluedValues() == null) {
@@ -256,7 +256,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include(("multivaluedValues"))).first();
 
         addValue(key, value);
@@ -282,7 +282,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include(("multivaluedValues."+stringKeyId))).first();
 
         //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
@@ -302,7 +302,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         if (instance != null) {
             updateOne(
                     eq("_id", hexId),
-                    set("multivaluedValues." + stringKeyId, multivaluedValues));
+                    set("multivaluedValues." + stringKeyId, multivaluedValues)));
         }
 
     }
@@ -320,7 +320,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include(("multivaluedValues."+stringKeyId))).first();
 
         List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
@@ -353,16 +353,40 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public <V> Optional<V> removeValue(ManyFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("removeValue");
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+
+
+        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+                .projection(include("multivaluedValues")).first();
+
+        Optional<V> res = Optional.empty();
+
+        res = (instance != null && instance.getMultivaluedValues().containsKey(stringKeyId) && instance.getMultivaluedValues().get(stringKeyId).size() < key.position())
+                ? Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())))
+                : Optional.empty();
+
+        if (res == Optional.empty()) return res;
+
+
+        waitForUpdateCompletion(instancesCollection.updateOne(
+                eq("_id", hexId),
+                pull("multivaluedValues." + stringKeyId, res)));
+
+        return res;
     }
 
     @Override
     public void removeAllValues(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("removeAllValues");
+        String hexId = key.owner().toHexString();
+
+        waitForUpdateCompletion(instancesCollection.updateOne(
+                eq("_id", hexId),
+                combine(unset("singlevaluedValues"), unset("multivaluedValues"))));
+
     }
 
     @Nonnull
@@ -373,7 +397,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         String hexId = key.owner().toHexString();
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("singlevaluedValues")).first();
 
         if (instance == null || instance.getSinglevaluedValues() == null || instance.getSinglevaluedValues().isEmpty()) {
@@ -395,7 +419,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("multivaluedReferences." + key.id())).first();
 
         if (instance == null || instance.getMultivaluedReferences() == null) {
@@ -439,7 +463,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("multivaluedReferences")).first();
 
         addReference(key, reference);
@@ -464,7 +488,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("multivaluedReferences")).first();
 
         //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
@@ -501,7 +525,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("multivaluedReferences")).first();
 
         if (instance == null) {
@@ -546,7 +570,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String hexId = key.owner().toHexString();
         String stringKeyId = String.valueOf(key.id());
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("multivaluedReferences")).first();
 
         if (instance == null || instance.getMultivaluedReferences().get(stringKeyId) == null) {
@@ -571,7 +595,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         updateOne(
                 eq("_id", hexId),
-                combine(unset("references"), unset("multivaluedReferences")));
+                combine(unset("singlevaluedReferences"), unset("multivaluedReferences"))));
     }
 
     @Nonnull
@@ -581,7 +605,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         String hexId = key.owner().toHexString();
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("singlevaluedReferences")).first();
 
         if (instance == null || instance.getSinglevaluedReferences() == null || instance.getSinglevaluedReferences().isEmpty()) {
