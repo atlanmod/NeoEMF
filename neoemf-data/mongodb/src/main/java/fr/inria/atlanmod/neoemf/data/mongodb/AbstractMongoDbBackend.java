@@ -9,10 +9,12 @@
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import com.mongodb.*;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import com.mongodb.session.ClientSession;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -24,6 +26,8 @@ import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.MetaClass;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.SingleFeature;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
+import fr.inria.atlanmod.neoemf.data.store.Store;
+import org.bson.conversions.Bson;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,6 +63,8 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     private static final boolean SHOULD_DELETE_TEST_DATABASES = true;
 
     private boolean isTestDatabase;
+
+    private ClientSession clientSession;
 
     protected boolean isTestDatabase()
     {
@@ -97,22 +103,40 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     }
 
     /**
-     * If in a test database, will wait for completion of the delete operation
-     * before returning, otherwise does nothing
-     * @param result the pending delete operation
+     * Performs an updateOne on the instances collection
+     * Provides causal consistency and acknowledgment waiting
+     * @param var1 the first update one parameter
+     * @param var2 the second update one parameter
      */
-    protected void waitForDeleteCompletion(DeleteResult result)
+    protected void updateOne(Bson var1, Bson var2)
     {
-        if (!isTestDatabase())
-            return;
+        waitForUpdateCompletion(
+                clientSession == null ?
+                        instancesCollection.updateOne(var1, var2) :
+                        instancesCollection.updateOne(clientSession, var1, var2)
+        );
+    }
 
-        while (!result.wasAcknowledged()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    protected FindIterable<StoredInstance> find(Bson var1)
+    {
+        if (clientSession == null)
+            return instancesCollection.find(var1);
+        else
+            return instancesCollection.find(this.clientSession, var1);
+
+    }
+
+    /**
+     * Insert a new stored instance in the collection
+     * Provides causal consistency and acknowledgment waiting
+     * @param var the instance to store
+     */
+    protected void insertOne(StoredInstance var)
+    {
+        if (clientSession == null)
+            instancesCollection.insertOne(var);
+        else
+            instancesCollection.insertOne(clientSession, var);
     }
 
     /**
@@ -128,6 +152,16 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
         //Are we in a test database ?
         this.isTestDatabase = this.mongoDatabase.getName().contains("test");
+
+        //Causally Consistent Client Session
+        try
+        {
+            this.clientSession = mongoClient.startSession(ClientSessionOptions.builder().causallyConsistent(true).build());
+        }
+        catch (MongoClientException ex)
+        {
+            Log.info("MongoDB server does not support sessions, disabling sessions support");
+        }
     }
 
     /**
@@ -164,8 +198,14 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     protected void internalClose() throws IOException {
         if (SHOULD_DELETE_TEST_DATABASES && isTestDatabase()) {
             Log.info("Deleting test database " + this.mongoDatabase.getName());
-            this.mongoDatabase.drop();
+            if (this.clientSession == null)
+                this.mongoDatabase.drop();
+            else
+                this.mongoDatabase.drop(this.clientSession);
         }
+
+        if (clientSession != null)
+            this.clientSession.close();
 
         this.mongoClient.close();
     }
@@ -176,7 +216,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(id, "id");
 
         String hexId = id.toHexString();
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+        StoredInstance instance = (StoredInstance) find(eq("_id", hexId)).first();
 
         if (instance == null || instance.getContainer() == null) {
             return Optional.empty();
@@ -193,20 +233,20 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         String hexId = id.toHexString();
         SingleFeature newContainer = SingleFeature.fromSingleFeatureBean(container);
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+        StoredInstance instance = (StoredInstance) find(eq("_id", hexId)).first();
         if (instance == null) {
             instance = new StoredInstance();
             instance.setId(hexId);
 
             instance.setContainer(newContainer);
 
-            instancesCollection.insertOne(instance);
+            insertOne(instance);
         } else {
-            waitForUpdateCompletion(instancesCollection.updateOne(
+            updateOne(
                     eq("_id", hexId),
                     combine(
                             set("container.owner", newContainer.getOwner()),
-                            set("container.id", newContainer.getId()))));
+                            set("container.id", newContainer.getId())));
         }
     }
 
@@ -215,10 +255,10 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(id, "id");
 
         String hexId = id.toHexString();
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+        StoredInstance instance = (StoredInstance) find(eq("_id", hexId)).first();
 
         if (instance != null && instance.getContainer() != null) {
-            waitForUpdateCompletion(instancesCollection.updateOne(eq("_id", hexId), unset("container")));
+            updateOne(eq("_id", hexId), unset("container"));
         }
     }
 
@@ -228,7 +268,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(id, "id");
 
         String hexId = id.toHexString();
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+        StoredInstance instance = (StoredInstance) find(eq("_id", hexId)).first();
 
         if (instance == null || instance.getMetaClass() == null) {
             return Optional.empty();
@@ -246,20 +286,20 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         String hexId = id.toHexString();
         MetaClass newMetaClass = MetaClass.fromClassBean(metaClass);
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId)).first();
+        StoredInstance instance = (StoredInstance) find(eq("_id", hexId)).first();
         if (instance == null) {
             instance = new StoredInstance();
             instance.setId(hexId);
 
             instance.setMetaClass(newMetaClass);
 
-            instancesCollection.insertOne(instance);
+            insertOne(instance);
         } else {
-            waitForUpdateCompletion(instancesCollection.updateOne(
+            updateOne(
                     eq("_id", hexId),
                     combine(
                             set("metaClass.name", metaClass.name()),
-                            set("metaClass.uri", metaClass.uri()))));
+                            set("metaClass.uri", metaClass.uri())));
         }
 
         return true;
@@ -271,7 +311,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         List<Id> list = new ArrayList<>();
 
         for (ClassBean bean : metaClasses) {
-            instancesCollection.find(
+            find(
                     and(
                             eq("metaClass.name", bean.name()),
                             eq("metaClass.uri", bean.uri())
