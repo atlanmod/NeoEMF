@@ -474,15 +474,17 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("multivaluedReferences")).first();
 
-        addReference(key, reference);
-
         if (instance == null) {
             return Optional.empty();
         }
 
+        Optional<Id> res;
+
         if (instance.getMultivaluedReferences().containsKey(stringKeyId) &&
-                instance.getMultivaluedReferences().get(stringKeyId).size() > key.position()) {
-            return Optional.of(IdConverters.withHexString().revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
+                key.position() < instance.getMultivaluedReferences().get(stringKeyId).size()) {
+            res = Optional.of(IdConverters.withHexString().revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
+            instance.getMultivaluedReferences().get(stringKeyId).set(key.position(),reference.toHexString());
+            return res;
         }
 
         throw new NoSuchElementException();
@@ -505,10 +507,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             multivaluedReference = new ArrayList<>();
         }
 
-        if (key.position() > multivaluedReference.size())
+        if (key.position() != 0 && key.position() > multivaluedReference.size()) {
             throw new IndexOutOfBoundsException();
-        if (key.position() < multivaluedReference.size()) {
-            multivaluedReference.set(key.position(), reference.toHexString());
+        }
+
+        if (key.position() == multivaluedReference.size()) {
+            multivaluedReference.add(reference.toHexString());
         } else {
             multivaluedReference.add(key.position(), reference.toHexString());
         }
