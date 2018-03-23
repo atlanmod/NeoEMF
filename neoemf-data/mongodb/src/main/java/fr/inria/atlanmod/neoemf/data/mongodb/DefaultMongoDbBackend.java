@@ -289,10 +289,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             multivaluedValues = new ArrayList<>();
         }
 
-        if (key.position() >= multivaluedValues.size())
+        if (key.position() != 0 && key.position() > multivaluedValues.size()){
             throw new IndexOutOfBoundsException();
-        if (key.position() < multivaluedValues.size()) {
-            multivaluedValues.set(key.position(), serializeValue(value));
+        }
+
+        if (key.position() == multivaluedValues.size()){
+            multivaluedValues.add(serializeValue(value));
         } else {
             multivaluedValues.add(key.position(), serializeValue(value));
         }
