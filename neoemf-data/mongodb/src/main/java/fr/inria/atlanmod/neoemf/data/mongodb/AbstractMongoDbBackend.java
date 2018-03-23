@@ -76,7 +76,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     private MongoClient mongoClient;
     private MongoDbConfig mongoDbConfig;
 
-    protected MongoCollection instancesCollection;
+    private MongoCollection instancesCollection;
 
     @Override
     protected void internalSave() throws IOException {

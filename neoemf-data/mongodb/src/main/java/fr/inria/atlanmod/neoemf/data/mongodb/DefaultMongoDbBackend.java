@@ -61,8 +61,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public <V> Optional<V> valueOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        StoredInstance instance = (StoredInstance) instancesCollection
-                .find(eq("_id", key.owner().toHexString()))
+        StoredInstance instance = find(eq("_id", key.owner().toHexString()))
                 .projection(include("singlevaluedValues")).first();
 
         String kid = String.valueOf(key.id());
@@ -233,8 +232,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        StoredInstance instance = (StoredInstance) instancesCollection
-                .find(
+        StoredInstance instance = find(
                         eq("_id", key.owner().toHexString()))
                 .projection(include("multivaluedValues." + key.id()))
                 .first();
@@ -302,7 +300,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         if (instance != null) {
             updateOne(
                     eq("_id", hexId),
-                    set("multivaluedValues." + stringKeyId, multivaluedValues)));
+                    set("multivaluedValues." + stringKeyId, multivaluedValues));
         }
 
     }
@@ -358,7 +356,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
 
 
-        StoredInstance instance = (StoredInstance) instancesCollection.find(eq("_id", hexId))
+        StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("multivaluedValues")).first();
 
         Optional<V> res = Optional.empty();
@@ -370,9 +368,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         if (res == Optional.empty()) return res;
 
 
-        waitForUpdateCompletion(instancesCollection.updateOne(
+        updateOne(
                 eq("_id", hexId),
-                pull("multivaluedValues." + stringKeyId, res)));
+                pull("multivaluedValues." + stringKeyId, res));
 
         return res;
     }
@@ -383,9 +381,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         String hexId = key.owner().toHexString();
 
-        waitForUpdateCompletion(instancesCollection.updateOne(
+        updateOne(
                 eq("_id", hexId),
-                combine(unset("singlevaluedValues"), unset("multivaluedValues"))));
+                combine(unset("singlevaluedValues"), unset("multivaluedValues")));
 
     }
 
@@ -439,8 +437,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public Stream<Id> allReferencesOf(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        StoredInstance instance = (StoredInstance) instancesCollection
-                .find(
+        StoredInstance instance = find(
                         eq("_id", key.owner().toHexString()))
                 .projection(include("multivaluedReferences." + key.id()))
                 .first();
@@ -595,7 +592,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         updateOne(
                 eq("_id", hexId),
-                combine(unset("singlevaluedReferences"), unset("multivaluedReferences"))));
+                combine(unset("singlevaluedReferences"), unset("multivaluedReferences")));
     }
 
     @Nonnull
