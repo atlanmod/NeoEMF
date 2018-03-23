@@ -628,5 +628,83 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         }
     }
 
+    @Override
+    public int appendReference(SingleFeatureBean key, Id reference) {
+        checkNotNull(key, "key");
+        checkNotNull(reference, "reference");
+
+        String hexId = key.owner().toHexString();
+        String stringKeyId = String.valueOf(key.id());
+
+        StoredInstance instance = find(eq("_id", hexId))
+                .projection(include("multivaluedReferences")).first();
+
+        List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
+        if (multivaluedReference == null) {
+            multivaluedReference = new ArrayList<>();
+        }
+        int res = multivaluedReference.size();
+        multivaluedReference.add(reference.toHexString());
+        updateOne(
+                eq("_id", hexId),
+                set("multivaluedReferences." + stringKeyId, multivaluedReference));
+        return res;
+    }
+
+    @Override
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
+        checkNotNull(feature, "feature");
+        checkNotNull(references, "references");
+
+        String hexId = feature.owner().toHexString();
+        String stringKeyId = String.valueOf(feature.id());
+
+        StoredInstance instance = find(eq("_id", hexId))
+                .projection(include("multivaluedReferences")).first();
+
+        List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
+        if (multivaluedReference == null) {
+            multivaluedReference = new ArrayList<>();
+        }
+
+        int res = multivaluedReference.size();
+
+        List<String> toAdd = new ArrayList<String>();
+        for (Id id : references) {
+            toAdd.add(id.toHexString());
+        }
+
+        multivaluedReference.addAll(toAdd);
+
+        updateOne(
+                eq("_id", hexId),
+                set("multivaluedReferences." + stringKeyId, multivaluedReference));
+
+        return res;
+    }
+
+    @Override
+    public <V> int appendValue(SingleFeatureBean feature, V value) {
+        checkNotNull(feature, "key");
+        checkNotNull(value, "reference");
+
+        String hexId = feature.owner().toHexString();
+        String stringKeyId = String.valueOf(feature.id());
+
+        StoredInstance instance = find(eq("_id", hexId))
+                .projection(include("multivaluedValues")).first();
+
+        List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
+        if (multivaluedValues == null) {
+            multivaluedValues = new ArrayList<>();
+        }
+        int res = multivaluedValues.size();
+        multivaluedValues.add(serializeValue(value));
+        updateOne(
+                eq("_id", hexId),
+                set("multivaluedValues." + stringKeyId, multivaluedValues));
+        return res;
+    }
+
     //endregion
 }
