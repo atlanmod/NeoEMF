@@ -361,8 +361,18 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public void removeAllValues(SingleFeatureBean key) {
         checkNotNull(key, "key");
 
-        // TODO Implement this method
-        throw Throwables.notImplementedYet("removeAllValues");
+        String hexId = key.owner().toHexString();
+
+        waitForUpdateCompletion(instancesCollection.updateOne(
+                eq("_id", hexId),
+                combine(unset("singlevaluedValues"), unset("multivaluedValues"))));
+
+        try {
+            Thread.sleep(10_000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Nonnull
@@ -571,7 +581,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         waitForUpdateCompletion(instancesCollection.updateOne(
                 eq("_id", hexId),
-                combine(unset("references"), unset("multivaluedReferences"))));
+                combine(unset("singlevaluedReferences"), unset("multivaluedReferences"))));
     }
 
     @Nonnull
