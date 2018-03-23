@@ -505,13 +505,17 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = find(eq("_id", hexId))
                 .projection(include("multivaluedReferences")).first();
 
+        if(instance == null){
+            return;
+        }
+
         //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
         List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
         if (multivaluedReference == null) {
             multivaluedReference = new ArrayList<>();
         }
 
-        if (key.position() != 0 && key.position() > multivaluedReference.size()) {
+        if (key.position() > multivaluedReference.size()) {
             throw new IndexOutOfBoundsException();
         }
 
@@ -563,19 +567,16 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             toAdd.add(id.toHexString());
         }
 
-        if (key.position() + toAdd.size() > multivaluedReference.size()) {
-            multivaluedReference.addAll(Collections.nCopies(key.position() + toAdd.size() - multivaluedReference.size(), null));
-        }
-
-        int i = key.position();
-        for (String a : toAdd) {
-            multivaluedReference.set(i, a);
-            i++;
+        if(key.position() == multivaluedReference.size()) {
+            multivaluedReference.addAll(toAdd);
+        }else {
+            multivaluedReference.addAll(key.position(),toAdd);
         }
 
         updateOne(
                 eq("_id", hexId),
                 set("multivaluedReferences." + stringKeyId, multivaluedReference));
+
     }
 
     @Nonnull
