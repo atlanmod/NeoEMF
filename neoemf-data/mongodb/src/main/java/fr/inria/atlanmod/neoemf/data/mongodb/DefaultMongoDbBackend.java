@@ -257,17 +257,25 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = find(eq("_id", hexId))
                 .projection(include(("multivaluedValues"))).first();
 
-        addValue(key, value);
-
         if (instance == null) {
             return Optional.empty();
         } else {
-            if (instance.getMultivaluedValues().containsKey(stringKeyId)) {
-
+            if (!instance.getMultivaluedValues().containsKey(stringKeyId)){
+                throw new NoSuchElementException();
+            }
+            else if (key.position() >= instance.getMultivaluedValues().get(stringKeyId).size()) {
+                throw new NoSuchElementException();
+            }
+            else{
+                List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
+                multivaluedValues.set(key.position(), serializeValue(value));
+                return Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
+            }
+            /*if (instance.getMultivaluedValues().containsKey(stringKeyId)) {
                 return Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
             } else {
                 throw new NoSuchElementException();
-            }
+            }*/
 
         }
     }
@@ -289,10 +297,11 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             multivaluedValues = new ArrayList<>();
         }
 
-        if (key.position() >= multivaluedValues.size())
+        if (key.position()==0 && multivaluedValues.size()==0){
+            multivaluedValues.add(key.position(),serializeValue(value));
+        }
+        else if (key.position() > multivaluedValues.size()) {
             throw new IndexOutOfBoundsException();
-        if (key.position() < multivaluedValues.size()) {
-            multivaluedValues.set(key.position(), serializeValue(value));
         } else {
             multivaluedValues.add(key.position(), serializeValue(value));
         }
