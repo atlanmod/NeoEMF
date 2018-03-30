@@ -71,6 +71,7 @@ public class RunnerState {
             "neo4j",
             "berkeleydb-i",
             "mapdb-i",
+            "mongodb"
     })
     protected String a;
 
