@@ -149,6 +149,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         //Causally Consistent Client Session
         try {
             this.clientSession = mongoClient.startSession(ClientSessionOptions.builder().causallyConsistent(true).build());
+            Log.info("Sessions support enabled");
         } catch (MongoClientException ex) {
             Log.info("MongoDB server does not support sessions, disabling sessions support");
         }
