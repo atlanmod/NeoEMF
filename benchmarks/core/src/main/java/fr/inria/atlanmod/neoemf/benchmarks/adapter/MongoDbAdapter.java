@@ -21,4 +21,9 @@ public class MongoDbAdapter extends AbstractNeoAdapter {
     protected BackendFactory getFactory() {
         return MongoDbBackendFactory.getInstance();
     }
+
+    public MongoDbAdapter()
+    {
+        super("mongodb");
+    }
 }

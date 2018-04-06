@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.data.mongodb.context;
 
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.AbstractContext;
+import fr.inria.atlanmod.neoemf.context.AbstractRemoteContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 
@@ -28,15 +29,12 @@ import java.io.IOException;
  * A specific {@link Context} for the MongoDb implementation.
  */
 @ParametersAreNonnullByDefault
-public class MongoDbContext extends AbstractContext {
+public class MongoDbContext extends AbstractRemoteContext {
 
     public MongoDbContext()
     {
         this.config = MongoDbConfig.newConfig();
     }
-
-    private static final String TEST_HOST = "localhost";
-    private static final int TEST_PORT = 27017;
 
     private MongoDbConfig config;
     /**
@@ -69,9 +67,20 @@ public class MongoDbContext extends AbstractContext {
 
     @Nonnull
     @Override
+    protected String getHost() {
+        return "localhost";
+    }
+
+    @Override
+    protected int getPort() {
+        return 27017;
+    }
+
+    /*@Nonnull
+    @Override
     public URI createUri(URI uri) {
         if (uri.scheme().equals("neo-mongodb") || uri.scheme().equals("file"))
-            return UriBuilder.forScheme(uriScheme()).fromServer(TEST_HOST, TEST_PORT, uri);
+            return UriBuilder.forScheme(uriScheme()).fromServer(getHost(), getPort(), uri);
         else
             throw new IllegalArgumentException();
     }
@@ -79,8 +88,8 @@ public class MongoDbContext extends AbstractContext {
     @Nonnull
     @Override
     public URI createUri(File file) {
-        return UriBuilder.forScheme(uriScheme()).fromServer(TEST_HOST, TEST_PORT, file.getName());
-    }
+        return UriBuilder.forScheme(uriScheme()).fromServer(getHost(), getPort(), file.getName());
+    }*/
 
 
 }
