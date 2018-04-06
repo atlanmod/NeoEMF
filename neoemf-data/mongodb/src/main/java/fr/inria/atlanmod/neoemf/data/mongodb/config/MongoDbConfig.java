@@ -24,33 +24,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @FactoryBinding(factory = MongoDbBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class MongoDbConfig extends BaseConfig<MongoDbConfig> {
-
-    //TODO Parse host and port from configuration file (~/.neoemf/config/mongodb)
-    private String host;
-    private int port;
-
-    /**
-     * @return the MongoDb server host
-     */
-    public String getHost() {
-        return host;
-    }
-
-    /**
-     * @return the MongoDb server port
-     */
-    public int getPort() {
-        return port;
-    }
-
     /**
      * Constructs a new {@code MongoDbConfig}.
      */
     protected MongoDbConfig() {
         withDefault();
-
-        this.host = "localhost";
-        this.port = 27017;
     }
 
     /**

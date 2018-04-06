@@ -35,6 +35,9 @@ public class MongoDbContext extends AbstractContext {
         this.config = MongoDbConfig.newConfig();
     }
 
+    private static final String TEST_HOST = "localhost";
+    private static final int TEST_PORT = 27017;
+
     private MongoDbConfig config;
     /**
      * Creates a new {@code MongoDbContext}.
@@ -67,13 +70,13 @@ public class MongoDbContext extends AbstractContext {
     @Nonnull
     @Override
     public URI createUri(URI uri) {
-        return UriBuilder.forScheme(uriScheme()).fromServer(this.config.getHost(), this.config.getPort(), uri);
+        return UriBuilder.forScheme(uriScheme()).fromServer(TEST_HOST, TEST_PORT, uri);
     }
 
     @Nonnull
     @Override
     public URI createUri(File file) {
-        return UriBuilder.forScheme(uriScheme()).fromServer(this.config.getHost(), this.config.getPort(), file.getName());
+        return UriBuilder.forScheme(uriScheme()).fromServer(TEST_HOST, TEST_PORT, file.getName());
     }
 
 

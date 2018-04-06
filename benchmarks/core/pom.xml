@@ -89,6 +89,13 @@
             <artifactId>neoemf-data-berkeleydb</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-mongodb</artifactId>
+            <version>1.0.3-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- Benchmark -->
 
         <dependency>

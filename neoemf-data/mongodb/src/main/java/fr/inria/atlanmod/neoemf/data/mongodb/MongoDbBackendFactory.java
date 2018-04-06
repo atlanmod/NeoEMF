@@ -64,6 +64,8 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
         final boolean isReadOnly = config.isReadOnly();
 
         String databaseName = url.getPath().substring(1);
+        String hostName = url.getHost();
+        int port = url.getPort();
 
         Log.info("Opening MongoDb database " + databaseName);
 
@@ -72,7 +74,7 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
 
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(), fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
-        MongoClient client = new MongoClient(config.getHost(), config.getPort());
+        MongoClient client = new MongoClient(hostName, port);
         MongoDatabase database = client.getDatabase(databaseName)
                 .withCodecRegistry(pojoCodecRegistry);
 
