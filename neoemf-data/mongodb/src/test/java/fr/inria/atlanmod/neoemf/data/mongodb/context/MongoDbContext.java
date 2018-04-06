@@ -70,7 +70,10 @@ public class MongoDbContext extends AbstractContext {
     @Nonnull
     @Override
     public URI createUri(URI uri) {
-        return UriBuilder.forScheme(uriScheme()).fromServer(TEST_HOST, TEST_PORT, uri);
+        if (uri.scheme().equals("neo-mongodb") || uri.scheme().equals("file"))
+            return UriBuilder.forScheme(uriScheme()).fromServer(TEST_HOST, TEST_PORT, uri);
+        else
+            throw new IllegalArgumentException();
     }
 
     @Nonnull

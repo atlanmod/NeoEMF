@@ -29,45 +29,4 @@ class MongoDbUriTest extends AbstractUriTest {
         return MongoDbContext.getDefault();
     }
 
-    @Disabled
-    @Override
-    public void testCreateUriFromStandardUri() {
-        super.testCreateUriFromStandardUri();
-    }
-
-    @Disabled
-    @Override
-    public void testCreateUriFromFileUri() throws IOException {
-        super.testCreateUriFromFileUri();
-    }
-
-    @Disabled
-    @Override
-    public void testCreateFileUriFromFile() throws IOException {
-        super.testCreateFileUriFromFile();
-    }
-
-    @Disabled
-    @Override
-    public void testCreateUriFromStandardUriInvalidScheme() {
-        super.testCreateUriFromStandardUriInvalidScheme();
-    }
-
-    @Disabled
-    @Override
-    public void testCreateUriFromUriIfNotSupported() {
-        super.testCreateUriFromUriIfNotSupported();
-    }
-
-    @Disabled
-    @Override
-    public void testCreateUriFromFileIfNotSupported() {
-        super.testCreateUriFromFileIfNotSupported();
-    }
-
-    @Disabled
-    @Override
-    public void testCreateUriFromServerIfNotSupported() {
-        super.testCreateUriFromServerIfNotSupported();
-    }
 }
