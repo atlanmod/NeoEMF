@@ -9,7 +9,11 @@
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import com.mongodb.MongoClient;
+import com.mongodb.QueryBuilder;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.PushOptions;
+import com.mongodb.client.result.UpdateResult;
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.io.serializer.BinarySerializerFactory;
 import fr.inria.atlanmod.commons.io.serializer.StringSerializer;
@@ -28,7 +32,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.exists;
 import static com.mongodb.client.model.Projections.include;
 import static com.mongodb.client.model.Updates.*;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
@@ -609,14 +615,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             return;
         }
 
-        //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
-        List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
 
-        if (multivaluedReference == null) {
-            multivaluedReference = new ArrayList<>();
-        }
-
-        if (key.position() > multivaluedReference.size())
+        if (key.position() > instance.getMultivaluedReferences().size())
             throw new IndexOutOfBoundsException();
 
         List<String> toAdd = new ArrayList<String>();
@@ -624,16 +624,21 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             toAdd.add(id.toHexString());
         }
 
-        if(key.position() == multivaluedReference.size()) {
-            multivaluedReference.addAll(toAdd);
-        }else {
-            multivaluedReference.addAll(key.position(),toAdd);
+        if (instance.getMultivaluedReferences().size() > 0) {
+
+            PushOptions pushOpt = new PushOptions();
+            pushOpt.position(key.position());
+
+            updateOne(
+                    eq("_id", hexId),
+                    pushEach("multivaluedReferences." + stringKeyId, toAdd, pushOpt)
+            );
+        } else {
+            updateOne(
+                    eq("_id", hexId),
+                    set("multivaluedReferences." + stringKeyId, toAdd)
+            );
         }
-
-        updateOne(
-                eq("_id", hexId),
-                set("multivaluedReferences." + stringKeyId, multivaluedReference));
-
     }
 
     @Nonnull
