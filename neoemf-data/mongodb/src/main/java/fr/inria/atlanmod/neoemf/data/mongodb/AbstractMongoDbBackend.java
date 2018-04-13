@@ -8,10 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
-import com.mongodb.Block;
-import com.mongodb.ClientSessionOptions;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientException;
+import com.mongodb.*;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -27,7 +24,13 @@ import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.MetaClass;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.SingleFeature;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
+import org.bson.BSON;
+import org.bson.BasicBSONDecoder;
+import org.bson.BasicBSONEncoder;
+import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -314,5 +317,39 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         }
 
         return list;
+    }
+
+
+    Document runCommand(String query){
+        Bson command = new Document("eval", "db."+ INSTANCES_COLLECTION_NAME + "." + query + ";");
+        System.out.println("[EXECUTING] " + command);
+        return mongoDatabase.runCommand(command);
+    }
+
+    int getArraySize(String hexId, String fieldName){
+
+        String query = "aggregate(" +
+            "[" +
+                "{ $project: " +
+                    "{\"multivaluedReferences\" : 1, items: {" +
+                        "$filter : {" +
+                            "input: \"$items\", as: \"items\", "+
+                            "cond: {$eq: [\"$_id\", \"" + hexId + "\"]}"+
+                        "}," +
+                    "}}" +
+                "}, " +
+                "{ $project: " +
+                    "{ items: {" +
+                        "$size: \"$" + fieldName +"\"" +
+                    "}}" +
+                "}, " +
+            "]" +
+        ")";
+
+        Document doc = (Document)((Document)runCommand(query)).get("retval");
+        List<Document> res = (ArrayList<Document>)doc.get("_batch");
+
+        return (Integer) res.get(0).get("items");
+
     }
 }

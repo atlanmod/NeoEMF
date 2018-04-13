@@ -609,14 +609,16 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedReferences")).first();
+                .projection(include("_id")).first();
 
         if (instance == null) {
             return;
         }
 
+        int arraySize = getArraySize(hexId, "multivaluedReferences." + stringKeyId);
 
-        if (key.position() > instance.getMultivaluedReferences().size())
+
+        if (key.position() > arraySize)
             throw new IndexOutOfBoundsException();
 
         List<String> toAdd = new ArrayList<String>();
@@ -624,7 +626,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             toAdd.add(id.toHexString());
         }
 
-        if (instance.getMultivaluedReferences().size() > 0) {
+        if (arraySize > 0) {
 
             PushOptions pushOpt = new PushOptions();
             pushOpt.position(key.position());
