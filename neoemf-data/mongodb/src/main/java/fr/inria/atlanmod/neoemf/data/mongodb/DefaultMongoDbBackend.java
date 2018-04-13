@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.mongodb.client.model.Filters.and;
@@ -621,12 +622,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         if (key.position() > arraySize)
             throw new IndexOutOfBoundsException();
 
-        List<String> toAdd = new ArrayList<String>();
-        for (Id id : collection) {
-            toAdd.add(id.toHexString());
-        }
+        List<String> toAdd = collection.stream()
+                .map(i -> i.toHexString())
+                .collect(Collectors.toList());
 
         if (arraySize > 0) {
+            // push at the end of the list
 
             PushOptions pushOpt = new PushOptions();
             pushOpt.position(key.position());
@@ -636,6 +637,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
                     pushEach("multivaluedReferences." + stringKeyId, toAdd, pushOpt)
             );
         } else {
+            // create a list
             updateOne(
                     eq("_id", hexId),
                     set("multivaluedReferences." + stringKeyId, toAdd)
