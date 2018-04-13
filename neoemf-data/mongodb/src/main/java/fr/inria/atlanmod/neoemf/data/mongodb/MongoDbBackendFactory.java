@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
+import com.github.fakemongo.Fongo;
 import com.mongodb.*;
 import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.commons.annotation.Static;
@@ -74,9 +75,22 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
 
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(), fromProviders(PojoCodecProvider.builder().automatic(true).build()));
 
-        MongoClient client = new MongoClient(hostName, port);
-        MongoDatabase database = client.getDatabase(databaseName)
-                .withCodecRegistry(pojoCodecRegistry);
+        MongoClient client;
+        MongoDatabase database;
+
+        if(databaseName.contains("test")){
+            Fongo fongoTestServer = new Fongo("MongoTestServer");
+
+            database = fongoTestServer.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
+            client = fongoTestServer.getMongo();
+        }
+        else{
+            client = new MongoClient(hostName, port);
+            database = client.getDatabase(databaseName)
+                    .withCodecRegistry(pojoCodecRegistry);
+
+        }
+
 
         return createMapper(config.getMapping(), client, database);
     }

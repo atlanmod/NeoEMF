@@ -8,10 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
-import com.mongodb.Block;
-import com.mongodb.ClientSessionOptions;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientException;
+import com.github.fakemongo.Fongo;
+import com.mongodb.*;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -140,19 +138,27 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         this.mongoClient = client;
         this.mongoDatabase = database;
 
-        //Create and get the needed collections
-        this.instancesCollection = getOrCreateCollection(INSTANCES_COLLECTION_NAME, StoredInstance.class);
-
         //Are we in a test database ?
         this.isTestDatabase = this.mongoDatabase.getName().contains("test");
 
-        //Causally Consistent Client Session
-        try {
-            this.clientSession = mongoClient.startSession(ClientSessionOptions.builder().causallyConsistent(true).build());
-            Log.info("Sessions support enabled");
-        } catch (MongoClientException ex) {
-            Log.info("MongoDB server does not support sessions, disabling sessions support");
+        //Create and get the needed collections
+        this.instancesCollection = getOrCreateCollection(INSTANCES_COLLECTION_NAME, StoredInstance.class);
+
+
+        if(!this.isTestDatabase){
+            //Causally Consistent Client Session
+            try {
+                this.clientSession = mongoClient.startSession(ClientSessionOptions.builder().causallyConsistent(true).build());
+                Log.info("Sessions support enabled");
+            } catch (MongoClientException ex) {
+                Log.info("MongoDB server does not support sessions, disabling sessions support");
+            }
+
         }
+        else{
+            this.clientSession = null;
+        }
+
     }
 
     /**
