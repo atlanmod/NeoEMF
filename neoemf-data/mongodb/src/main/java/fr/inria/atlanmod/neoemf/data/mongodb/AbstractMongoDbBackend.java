@@ -291,15 +291,23 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
             instance.setMetaClass(newMetaClass);
 
             insertOne(instance);
+            return true;
         } else {
-            updateOne(
-                    eq("_id", hexId),
-                    combine(
-                            set("metaClass.name", metaClass.name()),
-                            set("metaClass.uri", metaClass.uri())));
+
+            if (instance.getMetaClass() != null) {
+                updateOne(
+                        eq("_id", hexId),
+                        combine(
+                                set("metaClass.name", metaClass.name()),
+                                set("metaClass.uri", metaClass.uri())));
+                return true;
+            }
+            else{
+                return false;
+            }
         }
 
-        return true;
+
     }
 
     @Nonnull
