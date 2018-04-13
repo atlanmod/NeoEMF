@@ -301,30 +301,38 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         String stringKeyId = String.valueOf(key.id());
 
         StoredInstance instance = find(eq("_id", hexId))
-                .projection(include(("multivaluedValues." + stringKeyId))).first();
+                .projection(include("multivaluedValues")).first();
 
-        //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
-        List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
-        if (multivaluedValues == null) {
-            multivaluedValues = new ArrayList<>();
+        if(instance == null){
+            return;
         }
 
-        if (key.position() != 0 && key.position() > multivaluedValues.size()) {
+        int arraySize = getArraySize(hexId, "multivaluedValues", stringKeyId);
+
+
+        if (key.position() > arraySize)
             throw new IndexOutOfBoundsException();
-        }
 
-        if (key.position() == multivaluedValues.size()) {
-            multivaluedValues.add(serializeValue(value));
-        } else {
-            multivaluedValues.add(key.position(), serializeValue(value));
-        }
+        List<String> toAdd = new ArrayList<String>();
+        toAdd.add(serializeValue(value));
 
-        if (instance != null) {
+        if (arraySize > 0) {
+            // push at the end of the list
+
+            PushOptions pushOpt = new PushOptions();
+            pushOpt.position(key.position());
+
             updateOne(
                     eq("_id", hexId),
-                    set("multivaluedValues." + stringKeyId, multivaluedValues));
+                    pushEach("multivaluedValues." + stringKeyId, toAdd, pushOpt)
+            );
+        } else {
+            // create a list
+            updateOne(
+                    eq("_id", hexId),
+                    set("multivaluedValues." + stringKeyId, toAdd)
+            );
         }
-
     }
 
     @Override
@@ -343,29 +351,36 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         StoredInstance instance = find(eq("_id", hexId))
                 .projection(include(("multivaluedValues." + stringKeyId))).first();
 
-        List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
-        if (multivaluedValues == null) {
-            multivaluedValues = new ArrayList<>();
+        if (instance == null) {
+            return;
         }
 
+        int arraySize = getArraySize(hexId, "multivaluedValues", stringKeyId);
 
-        if (key.position() > multivaluedValues.size()) {
+        if (key.position() > arraySize)
             throw new IndexOutOfBoundsException();
-        }
 
-        List<String> toAdd = new ArrayList<String>();
-        for (V value : collection) {
-            toAdd.add(serializeValue(value));
-        }
-        multivaluedValues.addAll(key.position(), toAdd);
+        List<String> toAdd = collection.stream()
+                .map(i -> serializeValue(i))
+                .collect(Collectors.toList());
 
-        if (instance != null) {
+        if (arraySize > 0) {
+            // push at the end of the list
+
+            PushOptions pushOpt = new PushOptions();
+            pushOpt.position(key.position());
+
             updateOne(
                     eq("_id", hexId),
-                    set("multivaluedValues." + stringKeyId, multivaluedValues));
+                    pushEach("multivaluedValues." + stringKeyId, toAdd, pushOpt)
+            );
+        } else {
+            // create a list
+            updateOne(
+                    eq("_id", hexId),
+                    set("multivaluedValues." + stringKeyId, toAdd)
+            );
         }
-
-
     }
 
     @Nonnull
@@ -573,26 +588,31 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             return;
         }
 
-        //TODO vérifier si franchement, ya pas mieux (update la liste directement dans mongo)
-        List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
-        if (multivaluedReference == null) {
-            multivaluedReference = new ArrayList<>();
-        }
+        int arraySize = getArraySize(hexId, "multivaluedReferences", stringKeyId);
 
-        if (key.position() > multivaluedReference.size()) {
+
+        if (key.position() > arraySize)
             throw new IndexOutOfBoundsException();
-        }
 
-        if (key.position() == multivaluedReference.size()) {
-            multivaluedReference.add(reference.toHexString());
-        } else {
-            multivaluedReference.add(key.position(), reference.toHexString());
-        }
+        List<String> toAdd = new ArrayList<String>();
+        toAdd.add(reference.toHexString());
 
-        if (instance != null) {
+        if (arraySize > 0) {
+            // push at the end of the list
+
+            PushOptions pushOpt = new PushOptions();
+            pushOpt.position(key.position());
+
             updateOne(
                     eq("_id", hexId),
-                    set("multivaluedReferences." + stringKeyId, multivaluedReference));
+                    pushEach("multivaluedReferences." + stringKeyId, toAdd, pushOpt)
+            );
+        } else {
+            // create a list
+            updateOne(
+                    eq("_id", hexId),
+                    set("multivaluedReferences." + stringKeyId, toAdd)
+            );
         }
     }
 
@@ -616,7 +636,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             return;
         }
 
-        int arraySize = getArraySize(hexId, "multivaluedReferences." + stringKeyId);
+        int arraySize = getArraySize(hexId, "multivaluedReferences", stringKeyId);
 
 
         if (key.position() > arraySize)

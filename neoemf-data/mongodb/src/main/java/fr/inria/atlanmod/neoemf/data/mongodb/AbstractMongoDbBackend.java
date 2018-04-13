@@ -326,12 +326,12 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         return mongoDatabase.runCommand(command);
     }
 
-    int getArraySize(String hexId, String fieldName){
+    int getArraySize(String hexId, String fieldName, String fieldKey){
 
         String query = "aggregate(" +
             "[" +
                 "{ $project: " +
-                    "{\"multivaluedReferences\" : 1, items: {" +
+                    "{\""+fieldName+"\" : 1, items: {" +
                         "$filter : {" +
                             "input: \"$items\", as: \"items\", "+
                             "cond: {$eq: [\"$_id\", \"" + hexId + "\"]}"+
@@ -340,16 +340,18 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
                 "}, " +
                 "{ $project: " +
                     "{ items: {" +
-                        "$size: \"$" + fieldName +"\"" +
+                        "$size: \"$" + fieldName+"."+fieldKey +"\"" +
                     "}}" +
                 "}, " +
             "]" +
         ")";
 
-        Document doc = (Document)((Document)runCommand(query)).get("retval");
-        List<Document> res = (ArrayList<Document>)doc.get("_batch");
-
-        return (Integer) res.get(0).get("items");
-
+        try{
+            Document doc = (Document)((Document)runCommand(query)).get("retval");
+            List<Document> res = (ArrayList<Document>)doc.get("_batch");
+            return (Integer) res.get(0).get("items");
+        } catch (MongoCommandException e){
+            return 0;
+        }
     }
 }
