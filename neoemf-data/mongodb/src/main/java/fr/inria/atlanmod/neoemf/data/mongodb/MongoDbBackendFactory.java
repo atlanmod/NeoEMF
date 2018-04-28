@@ -39,6 +39,11 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
     private static final String NAME = "mongodb";
 
     /**
+     * Indicate if the tests should run on Fongo.
+     */
+    private static final boolean TESTS_SHOULD_USE_MOCK = true;
+
+    /**
      * Constructs a new {@code MongoDbBackendFactory}.
      */
     protected MongoDbBackendFactory() {
@@ -78,7 +83,7 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
         MongoClient client;
         MongoDatabase database;
 
-        if(databaseName.contains("test") && false){
+        if(databaseName.contains("test") && TESTS_SHOULD_USE_MOCK){
             Fongo fongoTestServer = new Fongo("MongoTestServer");
 
             database = fongoTestServer.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
