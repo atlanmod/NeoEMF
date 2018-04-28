@@ -8,7 +8,6 @@
 
 package ${package};
 
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -32,22 +31,7 @@ public class ${databaseName}BackendFactory extends AbstractBackendFactory<${data
      */
     private static final String NAME = "${databaseName.toLowerCase()}";
 
-    /**
-     * Constructs a new {@code ${databaseName}BackendFactory}.
-     */
-    protected ${databaseName}BackendFactory() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
-     */
     @Nonnull
-    public static BackendFactory getInstance() {
-        return Holder.INSTANCE;
-    }
-
     @Override
     public String name() {
         return NAME;
@@ -71,17 +55,5 @@ public class ${databaseName}BackendFactory extends AbstractBackendFactory<${data
         // TODO Start/Create the database
 
         return createMapper(config.getMapping());
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final BackendFactory INSTANCE = new ${databaseName}BackendFactory();
     }
 }

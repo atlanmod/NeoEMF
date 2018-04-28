@@ -14,7 +14,6 @@ import fr.inria.atlanmod.neoemf.util.UriBuilder;
 
 import ${package}.${databaseName}BackendFactory;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -27,23 +26,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @FactoryBinding(factory = ${databaseName}BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class ${databaseName}Uri extends AbstractUriBuilder {
-
-    /**
-     * Constructs a new {@code ${databaseName}Uri}.
-     */
-    private ${databaseName}Uri() {
-    }
-
-    /**
-     * Creates a new {@link UriBuilder} with the pre-configured scheme.
-     *
-     * @return a new builder
-     */
-    @Nonnull
-    @SuppressWarnings("unused") // Called dynamically
-    public static UriBuilder builder() {
-        return new ${databaseName}Uri();
-    }
 
     @Override
     public boolean supportsFile() {

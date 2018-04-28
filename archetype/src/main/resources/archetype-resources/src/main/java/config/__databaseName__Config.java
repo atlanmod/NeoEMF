@@ -28,20 +28,10 @@ public class ${databaseName}Config extends BaseConfig<${databaseName}Config> {
     /**
      * Constructs a new {@code ${databaseName}Config}.
      */
-    protected ${databaseName}Config() {
+    public ${databaseName}Config() {
         withDefault();
 
         // TODO Declare all default values
-    }
-
-    /**
-     * Constructs a new {@code ${databaseName}Config} instance with default settings.
-     *
-     * @return a new configuration
-     */
-    @Nonnull
-    public static ${databaseName}Config newConfig() {
-        return new ${databaseName}Config();
     }
 
     /**
@@ -49,6 +39,7 @@ public class ${databaseName}Config extends BaseConfig<${databaseName}Config> {
      *
      * @return this configuration (for chaining)
      */
+    @Nonnull
     protected ${databaseName}Config withDefault() {
         return setMappingWithCheck("${package}.Default${databaseName}Backend", false);
     }
