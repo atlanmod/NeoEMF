@@ -38,11 +38,9 @@ public class MapDbImporter {
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 
         URI sourceUri = URI.createURI("model/sample.xmi");
-        URI targetUri = MapDbUri.builder().fromFile("databases/sample.mapdb");
+        URI targetUri = new MapDbUri().fromFile("databases/sample.mapdb");
 
-        ImmutableConfig config = MapDbConfig.newConfig()
-                .withIndices()
-                .autoSave();
+        ImmutableConfig config = new MapDbConfig().withIndices().autoSave();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
             targetResource.save(config.toMap());

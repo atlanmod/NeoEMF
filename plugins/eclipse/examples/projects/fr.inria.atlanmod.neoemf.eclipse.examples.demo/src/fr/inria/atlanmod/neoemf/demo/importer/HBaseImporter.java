@@ -38,9 +38,9 @@ public class HBaseImporter {
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 
         URI sourceUri = URI.createURI("model/sample.xmi");
-        URI targetUri = HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase");
+        URI targetUri = new HBaseUri().fromServer("localhost", 2181, "sample.hbase");
 
-        ImmutableConfig config = HBaseConfig.newConfig();
+        ImmutableConfig config = new HBaseConfig();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
             targetResource.save(config.toMap());

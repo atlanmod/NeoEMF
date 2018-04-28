@@ -34,10 +34,9 @@ public class MapDbCounter {
 
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        URI uri = MapDbUri.builder().fromFile("databases/sample.mapdb");
+        URI uri = new MapDbUri().fromFile("databases/sample.mapdb");
 
-        ImmutableConfig config = MapDbConfig.newConfig()
-                .withIndices();
+        ImmutableConfig config = new MapDbConfig().withIndices();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 

@@ -38,10 +38,9 @@ public class BlueprintsImporter {
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 
         URI sourceUri = URI.createURI("model/sample.xmi");
-        URI targetUri = BlueprintsUri.builder().fromFile("databases/sample.graphdb");
+        URI targetUri = new BlueprintsUri().fromFile("databases/sample.graphdb");
 
-        ImmutableConfig config = BlueprintsNeo4jConfig.newConfig()
-                .autoSave();
+        ImmutableConfig config = new BlueprintsNeo4jConfig().autoSave();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
             targetResource.save(config.toMap());

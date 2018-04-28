@@ -34,10 +34,9 @@ public class BerkeleyDbCounter {
 
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        URI uri = BerkeleyDbUri.builder().fromFile("databases/sample.berkeleydb");
+        URI uri = new BerkeleyDbUri().fromFile("databases/sample.berkeleydb");
 
-        ImmutableConfig config = BerkeleyDbConfig.newConfig()
-                .withIndices();
+        ImmutableConfig config = new BerkeleyDbConfig().withIndices();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 

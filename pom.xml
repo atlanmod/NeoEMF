@@ -111,7 +111,7 @@
     </developers>
 
     <properties>
-        <argLine.global>-XX:+UseConcMarkSweepGC</argLine.global>
+        <argLine.global>-XX:+UseConcMarkSweepGC -Xmx2g</argLine.global>
 
         <commons.version>1.0.2-SNAPSHOT</commons.version>
         <emf.version>2.12.0</emf.version>

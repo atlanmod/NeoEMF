@@ -38,11 +38,9 @@ public class BerkeleyDbImporter {
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 
         URI sourceUri = URI.createURI("model/sample.xmi");
-        URI targetUri = BerkeleyDbUri.builder().fromFile("databases/sample.berkeleydb");
+        URI targetUri = new BerkeleyDbUri().fromFile("databases/sample.berkeleydb");
 
-        ImmutableConfig config = BerkeleyDbConfig.newConfig()
-                .withIndices()
-                .autoSave();
+        ImmutableConfig config = new BerkeleyDbConfig().withIndices().autoSave();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
             targetResource.save(config.toMap());

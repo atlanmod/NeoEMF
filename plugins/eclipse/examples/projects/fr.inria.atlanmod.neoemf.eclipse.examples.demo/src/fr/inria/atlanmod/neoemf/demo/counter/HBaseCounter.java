@@ -33,9 +33,10 @@ public class HBaseCounter {
         JavaPackage.eINSTANCE.eClass();
 
         ResourceSet resourceSet = new ResourceSetImpl();
-        URI uri = HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase");
 
-        ImmutableConfig config = HBaseConfig.newConfig();
+        URI uri = new HBaseUri().fromServer("localhost", 2181, "sample.hbase");
+
+        ImmutableConfig config = new HBaseConfig();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 

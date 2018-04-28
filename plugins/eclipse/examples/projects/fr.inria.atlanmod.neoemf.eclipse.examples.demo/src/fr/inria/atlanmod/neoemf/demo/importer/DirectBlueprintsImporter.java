@@ -33,13 +33,12 @@ public class DirectBlueprintsImporter {
     public static void main(String[] args) throws Exception {
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE);
 
-        ImmutableConfig config = BlueprintsNeo4jConfig.newConfig()
-                .autoSave();
+        ImmutableConfig config = new BlueprintsNeo4jConfig().autoSave();
 
-        BackendFactory factory = BlueprintsBackendFactory.getInstance();
+        BackendFactory factory = new BlueprintsBackendFactory();
 
         File sourceFile = new File("model/sample.xmi");
-        URI targetUri = BlueprintsUri.builder().fromFile("databases/sample2.graphdb");
+        URI targetUri = new BlueprintsUri().fromFile("databases/sample2.graphdb");
 
         try (Backend backend = factory.createBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
             Migrator.fromXmi(sourceFile)

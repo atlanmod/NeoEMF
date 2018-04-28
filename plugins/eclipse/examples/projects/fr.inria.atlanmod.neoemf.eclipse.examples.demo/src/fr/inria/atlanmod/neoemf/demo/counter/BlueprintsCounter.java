@@ -34,9 +34,9 @@ public class BlueprintsCounter {
 
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        URI uri = BlueprintsUri.builder().fromFile("databases/sample.graphdb");
+        URI uri = new BlueprintsUri().fromFile("databases/sample.graphdb");
 
-        ImmutableConfig config = BlueprintsNeo4jConfig.newConfig();
+        ImmutableConfig config = new BlueprintsNeo4jConfig();
 
         Stopwatch stopwatch = Stopwatch.createStarted();
 

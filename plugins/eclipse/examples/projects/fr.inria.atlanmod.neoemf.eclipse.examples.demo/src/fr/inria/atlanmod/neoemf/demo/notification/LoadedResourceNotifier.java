@@ -39,8 +39,8 @@ public class LoadedResourceNotifier {
 
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        URI uri = BlueprintsUri.builder().fromFile("databases/sample.graphdb");
-        ImmutableConfig options = BlueprintsNeo4jConfig.newConfig();
+        URI uri = new BlueprintsUri().fromFile("databases/sample.graphdb");
+        ImmutableConfig options = new BlueprintsNeo4jConfig();
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
             resource.load(options.toMap());

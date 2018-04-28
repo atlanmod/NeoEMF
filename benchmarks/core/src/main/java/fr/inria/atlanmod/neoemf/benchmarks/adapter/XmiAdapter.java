@@ -18,6 +18,8 @@ import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -42,6 +44,12 @@ public class XmiAdapter extends AbstractAdapter {
         URI targetUri = URI.createFileURI(file.getAbsolutePath());
 
         return resourceSet.createResource(targetUri);
+    }
+
+    @Nonnull
+    @Override
+    public Map<String, ?> getOptions() {
+        return Collections.emptyMap();
     }
 
     @Nonnull

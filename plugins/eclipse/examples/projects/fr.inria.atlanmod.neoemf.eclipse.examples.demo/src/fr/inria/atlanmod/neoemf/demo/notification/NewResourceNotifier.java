@@ -42,8 +42,8 @@ public class NewResourceNotifier {
 
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        URI uri = BlueprintsUri.builder().fromFile("databases/notifier_example.graphdb");
-        ImmutableConfig options = BlueprintsNeo4jConfig.newConfig();
+        URI uri = new BlueprintsUri().fromFile("databases/notifier_example.graphdb");
+        ImmutableConfig options = new BlueprintsNeo4jConfig();
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
             resource.save(options.toMap());
