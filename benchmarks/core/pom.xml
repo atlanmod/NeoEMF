@@ -94,6 +94,7 @@
             <artifactId>neoemf-data-mongodb</artifactId>
             <version>1.0.3-SNAPSHOT</version>
             <scope>compile</scope>
+
         </dependency>
 
         <!-- Benchmark -->

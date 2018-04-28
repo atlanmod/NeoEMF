@@ -1,9 +1,13 @@
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mongodb.MongoDbBackendFactory;
+import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
+
 
 public class MongoDbAdapter extends AbstractNeoAdapter {
 
@@ -26,4 +30,11 @@ public class MongoDbAdapter extends AbstractNeoAdapter {
     {
         super("mongodb");
     }
+
+    @Nonnull
+    @Override
+    public Map<String, ?> getOptions() {
+        return MongoDbConfig.newConfig().toMap();
+    }
+
 }

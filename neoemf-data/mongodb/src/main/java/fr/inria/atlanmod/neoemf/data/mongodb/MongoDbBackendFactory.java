@@ -78,7 +78,7 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
         MongoClient client;
         MongoDatabase database;
 
-        if(databaseName.contains("test")){
+        if(databaseName.contains("test") && false){
             Fongo fongoTestServer = new Fongo("MongoTestServer");
 
             database = fongoTestServer.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
