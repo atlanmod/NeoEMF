@@ -177,11 +177,11 @@
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package />
-                            <Embed-Dependency>
+                            <Embed-Dependency><!-- Inherited -->
                                 *;
                                 scope=compile|runtime;
                                 type=!pom;
-                                groupId=!${project.groupId}|org.eclipse.emf
+                                groupId=!${project.groupId}|fr.inria.atlanmod.commons|org.eclipse.emf
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
                             <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>

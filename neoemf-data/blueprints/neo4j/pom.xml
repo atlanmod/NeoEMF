@@ -163,6 +163,13 @@
                         <_exportcontents>
                             com.tinkerpop.blueprints.impls.neo4j2;version="${blueprints.version}"
                         </_exportcontents>
+                        <Embed-Dependency><!-- Inherited -->
+                            *;
+                            scope=compile|runtime;
+                            type=!pom;
+                            artifactId=!blueprints-core;
+                            groupId=!${project.groupId}|fr.inria.atlanmod.commons|org.eclipse.emf
+                        </Embed-Dependency>
                         <Require-Bundle>
                             ${project.groupId}.core;visibility:=reexport,
                             ${project.groupId}.data.blueprints.core
