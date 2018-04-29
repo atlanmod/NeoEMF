@@ -16,7 +16,7 @@
     <description>HBase extension of the core component.</description>
 
     <properties>
-        <hbase.version>1.4.2</hbase.version>
+        <hbase.version>1.4.3</hbase.version>
         <hadoop.version>2.7.4</hadoop.version><!-- Follow HBase dependencies -->
     </properties>
 
