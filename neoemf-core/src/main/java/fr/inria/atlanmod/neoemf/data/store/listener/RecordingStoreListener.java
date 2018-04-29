@@ -8,13 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.data.store.listener;
 
-import fr.inria.atlanmod.neoemf.data.store.Store;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Store} wrapper that records every calls to build usage statistics.
+ * A {@link StoreListener} that records every calls to build usage statistics.
  *
  * @see StoreStats
  */

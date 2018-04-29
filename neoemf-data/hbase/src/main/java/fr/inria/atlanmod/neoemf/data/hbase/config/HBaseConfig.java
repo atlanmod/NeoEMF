@@ -47,7 +47,7 @@ public class HBaseConfig extends BaseConfig<HBaseConfig> {
      * {@link String} representation for single-valued references</li> <li>a {@link String}[] representation for
      * multi-valued references</li> </ul>
      * <p>
-     * <b>Note:</b> This is the default mapping.
+     * <b>NOTE:</b> This is the default mapping.
      *
      * @return this configuration (for chaining)
      *

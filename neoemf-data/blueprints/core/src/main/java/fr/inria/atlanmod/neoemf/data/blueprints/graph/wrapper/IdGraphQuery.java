@@ -13,7 +13,7 @@ import com.tinkerpop.blueprints.GraphQuery;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * TODO
+ * A {@link GraphQuery} able to map the result of each method call to a dedicated implementation.
  * <p>
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.WrappedGraphQuery}.
  *

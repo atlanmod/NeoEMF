@@ -7,7 +7,7 @@
  */
 
 /**
- * Provides the dedicated graph structure for storing an EMF model.
+ * Provides objects able to listen an I/O process.
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.graph;
+package fr.inria.atlanmod.neoemf.io.listener;

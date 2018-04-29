@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * TODO
+ * An {@link Index} able to map the result of each method call to a dedicated implementation.
  * <p>
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdVertexIndex} and {@link
  * com.tinkerpop.blueprints.util.wrappers.id.IdEdgeIndex}.
@@ -39,7 +39,7 @@ class IdElementIndex<T extends Element, U extends T> extends AbstractBasedObject
      * Constructs a new {@code IdElementIndex}.
      *
      * @param baseIndex   the base index
-     * @param mappingFunc
+     * @param mappingFunc the function to create a new dedicated element from another
      */
     protected IdElementIndex(Index<T> baseIndex, Function<T, U> mappingFunc) {
         super(baseIndex);

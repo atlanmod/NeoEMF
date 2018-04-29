@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * TODO
+ * An {@link Iterable} able to map the result of each method call to a dedicated implementation.
  * <p>
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdVertexIterable} and {@link
  * com.tinkerpop.blueprints.util.wrappers.id.IdEdgeIterable}.
@@ -32,7 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 class IdElementIterable<T extends Element, U extends T> extends AbstractBasedObject<Iterable<T>> implements CloseableIterable<U> {
 
     /**
-     * TODO
+     * The function to create a new dedicated element from another.
      */
     @Nonnull
     private final Function<T, U> mappingFunc;
@@ -41,7 +41,7 @@ class IdElementIterable<T extends Element, U extends T> extends AbstractBasedObj
      * Constructs a new {@code IdElementIterable}.
      *
      * @param baseIterable the base iterable
-     * @param mappingFunc
+     * @param mappingFunc  the function to create a new dedicated element from another
      */
     protected IdElementIterable(Iterable<T> baseIterable, Function<T, U> mappingFunc) {
         super(baseIterable);

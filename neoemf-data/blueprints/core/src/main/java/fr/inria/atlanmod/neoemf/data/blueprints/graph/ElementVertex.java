@@ -88,7 +88,7 @@ public class ElementVertex extends IdVertex<ModelGraph> {
 
     /**
      * Creates a new instance of {@code ElementVertex} on the {@code baseVertex}.
-     * <p>
+     *
      * <b>WARNING:</b> This method is intended for use only by the {@link ModelGraph} class.
      *
      * @param baseVertex the base vertex
@@ -377,11 +377,11 @@ public class ElementVertex extends IdVertex<ModelGraph> {
     // region References
 
     /**
-     * TODO
+     * Returns the reference of the {@code feature}.
      *
-     * @param feature
+     * @param feature the feature
      *
-     * @return
+     * @return an {@link Optional} containing the referenced vertex
      */
     @Nonnull
     public Optional<ElementVertex> getReference(FeatureBean feature) {
@@ -391,12 +391,12 @@ public class ElementVertex extends IdVertex<ModelGraph> {
     }
 
     /**
-     * TODO
+     * Replaces the current reference of the {@code feature} by the specified {@code reference}.
      *
-     * @param feature
-     * @param reference
+     * @param feature   the feature
+     * @param reference the new reference
      *
-     * @return
+     * @return an {@link Optional} containing the replaced referenced vertex
      */
     @Nonnull
     public Optional<ElementVertex> setReference(FeatureBean feature, Id reference) {
@@ -414,9 +414,9 @@ public class ElementVertex extends IdVertex<ModelGraph> {
     }
 
     /**
-     * TODO
+     * Removes the current reference of the {@code feature}.
      *
-     * @param feature
+     * @param feature the feature
      */
     public void removeReferences(FeatureBean feature) {
         final String label = format(feature);
@@ -425,12 +425,12 @@ public class ElementVertex extends IdVertex<ModelGraph> {
     }
 
     /**
-     * TODO
+     * Returns the reference of the {@code feature} at the defined {@code position}.
      *
-     * @param feature
-     * @param position
+     * @param feature  the feature
+     * @param position the position of the reference
      *
-     * @return
+     * @return an {@link Optional} containing the referenced vertex
      */
     @Nonnull
     public Optional<ElementVertex> getReference(FeatureBean feature, @Nonnegative int position) {
@@ -440,11 +440,11 @@ public class ElementVertex extends IdVertex<ModelGraph> {
     }
 
     /**
-     * TODO
+     * Returns all references of the {@code feature}.
      *
-     * @param feature
+     * @param feature the feature
      *
-     * @return
+     * @return an ordered iterable of incident edges
      */
     @Nonnull
     public Iterable<ElementEdge> getReferenceEdges(FeatureBean feature) {
@@ -454,13 +454,15 @@ public class ElementVertex extends IdVertex<ModelGraph> {
     }
 
     /**
-     * TODO
+     * Returns all references of the {@code feature} between the {@code startPosition} and the {@code endPosition}.
      *
-     * @param feature
-     * @param startPosition
-     * @param endPosition
+     * @param feature       the feature
+     * @param startPosition the start position
+     * @param endPosition   the end position
      *
-     * @return
+     * @return an ordered iterable of incident edges
+     *
+     * @see ElementVertexQuery#hasPositionBetween(int, int)
      */
     @Nonnull
     public Iterable<ElementEdge> getReferenceEdges(FeatureBean feature, int startPosition, int endPosition) {
@@ -470,11 +472,11 @@ public class ElementVertex extends IdVertex<ModelGraph> {
     }
 
     /**
-     * TODO
+     * Defines the current reference of the {@code feature} at the defined {@code position}.
      *
-     * @param feature
-     * @param position
-     * @param reference
+     * @param feature   the feature
+     * @param position  the position of the reference
+     * @param reference the new reference
      */
     public void setReference(FeatureBean feature, @Nonnegative int position, Id reference) {
         final String label = format(feature);
@@ -483,13 +485,14 @@ public class ElementVertex extends IdVertex<ModelGraph> {
     }
 
     /**
-     * TODO
+     * Replaces the current reference of the {@code feature} at the defined {@code position}. If the current reference
+     * does not exist, then the new {@code reference} is not defined and this method does nothing.
      *
-     * @param feature
-     * @param position
-     * @param reference
+     * @param feature   the feature
+     * @param position  the position of the reference
+     * @param reference the new reference
      *
-     * @return
+     * @return an {@link Optional} containing the replaced reference
      */
     @Nonnull
     public Optional<ElementVertex> replaceReference(FeatureBean feature, @Nonnegative int position, Id reference) {

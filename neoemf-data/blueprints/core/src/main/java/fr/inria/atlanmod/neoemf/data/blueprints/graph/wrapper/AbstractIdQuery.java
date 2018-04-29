@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.collect.MoreIterables.firstElement;
 
 /**
- * TODO
+ * An abstract {@link Query} able to map the result of each method call to a dedicated implementation.
  *
  * @param <Q> the "self"-type of this query
  * @param <T> the type of the base query
@@ -115,7 +115,7 @@ public abstract class AbstractIdQuery<Q extends AbstractIdQuery<Q, T, G>, T exte
     /**
      * Execute the query and return the matching edges.
      *
-     * @param mappingFunc
+     * @param mappingFunc the function to create a new dedicated edge from another
      * @param <E>         the type of the expected edges
      *
      * @return the unfiltered incident edges
@@ -128,7 +128,7 @@ public abstract class AbstractIdQuery<Q extends AbstractIdQuery<Q, T, G>, T exte
     /**
      * Execute the query and return the matching edge.
      *
-     * @param mappingFunc
+     * @param mappingFunc the function to create a new dedicated edge from another
      * @param <E>         the type of the expected edge
      *
      * @return the only unfiltered incident edge
@@ -141,7 +141,7 @@ public abstract class AbstractIdQuery<Q extends AbstractIdQuery<Q, T, G>, T exte
     /**
      * Execute the query and return the vertices on the other end of the matching edges.
      *
-     * @param mappingFunc
+     * @param mappingFunc the function to create a new dedicated vertex from another
      * @param <V>         the type of the expected vertices
      *
      * @return the unfiltered adjacent vertices
@@ -154,7 +154,7 @@ public abstract class AbstractIdQuery<Q extends AbstractIdQuery<Q, T, G>, T exte
     /**
      * Execute the query and return the vertex on the other end of the matching edge.
      *
-     * @param mappingFunc
+     * @param mappingFunc the function to create a new dedicated vertex from another
      * @param <V>         the type of the expected vertex
      *
      * @return the only unfiltered adjacent vertex

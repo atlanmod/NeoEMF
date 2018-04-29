@@ -39,7 +39,7 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
 
 /**
- * TODO
+ * A {@link com.tinkerpop.blueprints.KeyIndexableGraph} able to map the result of each method call to a dedicated implementation.
  * <p>
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdGraph}.
  *
@@ -50,7 +50,7 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
 
     /**
      * The property key used to identify {@link Vertex} and {@link Edge} instances.
-     * <p>
+     *
      * <b>NOTE:</b> using "__id" instead of "_id" avoids collision with Rexster's "_id".
      */
     @Nonnull
@@ -388,13 +388,13 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     // region Internal
 
     /**
-     * TODO
+     * Create a new vertex, add it to the graph, and return the newly created vertex.
      *
-     * @param id
-     * @param mappingFunc
-     * @param <V>
+     * @param id          the identifier of the vertex
+     * @param mappingFunc the function to create a new dedicated vertex from another
+     * @param <V>         the type of the vertex after mapping
      *
-     * @return
+     * @return the newly created vertex
      *
      * @see #addVertex(Object)
      */
@@ -411,13 +411,13 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     }
 
     /**
-     * TODO
+     * Return the vertex referenced by the provided object identifier.
      *
-     * @param id
-     * @param mappingFunc
-     * @param <V>
+     * @param id          the identifier of the vertex
+     * @param mappingFunc the function to create a new dedicated vertex from another
+     * @param <V>         the type of the vertex after mapping
      *
-     * @return
+     * @return an {@link Optional} containing the vertex referenced by the provided identifier
      *
      * @see #getVertex(Object)
      */
@@ -433,12 +433,12 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     }
 
     /**
-     * TODO
+     * Return an iterable to all the vertices in the graph.
      *
-     * @param mappingFunc
-     * @param <V>
+     * @param mappingFunc the function to create a new dedicated vertex from another
+     * @param <V>         the type of the vertex after mapping
      *
-     * @return
+     * @return an iterable reference to all vertices in the graph
      *
      * @see #getVertices()
      */
@@ -448,14 +448,14 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     }
 
     /**
-     * TODO
+     * Return an iterable to all the vertices in the graph that have a particular key/value property.
      *
-     * @param key
-     * @param value
-     * @param mappingFunc
-     * @param <V>
+     * @param key         the key of vertex
+     * @param value       the value of the vertex
+     * @param mappingFunc the function to create a new dedicated vertex from another
+     * @param <V>         the type of the vertex after mapping
      *
-     * @return
+     * @return an iterable of vertices with provided key and value
      *
      * @see #getVertices(String, Object)
      */
@@ -467,16 +467,16 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     }
 
     /**
-     * TODO
+     * Add an edge to the graph. The added edges requires a recommended identifier, a tail vertex, an head vertex, and a label.
      *
-     * @param id
-     * @param outVertex
-     * @param inVertex
-     * @param label
-     * @param mappingFunc
-     * @param <E>
+     * @param id          the identifier of the edge
+     * @param outVertex   the vertex on the tail of the edge
+     * @param inVertex    the vertex on the head of the edge
+     * @param label       the label associated with the edge
+     * @param mappingFunc the function to create a new dedicated edge from another
+     * @param <E>         the type of the edge after mapping
      *
-     * @return
+     * @return the newly created edge
      *
      * @see #addEdge(Object, Vertex, Vertex, String)
      */
@@ -496,13 +496,13 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     }
 
     /**
-     * TODO
+     * Return the edge referenced by the provided object identifier.
      *
-     * @param id
-     * @param mappingFunc
-     * @param <E>
+     * @param id          the identifier of the edge to retrieved from the graph
+     * @param mappingFunc the function to create a new dedicated edge from another
+     * @param <E>         the type of the edge after mapping
      *
-     * @return
+     * @return an {@link Optional} containing the edge referenced by the provided identifier
      *
      * @see #getEdge(Object)
      */
@@ -518,12 +518,12 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     }
 
     /**
-     * TODO
+     * Return an iterable to all the edges in the graph.
      *
-     * @param mappingFunc
-     * @param <E>
+     * @param mappingFunc the function to create a new dedicated edge from another
+     * @param <E>         the type of the edge after mapping
      *
-     * @return
+     * @return an iterable reference to all edges in the graph
      *
      * @see #getEdges()
      */
@@ -533,14 +533,14 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     }
 
     /**
-     * TODO
+     * Return an iterable to all the edges in the graph that have a particular key/value property.
      *
-     * @param key
-     * @param value
-     * @param mappingFunc
-     * @param <E>
+     * @param key         the key of the edge
+     * @param value       the value of the edge
+     * @param mappingFunc the function to create a new dedicated edge from another
+     * @param <E>         the type of the edge after mapping
      *
-     * @return
+     * @return an iterable of edges with provided key and value
      *
      * @see #getEdges(String, Object)
      */
@@ -552,15 +552,15 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     }
 
     /**
-     * TODO
+     * Generate an index with a particular name for a particular class.
      *
-     * @param indexName
-     * @param indexClass
-     * @param mappingFunc
-     * @param <T>
-     * @param <U>
+     * @param indexName   the name of the manual index
+     * @param indexClass  the element class that this index is indexing (can be base class)
+     * @param mappingFunc the function to create a new dedicated element from another
+     * @param <T>         the element class that this index is indexing (can be base class)
+     * @param <U>         the type of the edge indexed element mapping
      *
-     * @return
+     * @return the index created
      *
      * @see #createIndex(String, Class, Parameter[])
      */
@@ -575,15 +575,15 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     }
 
     /**
-     * TODO
+     * Get an index from the graph by its name and index class. An index is unique up to name.
      *
-     * @param indexName
-     * @param indexClass
-     * @param mappingFunc
-     * @param <T>
-     * @param <U>
+     * @param indexName   the name of the index to retrieve
+     * @param indexClass  the class of the elements being indexed (can be base class)
+     * @param mappingFunc the function to create a new dedicated element from another
+     * @param <T>         the class of the elements being indexed (can be base class)
+     * @param <U>         the type of the edge indexed element mapping
      *
-     * @return
+     * @return the retrieved index
      *
      * @see #getIndex(String, Class)
      */
@@ -604,10 +604,10 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
      * exists, it will be created.
      *
      * @param indexName   the name of the manual index
-     * @param indexClass  the element class that this index is indexing
-     * @param mappingFunc
-     * @param <T>
-     * @param <U>
+     * @param indexClass  the element class that this index is indexing (can be base class)
+     * @param mappingFunc the function to create a new dedicated element from another
+     * @param <T>         the element class that this index is indexing (can be base class)
+     * @param <U>         the type of the edge indexed element mapping
      *
      * @return the index
      *

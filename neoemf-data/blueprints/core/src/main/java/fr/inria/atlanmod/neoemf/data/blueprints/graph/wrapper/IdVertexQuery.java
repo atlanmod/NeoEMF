@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * TODO
+ * A {@link VertexQuery} able to map the result of each method call to a dedicated implementation.
  * <p>
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.WrapperVertexQuery}.
  *

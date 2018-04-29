@@ -19,9 +19,11 @@ import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.collect.MoreIterables.firstElement;
+import static fr.inria.atlanmod.commons.collect.MoreIterables.onlyElement;
 
 /**
+ * An {@link Vertex} able to map the result of each method call to a dedicated implementation.
+ * <p>
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdVertex}.
  *
  * @param <G> the type of the graph that owns this vertex
@@ -107,44 +109,52 @@ public class IdVertex<G extends IdGraph<G>> extends IdElement<Vertex, G> impleme
     // region Internal
 
     /**
-     * TODO
+     * Return the only edge incident to the vertex according to the provided direction and edge label.
      *
-     * @param direction
-     * @param label
-     * @param mappingFunc
-     * @param <E>
+     * @param direction   the direction of the edge to retrieve
+     * @param label       the label of the edge to retrieve
+     * @param mappingFunc the function to create a new dedicated edge from another
+     * @param <E>         the type of the edge after mapping
      *
-     * @return
+     * @return the incident edge
+     *
+     * @see fr.inria.atlanmod.commons.collect.MoreIterables#onlyElement(Iterable)
+     * @see #getEdges(Direction, String...)
      */
     @Nonnull
     public <E extends Edge> Optional<E> getEdge(Direction direction, String label, BiFunction<Edge, G, E> mappingFunc) {
-        return firstElement(getEdges(direction, new String[]{label}, mappingFunc));
+        return onlyElement(getEdges(direction, new String[]{label}, mappingFunc));
     }
 
     /**
-     * TODO
+     * Return the only vertex adjacent to the vertex according to the provided direction and edge label.
      *
-     * @param direction
-     * @param label
-     * @param mappingFunc
-     * @param <V>
+     * @param direction   the direction of the edge of the adjacent vertex
+     * @param label       the label of the edge of the adjacent vertex
+     * @param mappingFunc the function to create a new dedicated vertex from another
+     * @param <V>         the type of the vertex after mapping
      *
-     * @return
+     * @return the adjacent vertex
+     *
+     * @see fr.inria.atlanmod.commons.collect.MoreIterables#onlyElement(Iterable)
+     * @see #getVertices(Direction, String...)
      */
     @Nonnull
     public <V extends Vertex> Optional<V> getVertex(Direction direction, String label, BiFunction<Vertex, G, V> mappingFunc) {
-        return firstElement(getVertices(direction, new String[]{label}, mappingFunc));
+        return onlyElement(getVertices(direction, new String[]{label}, mappingFunc));
     }
 
     /**
-     * TODO
+     * Return the edges incident to the vertex according to the provided direction and edge labels.
      *
-     * @param direction
-     * @param labels
-     * @param mappingFunc
-     * @param <E>
+     * @param direction   the direction of the edges to retrieve
+     * @param labels      the labels of the edges to retrieve
+     * @param mappingFunc the function to create a new dedicated edge from another
+     * @param <E>         the type of the edge after mapping
      *
-     * @return
+     * @return an iterable of incident edges
+     *
+     * @see #getEdges(Direction, String...)
      */
     @Nonnull
     public <E extends Edge> Iterable<E> getEdges(Direction direction, String[] labels, BiFunction<Edge, G, E> mappingFunc) {
@@ -152,14 +162,17 @@ public class IdVertex<G extends IdGraph<G>> extends IdElement<Vertex, G> impleme
     }
 
     /**
-     * TODO
+     * Return the vertices adjacent to the vertex according to the provided direction and edge labels.
+     * This method does not remove duplicate vertices (i.e. those vertices that are connected by more than one edge).
      *
-     * @param direction
-     * @param labels
-     * @param mappingFunc
-     * @param <V>
+     * @param direction   the direction of the edges of the adjacent vertices
+     * @param labels      the labels of the edges of the adjacent vertices
+     * @param mappingFunc the function to create a new dedicated vertex from another
+     * @param <V>         the type of the vertex after mapping
      *
-     * @return
+     * @return an iterable of adjacent vertices
+     *
+     * @see #getVertices(Direction, String...)
      */
     @Nonnull
     public <V extends Vertex> Iterable<V> getVertices(Direction direction, String[] labels, BiFunction<Vertex, G, V> mappingFunc) {
@@ -167,14 +180,16 @@ public class IdVertex<G extends IdGraph<G>> extends IdElement<Vertex, G> impleme
     }
 
     /**
-     * TODO
+     * Add a new outgoing edge from this vertex to the parameter vertex with provided edge label.
      *
-     * @param label
-     * @param vertex
-     * @param mappingFunc
-     * @param <E>
+     * @param label       the label of the edge
+     * @param vertex      the vertex to connect to with an incoming edge
+     * @param mappingFunc the function to create a new dedicated edge from another
+     * @param <E>         the type of the edge after mapping
      *
-     * @return
+     * @return the newly created edge
+     *
+     * @see #addEdge(String, Vertex)
      */
     @Nonnull
     public <E extends Edge> E addEdge(String label, Vertex vertex, BiFunction<Edge, G, E> mappingFunc) {

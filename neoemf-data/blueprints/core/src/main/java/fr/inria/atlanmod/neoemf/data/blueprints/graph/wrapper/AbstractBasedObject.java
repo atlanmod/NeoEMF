@@ -14,7 +14,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * An object based on another, owned by an {@link IdGraph}.
+ * An object based on another.
  *
  * @param <T> the type of the base element
  */

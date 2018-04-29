@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * TODO
+ * An {@link Edge} able to map the result of each method call to a dedicated implementation.
  * <p>
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdEdge}.
  *
@@ -62,13 +62,15 @@ public class IdEdge<G extends IdGraph<G>> extends IdElement<Edge, G> implements 
     // region Internal
 
     /**
-     * TODO
+     * Return the tail/out or head/in vertex.
      *
-     * @param direction
-     * @param mappingFunc
-     * @param <E>
+     * @param direction   whether to return the tail/out or head/in vertex
+     * @param mappingFunc the function to create a new dedicated vertex from another
+     * @param <E>         the type of the edge after mapping
      *
-     * @return
+     * @return the tail/out or head/in vertex
+     *
+     * @see #getVertex(Direction)
      */
     @Nonnull
     public <E extends Vertex> E getVertex(Direction direction, BiFunction<Vertex, G, E> mappingFunc) {
