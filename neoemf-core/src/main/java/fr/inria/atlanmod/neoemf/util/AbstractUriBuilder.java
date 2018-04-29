@@ -64,7 +64,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
      */
     @Nonnull
     @VisibleForTesting
-    public static UriBuilder withScheme(String scheme) {
+    static UriBuilder withScheme(String scheme) {
         return new AbstractUriBuilder(scheme) {
 
             @Override

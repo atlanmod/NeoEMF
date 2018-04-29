@@ -169,7 +169,7 @@ public class BasicNamespace implements Basic<BasicNamespace, EPackage> {
          */
         @Nonnull
         @VisibleForTesting
-        public Iterable<String> getPrefixes() {
+        Iterable<String> getPrefixes() {
             return Collections.unmodifiableSet(namespacesByPrefix.keySet());
         }
 

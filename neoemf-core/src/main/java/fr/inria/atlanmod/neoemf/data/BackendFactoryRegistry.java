@@ -81,7 +81,7 @@ public final class BackendFactoryRegistry {
      */
     @Nonnull
     @VisibleForTesting
-    public Map<String, BackendFactory> getFactories() {
+    Map<String, BackendFactory> getFactories() {
         if (!initialized) {
             registerAll();
         }

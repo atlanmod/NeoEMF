@@ -212,7 +212,7 @@ public final class Migrator<T> {
      */
     @Nonnull
     @VisibleForTesting
-    public Migrator<T> to(Writer writer) {
+    Migrator<T> to(Writer writer) {
         writers.add(writer);
         return this;
     }

@@ -118,8 +118,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @param id the identifier of this object
      */
-    @VisibleForTesting
-    public DefaultPersistentEObject(Id id) {
+    protected DefaultPersistentEObject(Id id) {
         this.id = checkNotNull(id, "id");
     }
 
