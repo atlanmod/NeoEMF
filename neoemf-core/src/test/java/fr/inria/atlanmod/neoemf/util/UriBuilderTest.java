@@ -25,8 +25,8 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * A test-case about {@link UriBuilder}.
  */
-@SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"})
 @ParametersAreNonnullByDefault
+@SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"}) // Test with `@Nonnull`
 class UriBuilderTest extends AbstractUriTest {
 
     private static final String SCHEME = "scheme";

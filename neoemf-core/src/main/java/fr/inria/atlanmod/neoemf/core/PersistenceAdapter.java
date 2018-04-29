@@ -83,7 +83,6 @@ final class PersistenceAdapter {
      * @throws NullPointerException if any argument is {@code null}
      */
     @Nonnull
-    @SuppressWarnings("ConstantConditions")
     private <T extends PersistentEObject> T adapt(Object object, Class<T> type) {
         checkNotNull(object, "object");
         checkNotNull(type, "type");
@@ -140,7 +139,7 @@ final class PersistenceAdapter {
         Enhancer proxy = new Enhancer();
         proxy.setClassLoader(type.getClassLoader());
         proxy.setSuperclass(object.getClass());
-        proxy.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
+        proxy.setInterfaces(interfaces.toArray(new Class[0]));
         proxy.setCallback(new PersistenceInterceptor());
 
         return type.cast(proxy.create());
