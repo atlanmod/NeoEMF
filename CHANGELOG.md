@@ -25,12 +25,9 @@ They are presented as several interfaces and each have their responsibility:
 -   __\[NEW\]__ Several default mappings have been implemented to process references as attributes after a conversion, or to manage data with indices, arrays, lists, or with a custom way.
                 They are presented as interfaces to allow a combination of several mappings.
                 For example, you can combine: `ReferenceAs<String>`, `MergeManyReferenceAs<String>` and `ManyValueWithLists`. These mappings are *optional*
--   __\[NEW\]__ `Backend` have been split in 2 categories:
-    -   `PersistentBackend` that store data in a database (`Local**` or `Distributed**`)
-    -   `TransientBackend` that store data in memory (data cannot be recovered after the JVM has stopped)
 -   __\[NEW\]__ A generic `DefaultTransientBackend` has been created to handle transient elements in memory:
                 Custom `TransientBackend`s are no longer necessary, but this requires the `neoemf-io` module to transfer the transient content to a `PersistentBackend`
--   __\[NEW\]__ `URI`s are now created with builders instead of static methods
+-   __\[NEW\]__ `URI`s are now created with factories instead of static methods
 -   __\[UPD\]__ Complete optimization of all existing database adapters
 -   __\[UPD\]__ `Backend`s are auto-closed when the JVM is shutting-down
 -   __\[UPD\]__ `StoreAdapter` become the only `EStore` implementation, and provides a bridge between EMF and `DataMapper`s
@@ -38,14 +35,14 @@ They are presented as several interfaces and each have their responsibility:
 -   __\[UPD\]__ Back-end configuration have been merged, updated and simplified
 -   __\[UPD\]__ Configuration is now managed with a simple `Properties` file *(may change in the near future)*
 -   __\[UPD\]__ `PersistentResource` are no longer linked to their `Backend`s, prefer using `Store`s
--   __\[UPD\]__ `BackendFactory#createBackend(***)` take a `URI` as parameter instead of a `File` to handle distributed `PersistentBackend`
+-   __\[UPD\]__ `BackendFactory#createBackend()` take a `URI` as parameter instead of a `File` to handle distributed `PersistentBackend`
 -   __\[DEL\]__ All backend-specific implementations of `PersistentStore` have been merged with those at `core`-level
 -   __\[DEL\]__ `InvalidStore` has been replaced by `InvalidBackend`
--   __\[DEL\]__ `TransientStore`s have been replaced by `BoundTransientStore` (a lightweigth and shared version of `TransientBackend`)
+-   __\[DEL\]__ `TransientStore`s have been removed and replaced by `BoundInMemoryBackend` (a lightweigth and shared version of an `DefaultInMemoryBackend`)
 
 ### Automation
 -   __\[NEW\]__ `BackendFactory`s are automatically registered at runtime (no need to explicitly register them in the `ResourceSet` registry)
--   __\[NEW\]__ `BackendFactory`s are linked to their associated `UriBuilder` and `Config` with annotations which are processed at runtime: a `UriBuilder` or `Config` can be retrieved from their association
+-   __\[NEW\]__ `BackendFactory`s are linked to their associated `UriFactory` and `Config` with annotations which are processed at runtime: a `UriFactory` or `Config` can be retrieved from their association
 -   __\[NEW\]__ Stores and mappings are created by using reflection in `BackendFactory` to allow customizations (defined with `Config`)
 -   __\[NEW\]__ `URI`s are automatically created according to a common prefix ("neo-") and the lowercase name of their associated `BackendFactory`
 
@@ -90,7 +87,7 @@ They are presented as several interfaces and each have their responsibility:
 -   __\[FIX\]__ Issue #63: `BasicReference`s are first processed as `BasicAttribute`s when reading, then redirected in `EcoreProcessor` which has access to its real type with the `EPackage`
 -   __\[FIX\]__ Issue #64: If an `Id` is not found in `Backend`s, then an empty array is returned
 -   __\[FIX\]__ Issue #70: The `LazyMatchEngine` class has been removed
--   __\[FIX\]__ Issue #71: `BoundTransientBackend` are registered in a local registry to ensure that the features can be retrieved even if the associated `PersistentEObject` is freed from memory
+-   __\[FIX\]__ Issue #71: `BoundInMemoryBackend` are registered in a local registry to ensure that the features can be retrieved even if the associated `PersistentEObject` is freed from memory
 -   __\[FIX\]__ Issue #72: Ignore the uniqueness check of identifiers when creating a new `Vertex`
 -   __\[FIX\]__ Issue #73: The `neoemf-data-map-core` module no longer exists
 -   __\[FIX\]__ Issue #75: The `io` module now use the `DataMapper` structure, and not a custom implementation
@@ -102,7 +99,7 @@ They are presented as several interfaces and each have their responsibility:
 ### Refactoring
 -   __\[UPD\]__ `PersistenceBackendFactory` become `BackendFactory`: they also create `TransientBackend`s
 -   __\[UPD\]__ `OptionsBuilder` become `Config`
--   __\[UPD\]__ `PersistenceURI` become `UriBuilder`: static methods have been replaced by this builder
+-   __\[UPD\]__ `PersistenceURI` become `UriFactory`: static methods have been replaced by this factory
 -   __\[UPD\]__ `PersistentStore` become `Store`: they don't have any state, so the "Persistent" prefix does not make sense
 -   __\[UPD\]__ `FeatureKey` become `SingleFeatureBean`
 -   __\[UPD\]__ `MultiFeatureKey` become `ManyFeatureBean`
