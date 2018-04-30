@@ -11,9 +11,7 @@ package fr.inria.atlanmod.neoemf.data.hbase.util;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
-import fr.inria.atlanmod.neoemf.util.UriFactory;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -28,21 +26,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class HBaseUriFactory extends AbstractUriFactory {
 
     /**
-     * @deprecated Use the default constructor instead.
+     * Constructs a new {@code HBaseUriFactory}.
      */
-    @Nonnull
-    @Deprecated
-    public static UriFactory builder() {
-        return new HBaseUriFactory();
-    }
-
-    @Override
-    public boolean supportsLocalUris() {
-        return false;
-    }
-
-    @Override
-    public boolean supportsRemoteUris() {
-        return true;
+    public HBaseUriFactory() {
+        super(false, true);
     }
 }

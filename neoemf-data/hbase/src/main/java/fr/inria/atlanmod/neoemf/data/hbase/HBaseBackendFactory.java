@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
 
 import org.apache.hadoop.conf.Configuration;
@@ -39,27 +38,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class HBaseBackendFactory extends AbstractBackendFactory<HBaseConfig> {
 
     /**
-     * The literal description of the factory.
+     * Constructs a new {@code HBaseBackendFactory}.
      */
-    private static final String NAME = "hbase";
-
-    /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static BackendFactory getInstance() {
-        return new HBaseBackendFactory();
-    }
-
-    @Override
-    public String name() {
-        return NAME;
-    }
-
-    @Override
-    public boolean supportsTransient() {
-        return false;
+    public HBaseBackendFactory() {
+        super("hbase", false);
     }
 
     @Nonnull

@@ -11,9 +11,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.util;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
-import fr.inria.atlanmod.neoemf.util.UriFactory;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -28,21 +26,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BlueprintsUriFactory extends AbstractUriFactory {
 
     /**
-     * @deprecated Use the default constructor instead.
+     * Constructs a new {@code BlueprintsUriFactory}.
      */
-    @Nonnull
-    @Deprecated
-    public static UriFactory builder() {
-        return new BlueprintsUriFactory();
-    }
-
-    @Override
-    public boolean supportsLocalUris() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsRemoteUris() {
-        return false;
+    public BlueprintsUriFactory() {
+        super(true, false);
     }
 }

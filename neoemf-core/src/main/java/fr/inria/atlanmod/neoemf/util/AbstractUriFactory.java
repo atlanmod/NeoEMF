@@ -40,19 +40,38 @@ public abstract class AbstractUriFactory implements UriFactory {
     private final Lazy<String> scheme;
 
     /**
-     * Constructs a new default {@code AbstractUriFactory}.
+     * {@code true} if file-based URIs are supported.
      */
-    protected AbstractUriFactory() {
+    private final boolean supportsLocal;
+
+    /**
+     * {@code true} if server-based URIs are supported.
+     */
+    private final boolean supportsRemote;
+
+    /**
+     * Constructs a new default {@code AbstractUriFactory}.
+     *
+     * @param supportsLocal  {@code true} if file-based URIs are supported
+     * @param supportsRemote {@code true} if server-based URIs are supported
+     */
+    protected AbstractUriFactory(boolean supportsLocal, boolean supportsRemote) {
         this.scheme = Lazy.with(() -> Bindings.schemeOf(getClass()));
+        this.supportsLocal = supportsLocal;
+        this.supportsRemote = supportsRemote;
     }
 
     /**
      * Constructs a new {@code AbstractUriFactory} with the given {@code scheme}.
      *
-     * @param scheme the scheme to identify the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} to use
+     * @param scheme         the scheme to identify the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} to use
+     * @param supportsLocal  {@code true} if file-based URIs are supported
+     * @param supportsRemote {@code true} if server-based URIs are supported
      */
-    protected AbstractUriFactory(String scheme) {
+    protected AbstractUriFactory(String scheme, boolean supportsLocal, boolean supportsRemote) {
         this.scheme = Lazy.of(checkNotNull(scheme, "Cannot create URI without a valid scheme"));
+        this.supportsLocal = supportsLocal;
+        this.supportsRemote = supportsRemote;
     }
 
     /**
@@ -65,18 +84,7 @@ public abstract class AbstractUriFactory implements UriFactory {
     @Nonnull
     @VisibleForTesting
     static UriFactory withScheme(String scheme) {
-        return new AbstractUriFactory(scheme) {
-
-            @Override
-            public boolean supportsLocalUris() {
-                return true;
-            }
-
-            @Override
-            public boolean supportsRemoteUris() {
-                return true;
-            }
-        };
+        return new AbstractUriFactory(scheme, true, true) {};
     }
 
     /**
@@ -85,14 +93,34 @@ public abstract class AbstractUriFactory implements UriFactory {
      * @return the {@link URI} scheme
      */
     @Nonnull
-    private String scheme() {
+    protected final String scheme() {
         return scheme.get();
+    }
+
+    /**
+     * Checks that the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} associated to the created {@link
+     * org.eclipse.emf.common.util.URI} supports file-based storage.
+     *
+     * @return {@code true} if file-based URIs are supported
+     */
+    protected boolean supportsLocalUris() {
+        return supportsLocal;
+    }
+
+    /**
+     * Checks that the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} associated to the created {@link
+     * org.eclipse.emf.common.util.URI} supports server-based storage.
+     *
+     * @return {@code true} if server-based URIs are supported
+     */
+    protected boolean supportsRemoteUris() {
+        return supportsRemote;
     }
 
     @Nonnull
     @Override
     public URI createLocalUri(URI uri) {
-        if (!supportsLocalUris()) {
+        if (!supportsLocal) {
             throw new UnsupportedOperationException(String.format("%s does not support file-based URI", getClass().getSimpleName()));
         }
 

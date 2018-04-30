@@ -32,15 +32,6 @@ public class HBaseConfig extends BaseConfig<HBaseConfig> {
     }
 
     /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static HBaseConfig newConfig() {
-        return new HBaseConfig();
-    }
-
-    /**
      * Defines the mapping to use for the created {@link fr.inria.atlanmod.neoemf.data.hbase.HBaseBackend}.
      * <p>
      * This mapping corresponds to: <ul> <li>an {@link Object}[] representation of multi-valued attributes</li> <li>a

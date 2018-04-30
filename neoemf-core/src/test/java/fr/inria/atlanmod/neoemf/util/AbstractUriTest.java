@@ -88,7 +88,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromFileIfNotSupported() {
-        UriFactory uriFactory = UriFactory.forScheme(context().uriScheme());
+        AbstractUriFactory uriFactory = (AbstractUriFactory) UriFactory.forScheme(context().uriScheme());
         assumeFalse(uriFactory.supportsLocalUris(), String.format("%s supports file-based URI", uriFactory.getClass().getSimpleName()));
 
         assertThat(catchThrowable(() -> uriFactory.createLocalUri("file0")))
@@ -100,7 +100,7 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromServerIfNotSupported() {
-        UriFactory uriFactory = UriFactory.forScheme(context().uriScheme());
+        AbstractUriFactory uriFactory = (AbstractUriFactory) UriFactory.forScheme(context().uriScheme());
         assumeFalse(uriFactory.supportsRemoteUris(), String.format("%s supports server-based URI", uriFactory.getClass().getSimpleName()));
 
         assertThat(catchThrowable(() -> uriFactory.createRemoteUri("host", 0, "segments")))

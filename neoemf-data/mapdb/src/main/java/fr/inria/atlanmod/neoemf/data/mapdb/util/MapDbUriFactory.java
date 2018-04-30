@@ -11,9 +11,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb.util;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
-import fr.inria.atlanmod.neoemf.util.UriFactory;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -28,21 +26,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MapDbUriFactory extends AbstractUriFactory {
 
     /**
-     * @deprecated Use the default constructor instead.
+     * Constructs a new {@code MapDbUriFactory}.
      */
-    @Nonnull
-    @Deprecated
-    public static UriFactory builder() {
-        return new MapDbUriFactory();
-    }
-
-    @Override
-    public boolean supportsLocalUris() {
-        return true;
-    }
-
-    @Override
-    public boolean supportsRemoteUris() {
-        return false;
+    public MapDbUriFactory() {
+        super(true, false);
     }
 }

@@ -14,7 +14,6 @@ import com.sleepycat.je.EnvironmentConfig;
 
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 
 import java.nio.file.Files;
@@ -30,22 +29,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class BerkeleyDbBackendFactory extends AbstractBackendFactory<BerkeleyDbConfig> {
 
     /**
-     * The literal description of the factory.
+     * Constructs a new {@code BerkeleyDbBackendFactory}.
      */
-    private static final String NAME = "berkeleydb";
-
-    /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static BackendFactory getInstance() {
-        return new BerkeleyDbBackendFactory();
-    }
-
-    @Override
-    public String name() {
-        return NAME;
+    public BerkeleyDbBackendFactory() {
+        super("berkeleydb");
     }
 
     @Nonnull

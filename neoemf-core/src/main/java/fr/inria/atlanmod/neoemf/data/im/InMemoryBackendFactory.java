@@ -11,7 +11,6 @@ package fr.inria.atlanmod.neoemf.data.im;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
 
 import org.eclipse.emf.common.util.URI;
@@ -27,27 +26,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class InMemoryBackendFactory extends AbstractBackendFactory<InMemoryConfig> {
 
     /**
-     * The literal description of the factory.
+     * Constructs a new {@code InMemoryBackendFactory}.
      */
-    private static final String NAME = "im"; // In-Memory
-
-    /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static BackendFactory getInstance() {
-        return new InMemoryBackendFactory();
-    }
-
-    @Override
-    public String name() {
-        return NAME;
-    }
-
-    @Override
-    public boolean supportsTransient() {
-        return true;
+    public InMemoryBackendFactory() {
+        super("im");
     }
 
     @Nonnull

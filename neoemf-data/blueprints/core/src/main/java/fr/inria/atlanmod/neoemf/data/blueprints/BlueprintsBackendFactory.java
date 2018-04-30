@@ -15,7 +15,6 @@ import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph
 
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BaseBlueprintsConfig;
 
 import java.nio.file.Path;
@@ -32,22 +31,10 @@ import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 public class BlueprintsBackendFactory extends AbstractBackendFactory<BaseBlueprintsConfig<?>> {
 
     /**
-     * The literal description of the factory.
+     * Constructs a new {@code BlueprintsBackendFactory}.
      */
-    private static final String NAME = "blueprints";
-
-    /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static BackendFactory getInstance() {
-        return new BlueprintsBackendFactory();
-    }
-
-    @Override
-    public String name() {
-        return NAME;
+    public BlueprintsBackendFactory() {
+        super("blueprints");
     }
 
     @Nonnull

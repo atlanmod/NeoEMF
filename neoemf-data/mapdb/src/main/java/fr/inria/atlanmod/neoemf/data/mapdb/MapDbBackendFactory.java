@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 
 import org.mapdb.DB;
@@ -29,22 +28,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class MapDbBackendFactory extends AbstractBackendFactory<MapDbConfig> {
 
     /**
-     * The literal description of the factory.
+     * Constructs a new {@code MapDbBackendFactory}.
      */
-    private static final String NAME = "mapdb";
-
-    /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static BackendFactory getInstance() {
-        return new MapDbBackendFactory();
-    }
-
-    @Override
-    public String name() {
-        return NAME;
+    public MapDbBackendFactory() {
+        super("mapdb");
     }
 
     @Nonnull

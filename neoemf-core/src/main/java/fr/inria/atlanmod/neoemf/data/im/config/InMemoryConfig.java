@@ -14,7 +14,6 @@ import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
 
 import java.nio.file.Path;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -32,15 +31,6 @@ public class InMemoryConfig extends BaseConfig<InMemoryConfig> {
      */
     public InMemoryConfig() {
         // Don't set a default mapping for a multi-mapping configuration.
-    }
-
-    /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static InMemoryConfig newConfig() {
-        return new InMemoryConfig();
     }
 
     @Override

@@ -38,15 +38,6 @@ public class BerkeleyDbConfig extends BaseConfig<BerkeleyDbConfig> {
         // Don't set a default mapping for a multi-mapping configuration.
     }
 
-    /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static BerkeleyDbConfig newConfig() {
-        return new BerkeleyDbConfig();
-    }
-
     // region Mapping
 
     /**

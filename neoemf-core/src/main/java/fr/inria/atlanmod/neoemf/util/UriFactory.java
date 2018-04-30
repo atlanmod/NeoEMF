@@ -65,22 +65,6 @@ public interface UriFactory {
     }
 
     /**
-     * Checks that the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} associated to the created {@link
-     * org.eclipse.emf.common.util.URI} supports file-based storage.
-     *
-     * @return {@code true} if file-based URIs are supported
-     */
-    boolean supportsLocalUris();
-
-    /**
-     * Checks that the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} associated to the created {@link
-     * org.eclipse.emf.common.util.URI} supports server-based storage.
-     *
-     * @return {@code true} if server-based URIs are supported
-     */
-    boolean supportsRemoteUris();
-
-    /**
      * Creates a new URI from the given {@code uri}.
      * <p>
      * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link

@@ -41,15 +41,6 @@ public class BlueprintsTinkerConfig extends BaseBlueprintsConfig<BlueprintsTinke
         setFileType(TinkerGraph.FileType.GRAPHML);
     }
 
-    /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static BlueprintsTinkerConfig newConfig() {
-        return new BlueprintsTinkerConfig();
-    }
-
     @Override
     public void setLocation(Path directory) {
         addOption(createKey(TINKER_PREFIX, "directory"), directory.toString());

@@ -45,9 +45,7 @@ public interface BackendFactory {
      * @return {@code true} if the {@link Backend}s created by this factory support the transient state, {@code false}
      * otherwise
      */
-    default boolean supportsTransient() {
-        return true;
-    }
+    boolean supportsTransient();
 
     /**
      * Creates a new {@link Backend} located by the {@code uri}.

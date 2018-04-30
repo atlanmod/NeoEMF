@@ -44,15 +44,6 @@ public class BlueprintsNeo4jConfig extends BaseBlueprintsConfig<BlueprintsNeo4jC
         setGraph(Neo4j2Graph.class);
     }
 
-    /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static BlueprintsNeo4jConfig newConfig() {
-        return new BlueprintsNeo4jConfig();
-    }
-
     @Override
     public void setLocation(Path directory) {
         addOption(createKey(NEO4J_PREFIX, "directory"), directory.toString());

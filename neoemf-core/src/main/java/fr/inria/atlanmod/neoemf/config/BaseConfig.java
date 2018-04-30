@@ -158,15 +158,6 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     }
 
     /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static Config newConfig() {
-        return new BaseConfig<>();
-    }
-
-    /**
      * Creates a new key from the given {@code segments}. Each segment will be delimited by a dot.
      *
      * @param segments the segments of the key

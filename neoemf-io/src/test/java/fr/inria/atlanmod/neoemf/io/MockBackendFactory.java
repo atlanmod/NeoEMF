@@ -37,12 +37,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public final class MockBackendFactory extends AbstractBackendFactory<MockBackendFactory.MockConfig> {
 
     /**
-     * The literal description of the factory.
-     */
-    @Nonnull
-    private static final String NAME = "mock";
-
-    /**
      * The back-end returned by {@link #createBackend(URI, ImmutableConfig)}.
      */
     @Nonnull
@@ -62,12 +56,8 @@ public final class MockBackendFactory extends AbstractBackendFactory<MockBackend
      * @param backend the back-end returned by {@link #createBackend(URI, ImmutableConfig)}
      */
     public MockBackendFactory(Backend backend) {
+        super("mock", true);
         this.backend = backend;
-    }
-
-    @Override
-    public String name() {
-        return NAME;
     }
 
     @Nonnull
@@ -91,14 +81,12 @@ public final class MockBackendFactory extends AbstractBackendFactory<MockBackend
     @ParametersAreNonnullByDefault
     public static final class MockUriFactory extends AbstractUriFactory {
 
-        @Override
-        public boolean supportsLocalUris() {
-            return true;
-        }
-
-        @Override
-        public boolean supportsRemoteUris() {
-            return false;
+        /**
+         * Constructs a new {@code MockUriFactory}.
+         */
+        @VisibleForReflection
+        public MockUriFactory() {
+            super(true, false);
         }
     }
 }

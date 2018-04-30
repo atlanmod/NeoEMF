@@ -38,15 +38,6 @@ public class MapDbConfig extends BaseConfig<MapDbConfig> {
         // Don't set a default mapping for a multi-mapping configuration.
     }
 
-    /**
-     * @deprecated Use the default constructor instead.
-     */
-    @Nonnull
-    @Deprecated
-    public static MapDbConfig newConfig() {
-        return new MapDbConfig();
-    }
-
     // region Mapping
 
     /**

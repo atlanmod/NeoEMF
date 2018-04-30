@@ -38,7 +38,6 @@ class BoundInMemoryBackendTest extends AbstractDataMapperTest {
             @Override
             public BackendFactory factory() {
                 BackendFactory factory = mock(InMemoryBackendFactory.class);
-                when(factory.name()).thenCallRealMethod();
                 when(factory.supportsTransient()).thenCallRealMethod();
                 when(factory.createBackend(any(URI.class), any(ImmutableConfig.class))).thenAnswer((i) -> new BoundInMemoryBackend(idBase));
                 return factory;
