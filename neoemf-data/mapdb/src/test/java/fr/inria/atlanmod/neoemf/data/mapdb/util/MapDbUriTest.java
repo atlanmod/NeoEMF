@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link MapDbUri}.
+ * A test-case about {@link MapDbUriFactory}.
  */
 @ParametersAreNonnullByDefault
 class MapDbUriTest extends AbstractUriTest {

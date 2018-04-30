@@ -56,9 +56,9 @@ class ImportTest extends AbstractFileBasedTest {
      */
     @Nonnull
     private static PersistentResource createMockResource(URI uri, Backend backend) throws IOException {
-        BackendFactoryRegistry.getInstance().register(Bindings.schemeOf(MockBackendFactory.MockUri.class), new MockBackendFactory(backend));
+        BackendFactoryRegistry.getInstance().register(Bindings.schemeOf(MockBackendFactory.MockUriFactory.class), new MockBackendFactory(backend));
 
-        PersistentResource resource = PersistentResourceFactory.getInstance().createResource(new MockBackendFactory.MockUri().fromUri(uri));
+        PersistentResource resource = PersistentResourceFactory.getInstance().createResource(new MockBackendFactory.MockUriFactory().createLocalUri(uri));
         resource.save(new MockBackendFactory.MockConfig());
         return resource;
     }

@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /**
- * An abstract test-case about {@link AbstractUriBuilder} and its implementations.
+ * An abstract test-case about {@link AbstractUriFactory} and its implementations.
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractUriTest extends AbstractUnitTest {
@@ -75,11 +75,11 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromUriIfNotSupported() {
-        AbstractUriBuilder uriBuilder = AbstractUriBuilder.class.cast(UriBuilder.forScheme(context().uriScheme()));
+        AbstractUriFactory uriBuilder = AbstractUriFactory.class.cast(UriFactory.forScheme(context().uriScheme()));
 
-        assumeFalse(uriBuilder.supportsFile(), String.format("%s supports file-based URI", uriBuilder.getClass().getSimpleName()));
+        assumeFalse(uriBuilder.supportsLocalUris(), String.format("%s supports file-based URI", uriBuilder.getClass().getSimpleName()));
 
-        assertThat(catchThrowable(() -> uriBuilder.fromUri(URI.createURI("uri0"))))
+        assertThat(catchThrowable(() -> uriBuilder.createLocalUri(URI.createURI("uri0"))))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 
@@ -88,10 +88,10 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromFileIfNotSupported() {
-        UriBuilder uriBuilder = UriBuilder.forScheme(context().uriScheme());
-        assumeFalse(uriBuilder.supportsFile(), String.format("%s supports file-based URI", uriBuilder.getClass().getSimpleName()));
+        UriFactory uriFactory = UriFactory.forScheme(context().uriScheme());
+        assumeFalse(uriFactory.supportsLocalUris(), String.format("%s supports file-based URI", uriFactory.getClass().getSimpleName()));
 
-        assertThat(catchThrowable(() -> uriBuilder.fromFile("file0")))
+        assertThat(catchThrowable(() -> uriFactory.createLocalUri("file0")))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 
@@ -100,10 +100,10 @@ public abstract class AbstractUriTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromServerIfNotSupported() {
-        UriBuilder uriBuilder = UriBuilder.forScheme(context().uriScheme());
-        assumeFalse(uriBuilder.supportsServer(), String.format("%s supports server-based URI", uriBuilder.getClass().getSimpleName()));
+        UriFactory uriFactory = UriFactory.forScheme(context().uriScheme());
+        assumeFalse(uriFactory.supportsRemoteUris(), String.format("%s supports server-based URI", uriFactory.getClass().getSimpleName()));
 
-        assertThat(catchThrowable(() -> uriBuilder.fromServer("host", 0, "segments")))
+        assertThat(catchThrowable(() -> uriFactory.createRemoteUri("host", 0, "segments")))
                 .isExactlyInstanceOf(UnsupportedOperationException.class);
     }
 

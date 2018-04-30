@@ -55,9 +55,9 @@ class MapperCopyTest extends AbstractFileBasedTest {
      */
     @Nonnull
     private static PersistentResource createMockResource(File file, Backend backend) throws IOException {
-        BackendFactoryRegistry.getInstance().register(Bindings.schemeOf(MockBackendFactory.MockUri.class), new MockBackendFactory(backend));
+        BackendFactoryRegistry.getInstance().register(Bindings.schemeOf(MockBackendFactory.MockUriFactory.class), new MockBackendFactory(backend));
 
-        PersistentResource resource = PersistentResourceFactory.getInstance().createResource(new MockBackendFactory.MockUri().fromFile(file));
+        PersistentResource resource = PersistentResourceFactory.getInstance().createResource(new MockBackendFactory.MockUriFactory().createLocalUri(file));
         resource.save(new MockBackendFactory.MockConfig());
         return resource;
     }

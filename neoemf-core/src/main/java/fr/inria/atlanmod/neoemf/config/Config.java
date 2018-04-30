@@ -53,7 +53,7 @@ public interface Config extends ImmutableConfig {
     }
 
     /**
-     * Retrieves the instance of {@code Config} that is associated to a {@link fr.inria.atlanmod.neoemf.util.UriBuilder}
+     * Retrieves the instance of {@code Config} that is associated to a {@link fr.inria.atlanmod.neoemf.util.UriFactory}
      * which use the specified {@code scheme}.
      *
      * @param scheme the scheme of the factory

@@ -13,7 +13,7 @@ import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.reflect.MoreReflection;
 import fr.inria.atlanmod.commons.reflect.ReflectionException;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import java.util.Optional;
 
@@ -46,7 +46,7 @@ public final class Bindings {
      */
     @Nonnull
     public static String schemeOf(Class<?> type) {
-        return UriBuilder.createScheme(nameOf(type));
+        return UriFactory.createScheme(nameOf(type));
     }
 
     /**
@@ -60,7 +60,7 @@ public final class Bindings {
      */
     @Nonnull
     public static String schemeOf(BackendFactory factory) {
-        return UriBuilder.createScheme(factory.name());
+        return UriFactory.createScheme(factory.name());
     }
 
     /**

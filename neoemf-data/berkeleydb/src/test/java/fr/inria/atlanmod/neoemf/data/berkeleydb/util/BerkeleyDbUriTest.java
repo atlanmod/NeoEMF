@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link BerkeleyDbUri}.
+ * A test-case about {@link BerkeleyDbUriFactory}.
  */
 @ParametersAreNonnullByDefault
 class BerkeleyDbUriTest extends AbstractUriTest {

@@ -19,13 +19,13 @@
  * server that contains a model.
  * <pre>{@code
  * // Create a HBase URI referencing the HBase server running on localhost:1234 and containing the resource myModel
- * URI hbaseURI = HBaseUri.createHierarchicalURI("localhost", "1234", "myModel");
+ * URI uri = HBaseUriFactory.createRemoteUri("localhost", 1234, "myModel");
  *
  * // The created URI can be used as a regular EMF URI to create a NeoEMF resource
- * Resource neoEMFResource = resourceSet.createResource(hbaseURI);
+ * Resource resource = resourceSet.createResource(uri);
  *
  * // And accessed as a regular EMF resource
- * neoEMFResource.getContents() [...]
+ * resource.getContents() [...]
  * }</pre>
  */
 

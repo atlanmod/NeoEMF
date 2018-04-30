@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link HBaseUri}.
+ * A test-case about {@link HBaseUriFactory}.
  */
 @ParametersAreNonnullByDefault
 class HBaseUriTest extends AbstractUriTest {

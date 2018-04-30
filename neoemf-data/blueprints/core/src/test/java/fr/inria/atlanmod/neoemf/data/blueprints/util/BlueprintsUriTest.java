@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link BlueprintsUri}.
+ * A test-case about {@link BlueprintsUriFactory}.
  */
 @ParametersAreNonnullByDefault
 class BlueprintsUriTest extends AbstractUriTest {

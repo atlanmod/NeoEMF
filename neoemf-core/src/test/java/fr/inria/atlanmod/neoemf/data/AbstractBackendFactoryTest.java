@@ -13,7 +13,7 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackend;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
 import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
-import fr.inria.atlanmod.neoemf.data.im.util.InMemoryUri;
+import fr.inria.atlanmod.neoemf.data.im.util.InMemoryUriFactory;
 import fr.inria.atlanmod.neoemf.data.store.NoopStore;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
@@ -45,7 +45,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateTransientStore() throws IOException {
-        try (Backend backend = new InMemoryBackendFactory().createBackend(new InMemoryUri().fromFile(currentTempFile()), new InMemoryConfig())) {
+        try (Backend backend = new InMemoryBackendFactory().createBackend(new InMemoryUriFactory().createLocalUri(currentTempFile()), new InMemoryConfig())) {
             try (Store store = StoreFactory.getInstance().createStore(backend, context().config())) {
                 assertThat(store).isInstanceOf(NoopStore.class);
 
@@ -76,7 +76,7 @@ public abstract class AbstractBackendFactoryTest extends AbstractUnitTest {
         ImmutableConfig config = context().config();
 
         File file = currentTempFile();
-        try (Backend transientBackend = new InMemoryBackendFactory().createBackend(new InMemoryUri().fromFile(file), new InMemoryConfig())) {
+        try (Backend transientBackend = new InMemoryBackendFactory().createBackend(new InMemoryUriFactory().createLocalUri(file), new InMemoryConfig())) {
             try (Backend persistentBackend = context().factory().createBackend(context().createUri(currentTempFile()), config)) {
                 transientBackend.copyTo(persistentBackend);
             }

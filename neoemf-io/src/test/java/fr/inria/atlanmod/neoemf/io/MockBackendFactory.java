@@ -18,8 +18,8 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.InvalidBackend;
-import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A mocked {@link BackendFactory} that always returns the same {@link Backend}.
  * <p>
- * <b>NOTE:</b> This class exists for binding a {@link Config} and {@link UriBuilder} to this {@link BackendFactory}.
+ * <b>NOTE:</b> This class exists for binding a {@link Config} and {@link UriFactory} to this {@link BackendFactory}.
  * You need to register the factory you want to use, with {@link BackendFactoryRegistry#register(String,
  * BackendFactory)}, before any call to {@link BackendFactory#createBackend(URI, ImmutableConfig)}.
  */
@@ -85,19 +85,19 @@ public final class MockBackendFactory extends AbstractBackendFactory<MockBackend
     }
 
     /**
-     * A {@link UriBuilder} that creates URIs that reference the {@link MockBackendFactory}.
+     * A {@link UriFactory} that creates URIs that reference the {@link MockBackendFactory}.
      */
     @FactoryBinding(factory = MockBackendFactory.class)
     @ParametersAreNonnullByDefault
-    public static final class MockUri extends AbstractUriBuilder {
+    public static final class MockUriFactory extends AbstractUriFactory {
 
         @Override
-        public boolean supportsFile() {
+        public boolean supportsLocalUris() {
             return true;
         }
 
         @Override
-        public boolean supportsServer() {
+        public boolean supportsRemoteUris() {
             return false;
         }
     }

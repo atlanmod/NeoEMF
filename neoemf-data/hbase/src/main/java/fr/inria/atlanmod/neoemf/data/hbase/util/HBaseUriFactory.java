@@ -10,14 +10,14 @@ package fr.inria.atlanmod.neoemf.data.hbase.util;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
-import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.util.UriBuilder} that creates HBase specific resource URIs.
+ * A {@link fr.inria.atlanmod.neoemf.util.UriFactory} that creates HBase specific resource URIs.
  *
  * @see HBaseBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
@@ -25,24 +25,24 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @FactoryBinding(factory = HBaseBackendFactory.class)
 @ParametersAreNonnullByDefault
-public class HBaseUri extends AbstractUriBuilder {
+public class HBaseUriFactory extends AbstractUriFactory {
 
     /**
      * @deprecated Use the default constructor instead.
      */
     @Nonnull
     @Deprecated
-    public static UriBuilder builder() {
-        return new HBaseUri();
+    public static UriFactory builder() {
+        return new HBaseUriFactory();
     }
 
     @Override
-    public boolean supportsFile() {
+    public boolean supportsLocalUris() {
         return false;
     }
 
     @Override
-    public boolean supportsServer() {
+    public boolean supportsRemoteUris() {
         return true;
     }
 }

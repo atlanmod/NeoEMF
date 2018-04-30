@@ -6,43 +6,43 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.util;
+package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.util.UriBuilder} that creates Blueprints specific resource URIs.
+ * A {@link fr.inria.atlanmod.neoemf.util.UriFactory} that creates BerkeleyDB specific resource URIs.
  *
- * @see BlueprintsBackendFactory
+ * @see BerkeleyDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
-@FactoryBinding(factory = BlueprintsBackendFactory.class)
+@FactoryBinding(factory = BerkeleyDbBackendFactory.class)
 @ParametersAreNonnullByDefault
-public class BlueprintsUri extends AbstractUriBuilder {
+public class BerkeleyDbUriFactory extends AbstractUriFactory {
 
     /**
      * @deprecated Use the default constructor instead.
      */
     @Nonnull
     @Deprecated
-    public static UriBuilder builder() {
-        return new BlueprintsUri();
+    public static UriFactory builder() {
+        return new BerkeleyDbUriFactory();
     }
 
     @Override
-    public boolean supportsFile() {
+    public boolean supportsLocalUris() {
         return true;
     }
 
     @Override
-    public boolean supportsServer() {
+    public boolean supportsRemoteUris() {
         return false;
     }
 }

@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -43,12 +43,12 @@ public abstract class AbstractRemoteContext extends AbstractContext {
     @Nonnull
     @Override
     public URI createUri(URI uri) {
-        return UriBuilder.forScheme(uriScheme()).fromServer(getHost(), getPort(), uri);
+        return UriFactory.forScheme(uriScheme()).createRemoteUri(getHost(), getPort(), uri);
     }
 
     @Nonnull
     @Override
     public URI createUri(File file) {
-        return UriBuilder.forScheme(uriScheme()).fromServer(getHost(), getPort(), file.getName());
+        return UriFactory.forScheme(uriScheme()).createRemoteUri(getHost(), getPort(), file.getName());
     }
 }

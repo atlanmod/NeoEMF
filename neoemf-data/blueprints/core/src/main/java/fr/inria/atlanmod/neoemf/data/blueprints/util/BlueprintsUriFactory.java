@@ -6,44 +6,43 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.im.util;
+package fr.inria.atlanmod.neoemf.data.blueprints.util;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
-import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
-import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.util.UriBuilder} that creates specific resource URIs using an {@link
- * fr.inria.atlanmod.neoemf.data.im.InMemoryBackend}.
+ * A {@link fr.inria.atlanmod.neoemf.util.UriFactory} that creates Blueprints specific resource URIs.
  *
- * @see InMemoryBackendFactory
+ * @see BlueprintsBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
-@FactoryBinding(factory = InMemoryBackendFactory.class)
+@FactoryBinding(factory = BlueprintsBackendFactory.class)
 @ParametersAreNonnullByDefault
-public class InMemoryUri extends AbstractUriBuilder {
+public class BlueprintsUriFactory extends AbstractUriFactory {
 
     /**
      * @deprecated Use the default constructor instead.
      */
     @Nonnull
     @Deprecated
-    public static UriBuilder builder() {
-        return new InMemoryUri();
+    public static UriFactory builder() {
+        return new BlueprintsUriFactory();
     }
 
     @Override
-    public boolean supportsFile() {
+    public boolean supportsLocalUris() {
         return true;
     }
 
     @Override
-    public boolean supportsServer() {
+    public boolean supportsRemoteUris() {
         return false;
     }
 }

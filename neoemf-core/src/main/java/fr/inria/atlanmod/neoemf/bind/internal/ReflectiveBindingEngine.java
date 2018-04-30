@@ -16,7 +16,7 @@ import fr.inria.atlanmod.neoemf.bind.BindingEngine;
 import fr.inria.atlanmod.neoemf.bind.BindingException;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import org.osgi.framework.BundleContext;
 import org.reflections.Configuration;
@@ -93,7 +93,7 @@ public class ReflectiveBindingEngine implements BindingEngine {
     @Nonnull
     @Override
     public Set<BackendFactory> findFactories() {
-        return typesAnnotatedWith(FactoryBinding.class, UriBuilder.class)
+        return typesAnnotatedWith(FactoryBinding.class, UriFactory.class)
                 .stream()
                 .map(t -> t.getAnnotation(FactoryBinding.class).factory())
                 .distinct()

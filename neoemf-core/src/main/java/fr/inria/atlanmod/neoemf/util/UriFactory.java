@@ -19,12 +19,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A builder of {@link org.eclipse.emf.common.util.URI}s. Created URIs are used to locate a {@link
- * fr.inria.atlanmod.neoemf.resource.PersistentResource} and select the {@link fr.inria.atlanmod.neoemf.data.BackendFactory}
- * to use for persistence.
+ * A factory that creates {@link org.eclipse.emf.common.util.URI} instances.
+ * <p>
+ * Created URIs are used to locate a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} and select the
+ * {@link fr.inria.atlanmod.neoemf.data.BackendFactory} to use for persistence.
  */
 @ParametersAreNonnullByDefault
-public interface UriBuilder {
+public interface UriFactory {
 
     /**
      * Creates a URI scheme from the specified {@code baseName}.
@@ -39,28 +40,28 @@ public interface UriBuilder {
     }
 
     /**
-     * Retrieves the instance of {@code UriBuilder} that is associated to a {@link fr.inria.atlanmod.neoemf.data.BackendFactory}
+     * Retrieves the instance of {@code UriFactory} that is associated to a {@link fr.inria.atlanmod.neoemf.data.BackendFactory}
      * wearing the given {@code name}.
      *
      * @param name the name of the factory
      *
-     * @return a new instance of {@code UriBuilder}
+     * @return a new instance of {@code UriFactory}
      */
     @Nonnull
-    static UriBuilder forName(String name) {
-        return BindingEngineProvider.getInstance().getEngine().find(UriBuilder.class, Bindings::nameOf, name, null);
+    static UriFactory forName(String name) {
+        return BindingEngineProvider.getInstance().getEngine().find(UriFactory.class, Bindings::nameOf, name, null);
     }
 
     /**
-     * Retrieves the instance of {@code UriBuilder} that uses the given {@code scheme}.
+     * Retrieves the instance of {@code UriFactory} that uses the given {@code scheme}.
      *
      * @param scheme the scheme of the builder
      *
-     * @return a new instance of {@code UriBuilder}
+     * @return a new instance of {@code UriFactory}
      */
     @Nonnull
-    static UriBuilder forScheme(String scheme) {
-        return BindingEngineProvider.getInstance().getEngine().find(UriBuilder.class, Bindings::schemeOf, scheme, null);
+    static UriFactory forScheme(String scheme) {
+        return BindingEngineProvider.getInstance().getEngine().find(UriFactory.class, Bindings::schemeOf, scheme, null);
     }
 
     /**
@@ -69,7 +70,7 @@ public interface UriBuilder {
      *
      * @return {@code true} if file-based URIs are supported
      */
-    boolean supportsFile();
+    boolean supportsLocalUris();
 
     /**
      * Checks that the {@link fr.inria.atlanmod.neoemf.data.BackendFactory} associated to the created {@link
@@ -77,13 +78,13 @@ public interface UriBuilder {
      *
      * @return {@code true} if server-based URIs are supported
      */
-    boolean supportsServer();
+    boolean supportsRemoteUris();
 
     /**
      * Creates a new URI from the given {@code uri}.
      * <p>
      * This method checks that the scheme of the provided {@code uri} can be used to create a new {@link
-     * fr.inria.atlanmod.neoemf.util.UriBuilder}. Its scheme must be registered in the {@link
+     * fr.inria.atlanmod.neoemf.util.UriFactory}. Its scheme must be registered in the {@link
      * fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry}.
      *
      * @param uri the base file-based URI
@@ -96,20 +97,7 @@ public interface UriBuilder {
      *                                       fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry}
      */
     @Nonnull
-    URI fromUri(URI uri);
-
-    /**
-     * Creates a new URI from the given {@code file} descriptor.
-     *
-     * @param filePath the path of the {@link File} to build a URI from
-     *
-     * @return a new URI
-     *
-     * @throws UnsupportedOperationException if this URI builder does not support this method
-     * @throws NullPointerException          if the {@code filePath} is {@code null}
-     */
-    @Nonnull
-    URI fromFile(String filePath);
+    URI createLocalUri(URI uri);
 
     /**
      * Creates a new URI from the given {@code file} descriptor.
@@ -122,7 +110,20 @@ public interface UriBuilder {
      * @throws NullPointerException          if the {@code file} is {@code null}
      */
     @Nonnull
-    URI fromFile(File file);
+    URI createLocalUri(File file);
+
+    /**
+     * Creates a new URI from the given {@code file} descriptor.
+     *
+     * @param filePath the path of the {@link File} to build a URI from
+     *
+     * @return a new URI
+     *
+     * @throws UnsupportedOperationException if this URI builder does not support this method
+     * @throws NullPointerException          if the {@code filePath} is {@code null}
+     */
+    @Nonnull
+    URI createLocalUri(String filePath);
 
     /**
      * Creates a new URI from the {@code host}, {@code port}, and {@code model} by creating a hierarchical URI that
@@ -139,7 +140,7 @@ public interface UriBuilder {
      * @throws IllegalArgumentException      if {@code port < 0}
      */
     @Nonnull
-    URI fromServer(String host, int port, URI model);
+    URI createRemoteUri(String host, int port, URI model);
 
     /**
      * Creates a new URI from the {@code host}, {@code port}, and {@code model} by creating a hierarchical URI that
@@ -156,5 +157,5 @@ public interface UriBuilder {
      * @throws IllegalArgumentException      if {@code port < 0}
      */
     @Nonnull
-    URI fromServer(String host, int port, String... segments);
+    URI createRemoteUri(String host, int port, String... segments);
 }

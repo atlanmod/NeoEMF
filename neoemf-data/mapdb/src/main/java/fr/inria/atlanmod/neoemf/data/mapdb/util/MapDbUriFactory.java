@@ -10,14 +10,14 @@ package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
-import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link fr.inria.atlanmod.neoemf.util.UriBuilder} that creates MapDB specific resource URIs.
+ * A {@link fr.inria.atlanmod.neoemf.util.UriFactory} that creates MapDB specific resource URIs.
  *
  * @see MapDbBackendFactory
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
@@ -25,24 +25,24 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @FactoryBinding(factory = MapDbBackendFactory.class)
 @ParametersAreNonnullByDefault
-public class MapDbUri extends AbstractUriBuilder {
+public class MapDbUriFactory extends AbstractUriFactory {
 
     /**
      * @deprecated Use the default constructor instead.
      */
     @Nonnull
     @Deprecated
-    public static UriBuilder builder() {
-        return new MapDbUri();
+    public static UriFactory builder() {
+        return new MapDbUriFactory();
     }
 
     @Override
-    public boolean supportsFile() {
+    public boolean supportsLocalUris() {
         return true;
     }
 
     @Override
-    public boolean supportsServer() {
+    public boolean supportsRemoteUris() {
         return false;
     }
 }
