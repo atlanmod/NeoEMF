@@ -6,24 +6,24 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.mapdb.util;
+package fr.inria.atlanmod.neoemf.data.blueprints.util;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
-import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactoryTest;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link MapDbUriFactory}.
+ * A test-case about {@link BlueprintsUriFactory}.
  */
 @ParametersAreNonnullByDefault
-class MapDbUriTest extends AbstractUriTest {
+class BlueprintsUriFactoryTest extends AbstractUriFactoryTest {
 
     @Nonnull
     @Override
     protected Context context() {
-        return MapDbContext.getWithIndices();
+        return BlueprintsContext.getDefault();
     }
 }

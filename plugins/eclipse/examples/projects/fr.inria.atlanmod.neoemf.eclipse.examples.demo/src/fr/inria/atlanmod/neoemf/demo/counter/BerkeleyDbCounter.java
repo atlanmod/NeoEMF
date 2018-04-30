@@ -12,7 +12,7 @@ import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUriFactory;
 import fr.inria.atlanmod.neoemf.demo.util.Helpers;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -34,7 +34,7 @@ public class BerkeleyDbCounter {
 
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        URI uri = new BerkeleyDbUri().fromFile("databases/sample.berkeleydb");
+        URI uri = new BerkeleyDbUriFactory().createLocalUri("databases/sample.berkeleydb");
 
         ImmutableConfig config = new BerkeleyDbConfig().withIndices();
 

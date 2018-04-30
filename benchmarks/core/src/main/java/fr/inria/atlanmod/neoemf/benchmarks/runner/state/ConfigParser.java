@@ -60,7 +60,7 @@ final class ConfigParser {
      */
     @Nonnull
     public static ImmutableConfig parse(String text) {
-        Config options = BaseConfig.newConfig();
+        Config options = new BaseConfig<>();
         String upperText = text.toUpperCase();
 
         // Cache features

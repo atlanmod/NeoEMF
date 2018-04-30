@@ -12,7 +12,7 @@ import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUriFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -38,7 +38,7 @@ public class MapDbImporter {
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 
         URI sourceUri = URI.createURI("model/sample.xmi");
-        URI targetUri = new MapDbUri().fromFile("databases/sample.mapdb");
+        URI targetUri = new MapDbUriFactory().createLocalUri("databases/sample.mapdb");
 
         ImmutableConfig config = new MapDbConfig().withIndices().autoSave();
 

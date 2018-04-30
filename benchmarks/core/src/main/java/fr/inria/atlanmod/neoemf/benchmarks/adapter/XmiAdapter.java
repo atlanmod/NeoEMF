@@ -28,12 +28,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top a an original XMI {@link Resource}.
  */
 @ParametersAreNonnullByDefault
+@SuppressWarnings("unused") // Called dynamically
 public class XmiAdapter extends AbstractAdapter {
 
     /**
      * Constructs a new {@code XmiAdapter}.
      */
-    @SuppressWarnings("unused") // Called dynamically
     public XmiAdapter() {
         super("xmi", "xmi", org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class);
     }

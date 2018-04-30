@@ -12,7 +12,7 @@ import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUriFactory;
 import fr.inria.atlanmod.neoemf.demo.util.Helpers;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -34,7 +34,7 @@ public class MapDbCounter {
 
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        URI uri = new MapDbUri().fromFile("databases/sample.mapdb");
+        URI uri = new MapDbUriFactory().createLocalUri("databases/sample.mapdb");
 
         ImmutableConfig config = new MapDbConfig().withIndices();
 

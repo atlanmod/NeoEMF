@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
-import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactoryTest;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A test-case about {@link BerkeleyDbUriFactory}.
  */
 @ParametersAreNonnullByDefault
-class BerkeleyDbUriTest extends AbstractUriTest {
+class BerkeleyDbUriFactoryTest extends AbstractUriFactoryTest {
 
     @Nonnull
     @Override

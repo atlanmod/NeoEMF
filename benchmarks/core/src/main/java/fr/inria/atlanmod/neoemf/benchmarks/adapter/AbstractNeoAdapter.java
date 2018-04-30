@@ -14,7 +14,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -57,7 +57,7 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     @Override
     public DataMapper createMapper(File file, ImmutableConfig config) {
-        ImmutableConfig mergedConfig = BaseConfig.newConfig().merge(config).merge(getOptions());
+        ImmutableConfig mergedConfig = new BaseConfig<>().merge(config).merge(getOptions());
 
         Backend backend = getFactory().createBackend(URI.createFileURI(file.getAbsolutePath()), mergedConfig);
         return StoreFactory.getInstance().createStore(backend, mergedConfig);
@@ -66,7 +66,7 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
     @Nonnull
     @Override
     public Resource createResource(File file, ResourceSet resourceSet) {
-        return resourceSet.createResource(UriBuilder.forName(getFactory().name()).fromFile(file));
+        return resourceSet.createResource(UriFactory.forName(getFactory().name()).createLocalUri(file));
     }
 
     @Nonnull
@@ -75,7 +75,7 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
         initAndGetEPackage();
 
         Resource resource = createResource(file, new ResourceSetImpl());
-        resource.load(BaseConfig.newConfig().merge(config).merge(getOptions()).toMap());
+        resource.load(new BaseConfig<>().merge(config).merge(getOptions()).toMap());
 
         return resource;
     }

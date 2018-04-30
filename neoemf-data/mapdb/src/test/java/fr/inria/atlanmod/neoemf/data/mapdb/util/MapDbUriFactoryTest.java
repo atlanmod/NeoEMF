@@ -6,31 +6,24 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.hbase.util;
+package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
-import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
-
-import org.junit.jupiter.api.Disabled;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactoryTest;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link HBaseUriFactory}.
+ * A test-case about {@link MapDbUriFactory}.
  */
 @ParametersAreNonnullByDefault
-class HBaseUriTest extends AbstractUriTest {
+class MapDbUriFactoryTest extends AbstractUriFactoryTest {
 
     @Nonnull
     @Override
     protected Context context() {
-        return HBaseContext.getDefault();
-    }
-
-    @Disabled("Not supported because of the mini-cluster")
-    @Override
-    public void testCreateUriFromStandardUriInvalidScheme() {
+        return MapDbContext.getWithIndices();
     }
 }

@@ -21,6 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackend}.
  */
 @ParametersAreNonnullByDefault
+@SuppressWarnings("unused") // Called dynamically
 public abstract class MapDbAdapter extends AbstractNeoAdapter {
 
     /**
@@ -35,18 +36,19 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
     @Nonnull
     @Override
     protected BackendFactory getFactory() {
-        return MapDbBackendFactory.getInstance();
+        return new MapDbBackendFactory();
     }
 
     /**
      * A {@link MapDbAdapter} with a mapping with indices.
      */
+    @ParametersAreNonnullByDefault
     public static final class WithIndices extends MapDbAdapter {
 
         /**
          * Constructs a new {@code MapDbAdapter.WithIndices}.
          */
-        @SuppressWarnings("unused") // Called dynamically
+
         public WithIndices() {
             super("indices");
         }
@@ -54,21 +56,19 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, ?> getOptions() {
-            return MapDbConfig.newConfig()
-                    .withIndices()
-                    .toMap();
+            return new MapDbConfig().withIndices().toMap();
         }
     }
 
     /**
      * A {@link MapDbAdapter} with a mapping with arrays.
      */
+    @ParametersAreNonnullByDefault
     public static final class WithArrays extends MapDbAdapter {
 
         /**
          * Constructs a new {@code MapDbAdapter.WithArrays}.
          */
-        @SuppressWarnings("unused") // Called dynamically
         public WithArrays() {
             super("arrays");
         }
@@ -76,21 +76,19 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, ?> getOptions() {
-            return MapDbConfig.newConfig()
-                    .withArrays()
-                    .toMap();
+            return new MapDbConfig().withArrays().toMap();
         }
     }
 
     /**
      * A {@link MapDbAdapter} with a mapping with lists.
      */
+    @ParametersAreNonnullByDefault
     public static final class WithLists extends MapDbAdapter {
 
         /**
          * Constructs a new {@code MapDbAdapter.WithLists}.
          */
-        @SuppressWarnings("unused") // Called dynamically
         public WithLists() {
             super("lists");
         }
@@ -98,9 +96,7 @@ public abstract class MapDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, ?> getOptions() {
-            return MapDbConfig.newConfig()
-                    .withLists()
-                    .toMap();
+            return new MapDbConfig().withLists().toMap();
         }
     }
 }

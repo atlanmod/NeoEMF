@@ -103,7 +103,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
 
     @Override
     public void save(Resource resource, ImmutableConfig config) throws IOException {
-        resource.save(BaseConfig.newConfig().merge(config).merge(getOptions()).toMap());
+        resource.save(new BaseConfig<>().merge(config).merge(getOptions()).toMap());
     }
 
     @Nonnull

@@ -27,14 +27,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ${databaseName}BackendFactory extends AbstractBackendFactory<${databaseName}Config> {
 
     /**
-     * The literal description of the factory.
+     * Constructs a new {@code ${databaseName}BackendFactory}.
      */
-    private static final String NAME = "${databaseName.toLowerCase()}";
-
-    @Nonnull
-    @Override
-    public String name() {
-        return NAME;
+    public ${databaseName}BackendFactory() {
+        super("${databaseName.toLowerCase()}");
     }
 
     @Nonnull

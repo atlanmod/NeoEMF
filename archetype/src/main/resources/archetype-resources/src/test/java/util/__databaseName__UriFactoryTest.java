@@ -9,7 +9,7 @@
 package ${package}.util;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactoryTest;
 
 import ${package}.context.${databaseName}Context;
 
@@ -17,10 +17,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link ${databaseName}Uri}.
+ * A test-case about {@link ${databaseName}UriFactory}.
  */
 @ParametersAreNonnullByDefault
-class ${databaseName}UriTest extends AbstractUriTest {
+class ${databaseName}UriFactoryTest extends AbstractUriFactoryTest {
 
     @Nonnull
     @Override

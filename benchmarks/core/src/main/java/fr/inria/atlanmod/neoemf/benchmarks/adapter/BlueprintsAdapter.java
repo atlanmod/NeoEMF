@@ -22,6 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend}.
  */
 @ParametersAreNonnullByDefault
+@SuppressWarnings("unused") // Called dynamically
 public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
 
     /**
@@ -36,7 +37,7 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
     @Nonnull
     @Override
     protected BackendFactory getFactory() {
-        return BlueprintsBackendFactory.getInstance();
+        return new BlueprintsBackendFactory();
     }
 
     /**
@@ -48,7 +49,6 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
         /**
          * Constructs a new {@code BlueprintsAdapter.Tinker}.
          */
-        @SuppressWarnings("unused") // Called dynamically
         public Tinker() {
             super("tinker");
         }
@@ -56,8 +56,7 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, ?> getOptions() {
-            return BlueprintsTinkerConfig.newConfig()
-                    .toMap();
+            return new BlueprintsTinkerConfig().toMap();
         }
     }
 
@@ -70,7 +69,6 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
         /**
          * Constructs a new {@code BlueprintsAdapter.Neo4j}.
          */
-        @SuppressWarnings("unused") // Called dynamically
         public Neo4j() {
             super("neo4j");
         }
@@ -78,8 +76,7 @@ public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, ?> getOptions() {
-            return BlueprintsNeo4jConfig.newConfig()
-                    .toMap();
+            return new BlueprintsNeo4jConfig().toMap();
         }
     }
 }

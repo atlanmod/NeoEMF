@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
  */
 @ParametersAreNonnullByDefault
 @SuppressWarnings({"ConstantConditions", "ResultOfMethodCallIgnored"}) // Test with `@Nonnull`
-class UriFactoryTest extends AbstractUriTest {
+class UriFactoryFactoryTest extends AbstractUriFactoryTest {
 
     private static final String SCHEME = "scheme";
 

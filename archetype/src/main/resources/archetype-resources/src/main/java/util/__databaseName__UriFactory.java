@@ -9,15 +9,14 @@
 package ${package}.util;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
-import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
 
 import ${package}.${databaseName}BackendFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link UriBuilder} that creates ${databaseName} specific resource {@link org.eclipse.emf.common.util.URI}s.
+ * A {@link fr.inria.atlanmod.neoemf.util.UriFactory} that creates ${databaseName} specific resource {@link org.eclipse.emf.common.util.URI}s.
  *
  * @see ${databaseName}BackendFactory
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
@@ -25,17 +24,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @FactoryBinding(factory = ${databaseName}BackendFactory.class)
 @ParametersAreNonnullByDefault
-public class ${databaseName}Uri extends AbstractUriBuilder {
+public class ${databaseName}UriFactory extends AbstractUriFactory {
 
-    @Override
-    public boolean supportsFile() {
-        // TODO Implement this method
-        return true;
-    }
-
-    @Override
-    public boolean supportsServer() {
-        // TODO Implement this method
-        return true;
+    /**
+     * Constructs a new {@code ${databaseName}UriFactory}.
+     */
+    public ${databaseName}UriFactory() {
+        super(true, false);
     }
 }

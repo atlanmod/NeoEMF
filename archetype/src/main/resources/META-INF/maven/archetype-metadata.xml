@@ -27,6 +27,14 @@
             </includes>
         </fileSet>
 
+        <!-- Resources -->
+        <fileSet encoding="utf-8">
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+
         <!-- Test sources -->
         <fileSet filtered="true" packaged="true" encoding="utf-8">
             <directory>src/test/java</directory>

@@ -21,6 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackend}.
  */
 @ParametersAreNonnullByDefault
+@SuppressWarnings("unused") // Called dynamically
 public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
 
     /**
@@ -35,18 +36,18 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
     @Nonnull
     @Override
     protected BackendFactory getFactory() {
-        return BerkeleyDbBackendFactory.getInstance();
+        return new BerkeleyDbBackendFactory();
     }
 
     /**
      * A {@link BerkeleyDbAdapter} with a mapping with indices.
      */
+    @ParametersAreNonnullByDefault
     public static final class WithIndices extends BerkeleyDbAdapter {
 
         /**
          * Constructs a new {@code BerkeleyDbAdapter.WithIndices}.
          */
-        @SuppressWarnings("unused") // Called dynamically
         public WithIndices() {
             super("indices");
         }
@@ -54,21 +55,19 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, ?> getOptions() {
-            return BerkeleyDbConfig.newConfig()
-                    .withIndices()
-                    .toMap();
+            return new BerkeleyDbConfig().withIndices().toMap();
         }
     }
 
     /**
      * A {@link BerkeleyDbAdapter} with a mapping with arrays.
      */
+    @ParametersAreNonnullByDefault
     public static final class WithArrays extends BerkeleyDbAdapter {
 
         /**
          * Constructs a new {@code BerkeleyDbAdapter.WithArrays}.
          */
-        @SuppressWarnings("unused") // Called dynamically
         public WithArrays() {
             super("arrays");
         }
@@ -76,21 +75,19 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, ?> getOptions() {
-            return BerkeleyDbConfig.newConfig()
-                    .withArrays()
-                    .toMap();
+            return new BerkeleyDbConfig().withArrays().toMap();
         }
     }
 
     /**
      * A {@link BerkeleyDbAdapter} with a mapping with lists.
      */
+    @ParametersAreNonnullByDefault
     public static final class WithLists extends BerkeleyDbAdapter {
 
         /**
          * Constructs a new {@code BerkeleyDbAdapter.WithLists}.
          */
-        @SuppressWarnings("unused") // Called dynamically
         public WithLists() {
             super("lists");
         }
@@ -98,9 +95,7 @@ public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
         @Nonnull
         @Override
         public Map<String, ?> getOptions() {
-            return BerkeleyDbConfig.newConfig()
-                    .withLists()
-                    .toMap();
+            return new BerkeleyDbConfig().withLists().toMap();
         }
     }
 }

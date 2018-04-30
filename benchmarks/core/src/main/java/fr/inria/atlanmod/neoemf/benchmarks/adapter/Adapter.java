@@ -17,7 +17,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 
 import javax.annotation.Nonnull;

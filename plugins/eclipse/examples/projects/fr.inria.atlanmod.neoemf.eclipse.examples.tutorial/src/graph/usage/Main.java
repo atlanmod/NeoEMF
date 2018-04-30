@@ -10,9 +10,9 @@ package graph.usage;
 
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUriFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUriFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUriFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -44,7 +44,7 @@ public class Main {
      * @return the created resource
      */
     public static Resource createBlueprintsResource() throws IOException {
-        Resource resource = new ResourceSetImpl().createResource(new BlueprintsUri().fromFile("databases/myGraph.graphdb"));
+        Resource resource = new ResourceSetImpl().createResource(new BlueprintsUriFactory().createLocalUri("databases/myGraph.graphdb"));
 
         /*
          * Specify that Neo4j is used as the underlying blueprints backend.
@@ -61,7 +61,7 @@ public class Main {
      * @return the created resource
      */
     public static Resource createMapDbResource() {
-        return new ResourceSetImpl().createResource(new MapDbUri().fromFile("databases/myGraph.mapdb"));
+        return new ResourceSetImpl().createResource(new MapDbUriFactory().createLocalUri("databases/myGraph.mapdb"));
     }
 
     /**
@@ -71,7 +71,7 @@ public class Main {
      * @return the created resource
      */
     public static Resource createHBaseResource() {
-        return new ResourceSetImpl().createResource(new HBaseUri().fromServer("localhost", 2181, "myModel.hbase"));
+        return new ResourceSetImpl().createResource(new HBaseUriFactory().createRemoteUri("localhost", 2181, "myModel.hbase"));
     }
 
     /**

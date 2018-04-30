@@ -63,6 +63,7 @@ import static java.util.Objects.nonNull;
  * An {@link Adapter} on top of a CDO server.
  */
 @ParametersAreNonnullByDefault
+@SuppressWarnings("unused") // Called dynamically
 public class CdoAdapter extends AbstractAdapter {
 
     /**
@@ -73,7 +74,6 @@ public class CdoAdapter extends AbstractAdapter {
     /**
      * Constructs a new {@code CdoAdapter}.
      */
-    @SuppressWarnings("unused") // Called dynamically
     public CdoAdapter() {
         super("cdo", "resource", org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class);
     }

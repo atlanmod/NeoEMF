@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assumptions.assumeFalse;
  * An abstract test-case about {@link AbstractUriFactory} and its implementations.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractUriTest extends AbstractUnitTest {
+public abstract class AbstractUriFactoryTest extends AbstractUnitTest {
 
     /**
      * Checks the creation of a {@link URI} from another.

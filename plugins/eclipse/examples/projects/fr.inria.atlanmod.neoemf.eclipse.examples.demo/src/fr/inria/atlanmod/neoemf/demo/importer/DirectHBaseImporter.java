@@ -13,7 +13,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
+import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUriFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.io.Migrator;
@@ -38,7 +38,7 @@ public class DirectHBaseImporter {
         BackendFactory factory = new HBaseBackendFactory();
 
         File sourceFile = new File("model/sample.xmi");
-        URI targetUri = new HBaseUri().fromServer("localhost", 2181, "sample2.hbase");
+        URI targetUri = new HBaseUriFactory().createRemoteUri("localhost", 2181, "sample2.hbase");
 
         try (Backend backend = factory.createBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
             Migrator.fromXmi(sourceFile)
