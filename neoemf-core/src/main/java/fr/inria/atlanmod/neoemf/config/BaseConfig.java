@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.config;
 
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.bind.BindingEngine;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.AutoSavingStore;
 import fr.inria.atlanmod.neoemf.data.store.ClassCachingStore;
@@ -137,10 +137,10 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      */
     public BaseConfig() {
         if (getClass() != BaseConfig.class) { // The only exception
-            setName(BindingEngine.nameOf(getClass()));
+            setName(Bindings.nameOf(getClass()));
 
             if (useVariantWith(getClass())) {
-                setVariant(BindingEngine.variantOf(getClass()));
+                setVariant(Bindings.variantOf(getClass()));
             }
         }
     }

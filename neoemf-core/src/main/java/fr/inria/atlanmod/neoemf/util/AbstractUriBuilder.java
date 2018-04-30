@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.util;
 
 import fr.inria.atlanmod.commons.Lazy;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
-import fr.inria.atlanmod.neoemf.bind.BindingEngine;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 
@@ -43,7 +43,7 @@ public abstract class AbstractUriBuilder implements UriBuilder {
      * Constructs a new default {@code AbstractUriBuilder}.
      */
     protected AbstractUriBuilder() {
-        this.scheme = Lazy.with(() -> BindingEngine.schemeOf(getClass()));
+        this.scheme = Lazy.with(() -> Bindings.schemeOf(getClass()));
     }
 
     /**

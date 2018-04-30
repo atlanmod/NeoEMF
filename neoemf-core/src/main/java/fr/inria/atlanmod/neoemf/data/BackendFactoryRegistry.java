@@ -12,7 +12,8 @@ import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.bind.BindingEngine;
+import fr.inria.atlanmod.neoemf.bind.BindingEngineProvider;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -54,11 +55,6 @@ public final class BackendFactoryRegistry {
     private final Map<String, BackendFactory> factories = new ConcurrentHashMap<>();
 
     /**
-     * Whether this registry has been initialized at least once.
-     */
-    private boolean initialized;
-
-    /**
      * Constructs a new {@code BackendFactoryRegistry}.
      */
     private BackendFactoryRegistry() {
@@ -82,10 +78,6 @@ public final class BackendFactoryRegistry {
     @Nonnull
     @VisibleForTesting
     Map<String, BackendFactory> getFactories() {
-        if (!initialized) {
-            registerAll();
-        }
-
         return Collections.unmodifiableMap(factories);
     }
 
@@ -103,7 +95,7 @@ public final class BackendFactoryRegistry {
     public BackendFactory getFactoryFor(String scheme) {
         checkNotNull(scheme, "scheme");
 
-        if (!factories.containsKey(scheme) && !initialized) {
+        if (!factories.containsKey(scheme)) {
             registerAll();
         }
 
@@ -125,7 +117,7 @@ public final class BackendFactoryRegistry {
             return false;
         }
 
-        if (!factories.containsKey(scheme) && !initialized) {
+        if (!factories.containsKey(scheme)) {
             registerAll();
         }
 
@@ -162,11 +154,7 @@ public final class BackendFactoryRegistry {
      * This method scan the full Java classpath to retrieve the annotated element.
      */
     public void registerAll() {
-        Log.debug("Registering all factories...");
-
-        BindingEngine.allFactories().forEach(b -> register(BindingEngine.schemeOf(b), b));
-
-        initialized = true;
+        BindingEngineProvider.getInstance().getEngine().findFactories().forEach(b -> register(Bindings.schemeOf(b), b));
     }
 
     /**

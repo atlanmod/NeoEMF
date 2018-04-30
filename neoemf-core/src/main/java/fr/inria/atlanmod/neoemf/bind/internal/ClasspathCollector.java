@@ -6,14 +6,13 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.bind;
+package fr.inria.atlanmod.neoemf.bind.internal;
 
 import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Singleton;
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.concurrent.MoreExecutors;
 import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -40,9 +39,8 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An {@link URLCollector} that analyzes a {@link java.net.URLClassLoader} to retrieve all modules related to this one.
- * This is the main {@link URLCollector} used by {@link BindingEngine} to retrieve associated object instances.
+ * This is the main {@link URLCollector} used by {@link ReflectiveBindingEngine} to retrieve associated object instances.
  */
-@Singleton
 @ParametersAreNonnullByDefault
 public class ClasspathCollector implements URLCollector {
 
@@ -93,6 +91,12 @@ public class ClasspathCollector implements URLCollector {
     private final ExecutorService analysisPool = MoreExecutors.newFixedThreadPool("binding-analyzer");
 
     /**
+     * The concurrent pool for the scanning of elements in the classpath.
+     */
+    @Nonnull
+    private final ExecutorService bindingPool;
+
+    /**
      * A phaser representing the number of classpath analysis in progress. When {@code phaser.getPhase() > 0}, at least
      * one analysis is in progress, and all calls to {@link #get()} will wait for all tasks to complete.
      */
@@ -106,13 +110,12 @@ public class ClasspathCollector implements URLCollector {
     private final Set<URI> registeredUris = Collections.synchronizedSet(new HashSet<>());
 
     /**
-     * Returns the instance of this class.
+     * Constructs a new {@code ClasspathCollector}.
      *
-     * @return the instance of this class
+     * @param bindingPool the concurrent pool for the scanning of elements in the classpath
      */
-    @Nonnull
-    public static ClasspathCollector getInstance() {
-        return Holder.INSTANCE;
+    public ClasspathCollector(ExecutorService bindingPool) {
+        this.bindingPool = bindingPool;
     }
 
     @Nonnull
@@ -147,7 +150,7 @@ public class ClasspathCollector implements URLCollector {
             try {
                 // One configuration for one task
                 ConfigurationBuilder baseConfig = new ConfigurationBuilder()
-                        .setExecutorService(BindingEngine.getBindingPool())
+                        .setExecutorService(bindingPool)
                         .setScanners(new TypeAnnotationsScanner(), new SubTypesScanner());
 
                 // Filter URLs, and remove any that cannot be related to NeoEMF (Java, EMF,...)
@@ -183,17 +186,5 @@ public class ClasspathCollector implements URLCollector {
         catch (Exception e) {
             return false;
         }
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final ClasspathCollector INSTANCE = new ClasspathCollector();
     }
 }

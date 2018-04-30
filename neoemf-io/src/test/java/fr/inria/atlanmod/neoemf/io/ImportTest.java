@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.commons.AbstractFileBasedTest;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.bind.BindingEngine;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.im.DefaultInMemoryBackend;
@@ -56,7 +56,7 @@ class ImportTest extends AbstractFileBasedTest {
      */
     @Nonnull
     private static PersistentResource createMockResource(URI uri, Backend backend) throws IOException {
-        BackendFactoryRegistry.getInstance().register(BindingEngine.schemeOf(MockBackendFactory.MockUri.class), new MockBackendFactory(backend));
+        BackendFactoryRegistry.getInstance().register(Bindings.schemeOf(MockBackendFactory.MockUri.class), new MockBackendFactory(backend));
 
         PersistentResource resource = PersistentResourceFactory.getInstance().createResource(new MockBackendFactory.MockUri().fromUri(uri));
         resource.save(new MockBackendFactory.MockConfig());

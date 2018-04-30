@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.bind;
+package fr.inria.atlanmod.neoemf.bind.internal;
 
 import fr.inria.atlanmod.commons.Lazy;
 import fr.inria.atlanmod.neoemf.util.Activator;
