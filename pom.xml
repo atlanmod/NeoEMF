@@ -148,6 +148,22 @@
                 <version>${emf.version}</version>
             </dependency>
 
+            <!-- OSGi -->
+
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.core</artifactId>
+                <version>6.0.0</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.component.annotations</artifactId>
+                <version>1.4.0</version>
+                <scope>provided</scope>
+            </dependency>
+
             <!-- Test -->
 
             <dependency>
@@ -184,7 +200,6 @@
                                 groupId=!${project.groupId}|fr.inria.atlanmod.commons|org.eclipse.emf
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
-                            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                         </instructions>
                     </configuration>
                 </plugin>

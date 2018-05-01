@@ -26,7 +26,6 @@ import fr.inria.atlanmod.neoemf.data.store.listener.StoreListener;
 import fr.inria.atlanmod.neoemf.data.store.listener.StoreStats;
 
 import java.io.IOException;
-import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -139,22 +138,8 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
         if (getClass() != BaseConfig.class) { // The only exception
             setName(Bindings.nameOf(getClass()));
 
-            if (useVariantWith(getClass())) {
-                setVariant(Bindings.variantOf(getClass()));
-            }
+            Bindings.variantOf(getClass()).ifPresent(this::setVariant);
         }
-    }
-
-    /**
-     * Returns {@code true} if the variant must be defined for the specified {@code type}.
-     *
-     * @param type the type
-     *
-     * @return {@code true} if the variant must be defined for the specified {@code type}
-     */
-    private static boolean useVariantWith(Class<?> type) {
-        // TODO Improve this detection to avoid approximations
-        return !Modifier.isAbstract(type.getModifiers()) && !type.getSimpleName().matches("Base[A-Z].*");
     }
 
     /**

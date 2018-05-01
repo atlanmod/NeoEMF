@@ -10,17 +10,25 @@ package fr.inria.atlanmod.neoemf.bind;
 
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.reflect.MoreReflection;
 import fr.inria.atlanmod.commons.reflect.ReflectionException;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriFactory;
+import fr.inria.atlanmod.neoemf.util.service.ServiceResolver;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.nonNull;
 
 /**
  * A static utility class for binding.
@@ -89,16 +97,22 @@ public final class Bindings {
      * @return the variant
      */
     @Nonnull
-    public static String variantOf(Class<?> type) {
+    public static Optional<String> variantOf(Class<?> type) {
         checkNotNull(type, "type");
 
-        return Optional.of(type)
+        final Optional<FactoryBinding> annotation = Optional.of(type)
                 .filter(t -> t.isAnnotationPresent(FactoryBinding.class))
-                .map(t -> t.getAnnotation(FactoryBinding.class))
-                .map(FactoryBinding::variant)
-                .orElseThrow(() -> new BindingException(
-                        String.format("%s is not annotated with %s: Unable to retrieve the variant",
-                                type.getName(), FactoryBinding.class.getName())));
+                .map(t -> t.getAnnotation(FactoryBinding.class));
+
+        if (annotation.isPresent()) {
+            if (annotation.get().concrete()) {
+                return annotation.map(FactoryBinding::variant);
+            }
+
+            return Optional.empty();
+        }
+
+        throw new BindingException(String.format("%s is not annotated with %s: Unable to retrieve the variant", type.getName(), FactoryBinding.class.getName()));
     }
 
     /**
@@ -142,5 +156,49 @@ public final class Bindings {
         }
 
         throw new BindingException(String.format("%s is not annotated with %s: Unable to retrieve the associated factory", type.getName(), FactoryBinding.class.getName()));
+    }
+
+    /**
+     * Retrieves the instance of the {@code type} that is bound to a {@link BackendFactory} with the given {@code value},
+     * by using the speficied {@code valueMapping}.
+     * <p>
+     * The {@code type} <b>must</b> be annotated with {@link FactoryBinding}.
+     *
+     * @param type         the type of the instance to look for
+     * @param valueMapping the mapping function to retrieve the value from the factory bound by the annotation
+     * @param value        the value to look for
+     * @param variant      the variant to look for
+     * @param <T>          the type of the instance
+     *
+     * @return a new instance of the {@code type}
+     *
+     * @throws BindingException if no instance of {@code type} is found for the {@code value} by using the {@code valueMapping}
+     * @see ServiceResolver#find(Class)
+     */
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    public static <T> T find(Class<? super T> type, Function<Class<? extends BackendFactory>, String> valueMapping, String value, @Nullable String variant) {
+        final String variantOrDefault = Optional.ofNullable(variant).orElse(FactoryBinding.DEFAULT_VARIANT);
+
+        // Find all objects that match the value and variant
+        final Iterable<? super T> services = ServiceResolver.getInstance().find(type, t -> {
+            final FactoryBinding a = t.getClass().getDeclaredAnnotation(FactoryBinding.class);
+
+            return nonNull(a)
+                    && Objects.equals(value, valueMapping.apply(a.factory()))
+                    && Objects.equals(variantOrDefault, a.variant());
+        });
+
+        final List<? super T> servicesList = MoreIterables.stream(services).collect(Collectors.toList());
+
+        // Ensure that only one type is relevant
+        if (servicesList.isEmpty()) {
+            throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; No relevant type found", type.getName(), value, variantOrDefault));
+        }
+        else if (servicesList.size() > 1) {
+            throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; Several relevant types found : %s", type.getName(), value, variantOrDefault, services));
+        }
+
+        return (T) servicesList.get(0);
     }
 }

@@ -11,6 +11,9 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
+
+import org.osgi.service.component.annotations.Component;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -21,6 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
+@Component(service = UriFactory.class)
 @FactoryBinding(factory = BerkeleyDbBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class BerkeleyDbUriFactory extends AbstractUriFactory {

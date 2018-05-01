@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.neoemf.bind.BindingEngineProvider;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
 
 import org.eclipse.emf.common.util.URI;
@@ -49,7 +48,7 @@ public interface UriFactory {
      */
     @Nonnull
     static UriFactory forName(String name) {
-        return BindingEngineProvider.getInstance().getEngine().find(UriFactory.class, Bindings::nameOf, name, null);
+        return Bindings.find(UriFactory.class, Bindings::nameOf, name, null);
     }
 
     /**
@@ -61,7 +60,7 @@ public interface UriFactory {
      */
     @Nonnull
     static UriFactory forScheme(String scheme) {
-        return BindingEngineProvider.getInstance().getEngine().find(UriFactory.class, Bindings::schemeOf, scheme, null);
+        return Bindings.find(UriFactory.class, Bindings::schemeOf, scheme, null);
     }
 
     /**

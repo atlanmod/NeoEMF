@@ -6,18 +6,22 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.bind.internal;
+package fr.inria.atlanmod.neoemf.util.service;
 
-import java.net.URL;
-import java.util.Set;
-import java.util.function.Supplier;
+import java.util.ServiceLoader;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An object that analyzes, collects and supplies {@link URL}s.
+ * A {@link ServiceContext} able to retrieve registered services from a {@link ServiceLoader}.
  */
 @ParametersAreNonnullByDefault
-@FunctionalInterface
-public interface URLCollector extends Supplier<Set<URL>> {
+class ServiceLoaderContext implements ServiceContext {
+
+    @Nonnull
+    @Override
+    public <T> Iterable<T> getServices(Class<T> superType) {
+        return ServiceLoader.load(superType);
+    }
 }

@@ -12,8 +12,12 @@ import com.tinkerpop.blueprints.Graph;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.InvalidConfigException;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 import java.nio.file.Path;
 import java.util.function.Predicate;
@@ -29,7 +33,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  *
  * @param <C> the "self"-type of this {@link fr.inria.atlanmod.neoemf.config.Config}
  */
-@FactoryBinding(factory = BlueprintsBackendFactory.class)
+@Component(service = Config.class, scope = ServiceScope.PROTOTYPE)
+@FactoryBinding(factory = BlueprintsBackendFactory.class, concrete = false)
 @ParametersAreNonnullByDefault
 public class BaseBlueprintsConfig<C extends BaseBlueprintsConfig<C>> extends BaseConfig<C> {
 

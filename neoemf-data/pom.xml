@@ -40,6 +40,18 @@
             <artifactId>org.eclipse.emf.common</artifactId>
         </dependency>
 
+        <!-- OSGi -->
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
+        </dependency>
+
         <!-- Test -->
 
         <dependency>

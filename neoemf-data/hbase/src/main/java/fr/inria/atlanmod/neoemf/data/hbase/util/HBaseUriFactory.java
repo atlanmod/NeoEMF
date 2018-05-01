@@ -11,6 +11,9 @@ package fr.inria.atlanmod.neoemf.data.hbase.util;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
+
+import org.osgi.service.component.annotations.Component;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -21,6 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
+@Component(service = UriFactory.class)
 @FactoryBinding(factory = HBaseBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class HBaseUriFactory extends AbstractUriFactory {

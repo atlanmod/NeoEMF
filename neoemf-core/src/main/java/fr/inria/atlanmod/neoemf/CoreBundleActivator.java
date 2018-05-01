@@ -6,10 +6,10 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.util;
+package fr.inria.atlanmod.neoemf;
 
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
-import fr.inria.atlanmod.neoemf.bind.BindingEngineProvider;
+import fr.inria.atlanmod.neoemf.util.service.ServiceResolver;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -21,15 +21,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @VisibleForReflection
 @ParametersAreNonnullByDefault
-public final class Activator implements BundleActivator {
+public final class CoreBundleActivator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) {
-        BindingEngineProvider.getInstance().loadContext(context);
+        ServiceResolver.getInstance().loadContext(context);
     }
 
     @Override
     public void stop(BundleContext context) {
-        BindingEngineProvider.getInstance().unloadContext(context);
+        ServiceResolver.getInstance().unloadContext();
     }
 }

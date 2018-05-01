@@ -12,10 +12,10 @@ import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.bind.BindingEngineProvider;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
+import fr.inria.atlanmod.neoemf.util.service.ServiceResolver;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -154,7 +154,7 @@ public final class BackendFactoryRegistry {
      * This method scan the full Java classpath to retrieve the annotated element.
      */
     public void registerAll() {
-        BindingEngineProvider.getInstance().getEngine().findFactories().forEach(b -> register(Bindings.schemeOf(b), b));
+        ServiceResolver.getInstance().find(BackendFactory.class).forEach(b -> register(Bindings.schemeOf(b), b));
     }
 
     /**

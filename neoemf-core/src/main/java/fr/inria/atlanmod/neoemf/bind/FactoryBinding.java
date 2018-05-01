@@ -41,10 +41,17 @@ public @interface FactoryBinding {
     Class<? extends BackendFactory> factory();
 
     /**
-     * The variant identifier of this binding; should be unique by {@link #factory()}.
+     * The variant identifier of this binding; it should be unique for a given {@link BackendFactory}.
      *
      * @return the variant identifier
      */
     @Nonnull
     String variant() default DEFAULT_VARIANT;
+
+    /**
+     * {@code true} if the annotated class represents a concrete implementation, {@code false} if it's an abstract or a base class.
+     *
+     * @return {@code true} if the annotated class represents a reel instance
+     */
+    boolean concrete() default true;
 }
