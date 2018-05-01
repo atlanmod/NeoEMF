@@ -51,6 +51,20 @@ public final class ServiceResolver {
     }
 
     /**
+     *
+     */
+    void setContext(ServiceContext context) {
+        provider.update(context);
+    }
+
+    /**
+     *
+     */
+    void unloadContext() {
+        provider.update(new ServiceLoaderContext());
+    }
+
+    /**
      * Retrieves all registered services of the specified {@code type}.
      *
      * @return an iterable
@@ -71,26 +85,6 @@ public final class ServiceResolver {
     @Nonnull
     public <T> Iterable<T> find(Class<T> type, Predicate<T> filter) {
         return MoreIterables.stream(find(type)).filter(filter).collect(Collectors.toList());
-    }
-
-    /**
-     * Loads a {@link BundleContext}.
-     *
-     * @param context the bundle context to load
-     *
-     * @see #unloadContext()
-     */
-    public void loadContext(BundleContext context) {
-        provider.update(new BundleServiceContext(context));
-    }
-
-    /**
-     * Unloads the previously loaded {@link BundleContext}.
-     *
-     * @see #loadContext(BundleContext)
-     */
-    public void unloadContext() {
-        provider.update(new ServiceLoaderContext());
     }
 
     /**

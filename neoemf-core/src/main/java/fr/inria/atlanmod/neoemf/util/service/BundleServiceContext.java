@@ -9,41 +9,55 @@
 package fr.inria.atlanmod.neoemf.util.service;
 
 import fr.inria.atlanmod.commons.Throwables;
+import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link ServiceContext} able to retrieve registered services from a {@link BundleContext}.
  */
+@Component(immediate = true)
+@VisibleForReflection
 @ParametersAreNonnullByDefault
-class BundleServiceContext implements ServiceContext {
+public class BundleServiceContext implements ServiceContext {
 
     /**
-     * The bundle context.
+     * The current bundle context.
      */
-    @Nonnull
-    private final BundleContext context;
+    private BundleContext context;
 
-    /**
-     * Constructs a new {@code BundleServiceContext}.
-     *
-     * @param context the bundle context
-     */
-    public BundleServiceContext(BundleContext context) {
+    @Activate
+    public void onActivate(BundleContext context) {
         this.context = context;
+        ServiceResolver.getInstance().setContext(this);
+    }
+
+    @Deactivate
+    public void onDeactivate() {
+        this.context = null;
+        ServiceResolver.getInstance().unloadContext();
     }
 
     @Nonnull
     @Override
-    public <T> Iterable<T> getServices(Class<T> superType) {
+    public <T> Iterable<T> getServices(Class<T> type) {
+        return getServices(type, null);
+    }
+
+    @Nonnull
+    public <T> Iterable<T> getServices(Class<T> type, @Nullable String filter) {
         try {
-            return context.getServiceReferences(superType, null).stream()
+            return context.getServiceReferences(type, filter).stream()
                     .map(context::getService)
                     .collect(Collectors.toSet());
         }

@@ -8,6 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.util.service;
 
+import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
+
 import java.util.ServiceLoader;
 
 import javax.annotation.Nonnull;
@@ -16,12 +18,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A {@link ServiceContext} able to retrieve registered services from a {@link ServiceLoader}.
  */
+@VisibleForReflection
 @ParametersAreNonnullByDefault
-class ServiceLoaderContext implements ServiceContext {
+public class ServiceLoaderContext implements ServiceContext {
 
     @Nonnull
     @Override
-    public <T> Iterable<T> getServices(Class<T> superType) {
-        return ServiceLoader.load(superType);
+    public <T> Iterable<T> getServices(Class<T> type) {
+        return ServiceLoader.load(type);
     }
 }
