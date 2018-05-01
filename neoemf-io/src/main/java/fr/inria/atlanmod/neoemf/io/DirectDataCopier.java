@@ -9,20 +9,21 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.function.Copier;
+import fr.inria.atlanmod.neoemf.data.DataCopier;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+
+import org.osgi.service.component.annotations.Component;
 
 import java.io.IOException;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link fr.inria.atlanmod.commons.function.Copier} of {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper}
- * instances using the direct import/export.
+ * A {@link DataCopier} using the direct import/export.
  */
+@Component(service = DataCopier.class)
 @ParametersAreNonnullByDefault
-@SuppressWarnings("unused") // Called dynamically
-public final class DirectDataCopier implements Copier<DataMapper> {
+public final class DirectDataCopier implements DataCopier {
 
     @Override
     public void copy(DataMapper source, DataMapper target) {
