@@ -154,7 +154,9 @@ public final class BackendFactoryRegistry {
      * This method scan the full Java classpath to retrieve the annotated element.
      */
     public void registerAll() {
-        ServiceResolver.getInstance().find(BackendFactory.class).forEach(b -> register(Bindings.schemeOf(b), b));
+        ServiceResolver.getInstance()
+                .resolve(BackendFactory.class)
+                .forEach(b -> register(Bindings.schemeOf(b), b));
     }
 
     /**

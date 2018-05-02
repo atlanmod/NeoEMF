@@ -9,8 +9,10 @@
 package fr.inria.atlanmod.neoemf.util.service;
 
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
+import fr.inria.atlanmod.commons.collect.MoreIterables;
 
 import java.util.ServiceLoader;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -24,7 +26,7 @@ public class ServiceLoaderContext implements ServiceContext {
 
     @Nonnull
     @Override
-    public <T> Iterable<T> getServices(Class<T> type) {
-        return ServiceLoader.load(type);
+    public <T> Stream<T> getServices(Class<T> type) {
+        return MoreIterables.parallelStream(ServiceLoader.load(type));
     }
 }

@@ -11,12 +11,8 @@ package fr.inria.atlanmod.neoemf.util.service;
 import fr.inria.atlanmod.commons.Lazy;
 import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.collect.MoreIterables;
 
-import org.osgi.framework.BundleContext;
-
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -67,24 +63,11 @@ public final class ServiceResolver {
     /**
      * Retrieves all registered services of the specified {@code type}.
      *
-     * @return an iterable
+     * @return a parallel stream of all registered services of the specified {@code type}
      */
     @Nonnull
-    public <T> Iterable<T> find(Class<T> type) {
+    public <T> Stream<T> resolve(Class<T> type) {
         return provider.get().getServices(type);
-    }
-
-    /**
-     * Retrieves all registered services of the specified {@code type} that matches the {@code filter}
-     *
-     * @param type   the type of services to look for
-     * @param filter the filter to determine if a service should be returned
-     *
-     * @return an iterable
-     */
-    @Nonnull
-    public <T> Iterable<T> find(Class<T> type, Predicate<T> filter) {
-        return MoreIterables.stream(find(type)).filter(filter).collect(Collectors.toList());
     }
 
     /**

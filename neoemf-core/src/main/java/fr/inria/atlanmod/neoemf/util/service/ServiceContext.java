@@ -8,6 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.util.service;
 
+import java.util.stream.Stream;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -22,8 +24,8 @@ public interface ServiceContext {
      *
      * @param type the type of services to look for
      *
-     * @return an iterable of all registered services of the specified {@code type}
+     * @return a parallel stream of all registered services of the specified {@code type}
      */
     @Nonnull
-    <T> Iterable<T> getServices(Class<T> type);
+    <T> Stream<T> getServices(Class<T> type);
 }

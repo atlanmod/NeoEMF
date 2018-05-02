@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.util.service;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 
 import org.osgi.framework.BundleContext;
@@ -17,14 +16,16 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link ServiceContext} able to retrieve registered services from a {@link BundleContext}.
+ * A {@link ServiceContext} able to retrieve OSGi Declarative Services from a {@link BundleContext}.
+ *
+ * <b>NOTE:</b> This context is automatically loaded and configured when this bundle is starting under an OSGi environment.
  */
 @Component(immediate = true)
 @VisibleForReflection
@@ -36,12 +37,20 @@ public class BundleServiceContext implements ServiceContext {
      */
     private BundleContext context;
 
+    /**
+     * Activates this context with the specified OSGi {@code context}.
+     *
+     * @param context the current bundle context
+     */
     @Activate
     public void onActivate(BundleContext context) {
         this.context = context;
         ServiceResolver.getInstance().setContext(this);
     }
 
+    /**
+     * Deactivates this context.
+     */
     @Deactivate
     public void onDeactivate() {
         this.context = null;
@@ -50,19 +59,25 @@ public class BundleServiceContext implements ServiceContext {
 
     @Nonnull
     @Override
-    public <T> Iterable<T> getServices(Class<T> type) {
+    public <T> Stream<T> getServices(Class<T> type) {
         return getServices(type, null);
     }
 
+    /**
+     * Retrieves all registered services of the specified {@code type}.
+     *
+     * @param type   the type of services to look for
+     * @param filter the filter to determine if a service should be returned
+     *
+     * @return a parallel stream of all registered services of the specified {@code type}
+     */
     @Nonnull
-    public <T> Iterable<T> getServices(Class<T> type, @Nullable String filter) {
+    public <T> Stream<T> getServices(Class<T> type, @Nullable String filter) {
         try {
-            return context.getServiceReferences(type, filter).stream()
-                    .map(context::getService)
-                    .collect(Collectors.toSet());
+            return context.getServiceReferences(type, filter).stream().map(context::getService).parallel();
         }
         catch (InvalidSyntaxException e) {
-            throw Throwables.shouldNeverHappen(e);
+            throw new IllegalArgumentException(e);
         }
     }
 }

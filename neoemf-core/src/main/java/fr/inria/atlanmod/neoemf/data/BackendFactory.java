@@ -22,9 +22,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * The creation can be configured using {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#save(java.util.Map)}
  * and {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#load(java.util.Map)} option maps.
- * <p>
- * For reflection reasons, each instance of {@code BackendFactory} <b>must</b> have a static field {@code NAME},
- * representing the name of the created {@link Backend} instances.
  *
  * @see Config
  */

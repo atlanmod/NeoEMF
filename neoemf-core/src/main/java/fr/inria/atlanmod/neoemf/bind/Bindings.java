@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.bind;
 
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.reflect.MoreReflection;
 import fr.inria.atlanmod.commons.reflect.ReflectionException;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -28,7 +27,6 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.nonNull;
 
 /**
  * A static utility class for binding.
@@ -173,7 +171,7 @@ public final class Bindings {
      * @return a new instance of the {@code type}
      *
      * @throws BindingException if no instance of {@code type} is found for the {@code value} by using the {@code valueMapping}
-     * @see ServiceResolver#find(Class)
+     * @see ServiceResolver#resolve(Class)
      */
     @Nonnull
     @SuppressWarnings("unchecked")
@@ -181,24 +179,22 @@ public final class Bindings {
         final String variantOrDefault = Optional.ofNullable(variant).orElse(FactoryBinding.DEFAULT_VARIANT);
 
         // Find all objects that match the value and variant
-        final Iterable<? super T> services = ServiceResolver.getInstance().find(type, t -> {
-            final FactoryBinding a = t.getClass().getDeclaredAnnotation(FactoryBinding.class);
-
-            return nonNull(a)
-                    && Objects.equals(value, valueMapping.apply(a.factory()))
-                    && Objects.equals(variantOrDefault, a.variant());
-        });
-
-        final List<? super T> servicesList = MoreIterables.stream(services).collect(Collectors.toList());
+        final List<? super T> services = ServiceResolver.getInstance()
+                .resolve(type)
+                .filter(t -> Optional.ofNullable(t.getClass().getDeclaredAnnotation(FactoryBinding.class))
+                        .filter(a -> Objects.equals(value, valueMapping.apply(a.factory())))
+                        .filter(a -> Objects.equals(variantOrDefault, a.variant()))
+                        .isPresent())
+                .collect(Collectors.toList());
 
         // Ensure that only one type is relevant
-        if (servicesList.isEmpty()) {
+        if (services.isEmpty()) {
             throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; No relevant type found", type.getName(), value, variantOrDefault));
         }
-        else if (servicesList.size() > 1) {
+        else if (services.size() > 1) {
             throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; Several relevant types found : %s", type.getName(), value, variantOrDefault, services));
         }
 
-        return (T) servicesList.get(0);
+        return (T) services.get(0);
     }
 }
