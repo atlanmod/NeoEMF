@@ -439,24 +439,24 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Nonnull
     @SuppressWarnings("unchecked")
     protected final C setMappingWithCheck(String mappingType, boolean checkConflict) {
+        checkNotNull(mappingType, "mappingType");
+
         if (checkConflict) {
             checkConflict(BACKEND_MAPPING, mappingType);
         }
 
-        Class<? extends DataMapper> mappingClass;
         try {
-            mappingClass = (Class<? extends DataMapper>) Class.forName(mappingType);
+            final Class<?> mappingClass = Class.forName(mappingType, false, getClass().getClassLoader());
+            if (!DataMapper.class.isAssignableFrom(mappingClass)) {
+                throw new InvalidConfigException(String.format("The %s must be assignable to %s", mappingType, DataMapper.class.getName()));
+            }
         }
         catch (ClassNotFoundException e) {
             throw new InvalidConfigException(e);
         }
-        catch (ClassCastException e) {
-            throw new InvalidConfigException(
-                    String.format("The %s must be assignable to %s", mappingType, DataMapper.class.getName()));
-        }
 
         // Don't use addOption to avoid double checking
-        options.put(BACKEND_MAPPING, checkNotNull(mappingClass.getName(), "mapping.name"));
+        options.put(BACKEND_MAPPING, mappingType);
         return me();
     }
 
