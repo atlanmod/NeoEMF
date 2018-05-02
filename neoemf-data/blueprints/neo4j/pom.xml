@@ -142,6 +142,7 @@
                             org.apache.commons.configuration;version="${commons-configuration.version}"
                         </Import-Package>
                         <Export-Package>
+                            !fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*.internal.*,
                             fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*
                         </Export-Package>
                         <_exportcontents>

@@ -54,6 +54,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.data.berkeleydb</Bundle-SymbolicName>
                         <Export-Package>
+                            !fr.inria.atlanmod.neoemf.data.berkeleydb.*.internal.*,
                             fr.inria.atlanmod.neoemf.data.berkeleydb.*
                         </Export-Package>
                         <Require-Bundle>

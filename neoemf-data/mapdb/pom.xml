@@ -54,6 +54,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.data.mapdb</Bundle-SymbolicName>
                         <Export-Package>
+                            !fr.inria.atlanmod.neoemf.data.mapdb.*.internal.*,
                             fr.inria.atlanmod.neoemf.data.mapdb.*
                         </Export-Package>
                         <Require-Bundle>

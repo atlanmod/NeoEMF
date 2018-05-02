@@ -72,8 +72,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.data.blueprints.core</Bundle-SymbolicName>
                         <DynamicImport-Package>
-                            com.tinkerpop.blueprints.impls.*;version="${blueprints.version}",
-                            *
+                            com.tinkerpop.blueprints.impls.*;version="${blueprints.version}"
                         </DynamicImport-Package>
                         <Export-Package>
                             !fr.inria.atlanmod.neoemf.data.blueprints.*.internal.*,

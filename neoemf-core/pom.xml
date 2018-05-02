@@ -22,7 +22,7 @@
         <chronicle-map.version>3.14.5</chronicle-map.version>
         <chronicle-bytes.version>1.12.8</chronicle-bytes.version>
 
-        <log4j.version>2.8.2</log4j.version><!-- 2.9.0+ : compatibility issue with maven-bundle-plugin (JDK9) -->
+        <log4j.version>2.11.0</log4j.version>
 
         <cglib.version>3.2.6</cglib.version>
     </properties>
@@ -196,18 +196,6 @@
                 <version>${cglib.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.reflections</groupId>
-                <artifactId>reflections</artifactId>
-                <version>${reflections.version}</version>
-                <exclusions>
-                    <exclusion> <!-- Should be optional -->
-                        <groupId>com.google.code.findbugs</groupId>
-                        <artifactId>annotations</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
             <!-- Logging -->
 
             <dependency>
@@ -257,21 +245,21 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.core</Bundle-SymbolicName>
-                        <DynamicImport-Package>
-                            *,
-                            fr.inria.atlanmod.neoemf.*
-                        </DynamicImport-Package>
                         <Import-Package>
                             org.osgi.framework,
-                            org.osgi.service.component.annotations;resolution:=optional
+                            com.google.common.cache;resolution:=optional
                         </Import-Package>
                         <Export-Package>
                             !fr.inria.atlanmod.neoemf.*.internal.*,
+                            !fr.inria.atlanmod.neoemf.data.im.*,
                             fr.inria.atlanmod.neoemf.*
                         </Export-Package>
-                        <Import-Package>
-                            com.google.common.cache;resolution:=optional
-                        </Import-Package>
+                        <Embed-Dependency><!-- Inherited -->
+                            *;
+                            scope=compile|runtime;
+                            type=!pom;
+                            groupId=!${project.groupId}|fr.inria.atlanmod.commons|org.eclipse.emf|org.apache.logging.log4j
+                        </Embed-Dependency>
                         <Require-Bundle>
                             fr.inria.atlanmod.commons;visibility:=reexport,
                             org.eclipse.emf.ecore;visibility:=reexport,

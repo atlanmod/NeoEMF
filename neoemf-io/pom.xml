@@ -186,6 +186,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.io</Bundle-SymbolicName>
                         <Export-Package>
+                            !fr.inria.atlanmod.neoemf.io.*.internal.*,
                             fr.inria.atlanmod.neoemf.io.*
                         </Export-Package>
                         <_exportcontents>
