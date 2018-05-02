@@ -135,7 +135,7 @@ docker run ... atlanmod/neoemf <args>
 by
 
 ```bash
-java -jar benchmarks/core/target/exec/benchmarks.jar <args>
+java -jar benchmarks/core/target/dist/neoemf-benchmarks.jar <args>
 ```
 
 __NOTE:__ In these examples, all calls are made from the root directory.

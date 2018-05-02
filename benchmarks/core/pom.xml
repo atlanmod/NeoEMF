@@ -15,8 +15,8 @@
     <name>NeoEMF Benchmarks Core</name>
 
     <properties>
-        <uberjar.name>benchmarks</uberjar.name>
-        <uberjar.directory>${project.build.directory}/exec</uberjar.directory>
+        <uberjar.name>neoemf-benchmarks</uberjar.name>
+        <uberjar.directory>${project.build.directory}/dist</uberjar.directory>
     </properties>
 
     <dependencies>
