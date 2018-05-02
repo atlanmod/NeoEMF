@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.commons.service.ServiceResolver;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
@@ -16,7 +17,6 @@ import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapper;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
-import fr.inria.atlanmod.neoemf.util.service.ServiceResolver;
 
 import java.io.IOException;
 import java.util.Collections;

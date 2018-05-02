@@ -12,9 +12,9 @@ import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.reflect.MoreReflection;
 import fr.inria.atlanmod.commons.reflect.ReflectionException;
+import fr.inria.atlanmod.commons.service.ServiceResolver;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriFactory;
-import fr.inria.atlanmod.neoemf.util.service.ServiceResolver;
 
 import java.util.List;
 import java.util.Objects;
@@ -171,7 +171,7 @@ public final class Bindings {
      * @return a new instance of the {@code type}
      *
      * @throws BindingException if no instance of {@code type} is found for the {@code value} by using the {@code valueMapping}
-     * @see ServiceResolver#resolve(Class)
+     * @see fr.inria.atlanmod.commons.service.ServiceResolver#resolve(Class)
      */
     @Nonnull
     @SuppressWarnings("unchecked")

@@ -98,11 +98,6 @@
 
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.component.annotations</artifactId>
         </dependency>
 
@@ -246,7 +241,6 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.core</Bundle-SymbolicName>
                         <Import-Package>
-                            org.osgi.framework,
                             com.google.common.cache;resolution:=optional
                         </Import-Package>
                         <Export-Package>

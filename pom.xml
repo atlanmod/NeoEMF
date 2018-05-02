@@ -116,9 +116,6 @@
         <commons.version>1.0.2-SNAPSHOT</commons.version>
 
         <emf.version>2.12.0</emf.version>
-
-        <osgi.version>6.0.0</osgi.version>
-        <osgi-annotations.version>1.4.0</osgi-annotations.version>
     </properties>
 
     <dependencyManagement>
@@ -150,22 +147,6 @@
                 <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
                 <version>${emf.version}</version>
-            </dependency>
-
-            <!-- OSGi -->
-
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.core</artifactId>
-                <version>${osgi.version}</version>
-                <scope>provided</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.service.component.annotations</artifactId>
-                <version>${osgi-annotations.version}</version>
-                <scope>provided</scope>
             </dependency>
 
             <!-- Test -->
