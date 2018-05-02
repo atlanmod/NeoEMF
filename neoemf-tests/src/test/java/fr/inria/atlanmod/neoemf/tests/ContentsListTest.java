@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.ContentsList}.
+ * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.collect.ContentsList}.
  */
 @ParametersAreNonnullByDefault
 class ContentsListTest extends AbstractResourceBasedTest {

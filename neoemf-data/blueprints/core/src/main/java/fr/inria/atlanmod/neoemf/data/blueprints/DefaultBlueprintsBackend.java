@@ -15,8 +15,8 @@ import fr.inria.atlanmod.commons.collect.MoreStreams;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
-import fr.inria.atlanmod.neoemf.data.blueprints.graph.ElementEdge;
-import fr.inria.atlanmod.neoemf.data.blueprints.graph.ElementVertex;
+import fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.ElementEdge;
+import fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.ElementVertex;
 
 import java.util.Comparator;
 import java.util.List;
