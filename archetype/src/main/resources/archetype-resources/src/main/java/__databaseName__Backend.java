@@ -13,7 +13,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link Backend} that is responsible of low-level access to a ${databaseName} database.
+ * A {@link fr.inria.atlanmod.neoemf.data.Backend} that is responsible of low-level access to a ${databaseName} database.
  * <p>
  * It wraps an existing ${databaseName} database and provides facilities to create and retrieve elements.
  * <p>

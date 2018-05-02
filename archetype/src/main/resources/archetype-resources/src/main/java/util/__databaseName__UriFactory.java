@@ -10,8 +10,11 @@ package ${package}.util;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import ${package}.${databaseName}BackendFactory;
+
+import org.osgi.service.component.annotations.Component;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -22,6 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry
  * @see fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory
  */
+@Component(service = UriFactory.class)
 @FactoryBinding(factory = ${databaseName}BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class ${databaseName}UriFactory extends AbstractUriFactory {

@@ -14,6 +14,8 @@ import fr.inria.atlanmod.neoemf.data.BackendFactory;
 
 import ${package}.config.${databaseName}Config;
 
+import org.osgi.service.component.annotations.Component;
+
 import java.net.URL;
 import java.nio.file.Path;
 
@@ -21,8 +23,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link BackendFactory} that creates {@link ${databaseName}Backend} instances.
+ * A {@link fr.inria.atlanmod.neoemf.data.BackendFactory} that creates {@link ${databaseName}Backend} instances.
  */
+@Component(service = BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class ${databaseName}BackendFactory extends AbstractBackendFactory<${databaseName}Config> {
 
