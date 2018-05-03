@@ -22,7 +22,6 @@ import org.apache.logging.log4j.util.Strings;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
@@ -40,7 +39,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 /**
  * A test-case that checks the behavior of direct I/O methods, by using the `neoemf-io` module.
  */
-@Disabled("See `neoemf-io` tests")
 @ParametersAreNonnullByDefault
 class DirectMigrationTest extends AbstractResourceBasedTest {
 
@@ -55,7 +53,7 @@ class DirectMigrationTest extends AbstractResourceBasedTest {
     /**
      * Checks the import from a file to a {@link Backend}.
      */
-    @Tag("slower")
+    @Tag("slowest")
     @ParameterizedTest(name = "[{index}] {0} <- {1}")
     @ArgumentsSource(ContextProvider.AllWithUris.class)
     void testDirectImport(Context context, URI uri) throws IOException {
@@ -81,7 +79,7 @@ class DirectMigrationTest extends AbstractResourceBasedTest {
     /**
      * Checks the export from a {@link Backend} to a file.
      */
-    @Tag("slower")
+    @Tag("slowest")
     @ParameterizedTest(name = "[{index}] {0}: useCompression = {1}")
     @ArgumentsSource(ContextProvider.AllWithBooleans.class)
     void testDirectExport(Context context, Boolean useCompression) throws IOException {
@@ -111,7 +109,7 @@ class DirectMigrationTest extends AbstractResourceBasedTest {
     /**
      * Checks the copy from a {@link Backend} to another.
      */
-    @Tag("slower")
+    @Tag("slowest")
     @ParameterizedTest(name = "[{index}] {0} -> {0}")
     @ArgumentsSource(ContextProvider.All.class)
     void testDirectCopy(Context context) throws IOException {
