@@ -12,7 +12,8 @@ import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.reflect.MoreReflection;
 import fr.inria.atlanmod.commons.reflect.ReflectionException;
-import fr.inria.atlanmod.commons.service.ServiceResolver;
+import fr.inria.atlanmod.commons.service.ServiceDefinition;
+import fr.inria.atlanmod.commons.service.ServiceProvider;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriFactory;
 
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -171,20 +173,23 @@ public final class Bindings {
      * @return a new instance of the {@code type}
      *
      * @throws BindingException if no instance of {@code type} is found for the {@code value} by using the {@code valueMapping}
-     * @see fr.inria.atlanmod.commons.service.ServiceResolver#resolve(Class)
+     * @see fr.inria.atlanmod.commons.service.ServiceProvider#load(Class)
      */
     @Nonnull
     @SuppressWarnings("unchecked")
     public static <T> T find(Class<? super T> type, Function<Class<? extends BackendFactory>, String> valueMapping, String value, @Nullable String variant) {
         final String variantOrDefault = Optional.ofNullable(variant).orElse(FactoryBinding.DEFAULT_VARIANT);
 
+        final Predicate<ServiceDefinition<?>> isRelevant = d -> Optional.of(d.type())
+                .map(t -> t.getDeclaredAnnotation(FactoryBinding.class))
+                .filter(a -> Objects.equals(value, valueMapping.apply(a.factory())))
+                .filter(a -> Objects.equals(variantOrDefault, a.variant()))
+                .isPresent();
+
         // Find all objects that match the value and variant
-        final List<? super T> services = ServiceResolver.getInstance()
-                .resolve(type)
-                .filter(t -> Optional.ofNullable(t.getClass().getDeclaredAnnotation(FactoryBinding.class))
-                        .filter(a -> Objects.equals(value, valueMapping.apply(a.factory())))
-                        .filter(a -> Objects.equals(variantOrDefault, a.variant()))
-                        .isPresent())
+        final List<ServiceDefinition<? super T>> services = ServiceProvider.getInstance()
+                .load(type)
+                .filter(isRelevant)
                 .collect(Collectors.toList());
 
         // Ensure that only one type is relevant
@@ -192,9 +197,14 @@ public final class Bindings {
             throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; No relevant type found", type.getName(), value, variantOrDefault));
         }
         else if (services.size() > 1) {
-            throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; Several relevant types found : %s", type.getName(), value, variantOrDefault, services));
+            final String servicesType = services.stream()
+                    .map(ServiceDefinition::type)
+                    .map(Class::getCanonicalName)
+                    .collect(Collectors.joining(", "));
+
+            throw new BindingException(String.format("Unable to find a %s instance for value '%s' and variant '%s'; Several relevant types found: %s", type.getName(), value, variantOrDefault, servicesType));
         }
 
-        return (T) services.get(0);
+        return (T) services.get(0).get();
     }
 }

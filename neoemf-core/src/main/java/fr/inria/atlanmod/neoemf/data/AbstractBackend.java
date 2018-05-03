@@ -9,7 +9,8 @@
 package fr.inria.atlanmod.neoemf.data;
 
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.service.ServiceResolver;
+import fr.inria.atlanmod.commons.service.ServiceDefinition;
+import fr.inria.atlanmod.commons.service.ServiceProvider;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
@@ -189,9 +190,10 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
      * @param target the backend where to store the copied content
      */
     private void defaultCopyTo(Backend target) {
-        final DataCopier copier = ServiceResolver.getInstance()
-                .resolve(DataCopier.class)
+        final DataCopier copier = ServiceProvider.getInstance()
+                .load(DataCopier.class)
                 .findFirst()
+                .map(ServiceDefinition::get)
                 .<UnsupportedOperationException>orElseThrow(() -> new UnsupportedOperationException("Unable to find any DataCopier implementation"));
 
         Store store = StoreFactory.getInstance().createStore(target, new BaseConfig<>().autoSave());
