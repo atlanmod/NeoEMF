@@ -32,7 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class InMemoryConfig extends BaseConfig<InMemoryConfig> {
 
     /**
-     * Constructs a new {@code BerkeleyDbConfig} with default settings.
+     * Constructs a new {@code InMemoryConfig} with default settings.
      */
     public InMemoryConfig() {
         // Don't set a default mapping for a multi-mapping configuration.
