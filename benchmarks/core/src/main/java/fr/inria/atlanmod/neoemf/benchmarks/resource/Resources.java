@@ -65,9 +65,8 @@ public final class Resources {
      * A {@link Map} that holds all registered resources.
      */
     @Nonnull
-    private static Lazy<Map<String, String>> registeredResources = Lazy.with(() -> getRegisteredResources());
+    private static Lazy<Map<String, String>> registeredResources = Lazy.with(Resources::getRegisteredResources);
 
-    @SuppressWarnings("JavaDoc")
     private Resources() {
         throw new IllegalStateException("This class should not be instantiated");
     }
@@ -98,8 +97,8 @@ public final class Resources {
         }
 
         // Retrieve the original file name from a shortcut
-        if (getRegisteredResources().containsKey(resourceFileName.toLowerCase())) {
-            resourceFileName = getRegisteredResources().get(resourceFileName.toLowerCase());
+        if (registeredResources.get().containsKey(resourceFileName.toLowerCase())) {
+            resourceFileName = registeredResources.get().get(resourceFileName.toLowerCase());
         }
 
         // Retrieve the resource from the 'resources/resource.zip' or from the file system

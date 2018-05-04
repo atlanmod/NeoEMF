@@ -8,11 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
-
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,81 +18,44 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackend}.
  */
 @ParametersAreNonnullByDefault
-@SuppressWarnings("unused") // Called dynamically
-public abstract class BerkeleyDbAdapter extends AbstractNeoAdapter {
-
-    /**
-     * Constructs a new {@code BerkeleyDbAdapter}.
-     *
-     * @param storeExtension the extension of the resource, used for benchmarks
-     */
-    protected BerkeleyDbAdapter(String storeExtension) {
-        super("berkeleydb." + storeExtension);
-    }
-
-    @Nonnull
-    @Override
-    protected BackendFactory getFactory() {
-        return new BerkeleyDbBackendFactory();
-    }
+public abstract class BerkeleyDbAdapter extends AbstractPersistentAdapter {
 
     /**
      * A {@link BerkeleyDbAdapter} with a mapping with indices.
      */
-    @ParametersAreNonnullByDefault
+    @AdapterName("berkeleydb-i")
     public static final class WithIndices extends BerkeleyDbAdapter {
-
-        /**
-         * Constructs a new {@code BerkeleyDbAdapter.WithIndices}.
-         */
-        public WithIndices() {
-            super("indices");
-        }
 
         @Nonnull
         @Override
-        public Map<String, ?> getOptions() {
-            return new BerkeleyDbConfig().withIndices().toMap();
+        protected ImmutableConfig createConfig() {
+            return new BerkeleyDbConfig().withIndices();
         }
     }
 
     /**
      * A {@link BerkeleyDbAdapter} with a mapping with arrays.
      */
-    @ParametersAreNonnullByDefault
+    @AdapterName("berkeleydb-a")
     public static final class WithArrays extends BerkeleyDbAdapter {
-
-        /**
-         * Constructs a new {@code BerkeleyDbAdapter.WithArrays}.
-         */
-        public WithArrays() {
-            super("arrays");
-        }
 
         @Nonnull
         @Override
-        public Map<String, ?> getOptions() {
-            return new BerkeleyDbConfig().withArrays().toMap();
+        protected ImmutableConfig createConfig() {
+            return new BerkeleyDbConfig().withArrays();
         }
     }
 
     /**
      * A {@link BerkeleyDbAdapter} with a mapping with lists.
      */
-    @ParametersAreNonnullByDefault
+    @AdapterName("berkeleydb-l")
     public static final class WithLists extends BerkeleyDbAdapter {
-
-        /**
-         * Constructs a new {@code BerkeleyDbAdapter.WithLists}.
-         */
-        public WithLists() {
-            super("lists");
-        }
 
         @Nonnull
         @Override
-        public Map<String, ?> getOptions() {
-            return new BerkeleyDbConfig().withLists().toMap();
+        protected ImmutableConfig createConfig() {
+            return new BerkeleyDbConfig().withLists();
         }
     }
 }

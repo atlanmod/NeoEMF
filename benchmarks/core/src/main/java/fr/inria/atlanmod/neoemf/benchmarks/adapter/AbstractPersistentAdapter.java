@@ -8,6 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.commons.Throwables;
+import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.Backend;
@@ -18,29 +20,37 @@ import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static fr.inria.atlanmod.commons.Preconditions.checkState;
+import static java.util.Objects.nonNull;
 
 /**
  * An abstract {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.Backend}.
  */
 @ParametersAreNonnullByDefault
-abstract class AbstractNeoAdapter extends AbstractAdapter {
+abstract class AbstractPersistentAdapter extends AbstractAdapter {
 
     /**
-     * Constructs a new {@code AbstractNeoAdapter}.
-     *
-     * @param storeExtension the extension of the resource, used for benchmarks
+     * Constructs a new {@code AbstractPersistentAdapter}.
      */
-    protected AbstractNeoAdapter(String storeExtension) {
-        super("neoemf", storeExtension + ".resource", org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class);
+    protected AbstractPersistentAdapter() {
+        super("neoemf", org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class);
     }
+
+    /**
+     * Creates a new configuration.
+     *
+     * @return a new configuration
+     */
+    @Nonnull
+    protected abstract ImmutableConfig createConfig();
 
     /**
      * Returns the {@link BackendFactory} associated to this adapter.
@@ -48,16 +58,28 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
      * @return a factory
      */
     @Nonnull
-    protected abstract BackendFactory getFactory();
+    protected final BackendFactory getFactory() {
+        final FactoryBinding annotation = createConfig().getClass().getAnnotation(FactoryBinding.class);
+        checkState(nonNull(annotation), "Cannot retrieve the %s instance for this adapter", BackendFactory.class.getSimpleName());
+
+        try {
+            final Class<? extends BackendFactory> factoryType = annotation.factory();
+            return factoryType.newInstance();
+        }
+        catch (InstantiationException | IllegalAccessException e) {
+            throw Throwables.shouldNeverHappen(e);
+        }
+    }
 
     @Override
     public boolean supportsMapper() {
         return true;
     }
 
+    @Nonnull
     @Override
     public DataMapper createMapper(File file, ImmutableConfig config) {
-        ImmutableConfig mergedConfig = new BaseConfig<>().merge(config).merge(getOptions());
+        ImmutableConfig mergedConfig = new BaseConfig<>().merge(config).merge(createConfig());
 
         Backend backend = getFactory().createBackend(URI.createFileURI(file.getAbsolutePath()), mergedConfig);
         return StoreFactory.getInstance().createStore(backend, mergedConfig);
@@ -65,25 +87,14 @@ abstract class AbstractNeoAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource createResource(File file, ResourceSet resourceSet) {
-        return resourceSet.createResource(UriFactory.forName(getFactory().name()).createLocalUri(file));
+    public Resource createResource(File file) {
+        URI uri = UriFactory.forName(getFactory().name()).createLocalUri(file);
+        return new ResourceSetImpl().createResource(uri);
     }
 
     @Nonnull
     @Override
-    public Resource load(File file, ImmutableConfig config) throws IOException {
-        initAndGetEPackage();
-
-        Resource resource = createResource(file, new ResourceSetImpl());
-        resource.load(new BaseConfig<>().merge(config).merge(getOptions()).toMap());
-
-        return resource;
-    }
-
-    @Override
-    public void unload(Resource resource) {
-        if (resource.isLoaded()) {
-            resource.unload();
-        }
+    protected final Map<String, ?> getOptions(ImmutableConfig config) {
+        return new BaseConfig<>().merge(config).merge(createConfig()).toMap();
     }
 }

@@ -13,11 +13,9 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -102,6 +100,7 @@ public interface Adapter {
          * @throws UnsupportedOperationException if this {@code Adapter} does not support {@link DataMapper} creation
          * @see #supportsMapper()
          */
+        @Nonnull
         default DataMapper createMapper(File file, ImmutableConfig config) {
             throw new UnsupportedOperationException("This adapter does not support DataMapper creation");
         }
@@ -131,22 +130,13 @@ public interface Adapter {
         EPackage initAndGetEPackage();
 
         /**
-         * Creates a new {@link Resource} in the given {@code file}, by using the given {@code resourceSet}.
+         * Creates a new {@link Resource} in the given {@code file}.
          *
-         * @param file        the file to create the resource
-         * @param resourceSet the resource set used to created the resource
+         * @param file the file to create the resource
          *
          * @return a new resource
          */
         @Nonnull
-        Resource createResource(File file, ResourceSet resourceSet);
-
-        /**
-         * Returns the default {@link Map} options of this adapter
-         *
-         * @return the {@link Map} options
-         */
-        @Nonnull
-        Map<String, ?> getOptions();
+        Resource createResource(File file);
     }
 }
