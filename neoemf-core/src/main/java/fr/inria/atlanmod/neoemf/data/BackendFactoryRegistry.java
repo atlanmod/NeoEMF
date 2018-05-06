@@ -89,21 +89,17 @@ public final class BackendFactoryRegistry {
      *
      * @return the factory
      *
-     * @throws NullPointerException if {@code scheme} is {@code null}, or if no factory is registered for the {@code
-     *                              scheme}
+     * @throws IllegalArgumentException if {@code scheme} is {@code null}, or if no factory is registered for the {@code scheme}
      */
     @Nonnull
     public BackendFactory getFactoryFor(String scheme) {
         checkNotNull(scheme, "scheme");
 
-        if (!factories.containsKey(scheme)) {
-            registerAll();
+        if (isRegistered(scheme)) {
+            return factories.get(scheme);
         }
 
-        return checkNotNull(factories.get(scheme),
-                "No factory is registered to process the URI scheme \"%s\". Use the %s#register() method first",
-                scheme,
-                BackendFactoryRegistry.class.getName());
+        throw new IllegalArgumentException(String.format("No factory is registered to process the URI scheme '%s'", scheme));
     }
 
     /**
@@ -149,12 +145,9 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Registers all {@link BackendFactory} with their URI scheme by using the {@link
-     * fr.inria.atlanmod.neoemf.bind.FactoryBinding} annotation.
-     * <p>
-     * This method scan the full Java classpath to retrieve the annotated element.
+     * Dynamically registers all {@link BackendFactory} instances with their URI scheme.
      */
-    public void registerAll() {
+    private void registerAll() {
         ServiceProvider.getInstance()
                 .load(BackendFactory.class)
                 .map(ServiceDefinition::get)

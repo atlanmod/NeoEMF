@@ -10,12 +10,9 @@ package fr.inria.atlanmod.neoemf.tests;
 
 import fr.inria.atlanmod.commons.AbstractFileBasedTest;
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.SampleFactory;
 import fr.inria.atlanmod.neoemf.tests.sample.SamplePackage;
-
-import org.junit.jupiter.api.BeforeAll;
 
 import java.io.IOException;
 
@@ -39,14 +36,6 @@ public abstract class AbstractResourceBasedTest extends AbstractFileBasedTest {
      */
     @Nonnull
     protected static final SamplePackage EPACKAGE = SamplePackage.eINSTANCE;
-
-    /**
-     * Registers all {@link fr.inria.atlanmod.neoemf.data.BackendFactory}.
-     */
-    @BeforeAll
-    protected static void registerBackendFactories() {
-        BackendFactoryRegistry.getInstance().registerAll(); // Optional
-    }
 
     /**
      * Creates a new {@link PersistentResource} for the {@code context}.
