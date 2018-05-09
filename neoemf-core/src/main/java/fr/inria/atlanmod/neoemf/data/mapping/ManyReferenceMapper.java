@@ -146,8 +146,9 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      *
      * @param feature the bean identifying the multi-valued reference
      *
-     * @return an {@link Optional} containing the removed reference, or {@link Optional#empty()} if the feature has no reference
-     *before
+     * @return an {@link Optional} containing the removed reference, or {@link Optional#empty()} if the feature has no
+     * reference before
+     *
      * @throws NullPointerException if the {@code feature} is {@code null}
      */
     @Nonnull

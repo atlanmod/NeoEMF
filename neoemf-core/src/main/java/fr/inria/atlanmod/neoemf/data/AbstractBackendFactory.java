@@ -75,7 +75,6 @@ public abstract class AbstractBackendFactory<C extends Config> extends AbstractM
                 .map(s -> s.replaceAll("-", delimiter))
                 .collect(Collectors.joining(delimiter, "/", Strings.EMPTY));
 
-
         return new URL(protocol, uri.host(), port, path);
     }
 
@@ -84,8 +83,7 @@ public abstract class AbstractBackendFactory<C extends Config> extends AbstractM
     public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
         checkNotNull(uri, "uri");
         checkNotNull(baseConfig, "baseConfig");
-        // TODO check if there's no other way for the URL
-        checkArgument(uri.isFile() || uri.isHierarchical() || uri.scheme().equals("http"), "URI '%s' must be either file-based or hierarchical", uri.toString());
+        checkArgument(uri.isFile() || uri.isHierarchical(), "URI '%s' must be either file-based or hierarchical", uri.toString());
 
         try {
             return uri.isFile()
