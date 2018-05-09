@@ -44,7 +44,7 @@ public class XmiAdapter extends AbstractAdapter {
     @Nonnull
     @Override
     public Resource createResource(File file) {
-        URI uri = URI.createFileURI(file.getAbsolutePath());
+        final URI uri = URI.createFileURI(file.getAbsolutePath());
         return new ResourceSetImpl().createResource(uri);
     }
 

@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.benchmarks.resource.Resources;
 import fr.inria.atlanmod.neoemf.benchmarks.resource.Stores;
@@ -51,7 +52,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
      * The class of the {@link EPackage} associated to this adapter.
      */
     @Nonnull
-    private final Class<?> modelPackage;
+    private final Class<? extends EPackage> modelPackage;
 
     /**
      * Constructs a new {@code AbstractAdapter}.
@@ -59,7 +60,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
      * @param category     the category of this adapter
      * @param modelPackage the class of the {@link EPackage} associated to this adapter
      */
-    protected AbstractAdapter(String category, Class<?> modelPackage) {
+    protected AbstractAdapter(String category, Class<? extends EPackage> modelPackage) {
         this.category = checkNotNull(category);
         this.modelPackage = checkNotNull(modelPackage);
 
@@ -90,7 +91,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
             return (EPackage) modelPackage.getMethod("init").invoke(null);
         }
         catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw Throwables.shouldNeverHappen(e);
         }
     }
 
@@ -159,7 +160,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
      * @return the resource
      */
     @Nonnull
-    private File getOrCreateStore(File file, ImmutableConfig config, boolean useDirectImport, boolean temporary) throws IOException {
+    protected File getOrCreateStore(File file, ImmutableConfig config, boolean useDirectImport, boolean temporary) throws IOException {
         File storeFile;
 
         if (temporary) {

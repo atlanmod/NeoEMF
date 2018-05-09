@@ -17,6 +17,7 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -26,7 +27,7 @@ import static org.eclipse.gmt.modisco.java.VisibilityKind.PRIVATE;
 import static org.eclipse.gmt.modisco.java.VisibilityKind.PROTECTED;
 
 /**
- *
+ * A {@link Query}
  */
 @ParametersAreNonnullByDefault
 class GetInvisibleMethods extends AbstractQuery<Collection<MethodDeclaration>> {
@@ -84,7 +85,7 @@ class GetInvisibleMethods extends AbstractQuery<Collection<MethodDeclaration>> {
      */
     protected boolean hasNoChildTypes(ClassDeclaration superType) {
         for (ClassDeclaration type : classDeclarations) {
-            if (type.getSuperClass() == superType) {
+            if (Objects.equals(superType, type.getSuperClass())) {
                 return false;
             }
         }
