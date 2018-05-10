@@ -297,14 +297,14 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             throw new NoSuchElementException();
         }
 
-        List<String> vs = instance.getMultivaluedValues().get(featureId);
+        List<String> values = instance.getMultivaluedValues().get(featureId);
 
         Optional<V> previousValue = Optional.of(deserializeValue(instance.getMultivaluedValues().get(featureId).get(feature.position())));
-        vs.set(feature.position(), serializeValue(value));
+        values.set(feature.position(), serializeValue(value));
 
         updateOne(
                 eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_VALUE, featureId), vs)
+                set(combineField(FIELD_MANY_VALUE, featureId), values)
         );
 
         return previousValue;
@@ -352,7 +352,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
         checkNotNull(feature, "feature");
         checkNotNull(collection, "collection");
-        checkNotContainsNull(collection);
+        checkNotContainsNull(collection, "collection");
 
         if (collection.isEmpty()) {
             return;
@@ -403,23 +403,24 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
                 .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
                 .first();
 
-        final List<String> vs = Optional.ofNullable(instance.getMultivaluedValues().get(featureId)).orElseGet(ArrayList::new);
-        final int position = vs.size();
+        final List<String> values = Optional.ofNullable(instance.getMultivaluedValues().get(featureId)).orElseGet(ArrayList::new);
+        final int position = values.size();
 
-        vs.add(serializeValue(value));
+        values.add(serializeValue(value));
 
         updateOne(
                 eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_VALUE, featureId), vs)
+                set(combineField(FIELD_MANY_VALUE, featureId), values)
         );
 
         return position;
     }
 
     @Override
-    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> collection) {
         checkNotNull(feature, "feature");
-        checkNotNull(values, "values");
+        checkNotNull(collection, "collection");
+        checkNotContainsNull(collection, "collection");
 
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
@@ -428,14 +429,14 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
                 .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
                 .first();
 
-        final List<String> vs = Optional.ofNullable(instance.getMultivaluedValues().get(featureId)).orElseGet(ArrayList::new);
-        final int firstPosition = vs.size();
+        final List<String> values = Optional.ofNullable(instance.getMultivaluedValues().get(featureId)).orElseGet(ArrayList::new);
+        final int firstPosition = values.size();
 
-        values.stream().map(this::serializeValue).collect(Collectors.toCollection(() -> vs));
+        collection.stream().map(this::serializeValue).collect(Collectors.toCollection(() -> values));
 
         updateOne(
                 eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_VALUE, featureId), vs)
+                set(combineField(FIELD_MANY_VALUE, featureId), values)
         );
 
         return firstPosition;
@@ -457,14 +458,14 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             return Optional.empty();
         }
 
-        List<String> vs = instance.getMultivaluedValues().get(featureId);
-        Optional<V> previousValue = Optional.of(deserializeValue(vs.get(feature.position())));
+        List<String> values = instance.getMultivaluedValues().get(featureId);
+        Optional<V> previousValue = Optional.of(deserializeValue(values.get(feature.position())));
 
-        vs.remove(feature.position());
+        values.remove(feature.position());
 
         updateOne(
                 eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_VALUE, featureId), vs)
+                set(combineField(FIELD_MANY_VALUE, featureId), values)
         );
 
         return previousValue;
@@ -624,7 +625,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
     public void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
         checkNotNull(feature, "feature");
         checkNotNull(collection, "collection");
-        checkNotContainsNull(collection);
+        checkNotContainsNull(collection, "collection");
 
         if (collection.isEmpty()) {
             return;
@@ -675,23 +676,24 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
                 .projection(include(combineField(FIELD_MANY_REF, featureId)))
                 .first();
 
-        final List<String> rs = Optional.ofNullable(instance.getMultivaluedReferences().get(featureId)).orElseGet(ArrayList::new);
-        final int position = rs.size();
+        final List<String> references = Optional.ofNullable(instance.getMultivaluedReferences().get(featureId)).orElseGet(ArrayList::new);
+        final int position = references.size();
 
-        rs.add(idConverter.convert(reference));
+        references.add(idConverter.convert(reference));
 
         updateOne(
                 eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_REF, featureId), rs)
+                set(combineField(FIELD_MANY_REF, featureId), references)
         );
 
         return position;
     }
 
     @Override
-    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> collection) {
         checkNotNull(feature, "feature");
-        checkNotNull(references, "references");
+        checkNotNull(collection, "collection");
+        checkNotContainsNull(collection, "collection");
 
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
@@ -700,14 +702,14 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
                 .projection(include(combineField(FIELD_MANY_REF, featureId)))
                 .first();
 
-        final List<String> rs = Optional.ofNullable(instance.getMultivaluedReferences().get(featureId)).orElseGet(ArrayList::new);
-        final int firstPosition = rs.size();
+        final List<String> references = Optional.ofNullable(instance.getMultivaluedReferences().get(featureId)).orElseGet(ArrayList::new);
+        final int firstPosition = references.size();
 
-        references.stream().map(idConverter::convert).collect(Collectors.toCollection(() -> rs));
+        collection.stream().map(idConverter::convert).collect(Collectors.toCollection(() -> references));
 
         updateOne(
                 eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_REF, featureId), rs)
+                set(combineField(FIELD_MANY_REF, featureId), references)
         );
 
         return firstPosition;
@@ -729,14 +731,14 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             return Optional.empty();
         }
 
-        List<String> rs = instance.getMultivaluedReferences().get(featureId);
-        Optional<Id> previousId = Optional.of(idConverter.revert(rs.get(feature.position())));
+        List<String> references = instance.getMultivaluedReferences().get(featureId);
+        Optional<Id> previousId = Optional.of(idConverter.revert(references.get(feature.position())));
 
-        rs.remove(feature.position());
+        references.remove(feature.position());
 
         updateOne(
                 eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_REF, featureId), rs)
+                set(combineField(FIELD_MANY_REF, featureId), references)
         );
 
         return previousId;
