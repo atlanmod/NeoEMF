@@ -14,7 +14,6 @@ import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoDatabase;
 
 import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -80,8 +79,7 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
      * @return a new client
      */
     @Nonnull
-    @VisibleForTesting
-    protected MongoClient createClient(URL url) {
+    private MongoClient createClient(URL url) {
         return new MongoClient(url.getHost(), url.getPort());
     }
 
