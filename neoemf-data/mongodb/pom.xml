@@ -36,6 +36,7 @@
         <dependency>
             <groupId>com.github.fakemongo</groupId>
             <artifactId>fongo</artifactId>
+            <scope>compile</scope><!-- FIXME Use 'test' scope: 'compile' is used to avoid errors in 'neoemf-tests' -->
         </dependency>
 
         <!-- Test -->
@@ -80,6 +81,7 @@
                     <instructions>
                         <Bundle-SymbolicName>fr.inria.atlanmod.neoemf.data.mongodb</Bundle-SymbolicName>
                         <Export-Package>
+                            !fr.inria.atlanmod.neoemf.data.mongodb.*.internal.*,
                             fr.inria.atlanmod.neoemf.data.mongodb.*
                         </Export-Package>
                         <Require-Bundle>
