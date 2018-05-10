@@ -178,8 +178,8 @@ public class ListeningStore extends AbstractStore {
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
-        onCall(super::addAllValues, feature, values);
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
+        onCall(super::addAllValues, feature, collection);
     }
 
     @Nonnegative
@@ -190,8 +190,8 @@ public class ListeningStore extends AbstractStore {
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
-        return onCallResult(super::appendAllValues, feature, values);
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> collection) {
+        return onCallResult(super::appendAllValues, feature, collection);
     }
 
     @Nonnull
@@ -236,8 +236,8 @@ public class ListeningStore extends AbstractStore {
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
-        onCall(super::addAllReferences, feature, references);
+    public void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
+        onCall(super::addAllReferences, feature, collection);
     }
 
     @Nonnegative
@@ -248,8 +248,8 @@ public class ListeningStore extends AbstractStore {
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
-        return onCallResult(super::appendAllReferences, feature, references);
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> collection) {
+        return onCallResult(super::appendAllReferences, feature, collection);
     }
 
     @Nonnull

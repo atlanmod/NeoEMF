@@ -171,12 +171,12 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
         checkNotNull(feature, "feature");
-        checkNotNull(values, "values");
-        checkNotContainsNull(values, "values");
+        checkNotNull(collection, "collection");
+        checkNotContainsNull(collection, "collection");
 
-        if (values.isEmpty()) {
+        if (collection.isEmpty()) {
             return;
         }
 
@@ -186,14 +186,14 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         final int size = vertex.getSize(feature);
         checkPositionIndex(firstPosition, size);
 
-        final int additionCount = values.size();
+        final int additionCount = collection.size();
 
         IntStream.range(firstPosition, size)
                 .map(MoreStreams.reverseOrder(firstPosition, size))
                 .forEachOrdered(i -> vertex.moveValue(feature, i, i + additionCount));
 
         IntStream.range(0, additionCount)
-                .forEachOrdered(i -> vertex.setValue(feature, firstPosition + i, values.get(i)));
+                .forEachOrdered(i -> vertex.setValue(feature, firstPosition + i, collection.get(i)));
 
         vertex.setSize(feature, size + additionCount);
     }
@@ -314,12 +314,12 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+    public void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
         checkNotNull(feature, "feature");
-        checkNotNull(references, "references");
-        checkNotContainsNull(references, "references");
+        checkNotNull(collection, "collection");
+        checkNotContainsNull(collection, "collection");
 
-        if (references.isEmpty()) {
+        if (collection.isEmpty()) {
             return;
         }
 
@@ -329,7 +329,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         final int size = vertex.getSize(feature);
         checkPositionIndex(firstPosition, size);
 
-        final int additionCount = references.size();
+        final int additionCount = collection.size();
 
         if (firstPosition < size) {
             vertex.getReferenceEdges(feature, firstPosition, size + additionCount)
@@ -337,7 +337,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         }
 
         IntStream.range(0, additionCount)
-                .forEachOrdered(i -> vertex.setReference(feature, firstPosition + i, references.get(i)));
+                .forEachOrdered(i -> vertex.setReference(feature, firstPosition + i, collection.get(i)));
 
         vertex.setSize(feature, size + additionCount);
     }

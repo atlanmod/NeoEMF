@@ -92,12 +92,12 @@ public interface ManyValueWithArrays extends ManyValueMapper {
     }
 
     @Override
-    default <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+    default <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
         checkNotNull(feature, "feature");
-        checkNotNull(values, "values");
-        checkNotContainsNull(values, "values");
+        checkNotNull(collection, "collection");
+        checkNotContainsNull(collection, "collection");
 
-        if (values.isEmpty()) {
+        if (collection.isEmpty()) {
             return;
         }
 
@@ -107,7 +107,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         int firstPosition = feature.position();
         checkPositionIndex(firstPosition, valuesArray.length);
 
-        valuesArray = MoreArrays.addAll(valuesArray, firstPosition, values);
+        valuesArray = MoreArrays.addAll(valuesArray, firstPosition, collection);
 
         valueFor(feature.withoutPosition(), valuesArray);
     }

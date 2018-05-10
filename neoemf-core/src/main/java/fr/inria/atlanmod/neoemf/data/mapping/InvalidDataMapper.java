@@ -157,7 +157,7 @@ public class InvalidDataMapper implements DataMapper {
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
         throw e.get();
     }
 
@@ -167,7 +167,7 @@ public class InvalidDataMapper implements DataMapper {
     }
 
     @Override
-    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> collection) {
         throw e.get();
     }
 
@@ -212,7 +212,7 @@ public class InvalidDataMapper implements DataMapper {
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+    public void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
         throw e.get();
     }
 
@@ -222,7 +222,7 @@ public class InvalidDataMapper implements DataMapper {
     }
 
     @Override
-    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> collection) {
         throw e.get();
     }
 

@@ -85,15 +85,15 @@ public interface ManyReferenceMapper extends ReferenceMapper {
     void addReference(ManyFeatureBean feature, Id reference);
 
     /**
-     * Adds all the {@code references} to the specified {@code feature} from the position of the {@code feature}.
+     * Adds all the {@code collection} to the specified {@code feature} from the position of the {@code feature}.
      *
      * @param feature    the bean identifying the multi-valued attribute
-     * @param references the values to add
+     * @param collection the values to add
      *
      * @throws NullPointerException      if any parameter is {@code null}
      * @throws IndexOutOfBoundsException if {@code feature#position() > size}
      */
-    void addAllReferences(ManyFeatureBean feature, List<Id> references);
+    void addAllReferences(ManyFeatureBean feature, List<Id> collection);
 
     /**
      * Adds the {@code reference} to the specified {@code feature} at the last position.
@@ -118,10 +118,10 @@ public interface ManyReferenceMapper extends ReferenceMapper {
     }
 
     /**
-     * Adds all the {@code references} to the specified {@code feature} from the last position.
+     * Adds all the {@code collection} to the specified {@code feature} from the last position.
      *
      * @param feature    the bean identifying the multi-valued reference
-     * @param references the references to add
+     * @param collection the references to add
      *
      * @return the position to which the first reference was added
      *
@@ -130,13 +130,13 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @see #appendReference(SingleFeatureBean, Id)
      */
     @Nonnegative
-    default int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
+    default int appendAllReferences(SingleFeatureBean feature, List<Id> collection) {
         checkNotNull(feature, "feature");
-        checkNotNull(references, "references");
+        checkNotNull(collection, "collection");
 
         int firstPosition = sizeOfReference(feature).orElse(0);
 
-        addAllReferences(feature.withPosition(firstPosition), references);
+        addAllReferences(feature.withPosition(firstPosition), collection);
 
         return firstPosition;
     }

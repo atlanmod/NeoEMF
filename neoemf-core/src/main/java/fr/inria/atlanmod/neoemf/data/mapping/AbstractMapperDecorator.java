@@ -188,8 +188,8 @@ public abstract class AbstractMapperDecorator<M extends DataMapper> extends Abst
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
-        next.addAllValues(feature, values);
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
+        next.addAllValues(feature, collection);
     }
 
     @Nonnegative
@@ -202,8 +202,8 @@ public abstract class AbstractMapperDecorator<M extends DataMapper> extends Abst
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
-        return next.appendAllValues(feature, values);
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> collection) {
+        return next.appendAllValues(feature, collection);
     }
 
     @Nonnull
@@ -255,8 +255,8 @@ public abstract class AbstractMapperDecorator<M extends DataMapper> extends Abst
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
-        next.addAllReferences(feature, references);
+    public void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
+        next.addAllReferences(feature, collection);
     }
 
     @Nonnegative
@@ -269,8 +269,8 @@ public abstract class AbstractMapperDecorator<M extends DataMapper> extends Abst
     @Nonnegative
     @Override
     @OverridingMethodsMustInvokeSuper
-    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
-        return next.appendAllReferences(feature, references);
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> collection) {
+        return next.appendAllReferences(feature, collection);
     }
 
     @Nonnull
