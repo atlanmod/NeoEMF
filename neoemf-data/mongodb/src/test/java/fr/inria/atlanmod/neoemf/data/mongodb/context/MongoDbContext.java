@@ -8,22 +8,24 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb.context;
 
+import com.github.fakemongo.Fongo;
+import com.mongodb.MongoClient;
+import com.mongodb.connection.ServerVersion;
+
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.context.AbstractContext;
 import fr.inria.atlanmod.neoemf.context.AbstractRemoteContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-
 import fr.inria.atlanmod.neoemf.data.mongodb.MongoDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
-import org.eclipse.emf.common.util.URI;
-import shaded.org.apache.http.client.utils.URIBuilder;
+
+import java.net.URL;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.File;
-import java.io.IOException;
+
+import static java.util.Objects.nonNull;
 
 /**
  * A specific {@link Context} for the MongoDb implementation.
@@ -31,12 +33,11 @@ import java.io.IOException;
 @ParametersAreNonnullByDefault
 public class MongoDbContext extends AbstractRemoteContext {
 
-    public MongoDbContext()
-    {
-        this.config = MongoDbConfig.newConfig();
-    }
+    /**
+     * The initialized Fongo instance.
+     */
+    private static Fongo fongo;
 
-    private MongoDbConfig config;
     /**
      * Creates a new {@code MongoDbContext}.
      *
@@ -47,10 +48,24 @@ public class MongoDbContext extends AbstractRemoteContext {
         return new MongoDbContext();
     }
 
-    @Nonnull
     @Override
-    public ImmutableConfig config() {
-        return config;
+    public boolean isInitialized() {
+        return nonNull(fongo);
+    }
+
+    @Override
+    public Context init() {
+        if (!isInitialized()) {
+            try {
+                fongo = new Fongo("neoemf", new ServerVersion(3, 6));
+            }
+            catch (Exception e) {
+                Log.error(e, "Unable to create the MongoDB cluster");
+                fongo = null;
+            }
+        }
+
+        return this;
     }
 
     @Nonnull
@@ -62,34 +77,36 @@ public class MongoDbContext extends AbstractRemoteContext {
     @Nonnull
     @Override
     public BackendFactory factory() {
-        return MongoDbBackendFactory.getInstance();
+        return new MongoDbBackendFactoryMock();
+    }
+
+    @Nonnull
+    @Override
+    public ImmutableConfig config() {
+        return MongoDbConfig.newConfig();
     }
 
     @Nonnull
     @Override
     protected String getHost() {
-        return "localhost";
+        return fongo.getServerAddress().getHost();
     }
 
     @Override
     protected int getPort() {
-        return 27017;
+        return fongo.getServerAddress().getPort();
     }
 
-    /*@Nonnull
-    @Override
-    public URI createUri(URI uri) {
-        if (uri.scheme().equals("neo-mongodb") || uri.scheme().equals("file"))
-            return UriBuilder.forScheme(uriScheme()).fromServer(getHost(), getPort(), uri);
-        else
-            throw new IllegalArgumentException();
+    /**
+     * A {@link MongoDbBackendFactory} using {@link Fongo} instead of a real instance.
+     */
+    @ParametersAreNonnullByDefault
+    public class MongoDbBackendFactoryMock extends MongoDbBackendFactory {
+
+        @Nonnull
+        @Override
+        public MongoClient createClient(URL url) {
+            return fongo.getMongo();
+        }
     }
-
-    @Nonnull
-    @Override
-    public URI createUri(File file) {
-        return UriBuilder.forScheme(uriScheme()).fromServer(getHost(), getPort(), file.getName());
-    }*/
-
-
 }
