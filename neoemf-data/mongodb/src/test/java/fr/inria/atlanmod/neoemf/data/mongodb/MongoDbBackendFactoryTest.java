@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
-
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 import fr.inria.atlanmod.neoemf.data.mongodb.context.MongoDbContext;
 

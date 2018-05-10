@@ -11,11 +11,11 @@ package fr.inria.atlanmod.neoemf.data.mongodb.util;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.mongodb.context.MongoDbContext;
 import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
+
 import org.junit.jupiter.api.Disabled;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
 
 /**
  * A test-case about {@link MongoDbUri}.

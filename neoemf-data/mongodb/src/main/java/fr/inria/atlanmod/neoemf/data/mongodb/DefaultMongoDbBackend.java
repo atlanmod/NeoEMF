@@ -9,37 +9,39 @@
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import com.mongodb.MongoClient;
-import com.mongodb.QueryBuilder;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.PushOptions;
-import com.mongodb.client.result.UpdateResult;
+
 import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.commons.io.serializer.BinarySerializerFactory;
 import fr.inria.atlanmod.commons.io.serializer.StringSerializer;
 import fr.inria.atlanmod.commons.io.serializer.StringSerializerFactory;
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
-import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.exists;
 import static com.mongodb.client.model.Projections.include;
-import static com.mongodb.client.model.Updates.*;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.pushEach;
+import static com.mongodb.client.model.Updates.set;
+import static com.mongodb.client.model.Updates.unset;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * The default {@link MongoDbBackend} mapping.
@@ -49,7 +51,40 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 @ParametersAreNonnullByDefault
 class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
-    private static final StringSerializer<Object> SERIALIZER = StringSerializerFactory.base64(BinarySerializerFactory.getInstance().forAny());
+    // region Fields
+    // TODO Move fields in their respectives classes (StoredInstance)
+
+    /**
+     *
+     */
+    @Nonnull
+    private static final String FIELD_SINGLE_VALUE = "singlevaluedValues";
+
+    /**
+     *
+     */
+    @Nonnull
+    private static final String FIELD_SINGLE_REF = "singlevaluedReferences";
+
+    /**
+     *
+     */
+    @Nonnull
+    private static final String FIELD_MANY_VALUE = "multivaluedValues";
+
+    /**
+     *
+     */
+    @Nonnull
+    private static final String FIELD_MANY_REF = "multivaluedReferences";
+
+    // endregion
+
+    /**
+     *
+     */
+    @Nonnull
+    private final StringSerializer<Object> serializer = StringSerializerFactory.base64(BinarySerializerFactory.getInstance().forAny());
 
     /**
      * Constructs a new {@code DefaultMongoDbBackend}.
@@ -64,72 +99,68 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        StoredInstance instance = find(eq("_id", key.owner().toHexString()))
-                .projection(include("singlevaluedValues")).first();
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        String kid = String.valueOf(key.id());
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_SINGLE_VALUE, featureId)))
+                .first();
 
-        return instance != null && instance.getSinglevaluedValues().containsKey(kid)
-                ? Optional.of((V) deserializeValue(instance.getSinglevaluedValues().get(kid)))
-                : Optional.empty();
-    }
-
-    private String serializeValue(Object o) {
-        return SERIALIZER.convert(o);
-    }
-
-    private Object deserializeValue(String value) {
-        try {
-            return SERIALIZER.deserialize(value);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+        if (nonNull(instance) && nonNull(instance.getSinglevaluedValues()) && instance.getSinglevaluedValues().containsKey(featureId)) {
+            return Optional.of(deserializeValue(instance.getSinglevaluedValues().get(featureId)));
         }
+
+        return Optional.empty();
     }
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        String hexId = key.owner().toHexString();
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId)).projection(include("singlevaluedValues")).first();
+        StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_SINGLE_VALUE, featureId)))
+                .first();
 
-        if (instance == null) {
+        if (isNull(instance)) {
             instance = new StoredInstance();
-            instance.setId(hexId);
-
-            instance.getSinglevaluedValues().put(String.valueOf(key.id()), serializeValue(value));
+            instance.setId(ownerId);
+            instance.getSinglevaluedValues().put(featureId, serializeValue(value));
 
             insertOne(instance);
-
-            return Optional.empty();
-        } else {
+        }
+        else {
             updateOne(
-                    eq("_id", hexId),
-                    set("singlevaluedValues." + key.id(), serializeValue(value))
+                    eq(FIELD_ID, ownerId),
+                    set(combineField(FIELD_SINGLE_VALUE, featureId), serializeValue(value))
             );
 
-            if (instance.getSinglevaluedValues().containsKey(String.valueOf(key.id()))) {
-                return Optional.of((V) deserializeValue(instance.getSinglevaluedValues().get(String.valueOf(key.id()))));
-            } else {
-                return Optional.empty();
+            if (instance.getSinglevaluedValues().containsKey(featureId)) {
+                return Optional.of(deserializeValue(instance.getSinglevaluedValues().get(featureId)));
             }
         }
+
+        return Optional.empty();
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeValue(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
+
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
         updateOne(
-                eq("_id", key.owner().toHexString()),
-                unset("singlevaluedValues." + key.id()));
+                eq(FIELD_ID, ownerId),
+                unset(combineField(FIELD_SINGLE_VALUE, featureId))
+        );
     }
 
     //endregion
@@ -138,72 +169,68 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Optional<Id> referenceOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("singlevaluedReferences." + key.id())).first();
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_SINGLE_REF, featureId)))
+                .first();
 
-        if (instance == null || instance.getSinglevaluedReferences() == null) {
-            return Optional.empty();
-        } else {
-            if (instance.getSinglevaluedReferences().containsKey(stringKeyId)) {
-                return Optional.of(IdConverters.withHexString().revert(instance.getSinglevaluedReferences().get(stringKeyId)));
-            } else {
-
-                return Optional.empty();
-            }
+        if (nonNull(instance) && nonNull(instance.getSinglevaluedReferences()) && instance.getSinglevaluedReferences().containsKey(featureId)) {
+            return Optional.of(idConverter.revert(instance.getSinglevaluedReferences().get(featureId)));
         }
+
+        return Optional.empty();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    public Optional<Id> referenceFor(SingleFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("singlevaluedReferences." + key.id())).first();
+        StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_SINGLE_REF, featureId)))
+                .first();
 
-        if (instance == null) {
+        if (isNull(instance)) {
             instance = new StoredInstance();
-            instance.setId(hexId);
-
-            instance.getSinglevaluedReferences().put(stringKeyId, reference.toHexString());
+            instance.setId(ownerId);
+            instance.getSinglevaluedReferences().put(featureId, idConverter.convert(reference));
 
             insertOne(instance);
-
-            return Optional.empty();
-        } else {
-            updateOne(
-                    eq("_id", hexId),
-                    set("singlevaluedReferences." + stringKeyId, reference.toHexString()));
-
-            if (instance.getSinglevaluedReferences().containsKey(stringKeyId)) {
-                return Optional.of(IdConverters.withHexString().revert(instance.getSinglevaluedReferences().get(stringKeyId)));
-            } else {
-                return Optional.empty();
-            }
-
         }
+        else {
+            updateOne(
+                    eq(FIELD_ID, ownerId),
+                    set(combineField(FIELD_SINGLE_REF, featureId), idConverter.convert(reference))
+            );
+
+            if (instance.getSinglevaluedReferences().containsKey(featureId)) {
+                return Optional.of(idConverter.revert(instance.getSinglevaluedReferences().get(featureId)));
+            }
+        }
+
+        return Optional.empty();
     }
 
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeReference(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
         updateOne(
-                eq("_id", hexId),
-                unset("singlevaluedReferences." + stringKeyId));
+                eq(FIELD_ID, ownerId),
+                unset(combineField(FIELD_SINGLE_REF, featureId))
+        );
     }
 
     //endregion
@@ -212,132 +239,118 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueOf(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedValues." + stringKeyId)).first();
-
-        try {
-            if (instance == null || instance.getMultivaluedValues() == null) {
-                return Optional.empty();
-            } else {
-                if (instance.getMultivaluedValues().containsKey(stringKeyId)) {
-                    return Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
-                } else {
-                    return Optional.empty();
-                }
-            }
-        } catch (IndexOutOfBoundsException ex) {
-            return Optional.empty();
-        }
-    }
-
-    @Nonnull
-    @Override
-    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
-
-        String stringKeyId = String.valueOf(key.id());
-
-        StoredInstance instance = find(
-                eq("_id", key.owner().toHexString()))
-                .projection(include("multivaluedValues." + key.id()))
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
                 .first();
 
-        if (instance == null || !instance.getMultivaluedValues().containsKey(stringKeyId))
-            return Stream.empty();
+        if (nonNull(instance) && nonNull(instance.getMultivaluedValues()) && instance.getMultivaluedValues().containsKey(featureId) && instance.getMultivaluedValues().get(featureId).size() > feature.position()) {
+            return Optional.of(deserializeValue(instance.getMultivaluedValues().get(featureId).get(feature.position())));
+        }
 
-        List<String> refs = instance.getMultivaluedValues().get(stringKeyId);
-
-        if (refs.size() == 0)
-            return Stream.empty();
-
-        return MoreIterables.stream(refs).
-                map(v -> (V) deserializeValue(v));
+        return Optional.empty();
     }
 
     @Nonnull
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    @Override
+    public <V> Stream<V> allValuesOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
+
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
+
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
+                .first();
+
+        if (nonNull(instance) && !instance.getMultivaluedValues().isEmpty() && instance.getMultivaluedValues().containsKey(featureId)) {
+            List<String> values = instance.getMultivaluedValues().get(featureId);
+            return MoreIterables.stream(values).map(this::<V>deserializeValue);
+        }
+
+        return Stream.empty();
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include(("multivaluedValues"))).first();
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
+                .first();
 
-        if (instance == null) {
+        if (isNull(instance)) {
             return Optional.empty();
-        } else {
-            if (!instance.getMultivaluedValues().containsKey(stringKeyId)) {
-                throw new NoSuchElementException();
-            } else if (key.position() >= instance.getMultivaluedValues().get(stringKeyId).size()) {
-                throw new NoSuchElementException();
-            } else {
-                List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
-                Optional<V> toReturn = Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())));
-
-                multivaluedValues.set(key.position(), serializeValue(value));
-
-                updateOne(eq("_id", hexId),
-                        set("multivaluedValues." + stringKeyId, multivaluedValues));
-
-                return toReturn;
-            }
         }
+
+        if (!instance.getMultivaluedValues().containsKey(featureId) || feature.position() >= instance.getMultivaluedValues().get(featureId).size()) {
+            throw new NoSuchElementException();
+        }
+
+        List<String> vs = instance.getMultivaluedValues().get(featureId);
+
+        Optional<V> previousValue = Optional.of(deserializeValue(instance.getMultivaluedValues().get(featureId).get(feature.position())));
+        vs.set(feature.position(), serializeValue(value));
+
+        updateOne(
+                eq(FIELD_ID, ownerId),
+                set(combineField(FIELD_MANY_VALUE, featureId), vs)
+        );
+
+        return previousValue;
     }
 
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    public <V> void addValue(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedValues")).first();
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
+                .first();
 
-        if(instance == null){
+        if (isNull(instance)) {
             return;
         }
 
-        int arraySize = getArraySize(hexId, "multivaluedValues", stringKeyId);
+        final int size = sizeOf(ownerId, FIELD_MANY_VALUE, featureId);
 
-
-        if (key.position() > arraySize)
+        if (feature.position() > size) {
             throw new IndexOutOfBoundsException();
+        }
 
-        List<String> toAdd = new ArrayList<String>();
-        toAdd.add(serializeValue(value));
+        List<String> newValues = Stream.of(value).map(this::serializeValue).collect(Collectors.toList());
 
-        if (arraySize > 0) {
-            // push at the end of the list
-
-            PushOptions pushOpt = new PushOptions();
-            pushOpt.position(key.position());
-
+        if (size > 0) {
             updateOne(
-                    eq("_id", hexId),
-                    pushEach("multivaluedValues." + stringKeyId, toAdd, pushOpt)
+                    eq(FIELD_ID, ownerId),
+                    pushEach(combineField(FIELD_MANY_VALUE, featureId), newValues, new PushOptions().position(feature.position()))
             );
-        } else {
-            // create a list
+        }
+        else {
             updateOne(
-                    eq("_id", hexId),
-                    set("multivaluedValues." + stringKeyId, toAdd)
+                    eq(FIELD_ID, ownerId),
+                    set(combineField(FIELD_MANY_VALUE, featureId), newValues)
             );
         }
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key, "key");
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
+        checkNotNull(feature, "feature");
         checkNotNull(collection, "collection");
         checkNotContainsNull(collection);
 
@@ -345,102 +358,36 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             return;
         }
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include(("multivaluedValues." + stringKeyId))).first();
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
+                .first();
 
-        if (instance == null) {
+        if (isNull(instance)) {
             return;
         }
 
-        int arraySize = getArraySize(hexId, "multivaluedValues", stringKeyId);
+        final int size = sizeOf(ownerId, FIELD_MANY_VALUE, featureId);
 
-        if (key.position() > arraySize)
+        if (feature.position() > size) {
             throw new IndexOutOfBoundsException();
+        }
 
-        List<String> toAdd = collection.stream()
-                .map(i -> serializeValue(i))
-                .collect(Collectors.toList());
+        List<String> newValues = collection.stream().map(this::serializeValue).collect(Collectors.toList());
 
-        if (arraySize > 0) {
-            // push at the end of the list
-
-            PushOptions pushOpt = new PushOptions();
-            pushOpt.position(key.position());
-
+        if (size > 0) {
             updateOne(
-                    eq("_id", hexId),
-                    pushEach("multivaluedValues." + stringKeyId, toAdd, pushOpt)
-            );
-        } else {
-            // create a list
-            updateOne(
-                    eq("_id", hexId),
-                    set("multivaluedValues." + stringKeyId, toAdd)
+                    eq(FIELD_ID, ownerId),
+                    pushEach(combineField(FIELD_MANY_VALUE, featureId), newValues, new PushOptions().position(feature.position()))
             );
         }
-    }
-
-    @Nonnull
-    @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        checkNotNull(key, "key");
-
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
-
-
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedValues")).first();
-
-        Optional<V> res = Optional.empty();
-
-        res = (instance != null && instance.getMultivaluedValues().containsKey(stringKeyId) && key.position() < instance.getMultivaluedValues().get(stringKeyId).size())
-                ? Optional.of((V) deserializeValue(instance.getMultivaluedValues().get(stringKeyId).get(key.position())))
-                : Optional.empty();
-
-        if (res == Optional.empty()) return res;
-
-        List<String> multivaluedValues = instance.getMultivaluedValues().get(String.valueOf(key.id()));
-
-        multivaluedValues.remove(key.position());
-
-        updateOne(
-                eq("_id", hexId),
-                set("multivaluedValues." + stringKeyId, multivaluedValues));
-
-        return res;
-    }
-
-    @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        checkNotNull(key, "key");
-
-        String hexId = key.owner().toHexString();
-
-        updateOne(
-                eq("_id", hexId),
-                combine(unset("singlevaluedValues"), unset("multivaluedValues")));
-
-    }
-
-    @Nonnull
-    @Nonnegative
-    @Override
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
-
-        String hexId = key.owner().toHexString();
-
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("singlevaluedValues")).first();
-
-        if (instance == null || instance.getSinglevaluedValues() == null || instance.getSinglevaluedValues().isEmpty()) {
-            return Optional.empty();
-        } else {
-            return Optional.of(instance.getSinglevaluedValues().size());
+        else {
+            updateOne(
+                    eq(FIELD_ID, ownerId),
+                    set(combineField(FIELD_MANY_VALUE, featureId), newValues)
+            );
         }
     }
 
@@ -449,22 +396,24 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        String hexId = feature.owner().toHexString();
-        String stringKeyId = String.valueOf(feature.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedValues")).first();
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
+                .first();
 
-        List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
-        if (multivaluedValues == null) {
-            multivaluedValues = new ArrayList<>();
-        }
-        int res = multivaluedValues.size();
-        multivaluedValues.add(serializeValue(value));
+        final List<String> vs = Optional.ofNullable(instance.getMultivaluedValues().get(featureId)).orElseGet(ArrayList::new);
+        final int position = vs.size();
+
+        vs.add(serializeValue(value));
+
         updateOne(
-                eq("_id", hexId),
-                set("multivaluedValues." + stringKeyId, multivaluedValues));
-        return res;
+                eq(FIELD_ID, ownerId),
+                set(combineField(FIELD_MANY_VALUE, featureId), vs)
+        );
+
+        return position;
     }
 
     @Override
@@ -472,31 +421,88 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(feature, "feature");
         checkNotNull(values, "values");
 
-        String hexId = feature.owner().toHexString();
-        String stringKeyId = String.valueOf(feature.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedValues")).first();
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
+                .first();
 
-        List<String> multivaluedValues = instance.getMultivaluedValues().get(stringKeyId);
-        if (multivaluedValues == null) {
-            multivaluedValues = new ArrayList<>();
-        }
+        final List<String> vs = Optional.ofNullable(instance.getMultivaluedValues().get(featureId)).orElseGet(ArrayList::new);
+        final int firstPosition = vs.size();
 
-        int res = multivaluedValues.size();
-
-        List<String> toAdd = new ArrayList<String>();
-        for (V value : values) {
-            toAdd.add(serializeValue(value));
-        }
-
-        multivaluedValues.addAll(toAdd);
+        values.stream().map(this::serializeValue).collect(Collectors.toCollection(() -> vs));
 
         updateOne(
-                eq("_id", hexId),
-                set("multivaluedValues." + stringKeyId, multivaluedValues));
+                eq(FIELD_ID, ownerId),
+                set(combineField(FIELD_MANY_VALUE, featureId), vs)
+        );
 
-        return res;
+        return firstPosition;
+    }
+
+    @Nonnull
+    @Override
+    public <V> Optional<V> removeValue(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
+
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
+
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
+                .first();
+
+        if (isNull(instance) || !instance.getMultivaluedValues().containsKey(featureId) || instance.getMultivaluedValues().get(featureId).size() < feature.position()) {
+            return Optional.empty();
+        }
+
+        List<String> vs = instance.getMultivaluedValues().get(featureId);
+        Optional<V> previousValue = Optional.of(deserializeValue(vs.get(feature.position())));
+
+        vs.remove(feature.position());
+
+        updateOne(
+                eq(FIELD_ID, ownerId),
+                set(combineField(FIELD_MANY_VALUE, featureId), vs)
+        );
+
+        return previousValue;
+    }
+
+    @Override
+    public void removeAllValues(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
+
+        final String ownerId = idConverter.convert(feature.owner());
+
+        updateOne(
+                eq(FIELD_ID, ownerId),
+                combine(
+                        unset(FIELD_SINGLE_VALUE),
+                        unset(FIELD_MANY_VALUE)
+                )
+        );
+    }
+
+    @Nonnull
+    @Nonnegative
+    @Override
+    public Optional<Integer> sizeOfValue(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
+
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
+
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_SINGLE_VALUE, featureId)))
+                .first();
+
+        if (nonNull(instance) && nonNull(instance.getSinglevaluedValues()) && !instance.getSinglevaluedValues().isEmpty()) {
+            return Optional.of(instance.getSinglevaluedValues().size());
+        }
+
+        return Optional.empty();
     }
 
     //endregion
@@ -505,120 +511,118 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public Optional<Id> referenceOf(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedReferences." + key.id())).first();
-
-        if (instance == null || instance.getMultivaluedReferences() == null) {
-            return Optional.empty();
-        } else if (!instance.getMultivaluedReferences().containsKey(stringKeyId)) {
-            return Optional.empty();
-        } else if (instance.getMultivaluedReferences().get(stringKeyId).size() <= key.position()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(IdConverters.withHexString()
-                .revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
-    }
-
-    @Nonnull
-    @Override
-    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
-
-        StoredInstance instance = find(
-                eq("_id", key.owner().toHexString()))
-                .projection(include("multivaluedReferences." + key.id()))
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_REF, featureId)))
                 .first();
 
-        if (instance == null || instance.getMultivaluedReferences().size() == 0)
-            return Stream.empty();
+        if (nonNull(instance) && nonNull(instance.getMultivaluedReferences()) && instance.getMultivaluedReferences().containsKey(featureId) && instance.getMultivaluedReferences().get(featureId).size() > feature.position()) {
+            return Optional.of(idConverter.revert(instance.getMultivaluedReferences().get(featureId).get(feature.position())));
+        }
 
-        List<String> refs = instance.getMultivaluedReferences().get(String.valueOf(key.id()));
-
-        return MoreIterables.stream(refs).
-                map(v -> IdConverters.withHexString().revert(v));
+        return Optional.empty();
     }
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    public Stream<Id> allReferencesOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
+
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
+
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_REF, featureId)))
+                .first();
+
+        if (nonNull(instance) && !instance.getMultivaluedReferences().isEmpty() && instance.getMultivaluedReferences().containsKey(featureId)) {
+            List<String> references = instance.getMultivaluedReferences().get(featureId);
+            return MoreIterables.stream(references).map(idConverter::revert);
+        }
+
+        return Stream.empty();
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> referenceFor(ManyFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedReferences")).first();
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_REF, featureId)))
+                .first();
 
-        if (instance == null) {
+        if (isNull(instance)) {
             return Optional.empty();
         }
 
-        Optional<Id> res;
-
-        if (instance.getMultivaluedReferences().containsKey(stringKeyId) &&
-                key.position() < instance.getMultivaluedReferences().get(stringKeyId).size()) {
-            res = Optional.of(IdConverters.withHexString().revert(instance.getMultivaluedReferences().get(stringKeyId).get(key.position())));
-            instance.getMultivaluedReferences().get(stringKeyId).set(key.position(), reference.toHexString());
-            return res;
+        if (!instance.getMultivaluedReferences().containsKey(featureId) || feature.position() >= instance.getMultivaluedReferences().get(featureId).size()) {
+            throw new NoSuchElementException();
         }
 
-        throw new NoSuchElementException();
+        List<String> rs = instance.getMultivaluedReferences().get(featureId);
+
+        Optional<Id> previousId = Optional.of(idConverter.revert(instance.getMultivaluedReferences().get(featureId).get(feature.position())));
+        rs.set(feature.position(), idConverter.convert(reference));
+
+        updateOne(
+                eq(FIELD_ID, ownerId),
+                set(combineField(FIELD_MANY_REF, featureId), rs)
+        );
+
+        return previousId;
     }
 
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    public void addReference(ManyFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedReferences")).first();
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_REF, featureId)))
+                .first();
 
-        if(instance == null){
+        if (isNull(instance)) {
             return;
         }
 
-        int arraySize = getArraySize(hexId, "multivaluedReferences", stringKeyId);
+        final int size = sizeOf(ownerId, FIELD_MANY_REF, featureId);
 
-
-        if (key.position() > arraySize)
+        if (feature.position() > size) {
             throw new IndexOutOfBoundsException();
+        }
 
-        List<String> toAdd = new ArrayList<String>();
-        toAdd.add(reference.toHexString());
+        List<String> newReferences = Stream.of(reference).map(idConverter::convert).collect(Collectors.toList());
 
-        if (arraySize > 0) {
-            // push at the end of the list
-
-            PushOptions pushOpt = new PushOptions();
-            pushOpt.position(key.position());
-
+        if (size > 0) {
             updateOne(
-                    eq("_id", hexId),
-                    pushEach("multivaluedReferences." + stringKeyId, toAdd, pushOpt)
+                    eq(FIELD_ID, ownerId),
+                    pushEach(combineField(FIELD_MANY_REF, featureId), newReferences, new PushOptions().position(feature.position()))
             );
-        } else {
-            // create a list
+        }
+        else {
             updateOne(
-                    eq("_id", hexId),
-                    set("multivaluedReferences." + stringKeyId, toAdd)
+                    eq(FIELD_ID, ownerId),
+                    set(combineField(FIELD_MANY_REF, featureId), newReferences)
             );
         }
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        checkNotNull(key, "key");
+    public void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
+        checkNotNull(feature, "feature");
         checkNotNull(collection, "collection");
         checkNotContainsNull(collection);
 
@@ -626,119 +630,62 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
             return;
         }
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("_id")).first();
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_REF, featureId)))
+                .first();
 
-        if (instance == null) {
+        if (isNull(instance)) {
             return;
         }
 
-        int arraySize = getArraySize(hexId, "multivaluedReferences", stringKeyId);
+        final int size = sizeOf(ownerId, FIELD_MANY_REF, featureId);
 
-
-        if (key.position() > arraySize)
+        if (feature.position() > size) {
             throw new IndexOutOfBoundsException();
+        }
 
-        List<String> toAdd = collection.stream()
-                .map(i -> i.toHexString())
-                .collect(Collectors.toList());
+        List<String> newReferences = collection.stream().map(idConverter::convert).collect(Collectors.toList());
 
-        if (arraySize > 0) {
-            // push at the end of the list
-
-            PushOptions pushOpt = new PushOptions();
-            pushOpt.position(key.position());
-
+        if (size > 0) {
             updateOne(
-                    eq("_id", hexId),
-                    pushEach("multivaluedReferences." + stringKeyId, toAdd, pushOpt)
+                    eq(FIELD_ID, ownerId),
+                    pushEach(combineField(FIELD_MANY_REF, featureId), newReferences, new PushOptions().position(feature.position()))
             );
-        } else {
-            // create a list
+        }
+        else {
             updateOne(
-                    eq("_id", hexId),
-                    set("multivaluedReferences." + stringKeyId, toAdd)
+                    eq(FIELD_ID, ownerId),
+                    set(combineField(FIELD_MANY_REF, featureId), newReferences)
             );
         }
     }
 
-    @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        checkNotNull(key, "key");
-
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
-
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedReferences")).first();
-
-        if (instance == null || instance.getMultivaluedReferences().get(stringKeyId) == null) {
-            return Optional.empty();
-        }
-
-        String item = instance.getMultivaluedReferences().get(stringKeyId).get(key.position());
-        Optional<Id> res = Optional.of(IdConverters.withHexString().revert(item));
-
-        updateOne(
-                eq("_id", hexId),
-                pull("multivaluedReferences." + stringKeyId, item));
-
-        return res;
-    }
-
-    @Override
-    public void removeAllReferences(SingleFeatureBean key) {
-        checkNotNull(key, "key");
-
-        String hexId = key.owner().toHexString();
-
-        updateOne(
-                eq("_id", hexId),
-                combine(unset("singlevaluedReferences"), unset("multivaluedReferences")));
-    }
-
-    @Nonnull
-    @Override
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        checkNotNull(key, "key");
-
-        String hexId = key.owner().toHexString();
-
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("singlevaluedReferences")).first();
-
-        if (instance == null || instance.getSinglevaluedReferences() == null || instance.getSinglevaluedReferences().isEmpty()) {
-            return Optional.empty();
-        } else {
-            return Optional.of(instance.getSinglevaluedReferences().size());
-        }
-    }
-
-    @Override
-    public int appendReference(SingleFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    public int appendReference(SingleFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
-        String hexId = key.owner().toHexString();
-        String stringKeyId = String.valueOf(key.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedReferences")).first();
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_REF, featureId)))
+                .first();
 
-        List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
-        if (multivaluedReference == null) {
-            multivaluedReference = new ArrayList<>();
-        }
-        int res = multivaluedReference.size();
-        multivaluedReference.add(reference.toHexString());
+        final List<String> rs = Optional.ofNullable(instance.getMultivaluedReferences().get(featureId)).orElseGet(ArrayList::new);
+        final int position = rs.size();
+
+        rs.add(idConverter.convert(reference));
+
         updateOne(
-                eq("_id", hexId),
-                set("multivaluedReferences." + stringKeyId, multivaluedReference));
-        return res;
+                eq(FIELD_ID, ownerId),
+                set(combineField(FIELD_MANY_REF, featureId), rs)
+        );
+
+        return position;
     }
 
     @Override
@@ -746,32 +693,103 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(feature, "feature");
         checkNotNull(references, "references");
 
-        String hexId = feature.owner().toHexString();
-        String stringKeyId = String.valueOf(feature.id());
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq("_id", hexId))
-                .projection(include("multivaluedReferences")).first();
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_REF, featureId)))
+                .first();
 
-        List<String> multivaluedReference = instance.getMultivaluedReferences().get(stringKeyId);
-        if (multivaluedReference == null) {
-            multivaluedReference = new ArrayList<>();
-        }
+        final List<String> rs = Optional.ofNullable(instance.getMultivaluedReferences().get(featureId)).orElseGet(ArrayList::new);
+        final int firstPosition = rs.size();
 
-        int res = multivaluedReference.size();
-
-        List<String> toAdd = new ArrayList<String>();
-        for (Id id : references) {
-            toAdd.add(id.toHexString());
-        }
-
-        multivaluedReference.addAll(toAdd);
+        references.stream().map(idConverter::convert).collect(Collectors.toCollection(() -> rs));
 
         updateOne(
-                eq("_id", hexId),
-                set("multivaluedReferences." + stringKeyId, multivaluedReference));
+                eq(FIELD_ID, ownerId),
+                set(combineField(FIELD_MANY_REF, featureId), rs)
+        );
 
-        return res;
+        return firstPosition;
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Id> removeReference(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
+
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
+
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_MANY_REF, featureId)))
+                .first();
+
+        if (isNull(instance) || !instance.getMultivaluedReferences().containsKey(featureId) || instance.getMultivaluedReferences().get(featureId).size() < feature.position()) {
+            return Optional.empty();
+        }
+
+        List<String> rs = instance.getMultivaluedReferences().get(featureId);
+        Optional<Id> previousId = Optional.of(idConverter.revert(rs.get(feature.position())));
+
+        rs.remove(feature.position());
+
+        updateOne(
+                eq(FIELD_ID, ownerId),
+                set(combineField(FIELD_MANY_REF, featureId), rs)
+        );
+
+        return previousId;
+    }
+
+    @Override
+    public void removeAllReferences(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
+
+        final String ownerId = idConverter.convert(feature.owner());
+
+        updateOne(
+                eq(FIELD_ID, ownerId),
+                combine(
+                        unset(FIELD_SINGLE_REF),
+                        unset(FIELD_MANY_REF)
+                )
+        );
+    }
+
+    @Nonnull
+    @Override
+    public Optional<Integer> sizeOfReference(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
+
+        final String ownerId = idConverter.convert(feature.owner());
+        final String featureId = Integer.toString(feature.id());
+
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
+                .projection(include(combineField(FIELD_SINGLE_REF, featureId)))
+                .first();
+
+        if (nonNull(instance) && nonNull(instance.getSinglevaluedReferences()) && !instance.getSinglevaluedReferences().isEmpty()) {
+            return Optional.of(instance.getSinglevaluedReferences().size());
+        }
+
+        return Optional.empty();
     }
 
     //endregion
+
+    // region MongoDB
+
+    @Nonnull
+    private <T> String serializeValue(T value) {
+        return serializer.convert(value);
+    }
+
+    @Nonnull
+    @SuppressWarnings("unchecked")
+    private <T> T deserializeValue(String value) {
+        return (T) serializer.revert(value);
+    }
+
+    // endregion
 }

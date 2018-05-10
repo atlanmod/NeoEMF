@@ -16,6 +16,7 @@ import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
 import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
 import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
+import fr.inria.atlanmod.neoemf.data.mongodb.context.MongoDbContext;
 import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 
@@ -48,6 +49,7 @@ public final class ContextProvider {
                 InMemoryContext.get(),
                 BlueprintsContext.getDefault(),
                 BlueprintsNeo4jContext.getDefault(),
+                MongoDbContext.getDefault(),
                 MapDbContext.getWithIndices(),
                 MapDbContext.getWithArrays(),
                 MapDbContext.getWithLists(),

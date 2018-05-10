@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.Block;
 import com.mongodb.ClientSessionOptions;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCommandException;
@@ -21,24 +20,25 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.session.ClientSession;
 
 import fr.inria.atlanmod.commons.collect.MoreIterables;
+import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+import fr.inria.atlanmod.neoemf.data.mongodb.model.Container;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.MetaClass;
-import fr.inria.atlanmod.neoemf.data.mongodb.model.SingleFeature;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -51,11 +51,14 @@ import static com.mongodb.client.model.Aggregates.project;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.exists;
+import static com.mongodb.client.model.Filters.or;
 import static com.mongodb.client.model.Projections.computed;
+import static com.mongodb.client.model.Projections.include;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 import static com.mongodb.client.model.Updates.unset;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -64,10 +67,64 @@ import static java.util.Objects.nonNull;
 @ParametersAreNonnullByDefault
 abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDbBackend {
 
+    // region Fields
+    // TODO Move fields in their respectives classes (StoredInstance, MetaClass, Container)
+
+    /**
+     *
+     */
+    @Nonnull
+    protected static final String FIELD_ID = "_id";
+
+    /**
+     *
+     */
+    @Nonnull
+    private static final String FIELD_CONTAINER = "container";
+
+    /**
+     *
+     */
+    @Nonnull
+    private static final String FIELD_CONTAINER_OWNER = combineField(FIELD_CONTAINER, "owner");
+
+    /**
+     *
+     */
+    @Nonnull
+    private static final String FIELD_CONTAINER_ID = combineField(FIELD_CONTAINER, "id");
+
+    /**
+     *
+     */
+    @Nonnull
+    private static final String FIELD_METACLASS = "metaClass";
+
+    /**
+     *
+     */
+    @Nonnull
+    private static final String FIELD_METACLASS_NAME = combineField(FIELD_METACLASS, "name");
+
+    /**
+     *
+     */
+    @Nonnull
+    private static final String FIELD_METACLASS_URI = combineField(FIELD_METACLASS, "uri");
+
+    // endregion
+
     /**
      * The name of the collection containing the instances
      */
+    @Nonnull
     private static final String COLLECTION_NAME = "instances";
+
+    /**
+     * The {@link Converter} to store the hexadecimal representation of {@link Id}s.
+     */
+    @Nonnull
+    protected final Converter<Id, String> idConverter = IdConverters.withHexString();
 
     /**
      * The MongoDB client.
@@ -112,6 +169,11 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         }
     }
 
+    @Nonnull
+    protected static String combineField(String prefix, String suffix) {
+        return prefix + '.' + suffix;
+    }
+
     /**
      * Gets a collection and creates it if needed.
      *
@@ -149,14 +211,14 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     public Optional<SingleFeatureBean> containerOf(Id id) {
         checkNotNull(id, "id");
 
-        String hexId = id.toHexString();
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId)).first();
+        final String ownerId = idConverter.convert(id);
+        final StoredInstance instance = find(and(eq(FIELD_ID, ownerId), exists(FIELD_CONTAINER))).first();
 
-        if (instance == null || instance.getContainer() == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(instance.getContainer().toSingleFeatureBean());
+        if (nonNull(instance) && nonNull(instance.getContainer())) {
+            return Optional.of(instance.getContainer().toBean());
         }
+
+        return Optional.empty();
     }
 
     @Override
@@ -164,23 +226,26 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(id, "id");
         checkNotNull(container, "container");
 
-        String hexId = id.toHexString();
-        SingleFeature newContainer = SingleFeature.fromSingleFeatureBean(container);
+        final String ownerId = idConverter.convert(id);
+        final Container newContainer = Container.fromBean(container);
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId)).first();
-        if (instance == null) {
+        StoredInstance instance = find(eq(FIELD_ID, ownerId)).first();
+
+        if (isNull(instance)) {
             instance = new StoredInstance();
-            instance.setId(hexId);
-
+            instance.setId(ownerId);
             instance.setContainer(newContainer);
 
             insertOne(instance);
-        } else {
+        }
+        else {
             updateOne(
-                    eq("_id", hexId),
+                    eq(FIELD_ID, ownerId),
                     combine(
-                            set("container.owner", newContainer.getOwner()),
-                            set("container.id", newContainer.getId())));
+                            set(FIELD_CONTAINER_OWNER, newContainer.getOwner()),
+                            set(FIELD_CONTAINER_ID, newContainer.getId())
+                    )
+            );
         }
     }
 
@@ -188,11 +253,11 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     public void removeContainer(Id id) {
         checkNotNull(id, "id");
 
-        String hexId = id.toHexString();
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId)).first();
+        final String ownerId = idConverter.convert(id);
+        final StoredInstance instance = find(eq(FIELD_ID, ownerId)).first();
 
-        if (instance != null && instance.getContainer() != null) {
-            updateOne(eq("_id", hexId), unset("container"));
+        if (nonNull(instance) && nonNull(instance.getContainer())) {
+            updateOne(eq(FIELD_ID, ownerId), unset(FIELD_CONTAINER));
         }
     }
 
@@ -201,15 +266,14 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     public Optional<ClassBean> metaClassOf(Id id) {
         checkNotNull(id, "id");
 
-        String hexId = id.toHexString();
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId)).first();
+        final String ownerId = idConverter.convert(id);
+        final StoredInstance instance = find(and(eq(FIELD_ID, ownerId), exists(FIELD_METACLASS))).first();
 
-        if (instance == null || instance.getMetaClass() == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(instance.getMetaClass().toClassBean());
+        if (nonNull(instance) && nonNull(instance.getMetaClass())) {
+            return Optional.of(instance.getMetaClass().toBean());
         }
 
+        return Optional.empty();
     }
 
     @Override
@@ -217,54 +281,40 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(id, "id");
         checkNotNull(metaClass, "metaClass");
 
-        String hexId = id.toHexString();
-        MetaClass newMetaClass = MetaClass.fromClassBean(metaClass);
+        final String ownerId = idConverter.convert(id);
+        final MetaClass newMetaClass = MetaClass.fromBean(metaClass);
 
-        StoredInstance instance = (StoredInstance) find(eq("_id", hexId)).first();
-        if (instance == null) {
+        StoredInstance instance = find(eq(FIELD_ID, ownerId)).first();
+
+        if (isNull(instance)) {
             instance = new StoredInstance();
-            instance.setId(hexId);
-
+            instance.setId(ownerId);
             instance.setMetaClass(newMetaClass);
 
             insertOne(instance);
-            return true;
-        } else {
 
-            if (instance.getMetaClass() != null) {
-                updateOne(
-                        eq("_id", hexId),
-                        combine(
-                                set("metaClass.name", metaClass.name()),
-                                set("metaClass.uri", metaClass.uri())));
-                return true;
-            }
-            else{
-                return false;
-            }
+            return true;
         }
 
-
+        return false;
     }
 
     @Nonnull
     @Override
     public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        List<Id> list = new ArrayList<>();
+        final Iterable<Bson> andFilters = metaClasses.stream()
+                .map(c -> and(eq(FIELD_METACLASS_NAME, c.name()), eq(FIELD_METACLASS_URI, c.uri())))
+                .collect(Collectors.toList());
 
-        for (ClassBean bean : metaClasses) {
-            find(
-                    and(
-                            eq("metaClass.name", bean.name()),
-                            eq("metaClass.uri", bean.uri())
-                    )
-            ).forEach((Block<StoredInstance>) storedInstance -> {
-                Id id = IdConverters.withHexString().revert(storedInstance.getId());
-                list.add(id);
-            });
-        }
+        final Bson query = or(andFilters);
 
-        return list;
+        final FindIterable<StoredInstance> find = find(query)
+                .projection(include(FIELD_ID));
+
+        return MoreIterables.stream(find)
+                .map(StoredInstance::getId)
+                .map(idConverter::revert)
+                .collect(Collectors.toList());
     }
 
     // region MongoDB
@@ -316,11 +366,11 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     }
 
     @Nonnegative
-    protected int getArraySize(String id, String name, String index) {
+    protected int sizeOf(String id, String name, String index) {
         final String sizeField = "size";
 
         final List<Bson> pipeline = Arrays.asList(
-                match(and(eq("_id", id), exists(name))),
+                match(and(eq(FIELD_ID, id), exists(name))),
                 limit(1),
                 project(computed(sizeField, new Document(QueryOperators.SIZE, String.format("$%s.%s", name, index))))
         );

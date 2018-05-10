@@ -1,13 +1,18 @@
 package fr.inria.atlanmod.neoemf.data.mongodb.model;
 
-import fr.inria.atlanmod.neoemf.core.Id;
+import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
- * Stores a SingleFeatureBean
+ * Represents a container.
  */
-public class SingleFeature {
+@ParametersAreNonnullByDefault
+public class Container {
+
     /**
      * The owner ID hex string
      */
@@ -18,19 +23,25 @@ public class SingleFeature {
      */
     private int featureId;
 
-    public SingleFeature() {
-
+    @VisibleForReflection
+    public Container() {
     }
 
-    public SingleFeature(String owner, int id) {
+    public Container(String owner, int id) {
         this.featureOwner = owner;
         this.featureId = id;
+    }
+
+    @Nonnull
+    public static Container fromBean(SingleFeatureBean bean) {
+        return new Container(bean.owner().toHexString(), bean.id());
     }
 
     public String getOwner() {
         return featureOwner;
     }
 
+    @VisibleForReflection
     public void setOwner(String owner) {
         this.featureOwner = owner;
     }
@@ -39,15 +50,13 @@ public class SingleFeature {
         return featureId;
     }
 
+    @VisibleForReflection
     public void setId(int id) {
         this.featureId = id;
     }
 
-    public static SingleFeature fromSingleFeatureBean(SingleFeatureBean bean) {
-        return new SingleFeature(bean.owner().toHexString(), bean.id());
-    }
-
-    public SingleFeatureBean toSingleFeatureBean() {
+    @Nonnull
+    public SingleFeatureBean toBean() {
         return SingleFeatureBean.of(IdConverters.withHexString().revert(featureOwner), featureId);
     }
 }

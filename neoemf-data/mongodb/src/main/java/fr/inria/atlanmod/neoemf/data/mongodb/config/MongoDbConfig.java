@@ -10,7 +10,6 @@ package fr.inria.atlanmod.neoemf.data.mongodb.config;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
-
 import fr.inria.atlanmod.neoemf.data.mongodb.MongoDbBackendFactory;
 
 import javax.annotation.Nonnull;
@@ -24,6 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @FactoryBinding(factory = MongoDbBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class MongoDbConfig extends BaseConfig<MongoDbConfig> {
+
     /**
      * Constructs a new {@code MongoDbConfig}.
      */

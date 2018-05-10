@@ -9,10 +9,9 @@
 package fr.inria.atlanmod.neoemf.data.mongodb.util;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
+import fr.inria.atlanmod.neoemf.data.mongodb.MongoDbBackendFactory;
 import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
 import fr.inria.atlanmod.neoemf.util.UriBuilder;
-
-import fr.inria.atlanmod.neoemf.data.mongodb.MongoDbBackendFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -54,8 +53,4 @@ public class MongoDbUri extends AbstractUriBuilder {
     public boolean supportsServer() {
         return true;
     }
-
-
-
-
 }
