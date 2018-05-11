@@ -28,6 +28,12 @@
             <artifactId>mapdb</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>15.0</version><!-- compatibility issue with Guava/HBase (15.0) -->
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -39,6 +45,12 @@
                 <groupId>org.mapdb</groupId>
                 <artifactId>mapdb</artifactId>
                 <version>${mapdb.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
         </dependencies>
