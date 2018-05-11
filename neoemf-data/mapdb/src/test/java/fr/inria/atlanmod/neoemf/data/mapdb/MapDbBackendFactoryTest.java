@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
-import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbIndicesContext;
 
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -29,7 +29,7 @@ class MapDbBackendFactoryTest extends AbstractBackendFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return MapDbContext.getWithIndices();
+        return new MapDbIndicesContext();
     }
 
     @Nonnull

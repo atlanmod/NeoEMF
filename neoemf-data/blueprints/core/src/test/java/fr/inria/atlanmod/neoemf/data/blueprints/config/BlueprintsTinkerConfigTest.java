@@ -14,7 +14,7 @@ import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTinkerContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUriFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
@@ -48,7 +48,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BlueprintsContext.getDefault();
+        return new BlueprintsTinkerContext();
     }
 
     /**

@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.blueprints;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTinkerContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
 import javax.annotation.Nonnull;
@@ -24,6 +24,6 @@ class DefaultBlueprintsBackendTest extends AbstractDataMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BlueprintsContext.getDefault();
+        return new BlueprintsTinkerContext();
     }
 }

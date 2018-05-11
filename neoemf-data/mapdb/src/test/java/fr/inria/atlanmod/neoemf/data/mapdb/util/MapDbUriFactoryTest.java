@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb.util;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbIndicesContext;
 import fr.inria.atlanmod.neoemf.util.AbstractUriFactoryTest;
 
 import javax.annotation.Nonnull;
@@ -24,6 +24,6 @@ class MapDbUriFactoryTest extends AbstractUriFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return MapDbContext.getWithIndices();
+        return new MapDbIndicesContext();
     }
 }

@@ -6,24 +6,29 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.util;
+package fr.inria.atlanmod.neoemf.data.mapdb.context;
 
-import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTinkerContext;
-import fr.inria.atlanmod.neoemf.util.AbstractUriFactoryTest;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link BlueprintsUriFactory}.
+ * An {@link AbstractMapDbContext} with a mapping with lists.
  */
 @ParametersAreNonnullByDefault
-class BlueprintsUriFactoryTest extends AbstractUriFactoryTest {
+public class MapDbListsContext extends AbstractMapDbContext {
 
     @Nonnull
     @Override
-    protected Context context() {
-        return new BlueprintsTinkerContext();
+    public String name() {
+        return super.name() + "-Lists";
+    }
+
+    @Nonnull
+    @Override
+    public ImmutableConfig config() {
+        return new MapDbConfig().withLists();
     }
 }

@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb.util;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbIndicesContext;
 import fr.inria.atlanmod.neoemf.util.AbstractUriFactoryTest;
 
 import javax.annotation.Nonnull;
@@ -24,6 +24,6 @@ class BerkeleyDbUriFactoryTest extends AbstractUriFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BerkeleyDbContext.getWithIndices();
+        return new BerkeleyDbIndicesContext();
     }
 }

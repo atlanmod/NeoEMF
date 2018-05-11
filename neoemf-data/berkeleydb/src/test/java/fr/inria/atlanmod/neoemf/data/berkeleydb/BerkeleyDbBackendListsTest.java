@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.berkeleydb;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbListsContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
 import javax.annotation.Nonnull;
@@ -24,6 +24,6 @@ class BerkeleyDbBackendListsTest extends AbstractDataMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BerkeleyDbContext.getWithLists();
+        return new BerkeleyDbListsContext();
     }
 }

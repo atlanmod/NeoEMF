@@ -8,20 +8,12 @@
 
 package fr.inria.atlanmod.neoemf.data.im;
 
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.InMemoryContext;
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.context.InMemoryBoundContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
-
-import org.eclipse.emf.common.util.URI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * A test-case about {@link BoundInMemoryBackend}.
@@ -32,16 +24,6 @@ class BoundInMemoryBackendTest extends AbstractDataMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return new InMemoryContext() {
-
-            @Nonnull
-            @Override
-            public BackendFactory factory() {
-                BackendFactory factory = mock(InMemoryBackendFactory.class);
-                when(factory.supportsTransient()).thenCallRealMethod();
-                when(factory.createBackend(any(URI.class), any(ImmutableConfig.class))).thenAnswer((i) -> new BoundInMemoryBackend(idBase));
-                return factory;
-            }
-        };
+        return new InMemoryBoundContext(idBase);
     }
 }

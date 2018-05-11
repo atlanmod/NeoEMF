@@ -8,12 +8,10 @@
 
 package fr.inria.atlanmod.neoemf.data.blueprints.context;
 
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.AbstractLocalContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,28 +20,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A specific {@link Context} for the Blueprints implementation.
  */
 @ParametersAreNonnullByDefault
-public abstract class BlueprintsContext extends AbstractLocalContext {
-
-    /**
-     * Creates a new {@code BlueprintsContext} with a mapping with indices.
-     *
-     * @return a new context.
-     */
-    @Nonnull
-    public static Context getDefault() {
-        return new BlueprintsContext() {
-            @Nonnull
-            @Override
-            public ImmutableConfig config() {
-                return new BlueprintsTinkerConfig();
-            }
-        };
-    }
+public abstract class AbstractBlueprintsContext extends AbstractLocalContext {
 
     @Nonnull
     @Override
     public String name() {
-        return "Blueprints-Tinkergraph";
+        return "Blueprints";
     }
 
     @Nonnull

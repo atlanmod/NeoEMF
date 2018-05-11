@@ -6,24 +6,23 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.blueprints.util;
+package fr.inria.atlanmod.neoemf.context;
 
-import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTinkerContext;
-import fr.inria.atlanmod.neoemf.util.AbstractUriFactoryTest;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link BlueprintsUriFactory}.
+ * The default {@link AbstractInMemoryContext}.
  */
 @ParametersAreNonnullByDefault
-class BlueprintsUriFactoryTest extends AbstractUriFactoryTest {
+public class InMemoryDefaultContext extends AbstractInMemoryContext {
 
     @Nonnull
     @Override
-    protected Context context() {
-        return new BlueprintsTinkerContext();
+    public ImmutableConfig config() {
+        return new InMemoryConfig();
     }
 }

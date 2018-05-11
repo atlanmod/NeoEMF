@@ -8,10 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.context;
 
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
-import fr.inria.atlanmod.neoemf.data.im.config.InMemoryConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -20,18 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A specific {@link Context} for the core.
  */
 @ParametersAreNonnullByDefault
-public abstract class InMemoryContext extends AbstractLocalContext {
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class.
-     */
-    @Nonnull
-    public static Context get() {
-        return new InMemoryContext() {
-        };
-    }
+public abstract class AbstractInMemoryContext extends AbstractLocalContext {
 
     @Nonnull
     @Override
@@ -43,12 +30,6 @@ public abstract class InMemoryContext extends AbstractLocalContext {
     @Override
     public BackendFactory factory() {
         return new InMemoryBackendFactory();
-    }
-
-    @Nonnull
-    @Override
-    public ImmutableConfig config() {
-        return new InMemoryConfig();
     }
 
     @Override

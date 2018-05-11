@@ -1,0 +1,3 @@
+fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbIndicesContext
+fr.inria.atlanmod.neoemf.data.mapdb.context.MabDbArraysContext
+fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbListsContext

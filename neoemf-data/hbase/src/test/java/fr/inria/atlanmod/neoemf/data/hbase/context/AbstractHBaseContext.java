@@ -8,12 +8,10 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.context;
 
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.AbstractRemoteContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
-import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,23 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A specific {@link Context} for the HBase implementation.
  */
 @ParametersAreNonnullByDefault
-public abstract class HBaseContext extends AbstractRemoteContext {
-
-    /**
-     * Creates a new {@code HBaseContext} with a mapping with arrays and strings.
-     *
-     * @return a new context.
-     */
-    @Nonnull
-    public static Context getDefault() {
-        return new HBaseContext() {
-            @Nonnull
-            @Override
-            public ImmutableConfig config() {
-                return new HBaseConfig();
-            }
-        };
-    }
+public abstract class AbstractHBaseContext extends AbstractRemoteContext {
 
     @Override
     public boolean isInitialized() {

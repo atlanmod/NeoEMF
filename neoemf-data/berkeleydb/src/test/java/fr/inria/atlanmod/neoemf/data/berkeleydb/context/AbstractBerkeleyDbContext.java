@@ -6,31 +6,31 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.data.hbase.util;
+package fr.inria.atlanmod.neoemf.data.berkeleydb.context;
 
+import fr.inria.atlanmod.neoemf.context.AbstractLocalContext;
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseDefaultContext;
-import fr.inria.atlanmod.neoemf.util.AbstractUriFactoryTest;
-
-import org.junit.jupiter.api.Disabled;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A test-case about {@link HBaseUriFactory}.
+ * A specific {@link Context} for the BerkeleyDB implementation.
  */
 @ParametersAreNonnullByDefault
-class HBaseUriFactoryTest extends AbstractUriFactoryTest {
+public abstract class AbstractBerkeleyDbContext extends AbstractLocalContext {
 
     @Nonnull
     @Override
-    protected Context context() {
-        return new HBaseDefaultContext();
+    public String name() {
+        return "BerkeleyDB";
     }
 
-    @Disabled("Not supported because of the mini-cluster")
+    @Nonnull
     @Override
-    public void testCreateUriFromStandardUriInvalidScheme() {
+    public BackendFactory factory() {
+        return new BerkeleyDbBackendFactory();
     }
 }

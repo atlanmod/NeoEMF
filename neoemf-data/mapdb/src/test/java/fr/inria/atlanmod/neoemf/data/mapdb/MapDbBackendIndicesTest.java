@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbIndicesContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
 import javax.annotation.Nonnull;
@@ -24,6 +24,6 @@ class MapDbBackendIndicesTest extends AbstractDataMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return MapDbContext.getWithIndices();
+        return new MapDbIndicesContext();
     }
 }
