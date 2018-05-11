@@ -44,9 +44,9 @@ public class SizeCachingStore extends AbstractCachingStore<SingleFeatureBean, Op
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
-        cacheSize(feature.withoutPosition(), sizeOfValue(feature.withoutPosition()).orElse(0) + values.size());
-        super.addAllValues(feature, values);
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
+        cacheSize(feature.withoutPosition(), sizeOfValue(feature.withoutPosition()).orElse(0) + collection.size());
+        super.addAllValues(feature, collection);
     }
 
     @Nonnegative
@@ -59,9 +59,9 @@ public class SizeCachingStore extends AbstractCachingStore<SingleFeatureBean, Op
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
-        int firstPosition = super.appendAllValues(feature, values);
-        cacheSize(feature, firstPosition + values.size());
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> collection) {
+        int firstPosition = super.appendAllValues(feature, collection);
+        cacheSize(feature, firstPosition + collection.size());
         return firstPosition;
     }
 
@@ -92,9 +92,9 @@ public class SizeCachingStore extends AbstractCachingStore<SingleFeatureBean, Op
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
-        cacheSize(feature.withoutPosition(), sizeOfReference(feature.withoutPosition()).orElse(0) + references.size());
-        super.addAllReferences(feature, references);
+    public void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
+        cacheSize(feature.withoutPosition(), sizeOfReference(feature.withoutPosition()).orElse(0) + collection.size());
+        super.addAllReferences(feature, collection);
     }
 
     @Nonnegative
@@ -107,9 +107,9 @@ public class SizeCachingStore extends AbstractCachingStore<SingleFeatureBean, Op
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
-        int firstPosition = super.appendAllReferences(feature, references);
-        cacheSize(feature, firstPosition + references.size());
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> collection) {
+        int firstPosition = super.appendAllReferences(feature, collection);
+        cacheSize(feature, firstPosition + collection.size());
         return firstPosition;
     }
 

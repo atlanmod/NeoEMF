@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.DirectStoreMap}.
+ * A test-case about {@link fr.inria.atlanmod.neoemf.core.internal.collect.DirectStoreMap}.
  */
 // TODO Add missing methods
 @ParametersAreNonnullByDefault

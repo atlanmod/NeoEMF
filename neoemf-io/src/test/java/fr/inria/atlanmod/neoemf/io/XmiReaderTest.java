@@ -43,8 +43,8 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 /**
  * A test-case about the reading of a model.
  */
-@SuppressWarnings("ConstantConditions")
 @ParametersAreNonnullByDefault
+@SuppressWarnings("ConstantConditions") // Test with `@Nonnull`
 class XmiReaderTest extends AbstractTest {
 
     /**

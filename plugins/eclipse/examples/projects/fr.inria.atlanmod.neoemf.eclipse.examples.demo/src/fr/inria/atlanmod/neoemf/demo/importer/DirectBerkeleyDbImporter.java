@@ -13,7 +13,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUriFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.io.Migrator;
@@ -33,14 +33,12 @@ public class DirectBerkeleyDbImporter {
     public static void main(String[] args) throws Exception {
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE);
 
-        ImmutableConfig config = BerkeleyDbConfig.newConfig()
-                .withIndices()
-                .autoSave();
+        ImmutableConfig config = new BerkeleyDbConfig().withIndices().autoSave();
 
-        BackendFactory factory = BerkeleyDbBackendFactory.getInstance();
+        BackendFactory factory = new BerkeleyDbBackendFactory();
 
         File sourceFile = new File("model/sample.xmi");
-        URI targetUri = BerkeleyDbUri.builder().fromFile("databases/sample2.berkeleydb");
+        URI targetUri = new BerkeleyDbUriFactory().createLocalUri("databases/sample2.berkeleydb");
 
         try (Backend backend = factory.createBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
             Migrator.fromXmi(sourceFile)

@@ -16,7 +16,7 @@
  * The {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory} has to be registered to enable {@link
  * fr.inria.atlanmod.neoemf.resource.PersistentResource} creation with a MapDB storage:
  * <pre>{@code
- * BackendFactoryRegistry.register(MapDbBackendFactory.getInstance());
+ * BackendFactoryRegistry.register(new MapDbBackendFactory());
  * }</pre>
  */
 

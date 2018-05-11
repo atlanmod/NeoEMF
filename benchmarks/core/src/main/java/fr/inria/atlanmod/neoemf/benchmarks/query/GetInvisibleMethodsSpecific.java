@@ -28,6 +28,9 @@ import static java.util.Objects.nonNull;
 import static org.eclipse.gmt.modisco.java.VisibilityKind.PRIVATE;
 import static org.eclipse.gmt.modisco.java.VisibilityKind.PROTECTED;
 
+/**
+ * A {@link Query}
+ */
 @ParametersAreNonnullByDefault
 class GetInvisibleMethodsSpecific extends GetInvisibleMethods {
 

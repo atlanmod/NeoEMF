@@ -14,7 +14,7 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 
 import java.io.File;
@@ -44,12 +44,12 @@ public final class StandardStoreCreator implements StoreCreator {
 
         Log.info("Creating store with standard EMF");
 
-        ResourceSet resourceSet = Stores.loadResourceSet();
+        org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
         Log.info("Loading resource from: {0}", file);
 
         URI sourceUri = URI.createFileURI(file.getAbsolutePath());
-        Resource sourceResource = resourceSet.createResource(sourceUri);
+        Resource sourceResource = new ResourceSetImpl().createResource(sourceUri);
 
         adapter.initAndGetEPackage();
 
@@ -61,7 +61,7 @@ public final class StandardStoreCreator implements StoreCreator {
 
         Log.info("Migrating resource content...");
 
-        Resource targetResource = adapter.createResource(targetFile, resourceSet);
+        Resource targetResource = adapter.createResource(targetFile);
         adapter.save(targetResource, config);
 
         targetResource.getContents().addAll(sourceResource.getContents());

@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A query that counts the orphan and non-primitive types of a {@link Model}.
+ * A {@link Query} that counts the orphan and non-primitive types of a {@link Model}.
  * <p>
  * This is a common query to all both standard and customized methods.
  *

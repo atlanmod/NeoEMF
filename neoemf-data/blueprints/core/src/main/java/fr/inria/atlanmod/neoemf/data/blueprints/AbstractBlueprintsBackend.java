@@ -19,10 +19,10 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
-import fr.inria.atlanmod.neoemf.data.blueprints.graph.ClassVertex;
-import fr.inria.atlanmod.neoemf.data.blueprints.graph.ContainingEdge;
-import fr.inria.atlanmod.neoemf.data.blueprints.graph.ElementVertex;
-import fr.inria.atlanmod.neoemf.data.blueprints.graph.ModelGraph;
+import fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.ClassVertex;
+import fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.ContainingEdge;
+import fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.ElementVertex;
+import fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.ModelGraph;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import java.util.Optional;

@@ -10,7 +10,11 @@ package fr.inria.atlanmod.neoemf.data.hbase.config;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -20,25 +24,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
+@Component(service = Config.class, scope = ServiceScope.PROTOTYPE)
 @FactoryBinding(factory = HBaseBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class HBaseConfig extends BaseConfig<HBaseConfig> {
 
     /**
-     * Constructs a new {@code HBaseConfig}.
+     * Constructs a new {@code HBaseConfig} with default settings.
      */
-    protected HBaseConfig() {
+    public HBaseConfig() {
         withDefault();
-    }
-
-    /**
-     * Constructs a new {@code HBaseConfig} instance with default settings.
-     *
-     * @return a new configuration
-     */
-    @Nonnull
-    public static HBaseConfig newConfig() {
-        return new HBaseConfig();
     }
 
     /**
@@ -48,7 +43,7 @@ public class HBaseConfig extends BaseConfig<HBaseConfig> {
      * {@link String} representation for single-valued references</li> <li>a {@link String}[] representation for
      * multi-valued references</li> </ul>
      * <p>
-     * <b>Note:</b> This is the default mapping.
+     * <b>NOTE:</b> This is the default mapping.
      *
      * @return this configuration (for chaining)
      *

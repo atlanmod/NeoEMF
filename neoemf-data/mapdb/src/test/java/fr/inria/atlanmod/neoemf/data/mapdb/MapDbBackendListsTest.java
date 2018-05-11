@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbListsContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
 import javax.annotation.Nonnull;
@@ -24,6 +24,6 @@ class MapDbBackendListsTest extends AbstractDataMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return MapDbContext.getWithLists();
+        return new MapDbListsContext();
     }
 }

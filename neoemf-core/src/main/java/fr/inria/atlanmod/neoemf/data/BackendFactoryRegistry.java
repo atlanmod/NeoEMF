@@ -12,7 +12,9 @@ import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.bind.BindingEngine;
+import fr.inria.atlanmod.commons.service.ServiceDefinition;
+import fr.inria.atlanmod.commons.service.ServiceProvider;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResourceFactory;
 
@@ -54,11 +56,6 @@ public final class BackendFactoryRegistry {
     private final Map<String, BackendFactory> factories = new ConcurrentHashMap<>();
 
     /**
-     * Whether this registry has been initialized at least once.
-     */
-    private boolean initialized;
-
-    /**
      * Constructs a new {@code BackendFactoryRegistry}.
      */
     private BackendFactoryRegistry() {
@@ -81,11 +78,7 @@ public final class BackendFactoryRegistry {
      */
     @Nonnull
     @VisibleForTesting
-    public Map<String, BackendFactory> getFactories() {
-        if (!initialized) {
-            registerAll();
-        }
-
+    Map<String, BackendFactory> getFactories() {
         return Collections.unmodifiableMap(factories);
     }
 
@@ -96,21 +89,17 @@ public final class BackendFactoryRegistry {
      *
      * @return the factory
      *
-     * @throws NullPointerException if {@code scheme} is {@code null}, or if no factory is registered for the {@code
-     *                              scheme}
+     * @throws IllegalArgumentException if {@code scheme} is {@code null}, or if no factory is registered for the {@code scheme}
      */
     @Nonnull
     public BackendFactory getFactoryFor(String scheme) {
         checkNotNull(scheme, "scheme");
 
-        if (!factories.containsKey(scheme) && !initialized) {
-            registerAll();
+        if (isRegistered(scheme)) {
+            return factories.get(scheme);
         }
 
-        return checkNotNull(factories.get(scheme),
-                "No factory is registered to process the URI scheme \"%s\". Use the %s#register() method first",
-                scheme,
-                BackendFactoryRegistry.class.getName());
+        throw new IllegalArgumentException(String.format("No factory is registered to process the URI scheme '%s'", scheme));
     }
 
     /**
@@ -125,7 +114,7 @@ public final class BackendFactoryRegistry {
             return false;
         }
 
-        if (!factories.containsKey(scheme) && !initialized) {
+        if (!factories.containsKey(scheme)) {
             registerAll();
         }
 
@@ -156,17 +145,13 @@ public final class BackendFactoryRegistry {
     }
 
     /**
-     * Registers all {@link BackendFactory} with their URI scheme by using the {@link
-     * fr.inria.atlanmod.neoemf.bind.FactoryBinding} annotation.
-     * <p>
-     * This method scan the full Java classpath to retrieve the annotated element.
+     * Dynamically registers all {@link BackendFactory} instances with their URI scheme.
      */
-    public void registerAll() {
-        Log.debug("Registering all factories...");
-
-        BindingEngine.allFactories().forEach(b -> register(BindingEngine.schemeOf(b), b));
-
-        initialized = true;
+    private void registerAll() {
+        ServiceProvider.getInstance()
+                .load(BackendFactory.class)
+                .map(ServiceDefinition::get)
+                .forEach(b -> register(Bindings.schemeOf(b), b));
     }
 
     /**

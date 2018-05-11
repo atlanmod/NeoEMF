@@ -22,7 +22,7 @@
  * {@link fr.inria.atlanmod.neoemf.config.Config}.
  * <pre>{@code
  * // Create the option map
- * Map<String, Object> options = MyConfig.newConfig()
+ * Map<String, Object> options = new MyConfig()
  *     .autocommit(10000)
  *     .cacheFeatures()
  *     .toMap();

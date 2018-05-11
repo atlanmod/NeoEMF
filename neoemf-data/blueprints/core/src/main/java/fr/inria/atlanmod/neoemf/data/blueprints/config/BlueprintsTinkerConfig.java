@@ -11,7 +11,11 @@ package fr.inria.atlanmod.neoemf.data.blueprints.config;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 import java.nio.file.Path;
 import java.util.function.Predicate;
@@ -24,6 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
+@Component(service = Config.class, scope = ServiceScope.PROTOTYPE)
 @FactoryBinding(factory = BlueprintsBackendFactory.class, variant = "tinkergraph")
 @ParametersAreNonnullByDefault
 public class BlueprintsTinkerConfig extends BaseBlueprintsConfig<BlueprintsTinkerConfig> {
@@ -34,21 +39,11 @@ public class BlueprintsTinkerConfig extends BaseBlueprintsConfig<BlueprintsTinke
     static final String TINKER_PREFIX = createKey(BLUEPRINTS_PREFIX, "tg");
 
     /**
-     * Constructs a new {@code BlueprintsTinkerConfig}.
+     * Constructs a new {@code BlueprintsTinkerConfig} with default settings.
      */
-    protected BlueprintsTinkerConfig() {
+    public BlueprintsTinkerConfig() {
         setGraph(TinkerGraph.class);
         setFileType(TinkerGraph.FileType.GRAPHML);
-    }
-
-    /**
-     * Constructs a new {@code BlueprintsTinkerConfig} instance with default settings.
-     *
-     * @return a new configuration
-     */
-    @Nonnull
-    public static BlueprintsTinkerConfig newConfig() {
-        return new BlueprintsTinkerConfig();
     }
 
     @Override

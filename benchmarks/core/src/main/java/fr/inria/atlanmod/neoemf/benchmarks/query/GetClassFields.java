@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * ???
+ * A {@link Query}
  */
 @ParametersAreNonnullByDefault
 class GetClassFields extends AbstractQuery<Map<String, Iterable<NamedElement>>> {

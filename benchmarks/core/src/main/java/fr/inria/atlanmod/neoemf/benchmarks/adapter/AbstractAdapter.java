@@ -8,9 +8,10 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
+import fr.inria.atlanmod.commons.Throwables;
+import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.benchmarks.resource.Resources;
 import fr.inria.atlanmod.neoemf.benchmarks.resource.Stores;
-import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import org.eclipse.emf.ecore.EPackage;
@@ -19,12 +20,15 @@ import org.eclipse.emf.ecore.resource.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.commons.Preconditions.checkState;
+import static java.util.Objects.isNull;
 
 /**
  * The abstract implementation of an {@link Adapter.Internal}.
@@ -33,53 +37,61 @@ import static fr.inria.atlanmod.commons.Preconditions.checkState;
 abstract class AbstractAdapter implements Adapter.Internal {
 
     /**
-     * The extension of the adapted resource, used to create the stores.
+     * The category of this adapter.
      */
-    private final String resourceExtension;
+    @Nonnull
+    private final String category;
 
     /**
-     * The extension of the resource, used for benchmarks.
+     * The name of this adapter.
      */
-    private final String storeExtension;
+    @Nonnull
+    private final String name;
 
     /**
      * The class of the {@link EPackage} associated to this adapter.
      */
-    private final Class<?> packageClass;
+    @Nonnull
+    private final Class<? extends EPackage> modelPackage;
 
     /**
-     * Constructs a new {@code AbstractAdatper}.
+     * Constructs a new {@code AbstractAdapter}.
      *
-     * @param resourceExtension the extension of the adapted resource, used to create the stores
-     * @param storeExtension    the extension of the resource, used for benchmarks
-     * @param packageClass      the class of the {@link EPackage} associated to this adapter
+     * @param category     the category of this adapter
+     * @param modelPackage the class of the {@link EPackage} associated to this adapter
      */
-    protected AbstractAdapter(String resourceExtension, String storeExtension, Class<?> packageClass) {
-        this.resourceExtension = checkNotNull(resourceExtension);
-        this.storeExtension = checkNotNull(storeExtension);
-        this.packageClass = checkNotNull(packageClass);
+    protected AbstractAdapter(String category, Class<? extends EPackage> modelPackage) {
+        this.category = checkNotNull(category);
+        this.modelPackage = checkNotNull(modelPackage);
+
+        final AdapterName annotation = getClass().getAnnotation(AdapterName.class);
+        if (isNull(annotation)) {
+            throw new IllegalStateException(String.format("This adapter is not annotated with %s", AdapterName.class.getSimpleName()));
+        }
+
+        this.name = annotation.value();
     }
 
     @Nonnull
     @Override
     public String getResourceExtension() {
-        return resourceExtension;
+        return category;
     }
 
     @Nonnull
     @Override
     public String getStoreExtension() {
-        return storeExtension;
+        return Objects.equals(name, category) ? Strings.EMPTY : name;
     }
 
     @Nonnull
     @Override
     public final EPackage initAndGetEPackage() {
         try {
-            return (EPackage) packageClass.getMethod("init").invoke(null);
+            return (EPackage) modelPackage.getMethod("init").invoke(null);
         }
         catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw Throwables.shouldNeverHappen(e);
         }
     }
 
@@ -101,9 +113,26 @@ abstract class AbstractAdapter implements Adapter.Internal {
         return getOrCreateStore(file, config, useDirectImport, true);
     }
 
+    @Nonnull
+    @Override
+    public Resource load(File file, ImmutableConfig config) throws IOException {
+        initAndGetEPackage();
+
+        Resource resource = createResource(file);
+        resource.load(getOptions(config));
+        return resource;
+    }
+
     @Override
     public void save(Resource resource, ImmutableConfig config) throws IOException {
-        resource.save(BaseConfig.newConfig().merge(config).merge(getOptions()).toMap());
+        resource.save(getOptions(config));
+    }
+
+    @Override
+    public void unload(Resource resource) {
+        if (resource.isLoaded()) {
+            resource.unload();
+        }
     }
 
     @Nonnull
@@ -111,6 +140,16 @@ abstract class AbstractAdapter implements Adapter.Internal {
     public File copy(File file) throws IOException {
         return Stores.copyStore(file);
     }
+
+    /**
+     * Returns the default {@link Map} options of this adapter.
+     *
+     * @param config an additional configuration, defined at runtime
+     *
+     * @return the {@link Map} options
+     */
+    @Nonnull
+    protected abstract Map<String, ?> getOptions(ImmutableConfig config);
 
     /**
      * Retrieves or creates a {@link Resource} used for benchmarks.
@@ -121,7 +160,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
      * @return the resource
      */
     @Nonnull
-    private File getOrCreateStore(File file, ImmutableConfig config, boolean useDirectImport, boolean temporary) throws IOException {
+    protected File getOrCreateStore(File file, ImmutableConfig config, boolean useDirectImport, boolean temporary) throws IOException {
         File storeFile;
 
         if (temporary) {

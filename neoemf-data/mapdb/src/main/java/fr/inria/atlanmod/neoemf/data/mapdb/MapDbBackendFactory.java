@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -16,6 +15,7 @@ import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.osgi.service.component.annotations.Component;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,33 +26,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A {@link fr.inria.atlanmod.neoemf.data.BackendFactory} that creates {@link MapDbBackend} instances.
  */
+@Component(service = BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class MapDbBackendFactory extends AbstractBackendFactory<MapDbConfig> {
 
     /**
-     * The literal description of the factory.
-     */
-    private static final String NAME = "mapdb";
-
-    /**
      * Constructs a new {@code MapDbBackendFactory}.
      */
-    protected MapDbBackendFactory() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
-     */
-    @Nonnull
-    public static BackendFactory getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    @Override
-    public String name() {
-        return NAME;
+    public MapDbBackendFactory() {
+        super("mapdb");
     }
 
     @Nonnull
@@ -73,17 +55,5 @@ public class MapDbBackendFactory extends AbstractBackendFactory<MapDbConfig> {
         DB db = dbBuilder.make();
 
         return createMapper(config.getMapping(), db);
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final BackendFactory INSTANCE = new MapDbBackendFactory();
     }
 }

@@ -20,12 +20,11 @@
 
     <properties>
         <chronicle-map.version>3.14.5</chronicle-map.version>
-        <chronicle-bytes.version>1.11.2</chronicle-bytes.version>
+        <chronicle-bytes.version>1.12.8</chronicle-bytes.version>
 
-        <log4j.version>2.8.2</log4j.version><!-- 2.9.0+ : compatibility issue with maven-bundle-plugin (JDK9) -->
+        <log4j.version>2.11.0</log4j.version>
 
         <cglib.version>3.2.6</cglib.version>
-        <reflections.version>0.9.9</reflections.version><!-- 0.9.9+ : compatibility issue with Guava/HBase (15.0) -->
     </properties>
 
     <dependencies>
@@ -54,18 +53,6 @@
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-        </dependency>
-
-        <dependency><!-- Used by `reflections` : Required for bundle analysis in an OSGi context -->
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-vfs2</artifactId>
-            <version>2.2</version><!-- == 2.0 with bugfixes -->
-            <scope>runtime</scope>
         </dependency>
 
         <!-- Logging -->
@@ -111,9 +98,7 @@
 
         <dependency>
             <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>6.0.0</version>
-            <scope>provided</scope>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
         </dependency>
 
         <!-- Test -->
@@ -166,12 +151,36 @@
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-map</artifactId>
                 <version>${chronicle-map.version}</version>
+                <exclusions>
+                    <exclusion> <!-- Should be optional -->
+                        <groupId>com.intellij</groupId>
+                        <artifactId>annotations</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.thoughtworks.xstream</groupId>
+                        <artifactId>xstream</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.codehaus.jettison</groupId>
+                        <artifactId>jettison</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.ops4j.pax.url</groupId>
+                        <artifactId>pax-url-aether</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>net.openhft</groupId>
                 <artifactId>chronicle-bytes</artifactId>
                 <version>${chronicle-bytes.version}</version>
+                <exclusions>
+                    <exclusion> <!-- Should be optional -->
+                        <groupId>com.intellij</groupId>
+                        <artifactId>annotations</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <!-- Reflection -->
@@ -180,18 +189,6 @@
                 <groupId>cglib</groupId>
                 <artifactId>cglib-nodep</artifactId>
                 <version>${cglib.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.reflections</groupId>
-                <artifactId>reflections</artifactId>
-                <version>${reflections.version}</version>
-                <exclusions>
-                    <exclusion> <!-- Should be optional -->
-                        <groupId>com.google.code.findbugs</groupId>
-                        <artifactId>annotations</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <!-- Logging -->
@@ -243,22 +240,25 @@
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.core</Bundle-SymbolicName>
-                        <DynamicImport-Package>
-                            *
-                        </DynamicImport-Package>
-                        <Export-Package>
-                            !fr.inria.atlanmod.neoemf.*.internal.*,
-                            fr.inria.atlanmod.neoemf.*
-                        </Export-Package>
                         <Import-Package>
                             com.google.common.cache;resolution:=optional
                         </Import-Package>
+                        <Export-Package>
+                            !fr.inria.atlanmod.neoemf.*.internal.*,
+                            !fr.inria.atlanmod.neoemf.data.im.*,
+                            fr.inria.atlanmod.neoemf.*
+                        </Export-Package>
+                        <Embed-Dependency><!-- Inherited -->
+                            *;
+                            scope=compile|runtime;
+                            type=!pom;
+                            groupId=!${project.groupId}|fr.inria.atlanmod.commons|org.eclipse.emf|org.apache.logging.log4j
+                        </Embed-Dependency>
                         <Require-Bundle>
                             fr.inria.atlanmod.commons;visibility:=reexport,
                             org.eclipse.emf.ecore;visibility:=reexport,
                             org.eclipse.emf.compare;resolution:=optional
                         </Require-Bundle>
-                        <Bundle-Activator>fr.inria.atlanmod.neoemf.util.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>
             </plugin>

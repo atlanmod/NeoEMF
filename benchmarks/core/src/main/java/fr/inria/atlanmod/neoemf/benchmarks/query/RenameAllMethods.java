@@ -18,11 +18,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A query that renames all the method names.
+ * A {@link Query} that renames all methods.
  */
 @ParametersAreNonnullByDefault
 class RenameAllMethods extends AbstractQuery<Long> {
 
+    /**
+     * The new name of all methods.
+     */
     @Nonnull
     private final String name;
 

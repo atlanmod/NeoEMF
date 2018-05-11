@@ -15,6 +15,7 @@ import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -38,17 +39,17 @@ abstract class Abstract${databaseName}Backend extends AbstractBackend implements
     }
 
     @Override
-    public void save() {
+    protected void internalSave() throws IOException {
         // TODO Implement this method
     }
 
     @Override
-    protected void innerClose() {
+    protected void internalClose() throws IOException {
         // TODO Implement this method
     }
 
     @Override
-    protected void innerCopyTo(DataMapper target) {
+    protected void internalCopyTo(DataMapper target) {
         // TODO Implement this method
         throw Throwables.notImplementedYet("innerCopyTo");
     }

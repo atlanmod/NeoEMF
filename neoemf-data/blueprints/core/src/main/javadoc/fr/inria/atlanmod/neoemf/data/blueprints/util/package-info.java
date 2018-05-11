@@ -9,20 +9,20 @@
 /**
  * Provides utility classes related to Blueprints.
  * <p>
- * This package defines the {@link fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri} class, that extends
- * {@link fr.inria.atlanmod.neoemf.util.UriBuilder} to create Blueprints specific URIs. {@link
- * fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri}s are convenience wrappers of EMF URIs that set a
+ * This package defines the {@link fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUriFactory} class, that
+ * extends {@link fr.inria.atlanmod.neoemf.util.UriFactory} to create Blueprints specific URIs. {@link
+ * fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUriFactory}s are convenience wrappers of EMF URIs that set a
  * dedicated protocol that is parsed by NeoEMF to create the appropriate database.
  * <p>
- * {@link fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri}s are created using the following code:
+ * {@link fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUriFactory}s are created using the following code:
  * <pre>{@code
- * URI blueprintsURI = BlueprintsUri.createFileURI(new File("model_path"));
+ * URI uri = BlueprintsUriFactory.createLocalUri("model_path");
  *
  * // The created URI can be used as a regular EMF URI to create a NeoEMF resource
- * Resource neoEMFResource = resourceSet.createResource(blueprintsURI);
+ * Resource resource = resourceSet.createResource(uri);
  *
  * // And accessed as a regular EMF resource
- * neoEMFResource.getContents() [...]
+ * resource.getContents() [...]
  * }</pre>
  */
 

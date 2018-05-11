@@ -9,14 +9,8 @@
 package fr.inria.atlanmod.neoemf.tests.provider;
 
 import fr.inria.atlanmod.commons.annotation.Static;
+import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.context.InMemoryContext;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
-import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context.BlueprintsNeo4jContext;
-import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
-import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
-import fr.inria.atlanmod.neoemf.data.mongodb.context.MongoDbContext;
 import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 
@@ -25,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 
+import java.util.ServiceLoader;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -45,19 +40,7 @@ public final class ContextProvider {
      */
     @Nonnull
     public static Stream<Context> allContexts() {
-        return Stream.of(
-                InMemoryContext.get(),
-                BlueprintsContext.getDefault(),
-                BlueprintsNeo4jContext.getDefault(),
-                MongoDbContext.getDefault(),
-                MapDbContext.getWithIndices(),
-                MapDbContext.getWithArrays(),
-                MapDbContext.getWithLists(),
-                BerkeleyDbContext.getWithIndices(),
-                BerkeleyDbContext.getWithArrays(),
-                BerkeleyDbContext.getWithLists(),
-                HBaseContext.getDefault()
-        ).map(Context::init).filter(Context::isInitialized);
+        return MoreIterables.stream(ServiceLoader.load(Context.class)).map(Context::init).filter(Context::isInitialized);
     }
 
     /**

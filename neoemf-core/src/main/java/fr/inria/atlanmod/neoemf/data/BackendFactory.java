@@ -22,9 +22,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * The creation can be configured using {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#save(java.util.Map)}
  * and {@link fr.inria.atlanmod.neoemf.resource.PersistentResource#load(java.util.Map)} option maps.
- * <p>
- * For reflection reasons, each instance of {@code BackendFactory} <b>must</b> have a static field {@code NAME},
- * representing the name of the created {@link Backend} instances.
  *
  * @see Config
  */
@@ -45,9 +42,7 @@ public interface BackendFactory {
      * @return {@code true} if the {@link Backend}s created by this factory support the transient state, {@code false}
      * otherwise
      */
-    default boolean supportsTransient() {
-        return true;
-    }
+    boolean supportsTransient();
 
     /**
      * Creates a new {@link Backend} located by the {@code uri}.

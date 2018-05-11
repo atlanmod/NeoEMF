@@ -11,11 +11,11 @@ package fr.inria.atlanmod.neoemf.demo.query;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUriFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUriFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUriFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.BasicEList;
@@ -44,32 +44,32 @@ public class EMFProtectedMethod {
     public static void main(String[] args) throws IOException {
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(BlueprintsUri.builder().fromFile("databases/sample.graphdb"))) {
-            resource.load(BlueprintsNeo4jConfig.newConfig().toMap());
+        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(new BlueprintsUriFactory().createLocalUri("databases/sample.graphdb"))) {
+            resource.load(new BlueprintsNeo4jConfig().toMap());
             Stopwatch stopwatch = Stopwatch.createStarted();
             EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             stopwatch.stop();
             Log.info("[ProtectedMethods - GraphDB] Done, found {0} elements in {1} seconds", result.size(), stopwatch.elapsed().getSeconds());
         }
 
-        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(MapDbUri.builder().fromFile("databases/sample.mapdb"))) {
-            resource.load(MapDbConfig.newConfig().withIndices().toMap());
+        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(new MapDbUriFactory().createLocalUri("databases/sample.mapdb"))) {
+            resource.load(new MapDbConfig().withIndices().toMap());
             Stopwatch stopwatch = Stopwatch.createStarted();
             EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             stopwatch.stop();
             Log.info("[ProtectedMethods - MapDB] Done, found {0} elements in {1} seconds", result.size(), stopwatch.elapsed().getSeconds());
         }
 
-        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(BerkeleyDbUri.builder().fromFile("databases/sample.berkeleydb"))) {
-            resource.load(BerkeleyDbConfig.newConfig().withIndices().toMap());
+        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(new BerkeleyDbUriFactory().createLocalUri("databases/sample.berkeleydb"))) {
+            resource.load(new BerkeleyDbConfig().withIndices().toMap());
             Stopwatch stopwatch = Stopwatch.createStarted();
             EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
             stopwatch.stop();
             Log.info("[ProtectedMethods - BerkeleyB] Done, found {0} elements in {1} seconds", result.size(), stopwatch.elapsed().getSeconds());
         }
 
-//        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase"))) {
-//            resource.load(HBaseConfig.newConfig().toMap());
+//        try (PersistentResource resource = (PersistentResource) resourceSet.createResource(new HBaseUriFactory().createRemoteUri("localhost", 2181, "sample.hbase"))) {
+//            resource.load(new HBaseConfig().toMap());
 //            Stopwatch stopwatch = Stopwatch.createStarted();
 //            EList<MethodDeclaration> result = getProtectedMethodDeclarations(resource);
 //            stopwatch.stop();

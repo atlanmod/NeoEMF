@@ -10,7 +10,7 @@
  * Provides classes related to the binding engine and classpath analysis.
  * <p>
  * The binding engine is centered on the {@link fr.inria.atlanmod.neoemf.bind.BindingEngine} class that allows to
- * dynamically bind {@link fr.inria.atlanmod.neoemf.data.BackendFactory}, {@link fr.inria.atlanmod.neoemf.util.UriBuilder}
+ * dynamically bind {@link fr.inria.atlanmod.neoemf.data.BackendFactory}, {@link fr.inria.atlanmod.neoemf.util.UriFactory}
  * and {@link fr.inria.atlanmod.neoemf.config.Config} instances at runtime, by analyzing elements annotated with the
  * {@link fr.inria.atlanmod.neoemf.bind.FactoryBinding} annotation on a limited view of a classpath.
  * <p>

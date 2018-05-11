@@ -86,16 +86,16 @@ public interface ManyValueMapper extends ValueMapper {
     <V> void addValue(ManyFeatureBean feature, V value);
 
     /**
-     * Adds all the {@code values} to the specified {@code feature} from the position of the {@code feature}.
+     * Adds all the {@code collection} to the specified {@code feature} from the position of the {@code feature}.
      *
      * @param feature the bean identifying the multi-valued attribute
-     * @param values  the values to add
+     * @param collection  the values to add
      * @param <V>     the type of value
      *
      * @throws NullPointerException      if any parameter is {@code null}
      * @throws IndexOutOfBoundsException if {@code feature#position() > size}
      */
-    <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values);
+    <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection);
 
     /**
      * Adds the {@code value} to the specified {@code feature} at the last position.
@@ -122,10 +122,10 @@ public interface ManyValueMapper extends ValueMapper {
     }
 
     /**
-     * Adds all the {@code values} to the specified {@code feature} from the last position.
+     * Adds all the {@code collection} to the specified {@code feature} from the last position.
      *
      * @param feature the bean identifying the multi-valued attribute
-     * @param values  the values to add
+     * @param collection  the values to add
      * @param <V>     the type of values
      *
      * @return the position to which the first value was added
@@ -135,13 +135,13 @@ public interface ManyValueMapper extends ValueMapper {
      * @see #appendValue(SingleFeatureBean, Object)
      */
     @Nonnegative
-    default <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
+    default <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> collection) {
         checkNotNull(feature, "feature");
-        checkNotNull(values, "values");
+        checkNotNull(collection, "collection");
 
         int firstPosition = sizeOfValue(feature).orElse(0);
 
-        addAllValues(feature.withPosition(firstPosition), values);
+        addAllValues(feature.withPosition(firstPosition), collection);
 
         return firstPosition;
     }

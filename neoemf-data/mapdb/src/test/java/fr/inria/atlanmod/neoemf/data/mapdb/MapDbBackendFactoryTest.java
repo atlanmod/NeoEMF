@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.mapdb;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
-import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbContext;
+import fr.inria.atlanmod.neoemf.data.mapdb.context.MapDbIndicesContext;
 
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -29,16 +29,16 @@ class MapDbBackendFactoryTest extends AbstractBackendFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return MapDbContext.getWithIndices();
+        return new MapDbIndicesContext();
     }
 
     @Nonnull
     @Override
     protected Stream<Arguments> allMappings() {
         return Stream.of(
-                Arguments.of(MapDbConfig.newConfig().withIndices(), MapDbBackendIndices.class),
-                Arguments.of(MapDbConfig.newConfig().withArrays(), MapDbBackendArrays.class),
-                Arguments.of(MapDbConfig.newConfig().withLists(), MapDbBackendLists.class)
+                Arguments.of(new MapDbConfig().withIndices(), MapDbBackendIndices.class),
+                Arguments.of(new MapDbConfig().withArrays(), MapDbBackendArrays.class),
+                Arguments.of(new MapDbConfig().withLists(), MapDbBackendLists.class)
         );
     }
 }

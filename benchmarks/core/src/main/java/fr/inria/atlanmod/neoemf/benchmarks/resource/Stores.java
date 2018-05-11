@@ -15,8 +15,6 @@ import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
@@ -45,7 +43,6 @@ public final class Stores {
         Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
     }
 
-    @SuppressWarnings("JavaDoc")
     private Stores() {
         throw new IllegalStateException("This class should not be instantiated");
     }
@@ -132,17 +129,5 @@ public final class Stores {
                 : new StandardStoreCreator();
 
         return creator.getOrCreateStore(resourceFile, config, adapter, dir);
-    }
-
-    /**
-     * Creates a new pre-configured {@link ResourceSet} able to handle registered extensions.
-     *
-     * @return a new {@link ResourceSet}
-     */
-    @Nonnull
-    protected static ResourceSet loadResourceSet() {
-        org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
-
-        return new ResourceSetImpl();
     }
 }

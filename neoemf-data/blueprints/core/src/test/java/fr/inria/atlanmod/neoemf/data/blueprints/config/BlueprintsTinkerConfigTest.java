@@ -14,8 +14,8 @@ import fr.inria.atlanmod.neoemf.AbstractUnitTest;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTinkerContext;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUriFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -48,7 +48,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BlueprintsContext.getDefault();
+        return new BlueprintsTinkerContext();
     }
 
     /**
@@ -56,7 +56,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
      */
     @BeforeEach
     public void initResource() throws IOException {
-        URI uri = BlueprintsUri.builder().fromFile(currentTempFile());
+        URI uri = new BlueprintsUriFactory().createLocalUri(currentTempFile());
         resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
     }
 
@@ -73,7 +73,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
      */
     @Test
     public void testGraphOption() throws IOException {
-        resource.save(BlueprintsTinkerConfig.newConfig());
+        resource.save(new BlueprintsTinkerConfig());
 
         ImmutableConfig config = loadConfig();
         assertConfigurationHasEntry(config, "blueprints.graph", TinkerGraph.class.getName());

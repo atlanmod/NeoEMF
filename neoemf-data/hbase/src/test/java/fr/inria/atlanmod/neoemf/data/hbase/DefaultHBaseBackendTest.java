@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.hbase;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
+import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseDefaultContext;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
 
 import javax.annotation.Nonnull;
@@ -24,6 +24,6 @@ class DefaultHBaseBackendTest extends AbstractDataMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return HBaseContext.getDefault();
+        return new HBaseDefaultContext();
     }
 }

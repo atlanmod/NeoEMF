@@ -47,4 +47,4 @@ EXPOSE 8849
 # Configure container
 WORKDIR /root
 CMD ["-help"]
-ENTRYPOINT ["java", "-jar", "benchmarks.jar"]
+ENTRYPOINT ["java", "-jar", "neoemf-benchmarks.jar"]

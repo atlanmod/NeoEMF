@@ -119,9 +119,9 @@ A full benchmarks description is available at [here][benchmarks].
 If you experience issues installing or using NeoEMF, you can [submit an issue on github][issues] or contact us at neoemf@googlegroups.com
 
 ### Known issues:
--   Only Luna plugins are fetched (the compatibility is not ensured for previous Eclipse versions)
--   The Eclipse plugins can not be built if Maven can not access internet (it is needed to fetch Luna p2 repositories)
--   Sometimes the plugin build crashes and/or freezes during p2 index fetching from Luna repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.
+-   Only Oxygen plugins are fetched (the compatibility is not ensured for previous Eclipse versions)
+-   The Eclipse plugins can not be built if Maven can not access internet (it is needed to fetch Oxygen p2 repositories)
+-   Sometimes the plugin build crashes and/or freezes during p2 index fetching from Oxygen repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.
 
 
 ## Credits

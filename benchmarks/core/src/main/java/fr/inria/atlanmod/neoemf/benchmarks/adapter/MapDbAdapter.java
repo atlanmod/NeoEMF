@@ -8,11 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
-
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,86 +18,44 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackend}.
  */
 @ParametersAreNonnullByDefault
-public abstract class MapDbAdapter extends AbstractNeoAdapter {
-
-    /**
-     * Constructs a new {@code MapDbAdapter}.
-     *
-     * @param storeExtension the extension of the resource, used for benchmarks
-     */
-    protected MapDbAdapter(String storeExtension) {
-        super("mapdb." + storeExtension);
-    }
-
-    @Nonnull
-    @Override
-    protected BackendFactory getFactory() {
-        return MapDbBackendFactory.getInstance();
-    }
+public abstract class MapDbAdapter extends AbstractPersistentAdapter {
 
     /**
      * A {@link MapDbAdapter} with a mapping with indices.
      */
+    @AdapterName("mapdb-i")
     public static final class WithIndices extends MapDbAdapter {
-
-        /**
-         * Constructs a new {@code MapDbAdapter.WithIndices}.
-         */
-        @SuppressWarnings("unused") // Called dynamically
-        public WithIndices() {
-            super("indices");
-        }
 
         @Nonnull
         @Override
-        public Map<String, ?> getOptions() {
-            return MapDbConfig.newConfig()
-                    .withIndices()
-                    .toMap();
+        protected ImmutableConfig createConfig() {
+            return new MapDbConfig().withIndices();
         }
     }
 
     /**
      * A {@link MapDbAdapter} with a mapping with arrays.
      */
+    @AdapterName("mapdb-a")
     public static final class WithArrays extends MapDbAdapter {
-
-        /**
-         * Constructs a new {@code MapDbAdapter.WithArrays}.
-         */
-        @SuppressWarnings("unused") // Called dynamically
-        public WithArrays() {
-            super("arrays");
-        }
 
         @Nonnull
         @Override
-        public Map<String, ?> getOptions() {
-            return MapDbConfig.newConfig()
-                    .withArrays()
-                    .toMap();
+        protected ImmutableConfig createConfig() {
+            return new MapDbConfig().withArrays();
         }
     }
 
     /**
      * A {@link MapDbAdapter} with a mapping with lists.
      */
+    @AdapterName("mapdb-l")
     public static final class WithLists extends MapDbAdapter {
-
-        /**
-         * Constructs a new {@code MapDbAdapter.WithLists}.
-         */
-        @SuppressWarnings("unused") // Called dynamically
-        public WithLists() {
-            super("lists");
-        }
 
         @Nonnull
         @Override
-        public Map<String, ?> getOptions() {
-            return MapDbConfig.newConfig()
-                    .withLists()
-                    .toMap();
+        protected ImmutableConfig createConfig() {
+            return new MapDbConfig().withLists();
         }
     }
 }

@@ -47,8 +47,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("valueOf");
@@ -56,8 +56,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueFor(SingleFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueFor(SingleFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
         // TODO Implement this method
@@ -65,8 +65,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
     }
 
     @Override
-    public void removeValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeValue(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("removeValue");
@@ -78,8 +78,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Optional<Id> referenceOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("referenceOf");
@@ -87,8 +87,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(SingleFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    public Optional<Id> referenceFor(SingleFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
         // TODO Implement this method
@@ -96,8 +96,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
     }
 
     @Override
-    public void removeReference(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeReference(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("removeReference");
@@ -109,8 +109,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> valueOf(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueOf(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("valueOf");
@@ -118,16 +118,16 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public <V> Stream<V> allValuesOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Stream<V> allValuesOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("allValuesOf");
     }
 
     @Nonnull
-    public <V> Optional<V> valueFor(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> valueFor(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
         // TODO Implement this method
@@ -135,8 +135,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
     }
 
     @Override
-    public <V> void addValue(ManyFeatureBean key, V value) {
-        checkNotNull(key, "key");
+    public <V> void addValue(ManyFeatureBean feature, V value) {
+        checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
         // TODO Implement this method
@@ -144,8 +144,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean key, List<? extends V> collection) {
-        checkNotNull(key, "key");
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
+        checkNotNull(feature, "feature");
         checkNotNull(collection, "collection");
         checkNotContainsNull(collection);
 
@@ -159,16 +159,16 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public <V> Optional<V> removeValue(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public <V> Optional<V> removeValue(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("removeValue");
     }
 
     @Override
-    public void removeAllValues(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeAllValues(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("removeAllValues");
@@ -177,8 +177,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
     @Nonnull
     @Nonnegative
     @Override
-    public Optional<Integer> sizeOfValue(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Optional<Integer> sizeOfValue(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("sizeOfValue");
@@ -190,8 +190,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceOf(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public Optional<Id> referenceOf(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("referenceOf");
@@ -199,8 +199,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public Stream<Id> allReferencesOf(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Stream<Id> allReferencesOf(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("allReferencesOf");
@@ -208,8 +208,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public Optional<Id> referenceFor(ManyFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    public Optional<Id> referenceFor(ManyFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
         // TODO Implement this method
@@ -217,8 +217,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
     }
 
     @Override
-    public void addReference(ManyFeatureBean key, Id reference) {
-        checkNotNull(key, "key");
+    public void addReference(ManyFeatureBean feature, Id reference) {
+        checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
         // TODO Implement this method
@@ -226,8 +226,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean key, List<Id> collection) {
-        checkNotNull(key, "key");
+    public void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
+        checkNotNull(feature, "feature");
         checkNotNull(collection, "collection");
         checkNotContainsNull(collection);
 
@@ -241,16 +241,16 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public Optional<Id> removeReference(ManyFeatureBean key) {
-        checkNotNull(key, "key");
+    public Optional<Id> removeReference(ManyFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("removeReference");
     }
 
     @Override
-    public void removeAllReferences(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public void removeAllReferences(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("removeAllReferences");
@@ -258,8 +258,8 @@ class Default${databaseName}Backend extends Abstract${databaseName}Backend {
 
     @Nonnull
     @Override
-    public Optional<Integer> sizeOfReference(SingleFeatureBean key) {
-        checkNotNull(key, "key");
+    public Optional<Integer> sizeOfReference(SingleFeatureBean feature) {
+        checkNotNull(feature, "feature");
 
         // TODO Implement this method
         throw Throwables.notImplementedYet("sizeOfReference");

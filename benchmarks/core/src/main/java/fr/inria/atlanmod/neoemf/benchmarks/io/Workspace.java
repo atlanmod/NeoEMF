@@ -63,7 +63,6 @@ public class Workspace {
      */
     private static Path TEMP_DIRECTORY;
 
-    @SuppressWarnings("JavaDoc")
     private Workspace() {
         throw new IllegalStateException("This class should not be instantiated");
     }

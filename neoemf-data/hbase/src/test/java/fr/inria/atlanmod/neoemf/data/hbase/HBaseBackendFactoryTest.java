@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.hbase;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
-import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseContext;
+import fr.inria.atlanmod.neoemf.data.hbase.context.HBaseDefaultContext;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.provider.Arguments;
@@ -30,7 +30,7 @@ class HBaseBackendFactoryTest extends AbstractBackendFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return HBaseContext.getDefault();
+        return new HBaseDefaultContext();
     }
 
     @Disabled("Not supported")
@@ -42,7 +42,7 @@ class HBaseBackendFactoryTest extends AbstractBackendFactoryTest {
     @Override
     protected Stream<Arguments> allMappings() {
         return Stream.of(
-                Arguments.of(HBaseConfig.newConfig(), DefaultHBaseBackend.class)
+                Arguments.of(new HBaseConfig(), DefaultHBaseBackend.class)
         );
     }
 }

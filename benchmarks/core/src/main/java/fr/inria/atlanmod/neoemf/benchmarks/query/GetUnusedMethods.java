@@ -26,7 +26,7 @@ import static java.util.Objects.nonNull;
 import static org.eclipse.gmt.modisco.java.VisibilityKind.PRIVATE;
 
 /**
- *
+ * A {@link Query}
  */
 @ParametersAreNonnullByDefault
 abstract class GetUnusedMethods extends AbstractQuery<Collection<MethodDeclaration>> {

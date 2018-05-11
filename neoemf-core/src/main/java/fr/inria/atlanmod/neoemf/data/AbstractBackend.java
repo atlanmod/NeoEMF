@@ -8,8 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.commons.function.Copier;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.commons.service.ServiceDefinition;
+import fr.inria.atlanmod.commons.service.ServiceProvider;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
@@ -185,30 +186,18 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
 
     /**
      * Copies all contents from this backend to the target using the direct copy.
-     * <p>
-     * <b>WARNING:</b> This method requires the `neoemf-io` module.
      *
      * @param target the backend where to store the copied content
      */
     private void defaultCopyTo(Backend target) {
-        final Copier<DataMapper> copier = findDirectCopier();
+        final DataCopier copier = ServiceProvider.getInstance()
+                .load(DataCopier.class)
+                .findFirst()
+                .map(ServiceDefinition::get)
+                .<UnsupportedOperationException>orElseThrow(() -> new UnsupportedOperationException("Unable to find any DataCopier implementation"));
 
-        Store store = StoreFactory.getInstance().createStore(target, BaseConfig.newConfig().autoSave());
+        Store store = StoreFactory.getInstance().createStore(target, new BaseConfig<>().autoSave());
         copier.copy(this, store);
-    }
-
-    @Nonnull
-    @SuppressWarnings("unchecked")
-    private Copier<DataMapper> findDirectCopier() {
-        final String typeName = "fr.inria.atlanmod.neoemf.io.DirectDataCopier";
-
-        try {
-            final Class<Copier<DataMapper>> copierType = (Class<Copier<DataMapper>>) Class.forName(typeName);
-            return copierType.newInstance();
-        }
-        catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new UnsupportedOperationException(String.format("Unable to find class %s. Make sure the `neoemf-io` module is in the classpath", typeName));
-        }
     }
 
     /**

@@ -12,7 +12,7 @@ import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
+import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUriFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -38,9 +38,9 @@ public class HBaseImporter {
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 
         URI sourceUri = URI.createURI("model/sample.xmi");
-        URI targetUri = HBaseUri.builder().fromServer("localhost", 2181, "sample.hbase");
+        URI targetUri = new HBaseUriFactory().createRemoteUri("localhost", 2181, "sample.hbase");
 
-        ImmutableConfig config = HBaseConfig.newConfig();
+        ImmutableConfig config = new HBaseConfig();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
             targetResource.save(config.toMap());

@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- *
+ * A {@link Query}
  */
 @ParametersAreNonnullByDefault
 class GetBranchStatements extends AbstractQuery<Collection<Statement>> {

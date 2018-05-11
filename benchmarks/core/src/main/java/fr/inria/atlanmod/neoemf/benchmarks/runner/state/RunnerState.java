@@ -8,9 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
-import fr.inria.atlanmod.commons.Lazy;
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
+import fr.inria.atlanmod.neoemf.benchmarks.adapter.AdapterFactory;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import org.openjdk.jmh.annotations.Level;
@@ -21,14 +20,8 @@ import org.openjdk.jmh.annotations.State;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
-import java.util.Properties;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-
-import static java.util.Objects.isNull;
 
 /**
  * This state contains all the benchmarks parameters, and provides a ready-to-use {@link Adapter} and the preloaded
@@ -37,20 +30,7 @@ import static java.util.Objects.isNull;
 @State(Scope.Thread)
 public class RunnerState {
 
-    /**
-     * The name of the default properties file containing {@link Adapter} instances definition.
-     */
-    @Nonnull
-    private static final String ADAPTERS_PROPERTIES = "adapters.properties";
-
     // region JMH parameters
-
-    /**
-     * A map that holds all existing {@link Adapter} instances, identified by their name.
-     */
-    @Nonnull
-    @SuppressWarnings("unchecked")
-    private final Lazy<Map<String, Class<? extends Adapter>>> adapters = Lazy.with(this::loadAdapters);
 
     /**
      * The name of the current {@link org.eclipse.emf.ecore.resource.Resource} file.
@@ -149,47 +129,9 @@ public class RunnerState {
      */
     @Setup(Level.Trial)
     public void initArguments() throws IOException {
-        try {
-            Class<? extends Adapter> type = adapters.get().get(a);
-            if (isNull(type)) {
-                throw new IllegalArgumentException(String.format("No adapter named '%s' is registered", a));
-            }
-            adapter = type.newInstance();
-        }
-        catch (InstantiationException | IllegalAccessException e) {
-            throw Throwables.shouldNeverHappen(e);
-        }
-
+        adapter = AdapterFactory.createAdapter(a);
         baseConfig = ConfigParser.parse(o);
         useDirectImport = Boolean.valueOf(direct);
         resourceFile = adapter.getOrCreateResource(r);
-    }
-
-    /**
-     * Loads all known adapters from the properties file.
-     *
-     * @return the adapter mapping
-     */
-    @Nonnull
-    @SuppressWarnings("unchecked")
-    private Map<String, Class<? extends Adapter>> loadAdapters() {
-        try (InputStream in = RunnerState.class.getResourceAsStream('/' + ADAPTERS_PROPERTIES)) {
-            Properties properties = new Properties();
-            properties.load(in);
-
-            return properties.stringPropertyNames()
-                    .stream()
-                    .collect(Collectors.toMap(n -> n, n -> {
-                        try {
-                            return (Class<? extends Adapter>) Class.forName(properties.getProperty(n));
-                        }
-                        catch (ClassNotFoundException e) {
-                            throw new IllegalArgumentException(e);
-                        }
-                    }));
-        }
-        catch (IOException e) {
-            throw Throwables.shouldNeverHappen(e);
-        }
     }
 }

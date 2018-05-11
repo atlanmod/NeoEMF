@@ -50,7 +50,7 @@ class RecordingStoreListenerTest extends AbstractTest {
     @BeforeEach
     void setUp() {
         stats = new StoreStats();
-        ImmutableConfig config = BaseConfig.newConfig().recordStats(stats);
+        ImmutableConfig config = new BaseConfig<>().recordStats(stats);
 
         store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
     }
@@ -83,7 +83,7 @@ class RecordingStoreListenerTest extends AbstractTest {
 
     @Test
     void testNoStats() {
-        ImmutableConfig config = BaseConfig.newConfig();
+        ImmutableConfig config = new BaseConfig<>();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
 

@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -23,6 +22,7 @@ import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Table;
+import org.osgi.service.component.annotations.Component;
 
 import java.net.URL;
 
@@ -36,38 +36,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * ones. This is a limitation that will be solved in next releases. To avoid any consistency issue we recommend every
  * HBase resource right after their creation, ensuring the resource is using a persistent back-end.
  */
+@Component(service = BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class HBaseBackendFactory extends AbstractBackendFactory<HBaseConfig> {
 
     /**
-     * The literal description of the factory.
-     */
-    private static final String NAME = "hbase";
-
-    /**
      * Constructs a new {@code HBaseBackendFactory}.
      */
-    protected HBaseBackendFactory() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
-     */
-    @Nonnull
-    public static BackendFactory getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    @Override
-    public String name() {
-        return NAME;
-    }
-
-    @Override
-    public boolean supportsTransient() {
-        return false;
+    public HBaseBackendFactory() {
+        super("hbase", false);
     }
 
     @Nonnull
@@ -94,17 +71,5 @@ public class HBaseBackendFactory extends AbstractBackendFactory<HBaseConfig> {
         Table table = connection.getTable(tableName);
 
         return createMapper(config.getMapping(), table);
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final BackendFactory INSTANCE = new HBaseBackendFactory();
     }
 }

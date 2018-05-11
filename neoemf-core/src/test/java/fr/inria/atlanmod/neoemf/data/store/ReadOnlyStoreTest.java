@@ -43,7 +43,7 @@ class ReadOnlyStoreTest extends AbstractTest {
 
     @BeforeEach
     void setUp() {
-        ImmutableConfig config = BaseConfig.newConfig().readOnly();
+        ImmutableConfig config = new BaseConfig<>().readOnly();
         assertThat(config.isReadOnly()).isTrue();
 
         store = StoreFactory.getInstance().createStore(mock(Backend.class), config);

@@ -38,7 +38,8 @@ interface StoreCreator {
             targetFileName = targetFileName.replaceFirst("-id", "");
         }
 
-        return targetFileName + "." + adapter.getStoreExtension();
+        final String additionalExtension = adapter.getStoreExtension();
+        return targetFileName + (additionalExtension.isEmpty() ? "" : "." + additionalExtension);
     }
 
     /**

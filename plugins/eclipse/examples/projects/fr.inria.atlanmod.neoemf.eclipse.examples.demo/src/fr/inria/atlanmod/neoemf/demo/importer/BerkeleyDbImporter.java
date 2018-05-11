@@ -12,7 +12,7 @@ import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUri;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUriFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -38,11 +38,9 @@ public class BerkeleyDbImporter {
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 
         URI sourceUri = URI.createURI("model/sample.xmi");
-        URI targetUri = BerkeleyDbUri.builder().fromFile("databases/sample.berkeleydb");
+        URI targetUri = new BerkeleyDbUriFactory().createLocalUri("databases/sample.berkeleydb");
 
-        ImmutableConfig config = BerkeleyDbConfig.newConfig()
-                .withIndices()
-                .autoSave();
+        ImmutableConfig config = new BerkeleyDbConfig().withIndices().autoSave();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
             targetResource.save(config.toMap());

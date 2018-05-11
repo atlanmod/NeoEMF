@@ -8,12 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
-
-import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,64 +19,31 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend}.
  */
 @ParametersAreNonnullByDefault
-public abstract class BlueprintsAdapter extends AbstractNeoAdapter {
-
-    /**
-     * Constructs a new {@code BlueprintsAdapter}.
-     *
-     * @param storeExtension the extension of the resource, used for benchmarks
-     */
-    protected BlueprintsAdapter(String storeExtension) {
-        super(storeExtension);
-    }
-
-    @Nonnull
-    @Override
-    protected BackendFactory getFactory() {
-        return BlueprintsBackendFactory.getInstance();
-    }
+public abstract class BlueprintsAdapter extends AbstractPersistentAdapter {
 
     /**
      * An {@link BlueprintsAdapter} using TinkerGraph.
      */
-    @ParametersAreNonnullByDefault
+    @AdapterName("tinker")
     public static class Tinker extends BlueprintsAdapter {
-
-        /**
-         * Constructs a new {@code BlueprintsAdapter.Tinker}.
-         */
-        @SuppressWarnings("unused") // Called dynamically
-        public Tinker() {
-            super("tinker");
-        }
 
         @Nonnull
         @Override
-        public Map<String, ?> getOptions() {
-            return BlueprintsTinkerConfig.newConfig()
-                    .toMap();
+        protected ImmutableConfig createConfig() {
+            return new BlueprintsTinkerConfig();
         }
     }
 
     /**
      * An {@link BlueprintsAdapter} using Neo4j.
      */
-    @ParametersAreNonnullByDefault
+    @AdapterName("neo4j")
     public static class Neo4j extends BlueprintsAdapter {
-
-        /**
-         * Constructs a new {@code BlueprintsAdapter.Neo4j}.
-         */
-        @SuppressWarnings("unused") // Called dynamically
-        public Neo4j() {
-            super("neo4j");
-        }
 
         @Nonnull
         @Override
-        public Map<String, ?> getOptions() {
-            return BlueprintsNeo4jConfig.newConfig()
-                    .toMap();
+        protected ImmutableConfig createConfig() {
+            return new BlueprintsNeo4jConfig();
         }
     }
 }

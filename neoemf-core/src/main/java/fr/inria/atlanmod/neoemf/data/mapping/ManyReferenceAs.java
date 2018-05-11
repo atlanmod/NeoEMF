@@ -65,10 +65,10 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
     }
 
     @Override
-    default void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+    default void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        this.addAllValues(feature, references.stream().map(converter::convert).collect(Collectors.toList()));
+        this.addAllValues(feature, collection.stream().map(converter::convert).collect(Collectors.toList()));
     }
 
     @Override
@@ -79,10 +79,10 @@ public interface ManyReferenceAs<M> extends ManyValueMapper, ManyReferenceMapper
     }
 
     @Override
-    default int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
+    default int appendAllReferences(SingleFeatureBean feature, List<Id> collection) {
         Converter<Id, M> converter = manyReferenceConverter();
 
-        return this.appendAllValues(feature, references.stream().map(converter::convert).collect(Collectors.toList()));
+        return this.appendAllValues(feature, collection.stream().map(converter::convert).collect(Collectors.toList()));
     }
 
     @Nonnull

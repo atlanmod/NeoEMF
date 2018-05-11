@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.commons.AbstractFileBasedTest;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.bind.BindingEngine;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.im.DefaultInMemoryBackend;
@@ -55,10 +55,10 @@ class MapperCopyTest extends AbstractFileBasedTest {
      */
     @Nonnull
     private static PersistentResource createMockResource(File file, Backend backend) throws IOException {
-        BackendFactoryRegistry.getInstance().register(BindingEngine.schemeOf(MockBackendFactory.MockUri.class), new MockBackendFactory(backend));
+        BackendFactoryRegistry.getInstance().register(Bindings.schemeOf(MockBackendFactory.MockUriFactory.class), new MockBackendFactory(backend));
 
-        PersistentResource resource = PersistentResourceFactory.getInstance().createResource(MockBackendFactory.MockUri.builder().fromFile(file));
-        resource.save(MockBackendFactory.MockConfig.newConfig());
+        PersistentResource resource = PersistentResourceFactory.getInstance().createResource(new MockBackendFactory.MockUriFactory().createLocalUri(file));
+        resource.save(new MockBackendFactory.MockConfig());
         return resource;
     }
 
