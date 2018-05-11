@@ -54,8 +54,7 @@ class BackendFactoryRegistryTest extends AbstractTest {
      */
     @BeforeEach
     void unregisterFactories() {
-        REGISTRY.unregister(MOCK_1);
-        REGISTRY.unregister(MOCK_2);
+        REGISTRY.getFactories().keySet().forEach(REGISTRY::unregister);
     }
 
     /**
