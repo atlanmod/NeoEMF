@@ -13,7 +13,6 @@ import com.mongodb.ReadConcern;
 import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoDatabase;
 
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
@@ -21,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.osgi.service.component.annotations.Component;
 
 import java.net.URL;
 
@@ -33,33 +33,15 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 /**
  * A {@link BackendFactory} that creates {@link MongoDbBackend} instances.
  */
+@Component(service = BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig> {
 
     /**
-     * The literal description of the factory.
-     */
-    private static final String NAME = "mongodb";
-
-    /**
      * Constructs a new {@code MongoDbBackendFactory}.
      */
-    protected MongoDbBackendFactory() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
-     */
-    @Nonnull
-    public static BackendFactory getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    @Override
-    public String name() {
-        return NAME;
+    public MongoDbBackendFactory() {
+        super("mongodb", false);
     }
 
     @Nonnull
@@ -102,17 +84,5 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
                 .withCodecRegistry(registry)
                 .withWriteConcern(WriteConcern.MAJORITY)
                 .withReadConcern(ReadConcern.MAJORITY);
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final BackendFactory INSTANCE = new MongoDbBackendFactory();
     }
 }

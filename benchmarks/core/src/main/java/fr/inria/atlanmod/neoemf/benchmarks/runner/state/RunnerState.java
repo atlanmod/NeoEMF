@@ -50,8 +50,7 @@ public class RunnerState {
             "cdo",
             "neo4j",
             "berkeleydb-i",
-            "mapdb-i",
-            "mongodb"
+            "mapdb-i"
     })
     protected String a;
 

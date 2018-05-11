@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.mongodb;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
-import fr.inria.atlanmod.neoemf.data.mongodb.context.MongoDbContext;
+import fr.inria.atlanmod.neoemf.data.mongodb.context.MongoDbDefaultContext;
 
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -29,16 +29,14 @@ class MongoDbBackendFactoryTest extends AbstractBackendFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return MongoDbContext.getDefault();
+        return new MongoDbDefaultContext();
     }
 
     @Nonnull
     @Override
     protected Stream<Arguments> allMappings() {
         return Stream.of(
-                Arguments.of(MongoDbConfig.newConfig(), DefaultMongoDbBackend.class)
-
-                // TODO Fill with other mappings
+                Arguments.of(new MongoDbConfig(), DefaultMongoDbBackend.class)
         );
     }
 }

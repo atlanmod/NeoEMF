@@ -8,12 +8,10 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb.context;
 
-import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.context.AbstractRemoteContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mongodb.MongoDbBackendFactory;
-import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,23 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A specific {@link Context} for the MongoDb implementation.
  */
 @ParametersAreNonnullByDefault
-public abstract class MongoDbContext extends AbstractRemoteContext {
-
-    /**
-     * Creates a new {@code MongoDbContext}.
-     *
-     * @return a new context.
-     */
-    @Nonnull
-    public static Context getDefault() {
-        return new MongoDbContext() {
-            @Nonnull
-            @Override
-            public ImmutableConfig config() {
-                return MongoDbConfig.newConfig();
-            }
-        };
-    }
+public abstract class AbstractMongoDbContext extends AbstractRemoteContext {
 
     @Override
     public boolean isInitialized() {
@@ -60,7 +42,7 @@ public abstract class MongoDbContext extends AbstractRemoteContext {
     @Nonnull
     @Override
     public BackendFactory factory() {
-        return MongoDbBackendFactory.getInstance();
+        return new MongoDbBackendFactory();
     }
 
     @Nonnull
