@@ -13,6 +13,7 @@ import fr.inria.atlanmod.neoemf.bind.Bindings;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
+import java.net.InetAddress;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -140,5 +141,39 @@ public interface UriFactory {
      * @throws IllegalArgumentException      if {@code port < 0}
      */
     @Nonnull
-    URI createRemoteUri(String host, int port, String... segments);
+    URI createRemoteUri(String host, int port, String segments);
+
+    /**
+     * Creates a new URI from the {@code host}, {@code port}, and {@code model} by creating a hierarchical URI that
+     * references the distant model resource.
+     *
+     * @param host  the address of the server (use {@code "localhost"} if the server is running locally)
+     * @param port  the port of the server
+     * @param model a URI identifying the model in the database
+     *
+     * @return a new URI
+     *
+     * @throws UnsupportedOperationException if this URI builder does not support this method
+     * @throws NullPointerException          if any of the parameters is {@code null}
+     * @throws IllegalArgumentException      if {@code port < 0}
+     */
+    @Nonnull
+    URI createRemoteUri(InetAddress host, int port, URI model);
+
+    /**
+     * Creates a new URI from the {@code host}, {@code port}, and {@code model} by creating a hierarchical URI that
+     * references the distant model resource.
+     *
+     * @param host     the address of the server (use {@code "localhost"} if the server is running locally)
+     * @param port     the port of the server
+     * @param segments a string identifying the model in the database
+     *
+     * @return a new URI
+     *
+     * @throws UnsupportedOperationException if this URI builder does not support this method
+     * @throws NullPointerException          if any of the parameters is {@code null}
+     * @throws IllegalArgumentException      if {@code port < 0}
+     */
+    @Nonnull
+    URI createRemoteUri(InetAddress host, int port, String segments);
 }

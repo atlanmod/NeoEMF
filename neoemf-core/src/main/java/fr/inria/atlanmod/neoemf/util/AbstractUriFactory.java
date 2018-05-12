@@ -17,6 +17,8 @@ import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -24,6 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 import static fr.inria.atlanmod.commons.Preconditions.checkGreaterThanOrEqualTo;
+import static fr.inria.atlanmod.commons.Preconditions.checkLessThanOrEqualTo;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -167,26 +170,58 @@ public abstract class AbstractUriFactory implements UriFactory {
     @Nonnull
     @Override
     public URI createRemoteUri(String host, int port, URI model) {
-        return createRemoteUri(host, port, model.segments());
+        checkNotNull(model, "model");
+        checkNotNull(model.segments(), "model.segments");
+        checkArgument(model.segments().length == 1, "model.segments must contains only one occurence");
+
+        return createRemoteUri(host, port, model.segments()[0]);
     }
 
     @Nonnull
     @Override
-    public URI createRemoteUri(String host, int port, String... segments) {
+    public URI createRemoteUri(String host, int port, String model) {
+        checkNotNull(host, "host");
+
+        if (!supportsRemoteUris()) {
+            throw new UnsupportedOperationException(String.format("%s does not support server-based URIs", getClass().getSimpleName()));
+        }
+
+        try {
+            return createRemoteUri(InetAddress.getByName(host), port, model);
+        }
+        catch (UnknownHostException e) {
+            throw new IllegalArgumentException(String.format("Unknown host: %s", host), e);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public URI createRemoteUri(InetAddress host, int port, URI model) {
+        checkNotNull(model, "model");
+        checkNotNull(model.segments(), "model.segments");
+        checkArgument(model.segments().length == 1, "model.segments must contains only one occurence");
+
+        return createRemoteUri(host, port, model.segments()[0]);
+    }
+
+    @Nonnull
+    @Override
+    public URI createRemoteUri(InetAddress host, int port, String model) {
         if (!supportsRemoteUris()) {
             throw new UnsupportedOperationException(String.format("%s does not support server-based URIs", getClass().getSimpleName()));
         }
 
         checkNotNull(host, "host");
-        checkNotNull(segments, "segments");
-        checkGreaterThanOrEqualTo(port, 0, "port (%d) must not be negative", port);
+        checkGreaterThanOrEqualTo(port, 0, "port (%d) must be between 0-65535", port);
+        checkLessThanOrEqualTo(port, 65535, "port (%d) must be between 0-65535", port);
+        checkNotNull(model, "model");
 
         checkArgument(BackendFactoryRegistry.getInstance().isRegistered(scheme()), "Unregistered scheme (%s)", scheme());
 
         return URI.createHierarchicalURI(scheme(),
-                host + ':' + port,
+                host.getHostAddress() + ':' + port,
                 null,
-                segments,
+                new String[]{model},
                 null,
                 null);
     }

@@ -33,9 +33,9 @@ public abstract class AbstractUriFactoryTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromStandardUri() {
-        URI validUri = URI.createURI(context().uriScheme() + ":/test");
-        URI persistenceUri = context().createUri(validUri);
-        assertThat(persistenceUri.scheme()).isEqualTo(context().uriScheme());
+        URI baseUri = URI.createURI(context().uriScheme() + ":/test");
+        URI uri = context().createUri(baseUri);
+        assertThat(uri.scheme()).isEqualTo(context().uriScheme());
     }
 
     /**
@@ -43,9 +43,9 @@ public abstract class AbstractUriFactoryTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromFileUri() throws IOException {
-        URI fileUri = URI.createFileURI(currentTempFile().getAbsolutePath());
-        URI persistenceUri = context().createUri(fileUri);
-        assertThat(persistenceUri.scheme()).isEqualTo(context().uriScheme());
+        URI baseUri = URI.createFileURI(currentTempFile().getAbsolutePath());
+        URI uri = context().createUri(baseUri);
+        assertThat(uri.scheme()).isEqualTo(context().uriScheme());
     }
 
     /**
@@ -53,8 +53,8 @@ public abstract class AbstractUriFactoryTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateFileUriFromFile() throws IOException {
-        URI persistenceUri = context().createUri(currentTempFile());
-        assertThat(persistenceUri.scheme()).isEqualTo(context().uriScheme());
+        URI uri = context().createUri(currentTempFile());
+        assertThat(uri.scheme()).isEqualTo(context().uriScheme());
     }
 
     /**
@@ -62,9 +62,9 @@ public abstract class AbstractUriFactoryTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromStandardUriInvalidScheme() {
-        URI invalidURI = URI.createURI("invalid:/test");
+        URI uri = URI.createURI("invalid:/test");
 
-        assertThat(catchThrowable(() -> context().createUri(invalidURI)))
+        assertThat(catchThrowable(() -> context().createUri(uri)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -76,7 +76,6 @@ public abstract class AbstractUriFactoryTest extends AbstractUnitTest {
     @Test
     public void testCreateUriFromUriIfNotSupported() {
         AbstractUriFactory uriBuilder = AbstractUriFactory.class.cast(UriFactory.forScheme(context().uriScheme()));
-
         assumeFalse(uriBuilder.supportsLocalUris(), String.format("%s supports file-based URI", uriBuilder.getClass().getSimpleName()));
 
         assertThat(catchThrowable(() -> uriBuilder.createLocalUri(URI.createURI("uri0"))))
