@@ -491,16 +491,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
-                .first();
-
-        return Optional.ofNullable(instance)
-                .map(StoredInstance::getMultivaluedValues)
-                .filter(m -> m.containsKey(featureId))
-                .map(m -> m.get(featureId))
-                .map(List::size)
-                .filter(s -> s != 0);
+        return Optional.of(sizeOf(ownerId, FIELD_MANY_VALUE, featureId)).filter(s -> s != 0);
     }
 
     //endregion
@@ -761,16 +752,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_REF, featureId)))
-                .first();
-
-        return Optional.ofNullable(instance)
-                .map(StoredInstance::getMultivaluedReferences)
-                .filter(m -> m.containsKey(featureId))
-                .map(m -> m.get(featureId))
-                .map(List::size)
-                .filter(s -> s != 0);
+        return Optional.of(sizeOf(ownerId, FIELD_MANY_REF, featureId)).filter(s -> s != 0);
     }
 
     //endregion
