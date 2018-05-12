@@ -34,7 +34,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Projections.include;
-import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.pushEach;
 import static com.mongodb.client.model.Updates.set;
 import static com.mongodb.client.model.Updates.unset;
@@ -479,10 +478,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         updateOne(
                 eq(FIELD_ID, ownerId),
-                combine(
-                        unset(FIELD_SINGLE_VALUE),
-                        unset(FIELD_MANY_VALUE)
-                )
+                unset(FIELD_MANY_VALUE)
         );
     }
 
@@ -496,14 +492,15 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String featureId = Integer.toString(feature.id());
 
         final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_SINGLE_VALUE, featureId)))
+                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
                 .first();
 
-        if (nonNull(instance) && nonNull(instance.getSinglevaluedValues()) && !instance.getSinglevaluedValues().isEmpty()) {
-            return Optional.of(instance.getSinglevaluedValues().size());
-        }
-
-        return Optional.empty();
+        return Optional.ofNullable(instance)
+                .map(StoredInstance::getMultivaluedValues)
+                .filter(m -> m.containsKey(featureId))
+                .map(m -> m.get(featureId))
+                .map(List::size)
+                .filter(s -> s != 0);
     }
 
     //endregion
@@ -752,10 +749,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         updateOne(
                 eq(FIELD_ID, ownerId),
-                combine(
-                        unset(FIELD_SINGLE_REF),
-                        unset(FIELD_MANY_REF)
-                )
+                unset(FIELD_MANY_REF)
         );
     }
 
@@ -768,14 +762,15 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String featureId = Integer.toString(feature.id());
 
         final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_SINGLE_REF, featureId)))
+                .projection(include(combineField(FIELD_MANY_REF, featureId)))
                 .first();
 
-        if (nonNull(instance) && nonNull(instance.getSinglevaluedReferences()) && !instance.getSinglevaluedReferences().isEmpty()) {
-            return Optional.of(instance.getSinglevaluedReferences().size());
-        }
-
-        return Optional.empty();
+        return Optional.ofNullable(instance)
+                .map(StoredInstance::getMultivaluedReferences)
+                .filter(m -> m.containsKey(featureId))
+                .map(m -> m.get(featureId))
+                .map(List::size)
+                .filter(s -> s != 0);
     }
 
     //endregion
