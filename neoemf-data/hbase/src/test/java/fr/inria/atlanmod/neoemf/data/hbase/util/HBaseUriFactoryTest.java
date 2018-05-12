@@ -29,8 +29,13 @@ class HBaseUriFactoryTest extends AbstractUriFactoryTest {
         return new HBaseDefaultContext();
     }
 
-    @Disabled("Not supported because of the mini-cluster")
+    @Disabled("Not supported")
     @Override
     public void testCreateUriFromStandardUriInvalidScheme() {
+    }
+
+    @Disabled("Not supported")
+    @Override
+    public void testCreateUriFromFileUri() {
     }
 }
