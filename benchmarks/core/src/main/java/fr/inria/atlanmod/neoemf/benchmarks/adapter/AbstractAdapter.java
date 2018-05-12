@@ -216,12 +216,11 @@ abstract class AbstractAdapter implements Adapter.Internal {
         }
 
         // Check by content
-        final Resource resource = load(uri, new BaseConfig<>());
-        if (!resource.getContents().isEmpty()) {
-            unload(resource);
-            return true;
-        }
+        final Resource resource = load(uri, new BaseConfig<>().log());
+        final boolean exists = !resource.getContents().isEmpty();
 
-        return false;
+        unload(resource);
+
+        return exists;
     }
 }
