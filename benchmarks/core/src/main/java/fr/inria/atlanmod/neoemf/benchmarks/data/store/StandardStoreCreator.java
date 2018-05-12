@@ -6,9 +6,8 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.resource;
+package fr.inria.atlanmod.neoemf.benchmarks.data.store;
 
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
@@ -19,7 +18,6 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -31,27 +29,30 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A {@link StoreCreator} that uses standard EMF for store creation.
  */
 @ParametersAreNonnullByDefault
-public final class StandardStoreCreator implements StoreCreator {
+public class StandardStoreCreator implements StoreCreator {
 
+    /**
+     *
+     */
     @Nonnull
+    private final Adapter.Internal adapter;
+
+    /**
+     * Constructs a new {@code StandardStoreCreator}.
+     *
+     * @param adapter
+     */
+    public StandardStoreCreator(Adapter.Internal adapter) {
+        this.adapter = adapter;
+    }
+
     @Override
-    public File getOrCreateStore(File file, ImmutableConfig config, Adapter.Internal adapter, Path dir) throws IOException {
-        File targetFile = dir.resolve(StoreCreator.getTargetFileName(file, adapter)).toFile();
-
-        if (targetFile.exists()) {
-            return targetFile;
-        }
-
-        Log.info("Creating store with standard EMF");
-
+    public void create(File resourceFile, URI uri, ImmutableConfig config) throws IOException {
+        adapter.initAndGetEPackage();
         org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
-        Log.info("Loading resource from: {0}", file);
-
-        URI sourceUri = URI.createFileURI(file.getAbsolutePath());
+        URI sourceUri = URI.createFileURI(resourceFile.getAbsolutePath());
         Resource sourceResource = new ResourceSetImpl().createResource(sourceUri);
-
-        adapter.initAndGetEPackage();
 
         Map<String, Object> loadOpts = new HashMap<>();
         if (Objects.equals("zxmi", sourceUri.fileExtension())) {
@@ -59,19 +60,14 @@ public final class StandardStoreCreator implements StoreCreator {
         }
         sourceResource.load(loadOpts);
 
-        Log.info("Migrating resource content...");
-
-        Resource targetResource = adapter.createResource(targetFile);
+        Resource targetResource = adapter.createResource(uri);
         adapter.save(targetResource, config);
 
         targetResource.getContents().addAll(sourceResource.getContents());
 
-        Log.info("Saving resource to: {0}", targetResource.getURI());
         adapter.save(targetResource, config);
 
         sourceResource.unload();
         adapter.unload(targetResource);
-
-        return targetFile;
     }
 }

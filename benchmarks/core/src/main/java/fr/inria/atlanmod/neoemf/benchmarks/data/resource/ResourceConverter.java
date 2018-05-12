@@ -6,12 +6,12 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.resource;
+package fr.inria.atlanmod.neoemf.benchmarks.data.resource;
 
 import fr.inria.atlanmod.commons.io.MoreFiles;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
-import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
+import fr.inria.atlanmod.neoemf.benchmarks.io.LocalWorkspace;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -40,7 +40,7 @@ final class ResourceConverter implements ResourceTransformer {
     @Override
     public File transform(File file, Adapter.Internal adapter) throws IOException {
         String targetFileName = MoreFiles.nameWithoutExtension(file.getAbsolutePath()) + "-id.xmi";
-        File targetFile = Workspace.getResourcesDirectory().resolve(targetFileName).toFile();
+        File targetFile = LocalWorkspace.getResourcesDirectory().resolve(targetFileName).toFile();
 
         if (targetFile.exists()) {
             return targetFile;

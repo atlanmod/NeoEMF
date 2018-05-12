@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
-import java.io.File;
+import org.eclipse.emf.common.util.URI;
 
 import javax.annotation.Nonnull;
 
@@ -22,9 +22,9 @@ public class ReadWriteRunnerState extends ReadOnlyRunnerState {
 
     @Nonnull
     @Override
-    protected File storeFile() {
+    protected URI resourceUri() {
         try {
-            return adapter().copy(super.storeFile());
+            return adapter().copy(super.resourceUri());
         }
         catch (Exception e) {
             throw new RuntimeException(e);

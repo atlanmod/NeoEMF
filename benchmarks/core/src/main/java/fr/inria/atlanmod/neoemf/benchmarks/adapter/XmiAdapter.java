@@ -15,7 +15,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Map;
 
@@ -43,8 +43,13 @@ public class XmiAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource createResource(File file) {
-        final URI uri = URI.createFileURI(file.getAbsolutePath());
+    public URI createUri(Path directory, String fileName) {
+        return URI.createFileURI(directory.resolve(fileName).toFile().getAbsolutePath());
+    }
+
+    @Nonnull
+    @Override
+    public Resource createResource(URI uri) {
         return new ResourceSetImpl().createResource(uri);
     }
 

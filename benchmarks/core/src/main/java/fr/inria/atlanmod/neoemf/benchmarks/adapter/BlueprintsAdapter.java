@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackend}.
  */
 @ParametersAreNonnullByDefault
-public abstract class BlueprintsAdapter extends AbstractPersistentAdapter {
+public abstract class BlueprintsAdapter extends AbstractPersistentLocalAdapter {
 
     /**
      * An {@link BlueprintsAdapter} using TinkerGraph.

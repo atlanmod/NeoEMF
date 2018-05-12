@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackend}.
  */
 @ParametersAreNonnullByDefault
-public abstract class MapDbAdapter extends AbstractPersistentAdapter {
+public abstract class MapDbAdapter extends AbstractPersistentLocalAdapter {
 
     /**
      * A {@link MapDbAdapter} with a mapping with indices.

@@ -24,6 +24,7 @@ import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.Table;
 import org.osgi.service.component.annotations.Component;
 
+import java.io.IOException;
 import java.net.URL;
 
 import javax.annotation.Nonnull;
@@ -49,17 +50,33 @@ public class HBaseBackendFactory extends AbstractBackendFactory<HBaseConfig> {
 
     @Nonnull
     @Override
-    protected Backend createRemoteBackend(URL url, HBaseConfig config) throws Exception {
+    protected Backend createRemoteBackend(URL url, HBaseConfig config) throws IOException {
         Configuration configuration = HBaseConfiguration.create();
         configuration.set("hbase.zookeeper.quorum", url.getHost());
         configuration.set("hbase.zookeeper.property.clientPort", String.valueOf(url.getPort() == -1 ? 2181 : url.getPort()));
 
-        Connection connection = ConnectionFactory.createConnection(configuration);
-        Admin admin = connection.getAdmin();
+        final Connection connection = ConnectionFactory.createConnection(configuration);
+        final TableName tableName = TableName.valueOf(url.getPath().substring(1));
 
-        TableName tableName = TableName.valueOf(url.getPath().substring(1));
+        if (!config.isReadOnly()) {
+            createTables(tableName, connection.getAdmin());
+        }
 
-        if (!admin.tableExists(tableName) && !config.isReadOnly()) {
+        Table table = connection.getTable(tableName);
+
+        return createMapper(config.getMapping(), table);
+    }
+
+    /**
+     * Creates all required tables.
+     *
+     * @param tableName the name of the table
+     * @param admin     the administrator of the tables
+     *
+     * @throws IOException if an I/O occurs when creating tables
+     */
+    private void createTables(TableName tableName, Admin admin) throws IOException {
+        if (!admin.tableExists(tableName)) {
             HTableDescriptor tableDescriptor = new HTableDescriptor(tableName)
                     .addFamily(new HColumnDescriptor(AbstractHBaseBackend.FAMILY_PROPERTY))
                     .addFamily(new HColumnDescriptor(AbstractHBaseBackend.FAMILY_TYPE))
@@ -67,9 +84,5 @@ public class HBaseBackendFactory extends AbstractBackendFactory<HBaseConfig> {
 
             admin.createTable(tableDescriptor);
         }
-
-        Table table = connection.getTable(tableName);
-
-        return createMapper(config.getMapping(), table);
     }
 }

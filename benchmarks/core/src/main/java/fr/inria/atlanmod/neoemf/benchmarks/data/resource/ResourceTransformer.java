@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.resource;
+package fr.inria.atlanmod.neoemf.benchmarks.data.resource;
 
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 
