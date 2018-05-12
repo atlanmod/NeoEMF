@@ -8,6 +8,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.mongodb.MongoDbBackend}.
+ *
+ * @see "https://hub.docker.com/_/mongo/"
  */
 @AdapterName("mongodb")
 @ParametersAreNonnullByDefault
@@ -21,14 +23,12 @@ public class MongoDbAdapter extends AbstractPersistentRemoteAdapter {
 
     @Nonnull
     @Override
-    // FIXME Must be dynamic
     protected String getHost() {
         return "localhost";
     }
 
     @Override
-    // FIXME Must be dynamic
     protected int getPort() {
-        return 32770;
+        return 27017;
     }
 }
