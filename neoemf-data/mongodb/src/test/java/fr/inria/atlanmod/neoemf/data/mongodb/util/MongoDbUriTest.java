@@ -29,9 +29,13 @@ class MongoDbUriTest extends AbstractUriFactoryTest {
         return new MongoDbDefaultContext();
     }
 
-    @Disabled
+    @Disabled("Not supported")
     @Override
     public void testCreateUriFromStandardUriInvalidScheme() {
-        super.testCreateUriFromStandardUriInvalidScheme();
+    }
+
+    @Disabled("Not supported")
+    @Override
+    public void testCreateUriFromFileUri() {
     }
 }
