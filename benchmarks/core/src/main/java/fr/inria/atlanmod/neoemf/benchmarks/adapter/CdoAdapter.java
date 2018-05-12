@@ -26,6 +26,7 @@ import org.eclipse.emf.cdo.server.net4j.CDONet4jServerUtil;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.spi.server.ISessionProtocol;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.net4j.Net4jUtil;
 import org.eclipse.net4j.connector.IConnector;
@@ -43,8 +44,8 @@ import org.eclipse.net4j.util.lifecycle.ILifecycle;
 import org.h2.jdbcx.JdbcDataSource;
 
 import java.io.Closeable;
-import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -77,9 +78,8 @@ public class CdoAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource createResource(File file) {
-        server = new EmbeddedCdoServer(file.toPath());
-        return server.getTransaction().getOrCreateResource(file.getName());
+    public URI createUri(Path directory, String fileName) {
+        return URI.createFileURI(directory.resolve(fileName).toFile().getAbsolutePath());
     }
 
     @Override
@@ -99,6 +99,17 @@ public class CdoAdapter extends AbstractAdapter {
         Map<String, Object> options = new HashMap<>();
         options.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, server.getTransaction());
         return options;
+    }
+
+    @Nonnull
+    @Override
+    public Resource createResource(URI uri) {
+        checkState(uri.isFile());
+
+        final Path file = Paths.get(uri.toFileString());
+
+        server = new EmbeddedCdoServer(file);
+        return server.getTransaction().getOrCreateResource(file.getFileName().toString());
     }
 
     /**

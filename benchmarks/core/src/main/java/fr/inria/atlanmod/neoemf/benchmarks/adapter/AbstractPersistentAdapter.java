@@ -22,7 +22,6 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
-import java.io.File;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -44,6 +43,32 @@ abstract class AbstractPersistentAdapter extends AbstractAdapter {
         super("neoemf", org.eclipse.gmt.modisco.java.neoemf.impl.JavaPackageImpl.class);
     }
 
+    @Override
+    public boolean supportsMapper() {
+        return true;
+    }
+
+    @Nonnull
+    @Override
+    protected final Map<String, ?> getOptions(ImmutableConfig config) {
+        return new BaseConfig<>().merge(config).merge(createConfig()).toMap();
+    }
+
+    @Nonnull
+    @Override
+    public Resource createResource(URI uri) {
+        return new ResourceSetImpl().createResource(uri);
+    }
+
+    @Nonnull
+    @Override
+    public DataMapper createMapper(URI uri, ImmutableConfig config) {
+        ImmutableConfig mergedConfig = new BaseConfig<>().merge(config).merge(createConfig());
+
+        Backend backend = getBackendFactory().createBackend(uri, mergedConfig);
+        return StoreFactory.getInstance().createStore(backend, mergedConfig);
+    }
+
     /**
      * Creates a new configuration.
      *
@@ -53,12 +78,12 @@ abstract class AbstractPersistentAdapter extends AbstractAdapter {
     protected abstract ImmutableConfig createConfig();
 
     /**
-     * Returns the {@link BackendFactory} associated to this adapter.
+     * Returns the {@link BackendFactory} associated with this adapter.
      *
-     * @return a factory
+     * @return the backend factory
      */
     @Nonnull
-    protected final BackendFactory getFactory() {
+    protected final BackendFactory getBackendFactory() {
         final FactoryBinding annotation = createConfig().getClass().getAnnotation(FactoryBinding.class);
         checkState(nonNull(annotation), "Cannot retrieve the %s instance for this adapter", BackendFactory.class.getSimpleName());
 
@@ -71,30 +96,13 @@ abstract class AbstractPersistentAdapter extends AbstractAdapter {
         }
     }
 
-    @Override
-    public boolean supportsMapper() {
-        return true;
-    }
-
+    /**
+     * Returns the {@link UriFactory} associated with this adapter.
+     *
+     * @return the URI factory
+     */
     @Nonnull
-    @Override
-    public DataMapper createMapper(File file, ImmutableConfig config) {
-        ImmutableConfig mergedConfig = new BaseConfig<>().merge(config).merge(createConfig());
-
-        Backend backend = getFactory().createBackend(URI.createFileURI(file.getAbsolutePath()), mergedConfig);
-        return StoreFactory.getInstance().createStore(backend, mergedConfig);
-    }
-
-    @Nonnull
-    @Override
-    public Resource createResource(File file) {
-        URI uri = UriFactory.forName(getFactory().name()).createLocalUri(file);
-        return new ResourceSetImpl().createResource(uri);
-    }
-
-    @Nonnull
-    @Override
-    protected final Map<String, ?> getOptions(ImmutableConfig config) {
-        return new BaseConfig<>().merge(config).merge(createConfig()).toMap();
+    protected final UriFactory getUriFactory() {
+        return UriFactory.forName(getBackendFactory().name());
     }
 }

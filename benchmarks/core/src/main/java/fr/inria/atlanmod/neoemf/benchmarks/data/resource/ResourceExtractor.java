@@ -6,9 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.resource;
-
-import fr.inria.atlanmod.commons.log.Log;
+package fr.inria.atlanmod.neoemf.benchmarks.data.resource;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,7 +40,8 @@ final class ResourceExtractor {
     public File extract(String filename, Path outputDir) throws IOException {
         File outputFile = null;
         boolean fileFound = false;
-        try (ZipInputStream inputStream = new ZipInputStream(Stores.class.getResourceAsStream("/" + Resources.RESOURCES_ZIP))) {
+
+        try (ZipInputStream inputStream = new ZipInputStream(ResourceExtractor.class.getResourceAsStream("/" + Resources.RESOURCES_ZIP))) {
             ZipEntry entry = inputStream.getNextEntry();
             while (nonNull(entry) || !fileFound) {
                 if (!entry.isDirectory() && Objects.equals(new File(entry.getName()).getName(), filename)) {
@@ -53,6 +52,7 @@ final class ResourceExtractor {
                 entry = inputStream.getNextEntry();
             }
         }
+
         return outputFile;
     }
 
@@ -71,16 +71,14 @@ final class ResourceExtractor {
     @Nonnull
     private File extractEntry(ZipInputStream input, ZipEntry entry, Path outputDir) throws IOException {
         File outputFile = outputDir.resolve(new File(entry.getName()).getName()).toFile();
-        if (outputFile.exists()) {
-            Log.info("Already extracted resource: {0}", outputFile);
-            return outputFile;
-        }
 
-        try (OutputStream output = new FileOutputStream(outputFile)) {
-            final byte[] buffer = new byte[4096];
-            int count;
-            while (-1 != (count = input.read(buffer))) {
-                output.write(buffer, 0, count);
+        if (!outputFile.exists()) {
+            try (OutputStream output = new FileOutputStream(outputFile)) {
+                final byte[] buffer = new byte[4096];
+                int count;
+                while (-1 != (count = input.read(buffer))) {
+                    output.write(buffer, 0, count);
+                }
             }
         }
 

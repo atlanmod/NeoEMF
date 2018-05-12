@@ -6,21 +6,24 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.benchmarks.resource;
+package fr.inria.atlanmod.neoemf.benchmarks.data.resource;
 
 import fr.inria.atlanmod.commons.Lazy;
 import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.commons.io.MoreFiles;
 import fr.inria.atlanmod.commons.log.Log;
+import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
-import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
+import fr.inria.atlanmod.neoemf.benchmarks.io.LocalWorkspace;
 
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +70,11 @@ public final class Resources {
     @Nonnull
     private static Lazy<Map<String, String>> registeredResources = Lazy.with(Resources::getRegisteredResources);
 
+    static {
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
+    }
+
     private Resources() {
         throw new IllegalStateException("This class should not be instantiated");
     }
@@ -84,7 +92,7 @@ public final class Resources {
      */
     @Nonnull
     public static File getOrCreateResource(String resourceFileName, Adapter.Internal adapter) throws IOException {
-        Log.info("Initializing the resource: {0}", resourceFileName);
+        Log.info("Initializing the resource {0} ...", resourceFileName);
 
         checkNotNull(resourceFileName);
         checkArgument(resourceFileName.length() >= 4);
@@ -103,7 +111,7 @@ public final class Resources {
 
         // Retrieve the resource from the 'resources/resource.zip' or from the file system
         File file = getZipResources().contains(resourceFileName)
-                ? new ResourceExtractor().extract(resourceFileName, Workspace.getResourcesDirectory())
+                ? new ResourceExtractor().extract(resourceFileName, LocalWorkspace.getResourcesDirectory())
                 : new File(resourceFileName);
 
         // Post-process the resource
@@ -121,7 +129,7 @@ public final class Resources {
      *
      * @throws IllegalArgumentException if the resource is not valid
      */
-    static void checkValid(String fileName) {
+    public static void checkValid(String fileName) {
         checkNotNull(fileName);
         String fileExtension = MoreFiles.fileExtension(fileName);
         checkArgument(fileExtension.equals("xmi") || fileExtension.equals("zxmi"),
@@ -142,7 +150,7 @@ public final class Resources {
         if (isNull(availableResources)) {
             availableResources = new ArrayList<>();
 
-            try (ZipInputStream inputStream = new ZipInputStream(Stores.class.getResourceAsStream("/" + RESOURCES_ZIP))) {
+            try (ZipInputStream inputStream = new ZipInputStream(ResourceExtractor.class.getResourceAsStream("/" + RESOURCES_ZIP))) {
                 ZipEntry entry = inputStream.getNextEntry();
                 while (nonNull(entry)) {
                     if (!entry.isDirectory()) {
@@ -175,4 +183,31 @@ public final class Resources {
     }
 
     // endregion
+
+    /**
+     * Adapts the file name of the {@code file} according to this adapter.
+     *
+     * @param file the original resource file
+     *
+     * @return the adapted file name
+     */
+    @Nonnull
+    public static String getFileName(File file, Adapter.Internal adapter, boolean isTemporary) {
+        Resources.checkValid(file.getName());
+        checkArgument(file.exists(), "Resource '%s' does not exist", file);
+
+        String targetFileName = MoreFiles.nameWithoutExtension(file.getAbsolutePath());
+
+        // Has been converted ?
+        if (targetFileName.contains("-id." + adapter.getResourceExtension() + '.')) {
+            targetFileName = targetFileName.replaceFirst("-id", Strings.EMPTY);
+        }
+
+        if (isTemporary) {
+            targetFileName = '_' + Instant.now().getEpochSecond() + '.' + targetFileName;
+        }
+
+        final String additionalExtension = adapter.getStoreExtension();
+        return targetFileName + (additionalExtension.isEmpty() ? Strings.EMPTY : '.' + additionalExtension);
+    }
 }

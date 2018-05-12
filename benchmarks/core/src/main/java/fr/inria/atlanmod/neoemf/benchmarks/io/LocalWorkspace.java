@@ -32,7 +32,7 @@ import static java.util.Objects.nonNull;
  */
 @Static
 @ParametersAreNonnullByDefault
-public class Workspace {
+public class LocalWorkspace {
 
     /**
      * The environment variable key of the NeoEMF home directory.
@@ -63,7 +63,7 @@ public class Workspace {
      */
     private static Path TEMP_DIRECTORY;
 
-    private Workspace() {
+    private LocalWorkspace() {
         throw new IllegalStateException("This class should not be instantiated");
     }
 

@@ -8,16 +8,15 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
-import fr.inria.atlanmod.neoemf.benchmarks.io.Workspace;
+import fr.inria.atlanmod.neoemf.benchmarks.io.LocalWorkspace;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.TearDown;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -38,7 +37,7 @@ public class ReadOnlyRunnerState extends RunnerState {
     /**
      * The location of the current {@link Adapter}.
      */
-    private File storeFile;
+    private URI resourceUri;
 
     /**
      * Returns the current resource loaded from the datastore.
@@ -52,8 +51,8 @@ public class ReadOnlyRunnerState extends RunnerState {
      * Returns the location of the current {@link Adapter}.
      */
     @Nonnull
-    protected File storeFile() {
-        return storeFile;
+    protected URI resourceUri() {
+        return resourceUri;
     }
 
     /**
@@ -61,11 +60,8 @@ public class ReadOnlyRunnerState extends RunnerState {
      */
     @Setup(Level.Iteration)
     public void loadResource() throws IOException {
-        Log.info("Initializing the data store");
-        storeFile = adapter().getOrCreateStore(resourceFile(), baseConfig(), useDirectImport());
-
-        Log.info("Loading the resource");
-        resource = adapter().load(storeFile(), baseConfig());
+        resourceUri = adapter().getOrCreateStore(resourceFile(), baseConfig(), useDirectImport());
+        resource = adapter().load(resourceUri(), baseConfig());
     }
 
     /**
@@ -73,12 +69,11 @@ public class ReadOnlyRunnerState extends RunnerState {
      */
     @TearDown(Level.Iteration)
     public void unloadResource() {
-        Log.info("Unloading the resource");
         if (!Objects.isNull(resource)) {
             adapter().unload(resource);
             resource = null;
         }
 
-        Workspace.cleanTempDirectory();
+        LocalWorkspace.cleanTempDirectory();
     }
 }

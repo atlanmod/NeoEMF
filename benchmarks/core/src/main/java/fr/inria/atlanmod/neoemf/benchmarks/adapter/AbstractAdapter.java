@@ -9,17 +9,27 @@
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.commons.Throwables;
+import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.primitive.Strings;
-import fr.inria.atlanmod.neoemf.benchmarks.resource.Resources;
-import fr.inria.atlanmod.neoemf.benchmarks.resource.Stores;
+import fr.inria.atlanmod.neoemf.benchmarks.data.resource.Resources;
+import fr.inria.atlanmod.neoemf.benchmarks.data.store.DirectStoreCreator;
+import fr.inria.atlanmod.neoemf.benchmarks.data.store.FileStoreCopier;
+import fr.inria.atlanmod.neoemf.benchmarks.data.store.HierarchicalStoreCopier;
+import fr.inria.atlanmod.neoemf.benchmarks.data.store.StandardStoreCreator;
+import fr.inria.atlanmod.neoemf.benchmarks.data.store.StoreCopier;
+import fr.inria.atlanmod.neoemf.benchmarks.data.store.StoreCreator;
+import fr.inria.atlanmod.neoemf.benchmarks.io.LocalWorkspace;
+import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Objects;
 
@@ -27,7 +37,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.isNull;
 
 /**
@@ -72,28 +81,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
         this.name = annotation.value();
     }
 
-    @Nonnull
-    @Override
-    public String getResourceExtension() {
-        return category;
-    }
-
-    @Nonnull
-    @Override
-    public String getStoreExtension() {
-        return Objects.equals(name, category) ? Strings.EMPTY : name;
-    }
-
-    @Nonnull
-    @Override
-    public final EPackage initAndGetEPackage() {
-        try {
-            return (EPackage) modelPackage.getMethod("init").invoke(null);
-        }
-        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw Throwables.shouldNeverHappen(e);
-        }
-    }
+    // region Adapter
 
     @Nonnull
     @Override
@@ -103,22 +91,28 @@ abstract class AbstractAdapter implements Adapter.Internal {
 
     @Nonnull
     @Override
-    public File getOrCreateStore(File file, ImmutableConfig config, boolean useDirectImport) throws IOException {
-        return getOrCreateStore(file, config, useDirectImport, false);
+    public URI getOrCreateStore(File resourceFile, ImmutableConfig config, boolean useDirectImport) throws IOException {
+        final URI uri = createUri(LocalWorkspace.getStoreDirectory(), Resources.getFileName(resourceFile, this, false));
+        if (!exists(uri)) {
+            createStore(resourceFile, uri, config, useDirectImport);
+        }
+        return uri;
     }
 
     @Nonnull
     @Override
-    public File createTempStore(File file, ImmutableConfig config, boolean useDirectImport) throws IOException {
-        return getOrCreateStore(file, config, useDirectImport, true);
+    public URI createTempStore(File resourceFile, ImmutableConfig config, boolean useDirectImport) throws IOException {
+        final URI uri = createUri(LocalWorkspace.newTempDirectory(), Resources.getFileName(resourceFile, this, true));
+        createStore(resourceFile, uri, config, useDirectImport);
+        return uri;
     }
 
     @Nonnull
     @Override
-    public Resource load(File file, ImmutableConfig config) throws IOException {
+    public Resource load(URI uri, ImmutableConfig config) throws IOException {
         initAndGetEPackage();
 
-        Resource resource = createResource(file);
+        final Resource resource = createResource(uri);
         resource.load(getOptions(config));
         return resource;
     }
@@ -137,8 +131,50 @@ abstract class AbstractAdapter implements Adapter.Internal {
 
     @Nonnull
     @Override
-    public File copy(File file) throws IOException {
-        return Stores.copyStore(file);
+    public URI copy(URI uri) throws IOException {
+        final StoreCopier copier = uri.isFile()
+                ? new FileStoreCopier(this)
+                : new HierarchicalStoreCopier(this);
+
+        return copier.copy(uri);
+    }
+
+    // endregion
+
+    // region Adapter.Internal
+
+    @Nonnull
+    @Override
+    public final EPackage initAndGetEPackage() {
+        try {
+            return (EPackage) modelPackage.getMethod("init").invoke(null);
+        }
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw Throwables.shouldNeverHappen(e);
+        }
+    }
+
+    @Nonnull
+    @Override
+    public String getResourceExtension() {
+        return category;
+    }
+
+    @Nonnull
+    @Override
+    public String getStoreExtension() {
+        return Objects.equals(name, category) ? Strings.EMPTY : name;
+    }
+
+    // endregion
+
+    /**
+     * Checks that this {@code Adapter} supports the creation of {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper}s.
+     *
+     * @return {@code true} if this {@code Adapter} supports the creation of DataMapper instances
+     */
+    protected boolean supportsMapper() {
+        return false;
     }
 
     /**
@@ -152,25 +188,40 @@ abstract class AbstractAdapter implements Adapter.Internal {
     protected abstract Map<String, ?> getOptions(ImmutableConfig config);
 
     /**
-     * Retrieves or creates a {@link Resource} used for benchmarks.
+     * Creates a data store located by the {@code uri} from the given {@code resourceFile}.
      *
-     * @param file      the file to retrieve the resource
-     * @param temporary {@code true} if the resource is temporary and must be placed in a temporary folder
-     *
-     * @return the resource
+     * @throws IOException if an I/O error occurs when creating the datastore
      */
-    @Nonnull
-    protected File getOrCreateStore(File file, ImmutableConfig config, boolean useDirectImport, boolean temporary) throws IOException {
-        File storeFile;
+    private void createStore(File resourceFile, URI uri, ImmutableConfig config, boolean useDirectImport) throws IOException {
+        Log.info("Creating the datastore at {0} ...", uri);
 
-        if (temporary) {
-            storeFile = Stores.createTempStore(file, config, this, useDirectImport);
-        }
-        else {
-            storeFile = Stores.getOrCreateStore(file, config, this, useDirectImport);
+        final StoreCreator creator = useDirectImport && supportsMapper()
+                ? new DirectStoreCreator(this)
+                : new StandardStoreCreator(this);
+
+        creator.create(resourceFile, uri, config);
+    }
+
+    /**
+     * Checks that the resource located by the {@code uri} exists.
+     *
+     * @param uri the URI locating the resource
+     *
+     * @return {@code true} if the resource exists, {@code false} otherwise
+     */
+    private boolean exists(URI uri) throws IOException {
+        // Check by file
+        if (uri.isFile()) {
+            return Paths.get(uri.toFileString()).toFile().exists();
         }
 
-        checkState(storeFile.exists(), "'%s' does not exist in resource directory", file.getName());
-        return storeFile;
+        // Check by content
+        final Resource resource = load(uri, new BaseConfig<>());
+        if (!resource.getContents().isEmpty()) {
+            unload(resource);
+            return true;
+        }
+
+        return false;
     }
 }

@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An {@link Adapter} on top of a {@link fr.inria.atlanmod.neoemf.data.berkeleydb.BerkeleyDbBackend}.
  */
 @ParametersAreNonnullByDefault
-public abstract class BerkeleyDbAdapter extends AbstractPersistentAdapter {
+public abstract class BerkeleyDbAdapter extends AbstractPersistentLocalAdapter {
 
     /**
      * A {@link BerkeleyDbAdapter} with a mapping with indices.
