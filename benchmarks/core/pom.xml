@@ -89,6 +89,11 @@
             <artifactId>neoemf-data-berkeleydb</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-hbase</artifactId>
+        </dependency>
+
         <!-- Benchmark -->
 
         <dependency>
