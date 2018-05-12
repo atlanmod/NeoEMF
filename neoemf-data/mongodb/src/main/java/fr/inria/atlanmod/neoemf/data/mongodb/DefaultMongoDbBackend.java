@@ -21,7 +21,9 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
 
-import java.util.ArrayList;
+import org.bson.conversions.Bson;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -314,37 +316,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        final String ownerId = idConverter.convert(feature.owner());
-        final String featureId = Integer.toString(feature.id());
-
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
-                .first();
-
-        if (isNull(instance)) {
-            return;
-        }
-
-        final int size = sizeOf(ownerId, FIELD_MANY_VALUE, featureId);
-
-        if (feature.position() > size) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        List<String> newValues = Stream.of(value).map(this::serializeValue).collect(Collectors.toList());
-
-        if (size > 0) {
-            updateOne(
-                    eq(FIELD_ID, ownerId),
-                    pushEach(combineField(FIELD_MANY_VALUE, featureId), newValues, new PushOptions().position(feature.position()))
-            );
-        }
-        else {
-            updateOne(
-                    eq(FIELD_ID, ownerId),
-                    set(combineField(FIELD_MANY_VALUE, featureId), newValues)
-            );
-        }
+        addAllValues(feature, Collections.singletonList(value));
     }
 
     @Override
@@ -360,15 +332,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
-                .first();
-
-        if (isNull(instance)) {
-            return;
-        }
-
-        final int size = sizeOf(ownerId, FIELD_MANY_VALUE, featureId);
+        final int size = sizeOfValue(feature.withoutPosition()).orElse(0);
 
         if (feature.position() > size) {
             throw new IndexOutOfBoundsException();
@@ -376,69 +340,16 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         List<String> newValues = collection.stream().map(this::serializeValue).collect(Collectors.toList());
 
-        if (size > 0) {
-            updateOne(
-                    eq(FIELD_ID, ownerId),
-                    pushEach(combineField(FIELD_MANY_VALUE, featureId), newValues, new PushOptions().position(feature.position()))
-            );
-        }
-        else {
-            updateOne(
-                    eq(FIELD_ID, ownerId),
-                    set(combineField(FIELD_MANY_VALUE, featureId), newValues)
-            );
-        }
-    }
+        final String fieldName = combineField(FIELD_MANY_VALUE, featureId);
 
-    @Override
-    public <V> int appendValue(SingleFeatureBean feature, V value) {
-        checkNotNull(feature, "feature");
-        checkNotNull(value, "value");
-
-        final String ownerId = idConverter.convert(feature.owner());
-        final String featureId = Integer.toString(feature.id());
-
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
-                .first();
-
-        final List<String> values = Optional.ofNullable(instance.getMultivaluedValues().get(featureId)).orElseGet(ArrayList::new);
-        final int position = values.size();
-
-        values.add(serializeValue(value));
+        final Bson update = size > 0
+                ? pushEach(fieldName, newValues, new PushOptions().position(feature.position()))
+                : set(fieldName, newValues);
 
         updateOne(
                 eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_VALUE, featureId), values)
+                update
         );
-
-        return position;
-    }
-
-    @Override
-    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> collection) {
-        checkNotNull(feature, "feature");
-        checkNotNull(collection, "collection");
-        checkNotContainsNull(collection, "collection");
-
-        final String ownerId = idConverter.convert(feature.owner());
-        final String featureId = Integer.toString(feature.id());
-
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
-                .first();
-
-        final List<String> values = Optional.ofNullable(instance.getMultivaluedValues().get(featureId)).orElseGet(ArrayList::new);
-        final int firstPosition = values.size();
-
-        collection.stream().map(this::serializeValue).collect(Collectors.toCollection(() -> values));
-
-        updateOne(
-                eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_VALUE, featureId), values)
-        );
-
-        return firstPosition;
     }
 
     @Nonnull
@@ -489,9 +400,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(feature, "feature");
 
         final String ownerId = idConverter.convert(feature.owner());
-        final String featureId = Integer.toString(feature.id());
 
-        return Optional.of(sizeOf(ownerId, FIELD_MANY_VALUE, featureId)).filter(s -> s != 0);
+        return Optional.of(sizeOf(ownerId, FIELD_MANY_VALUE, feature.id()))
+                .filter(s -> s != 0);
     }
 
     //endregion
@@ -576,37 +487,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
-        final String ownerId = idConverter.convert(feature.owner());
-        final String featureId = Integer.toString(feature.id());
-
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_REF, featureId)))
-                .first();
-
-        if (isNull(instance)) {
-            return;
-        }
-
-        final int size = sizeOf(ownerId, FIELD_MANY_REF, featureId);
-
-        if (feature.position() > size) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        List<String> newReferences = Stream.of(reference).map(idConverter::convert).collect(Collectors.toList());
-
-        if (size > 0) {
-            updateOne(
-                    eq(FIELD_ID, ownerId),
-                    pushEach(combineField(FIELD_MANY_REF, featureId), newReferences, new PushOptions().position(feature.position()))
-            );
-        }
-        else {
-            updateOne(
-                    eq(FIELD_ID, ownerId),
-                    set(combineField(FIELD_MANY_REF, featureId), newReferences)
-            );
-        }
+        addAllReferences(feature, Collections.singletonList(reference));
     }
 
     @Override
@@ -622,15 +503,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_REF, featureId)))
-                .first();
-
-        if (isNull(instance)) {
-            return;
-        }
-
-        final int size = sizeOf(ownerId, FIELD_MANY_REF, featureId);
+        final int size = sizeOfReference(feature.withoutPosition()).orElse(0);
 
         if (feature.position() > size) {
             throw new IndexOutOfBoundsException();
@@ -638,69 +511,16 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         List<String> newReferences = collection.stream().map(idConverter::convert).collect(Collectors.toList());
 
-        if (size > 0) {
-            updateOne(
-                    eq(FIELD_ID, ownerId),
-                    pushEach(combineField(FIELD_MANY_REF, featureId), newReferences, new PushOptions().position(feature.position()))
-            );
-        }
-        else {
-            updateOne(
-                    eq(FIELD_ID, ownerId),
-                    set(combineField(FIELD_MANY_REF, featureId), newReferences)
-            );
-        }
-    }
+        final String fieldName = combineField(FIELD_MANY_REF, featureId);
 
-    @Override
-    public int appendReference(SingleFeatureBean feature, Id reference) {
-        checkNotNull(feature, "feature");
-        checkNotNull(reference, "reference");
-
-        final String ownerId = idConverter.convert(feature.owner());
-        final String featureId = Integer.toString(feature.id());
-
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_REF, featureId)))
-                .first();
-
-        final List<String> references = Optional.ofNullable(instance.getMultivaluedReferences().get(featureId)).orElseGet(ArrayList::new);
-        final int position = references.size();
-
-        references.add(idConverter.convert(reference));
+        final Bson update = size > 0
+                ? pushEach(fieldName, newReferences, new PushOptions().position(feature.position()))
+                : set(fieldName, newReferences);
 
         updateOne(
                 eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_REF, featureId), references)
+                update
         );
-
-        return position;
-    }
-
-    @Override
-    public int appendAllReferences(SingleFeatureBean feature, List<Id> collection) {
-        checkNotNull(feature, "feature");
-        checkNotNull(collection, "collection");
-        checkNotContainsNull(collection, "collection");
-
-        final String ownerId = idConverter.convert(feature.owner());
-        final String featureId = Integer.toString(feature.id());
-
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_REF, featureId)))
-                .first();
-
-        final List<String> references = Optional.ofNullable(instance.getMultivaluedReferences().get(featureId)).orElseGet(ArrayList::new);
-        final int firstPosition = references.size();
-
-        collection.stream().map(idConverter::convert).collect(Collectors.toCollection(() -> references));
-
-        updateOne(
-                eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_REF, featureId), references)
-        );
-
-        return firstPosition;
     }
 
     @Nonnull
@@ -750,9 +570,9 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         checkNotNull(feature, "feature");
 
         final String ownerId = idConverter.convert(feature.owner());
-        final String featureId = Integer.toString(feature.id());
 
-        return Optional.of(sizeOf(ownerId, FIELD_MANY_REF, featureId)).filter(s -> s != 0);
+        return Optional.of(sizeOf(ownerId, FIELD_MANY_REF, feature.id()))
+                .filter(s -> s != 0);
     }
 
     //endregion

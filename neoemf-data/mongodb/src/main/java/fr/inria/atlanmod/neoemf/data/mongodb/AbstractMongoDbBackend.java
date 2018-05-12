@@ -366,13 +366,13 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     }
 
     @Nonnegative
-    protected int sizeOf(String id, String name, String index) {
+    protected int sizeOf(String id, String name, int index) {
         final String sizeField = "size";
 
         final List<Bson> pipeline = Arrays.asList(
                 match(and(eq(FIELD_ID, id), exists(name))),
                 limit(1),
-                project(computed(sizeField, new Document(QueryOperators.SIZE, String.format("$%s.%s", name, index))))
+                project(computed(sizeField, new Document(QueryOperators.SIZE, String.format("$%s.%d", name, index))))
         );
 
         try {
