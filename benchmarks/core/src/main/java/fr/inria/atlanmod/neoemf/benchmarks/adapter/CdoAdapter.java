@@ -82,6 +82,17 @@ public class CdoAdapter extends AbstractAdapter {
         return URI.createFileURI(directory.resolve(fileName).toFile().getAbsolutePath());
     }
 
+    @Nonnull
+    @Override
+    public Resource create(URI uri) {
+        checkState(uri.isFile());
+
+        final Path file = Paths.get(uri.toFileString());
+
+        server = new EmbeddedCdoServer(file);
+        return server.getTransaction().getOrCreateResource(file.getFileName().toString());
+    }
+
     @Override
     public void unload(Resource resource) {
         super.unload(resource);
@@ -99,17 +110,6 @@ public class CdoAdapter extends AbstractAdapter {
         Map<String, Object> options = new HashMap<>();
         options.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, server.getTransaction());
         return options;
-    }
-
-    @Nonnull
-    @Override
-    public Resource createResource(URI uri) {
-        checkState(uri.isFile());
-
-        final Path file = Paths.get(uri.toFileString());
-
-        server = new EmbeddedCdoServer(file);
-        return server.getTransaction().getOrCreateResource(file.getFileName().toString());
     }
 
     /**

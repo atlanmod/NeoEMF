@@ -85,6 +85,17 @@ abstract class AbstractAdapter implements Adapter.Internal {
 
     @Nonnull
     @Override
+    public final EPackage initAndGetEPackage() {
+        try {
+            return (EPackage) modelPackage.getMethod("init").invoke(null);
+        }
+        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw Throwables.shouldNeverHappen(e);
+        }
+    }
+
+    @Nonnull
+    @Override
     public File getOrCreateResource(String name) throws IOException {
         return Resources.getOrCreateResource(name, this);
     }
@@ -112,7 +123,7 @@ abstract class AbstractAdapter implements Adapter.Internal {
     public Resource load(URI uri, ImmutableConfig config) throws IOException {
         initAndGetEPackage();
 
-        final Resource resource = createResource(uri);
+        final Resource resource = create(uri);
         resource.load(getOptions(config));
         return resource;
     }
@@ -142,17 +153,6 @@ abstract class AbstractAdapter implements Adapter.Internal {
     // endregion
 
     // region Adapter.Internal
-
-    @Nonnull
-    @Override
-    public final EPackage initAndGetEPackage() {
-        try {
-            return (EPackage) modelPackage.getMethod("init").invoke(null);
-        }
-        catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw Throwables.shouldNeverHappen(e);
-        }
-    }
 
     @Nonnull
     @Override

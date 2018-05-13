@@ -8,8 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
-import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadOnlyRunnerState;
-import fr.inria.atlanmod.neoemf.benchmarks.runner.state.RunnerState;
+import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadOnlyResourceState;
+import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ResourceState;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -19,10 +19,13 @@ import org.openjdk.jmh.annotations.Warmup;
 
 import java.io.IOException;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
- * A {@link Runner} that provides benchmark methods for the initialization of resources and data stores.
+ * A {@link BaseRunner} that provides benchmark methods for the initialization of resources and data stores.
  */
-public class WriteOnlyRunner extends Runner {
+@ParametersAreNonnullByDefault
+public class WriteOnlyRunner extends BaseRunner {
 
     /**
      * Creates a new resource according to the current {@code state}. If the resource already exists, then this method
@@ -32,7 +35,7 @@ public class WriteOnlyRunner extends Runner {
     @BenchmarkMode(Mode.SingleShotTime)
     @Warmup(iterations = 1)
     @Measurement(iterations = 0)
-    public void initResource(@SuppressWarnings("unused") RunnerState state) {
+    public void initResource(@SuppressWarnings("unused") ResourceState state) {
         // Let the setup method creates the resource
     }
 
@@ -44,7 +47,7 @@ public class WriteOnlyRunner extends Runner {
     @BenchmarkMode(Mode.SingleShotTime)
     @Warmup(iterations = 1)
     @Measurement(iterations = 0)
-    public void initStore(@SuppressWarnings("unused") ReadOnlyRunnerState state) {
+    public void initStore(@SuppressWarnings("unused") ReadOnlyResourceState state) {
         // Let the setup method creates the resource and its store
     }
 
@@ -52,7 +55,7 @@ public class WriteOnlyRunner extends Runner {
      * Creates a new store in a temporary location.
      */
     @Benchmark
-    public void create(RunnerState state) throws IOException {
+    public void create(ResourceState state) throws IOException {
         state.adapter().createTempStore(state.resourceFile(), state.baseConfig(), state.useDirectImport());
     }
 }

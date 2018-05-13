@@ -29,6 +29,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public interface Adapter {
 
     /**
+     * Retrieves and initializes the {@link EPackage} used by this adapter.
+     *
+     * @return the package
+     */
+    @Nonnull
+    EPackage initAndGetEPackage();
+
+    /**
      * Creates a resource from the given {@code name} and returns its path.
      *
      * @return the resource file
@@ -68,6 +76,16 @@ public interface Adapter {
     URI createUri(Path directory, String fileName);
 
     /**
+     * Creates a new {@link Resource} in the given {@code file}.
+     *
+     * @param uri the URI of the resource to create
+     *
+     * @return a new resource
+     */
+    @Nonnull
+    Resource create(URI uri);
+
+    /**
      * Loads a resource file from the given {@code file}.
      *
      * @return the loaded resource
@@ -98,24 +116,6 @@ public interface Adapter {
      */
     @ParametersAreNonnullByDefault
     interface Internal extends Adapter {
-
-        /**
-         * Retrieves and initializes the {@link EPackage} used by this adapter.
-         *
-         * @return the package
-         */
-        @Nonnull
-        EPackage initAndGetEPackage();
-
-        /**
-         * Creates a new {@link Resource} in the given {@code file}.
-         *
-         * @param uri the URI of the resource to create
-         *
-         * @return a new resource
-         */
-        @Nonnull
-        Resource createResource(URI uri);
 
         /**
          * Creates a new {@link DataMapper} in the given {@code file}.

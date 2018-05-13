@@ -60,7 +60,7 @@ public class StandardStoreCreator implements StoreCreator {
         }
         sourceResource.load(loadOpts);
 
-        Resource targetResource = adapter.createResource(uri);
+        Resource targetResource = adapter.create(uri);
         adapter.save(targetResource, config);
 
         targetResource.getContents().addAll(sourceResource.getContents());

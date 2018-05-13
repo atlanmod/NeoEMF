@@ -18,16 +18,20 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.TearDown;
 
 import java.io.IOException;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static java.util.Objects.nonNull;
 
 /**
- * This state provides a ready-to-use datastore. It is automatically preloaded and unloaded from the default location.
+ * A {@link ResourceState} that provides a ready-to-use datastore.
+ * It is automatically preloaded and unloaded from the default location.
  * <p/>
  * It is used for simple queries.
  */
-public class ReadOnlyRunnerState extends RunnerState {
+@ParametersAreNonnullByDefault
+public class ReadOnlyResourceState extends ResourceState {
 
     /**
      * The current {@link Resource}.
@@ -69,7 +73,7 @@ public class ReadOnlyRunnerState extends RunnerState {
      */
     @TearDown(Level.Iteration)
     public void unloadResource() {
-        if (!Objects.isNull(resource)) {
+        if (nonNull(resource)) {
             adapter().unload(resource);
             resource = null;
         }
