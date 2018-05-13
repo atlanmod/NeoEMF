@@ -247,6 +247,7 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
         public void close(Id id) {
             // Remove the container from the id if present (accessible only by the id)
             containers.remove(id);
+            instances.remove(id);
 
             // Unregister the current back-end and clear all features associated with the id
             Set<Integer> relatedFeatures = featuresById.remove(id);
