@@ -18,7 +18,6 @@ import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.io.LocalWorkspace;
 
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -69,11 +68,6 @@ public final class Resources {
      */
     @Nonnull
     private static Lazy<Map<String, String>> registeredResources = Lazy.with(Resources::getRegisteredResources);
-
-    static {
-        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
-    }
 
     private Resources() {
         throw new IllegalStateException("This class should not be instantiated");

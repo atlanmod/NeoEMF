@@ -12,6 +12,8 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceFactoryRegistryImpl;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
@@ -29,9 +31,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class XmiAdapter extends AbstractAdapter {
 
+    private static Resource.Factory.Registry REGISTRY = new ResourceFactoryRegistryImpl();
+
     static {
-        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-        Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
+        REGISTRY.getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
     }
 
     /**
@@ -49,8 +52,10 @@ public class XmiAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource createResource(URI uri) {
-        return new ResourceSetImpl().createResource(uri);
+    public Resource create(URI uri) {
+        final ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.setResourceFactoryRegistry(REGISTRY);
+        return resourceSet.createResource(uri);
     }
 
     @Nonnull

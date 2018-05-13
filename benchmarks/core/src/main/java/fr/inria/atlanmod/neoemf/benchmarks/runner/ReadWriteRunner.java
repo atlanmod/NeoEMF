@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.benchmarks.runner;
 
 import fr.inria.atlanmod.neoemf.benchmarks.query.QueryFactory;
-import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadWriteRunnerState;
+import fr.inria.atlanmod.neoemf.benchmarks.runner.state.ReadWriteResourceState;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -17,13 +17,16 @@ import org.openjdk.jmh.annotations.Benchmark;
 import java.io.IOException;
 import java.util.UUID;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
- * A {@link Runner} that provides benchmark methods for read-write queries.
+ * A {@link BaseRunner} that provides benchmark methods for read-write queries.
  */
-public class ReadWriteRunner extends Runner {
+@ParametersAreNonnullByDefault
+public class ReadWriteRunner extends BaseRunner {
 
     @Benchmark
-    public Long renameAllMethods(ReadWriteRunnerState state) throws IOException {
+    public Long renameAllMethods(ReadWriteResourceState state) throws IOException {
         String name = UUID.randomUUID().toString();
         Resource resource = state.resource();
         Long result = QueryFactory.renameAllMethods(name).executeOn(resource);

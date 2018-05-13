@@ -18,6 +18,8 @@ import org.openjdk.jmh.annotations.Warmup;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @Timeout(time = 2, timeUnit = TimeUnit.HOURS)
@@ -29,5 +31,6 @@ import java.util.concurrent.TimeUnit;
         jvmArgs = {"-Dfile.encoding=utf-8", "-server", "-XX:+UseConcMarkSweepGC"},
         jvmArgsAppend = {"-Xmx8g"}
 )
-public class Runner {
+@ParametersAreNonnullByDefault
+public class BaseRunner {
 }

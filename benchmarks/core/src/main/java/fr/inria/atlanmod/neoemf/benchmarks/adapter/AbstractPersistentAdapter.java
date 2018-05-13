@@ -56,7 +56,7 @@ abstract class AbstractPersistentAdapter extends AbstractAdapter {
 
     @Nonnull
     @Override
-    public Resource createResource(URI uri) {
+    public Resource create(URI uri) {
         return new ResourceSetImpl().createResource(uri);
     }
 

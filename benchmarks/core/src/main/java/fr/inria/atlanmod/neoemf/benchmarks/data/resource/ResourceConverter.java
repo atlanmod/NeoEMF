@@ -50,7 +50,7 @@ final class ResourceConverter implements ResourceTransformer {
 
         org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
-        ResourceSet resourceSet = new ResourceSetImpl();
+        final ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl() {
             @Override
             public Resource createResource(URI uri) {

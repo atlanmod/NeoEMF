@@ -11,14 +11,17 @@ package fr.inria.atlanmod.neoemf.benchmarks.runner.state;
 import org.eclipse.emf.common.util.URI;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * This state provides a ready-to-use datastore. It is preloaded and unloaded automatically from a temporary copy of the
- * default datastore, to avoid overwriting the original datastore.
+ * A {@link ResourceState} that provides a ready-to-use datastore.
+ * It is preloaded and unloaded automatically from a temporary copy of the default datastore, to avoid overwriting the
+ * original datastore.
  * <p/>
  * It is used for read/write queries.
  */
-public class ReadWriteRunnerState extends ReadOnlyRunnerState {
+@ParametersAreNonnullByDefault
+public class ReadWriteResourceState extends ReadOnlyResourceState {
 
     @Nonnull
     @Override
