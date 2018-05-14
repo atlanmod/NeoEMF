@@ -17,6 +17,7 @@ import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.session.ClientSession;
 
 import fr.inria.atlanmod.commons.collect.MoreIterables;
@@ -27,9 +28,9 @@ import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
-import fr.inria.atlanmod.neoemf.data.mongodb.model.Container;
-import fr.inria.atlanmod.neoemf.data.mongodb.model.MetaClass;
-import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
+import fr.inria.atlanmod.neoemf.data.mongodb.document.ClassDocument;
+import fr.inria.atlanmod.neoemf.data.mongodb.document.ContainerDocument;
+import fr.inria.atlanmod.neoemf.data.mongodb.document.ModelDocument;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -56,9 +57,9 @@ import static com.mongodb.client.model.Projections.computed;
 import static com.mongodb.client.model.Projections.include;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
+import static com.mongodb.client.model.Updates.setOnInsert;
 import static com.mongodb.client.model.Updates.unset;
 import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -66,59 +67,6 @@ import static java.util.Objects.nonNull;
  */
 @ParametersAreNonnullByDefault
 abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDbBackend {
-
-    // region Fields
-    // TODO Move fields in their respectives classes (StoredInstance, MetaClass, Container)
-
-    /**
-     *
-     */
-    @Nonnull
-    protected static final String FIELD_ID = "_id";
-
-    /**
-     *
-     */
-    @Nonnull
-    private static final String FIELD_CONTAINER = "container";
-
-    /**
-     *
-     */
-    @Nonnull
-    private static final String FIELD_CONTAINER_OWNER = combineField(FIELD_CONTAINER, "owner");
-
-    /**
-     *
-     */
-    @Nonnull
-    private static final String FIELD_CONTAINER_ID = combineField(FIELD_CONTAINER, "id");
-
-    /**
-     *
-     */
-    @Nonnull
-    private static final String FIELD_METACLASS = "metaClass";
-
-    /**
-     *
-     */
-    @Nonnull
-    private static final String FIELD_METACLASS_NAME = combineField(FIELD_METACLASS, "name");
-
-    /**
-     *
-     */
-    @Nonnull
-    private static final String FIELD_METACLASS_URI = combineField(FIELD_METACLASS, "uri");
-
-    // endregion
-
-    /**
-     * The name of the collection containing the instances
-     */
-    @Nonnull
-    private static final String COLLECTION_NAME = "instances";
 
     /**
      * The {@link Converter} to store the hexadecimal representation of {@link Id}s.
@@ -142,7 +90,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
      * The MongoDB collection where to store the model.
      */
     @Nonnull
-    private final MongoCollection<StoredInstance> collection;
+    private final MongoCollection<ModelDocument> collection;
 
     /**
      * The current client session, {@code null} if the {@link #client} does not support sessions.
@@ -157,7 +105,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         this.client = client;
         this.database = database;
 
-        this.collection = getOrCreateCollection(COLLECTION_NAME, StoredInstance.class);
+        this.collection = getOrCreateCollection("instances", ModelDocument.class);
 
         // Causally-consistent session
         try {
@@ -170,8 +118,8 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     }
 
     @Nonnull
-    protected static String combineField(String prefix, String suffix) {
-        return prefix + '.' + suffix;
+    protected static String fieldWithSuffix(String fieldName, String suffix) {
+        return fieldName + '.' + suffix;
     }
 
     /**
@@ -212,13 +160,21 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(id, "id");
 
         final String ownerId = idConverter.convert(id);
-        final StoredInstance instance = find(and(eq(FIELD_ID, ownerId), exists(FIELD_CONTAINER))).first();
 
-        if (nonNull(instance) && nonNull(instance.getContainer())) {
-            return Optional.of(instance.getContainer().toBean());
-        }
+        final Bson query = and(
+                eq(ModelDocument.F_ID, ownerId),
+                exists(ModelDocument.F_CONTAINER)
+        );
 
-        return Optional.empty();
+        final Bson projection = include(ModelDocument.F_CONTAINER);
+
+        final ModelDocument instance = find(query, ModelDocument.class)
+                .projection(projection)
+                .first();
+
+        return Optional.ofNullable(instance)
+                .map(ModelDocument::getContainer)
+                .map(ContainerDocument::toBean);
     }
 
     @Override
@@ -227,26 +183,16 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(container, "container");
 
         final String ownerId = idConverter.convert(id);
-        final Container newContainer = Container.fromBean(container);
+        final ContainerDocument newContainer = ContainerDocument.fromBean(container);
 
-        StoredInstance instance = find(eq(FIELD_ID, ownerId)).first();
+        final Bson filter = eq(ModelDocument.F_ID, ownerId);
 
-        if (isNull(instance)) {
-            instance = new StoredInstance();
-            instance.setId(ownerId);
-            instance.setContainer(newContainer);
+        final Bson update = combine(
+                set(fieldWithSuffix(ModelDocument.F_CONTAINER, ContainerDocument.F_OWNER), newContainer.getOwner()),
+                set(fieldWithSuffix(ModelDocument.F_CONTAINER, ContainerDocument.F_ID), newContainer.getId())
+        );
 
-            insertOne(instance);
-        }
-        else {
-            updateOne(
-                    eq(FIELD_ID, ownerId),
-                    combine(
-                            set(FIELD_CONTAINER_OWNER, newContainer.getOwner()),
-                            set(FIELD_CONTAINER_ID, newContainer.getId())
-                    )
-            );
-        }
+        updateOne(filter, update, new UpdateOptions().upsert(true));
     }
 
     @Override
@@ -254,11 +200,12 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(id, "id");
 
         final String ownerId = idConverter.convert(id);
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId)).first();
 
-        if (nonNull(instance) && nonNull(instance.getContainer())) {
-            updateOne(eq(FIELD_ID, ownerId), unset(FIELD_CONTAINER));
-        }
+        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+
+        final Bson update = unset(ModelDocument.F_CONTAINER);
+
+        updateOne(filter, update);
     }
 
     @Nonnull
@@ -267,13 +214,21 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(id, "id");
 
         final String ownerId = idConverter.convert(id);
-        final StoredInstance instance = find(and(eq(FIELD_ID, ownerId), exists(FIELD_METACLASS))).first();
 
-        if (nonNull(instance) && nonNull(instance.getMetaClass())) {
-            return Optional.of(instance.getMetaClass().toBean());
-        }
+        final Bson query = and(
+                eq(ModelDocument.F_ID, ownerId),
+                exists(ModelDocument.F_METACLASS)
+        );
 
-        return Optional.empty();
+        final Bson projection = include(ModelDocument.F_METACLASS);
+
+        final ModelDocument instance = find(query, ModelDocument.class)
+                .projection(projection)
+                .first();
+
+        return Optional.ofNullable(instance)
+                .map(ModelDocument::getMetaClass)
+                .map(ClassDocument::toBean);
     }
 
     @Override
@@ -282,37 +237,48 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         checkNotNull(metaClass, "metaClass");
 
         final String ownerId = idConverter.convert(id);
-        final MetaClass newMetaClass = MetaClass.fromBean(metaClass);
+        final ClassDocument newMetaClass = ClassDocument.fromBean(metaClass);
 
-        StoredInstance instance = find(eq(FIELD_ID, ownerId)).first();
+        final Bson existsQuery = and(
+                eq(ModelDocument.F_ID, ownerId),
+                exists(ModelDocument.F_METACLASS)
+        );
 
-        if (isNull(instance)) {
-            instance = new StoredInstance();
-            instance.setId(ownerId);
-            instance.setMetaClass(newMetaClass);
+        final boolean notExists = !Optional.ofNullable(find(existsQuery, ModelDocument.class).first()).isPresent();
 
-            insertOne(instance);
+        if (notExists) {
+            final Bson filter = eq(ModelDocument.F_ID, ownerId);
 
-            return true;
+            final Bson update = combine(
+                    setOnInsert(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_NAME), newMetaClass.getName()),
+                    setOnInsert(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_URI), newMetaClass.getUri())
+            );
+
+            updateOne(filter, update, new UpdateOptions().upsert(true));
         }
 
-        return false;
+        return notExists;
     }
 
     @Nonnull
     @Override
     public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         final Iterable<Bson> andFilters = metaClasses.stream()
-                .map(c -> and(eq(FIELD_METACLASS_NAME, c.name()), eq(FIELD_METACLASS_URI, c.uri())))
+                .map(c -> and(
+                        eq(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_NAME), c.name()),
+                        eq(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_URI), c.uri()))
+                )
                 .collect(Collectors.toList());
 
         final Bson query = or(andFilters);
 
-        final FindIterable<StoredInstance> find = find(query)
-                .projection(include(FIELD_ID));
+        final Bson projection = include(ModelDocument.F_ID);
+
+        final FindIterable<ModelDocument> find = find(query, ModelDocument.class)
+                .projection(projection);
 
         return MoreIterables.stream(find)
-                .map(StoredInstance::getId)
+                .map(ModelDocument::getId)
                 .map(idConverter::revert)
                 .collect(Collectors.toList());
     }
@@ -323,16 +289,35 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
      * Finds all documents in the collection that match the specified {@code filter}.
      *
      * @param filter a document describing the query filter
+     * @param type   the class to decode each document into
      *
      * @return an iterable of all matching documents
      */
     @Nonnull
-    protected FindIterable<StoredInstance> find(Bson filter) {
+    protected <T> FindIterable<T> find(Bson filter, Class<T> type) {
         if (nonNull(clientSession)) {
-            return collection.find(clientSession, filter);
+            return collection.find(clientSession, filter, type);
         }
         else {
-            return collection.find(filter);
+            return collection.find(filter, type);
+        }
+    }
+
+    /**
+     * Aggregates documents according to the specified aggregation {@code pipeline}.
+     *
+     * @param pipeline the aggregation pipeline
+     * @param type     the class to decode each document into
+     *
+     * @return an iterable containing the result of the aggregation operation
+     */
+    @Nonnull
+    protected <T> AggregateIterable<T> aggregate(List<? extends Bson> pipeline, Class<T> type) {
+        if (nonNull(clientSession)) {
+            return collection.aggregate(clientSession, pipeline, type);
+        }
+        else {
+            return collection.aggregate(pipeline, type);
         }
     }
 
@@ -343,11 +328,22 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
      * @param update a document describing the update
      */
     protected void updateOne(Bson filter, Bson update) {
+        updateOne(filter, update, new UpdateOptions());
+    }
+
+    /**
+     * Update a single document in the collection according to the specified arguments.
+     *
+     * @param filter  a document describing the query filter
+     * @param update  a document describing the update
+     * @param options the options to apply to the update operation
+     */
+    protected void updateOne(Bson filter, Bson update, UpdateOptions options) {
         if (nonNull(clientSession)) {
-            collection.updateOne(clientSession, filter, update);
+            collection.updateOne(clientSession, filter, update, options);
         }
         else {
-            collection.updateOne(filter, update);
+            collection.updateOne(filter, update, options);
         }
     }
 
@@ -356,7 +352,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
      *
      * @param document the instance to store
      */
-    protected void insertOne(StoredInstance document) {
+    protected void insertOne(ModelDocument document) {
         if (nonNull(clientSession)) {
             collection.insertOne(clientSession, document);
         }
@@ -369,14 +365,21 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     protected int sizeOf(String id, String name, int index) {
         final String sizeField = "size";
 
+        final Bson filter = and(
+                eq(ModelDocument.F_ID, id),
+                exists(name)
+        );
+
+        final Bson projection = computed(sizeField, new Document(QueryOperators.SIZE, fieldWithSuffix('$' + name, Integer.toString(index))));
+
         final List<Bson> pipeline = Arrays.asList(
-                match(and(eq(FIELD_ID, id), exists(name))),
+                match(filter),
                 limit(1),
-                project(computed(sizeField, new Document(QueryOperators.SIZE, String.format("$%s.%d", name, index))))
+                project(projection)
         );
 
         try {
-            @SuppressWarnings("unchecked") final AggregateIterable<BasicDBObject> aggregate = collection.aggregate(pipeline, BasicDBObject.class);
+            final AggregateIterable<BasicDBObject> aggregate = aggregate(pipeline, BasicDBObject.class);
             return MoreIterables.onlyElement(aggregate).map(o -> o.getInt(sizeField)).orElse(0);
         }
         catch (MongoCommandException e) {
