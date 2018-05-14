@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -61,7 +62,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
      *
      * @return {@code true} if the resource is persistent
      */
-    static boolean isPersistent(Resource resource) {
+    static boolean isPersistent(@Nullable Resource resource) {
         return PersistentResource.class.isInstance(resource);
     }
 

@@ -20,12 +20,12 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import net.openhft.chronicle.map.ChronicleMap;
 import net.openhft.chronicle.map.ChronicleMapBuilder;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.annotation.Nonnegative;
@@ -210,8 +210,10 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
          * Initializes all maps.
          */
         public void init() {
+            final String prefix = "bound";
+
             containers = ChronicleMapBuilder.of(Id.class, SingleFeatureBean.class)
-                    .name("bound/containers")
+                    .name(String.format("%s/%s", prefix, "containers"))
                     .entries(Sizes.ENTRIES)
                     .averageKeySize(Sizes.ID)
                     .averageValueSize(Sizes.FEATURE)
@@ -220,7 +222,7 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
                     .create();
 
             instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
-                    .name("bound/instances")
+                    .name(String.format("%s/%s", prefix, "instances"))
                     .entries(Sizes.ENTRIES)
                     .averageKeySize(Sizes.ID)
                     .averageValueSize(Sizes.CLASS)
@@ -229,46 +231,49 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
                     .create();
 
             features = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
-                    .name("bound/features")
+                    .name(String.format("%s/%s", prefix, "features"))
                     .entries(Sizes.ENTRIES)
                     .averageKeySize(Sizes.FEATURE)
                     .averageValueSize(Sizes.FEATURE_VALUE)
                     .keyMarshaller(new BeanMarshaller<>(SERIALIZER_FACTORY.forSingleFeature()))
                     .create();
 
-            featuresById = new HashMap<>();
+            featuresById = new ConcurrentHashMap<>();
         }
 
         /**
-         * Cleans the data related to the specified {@code id}, and closes every maps if necessary.
+         * Cleans the data related to the specified {@code id}.
          *
          * @param id the identifier of the data to clean
          */
         public void close(Id id) {
             // Remove the container from the id if present (accessible only by the id)
             containers.remove(id);
+            instances.remove(id);
 
             // Unregister the current back-end and clear all features associated with the id
-            Set<Integer> relatedFeatures = featuresById.remove(id);
+            final Set<Integer> relatedFeatures = featuresById.remove(id);
             if (nonNull(relatedFeatures)) {
                 relatedFeatures.forEach(n -> features.remove(SingleFeatureBean.of(id, n)));
             }
 
             // Cleans all shared in-memory maps: they will no longer be used
             if (COUNTER.get() == 0L) {
-                Log.debug("Cleaning BoundTransientBackend");
-
-                containers.clear();
-                containers.close();
-
-                instances.clear();
-                instances.close();
-
-                features.clear();
-                features.close();
-
-                featuresById.clear();
+                closeAll();
             }
+        }
+
+        /**
+         * Cleans all data, and closes every maps.
+         */
+        private void closeAll() {
+            Log.info("Cleaning BoundInMemoryBackend#DataHolder");
+
+            containers.close();
+            instances.close();
+            features.close();
+
+            featuresById.clear();
         }
 
         /**
