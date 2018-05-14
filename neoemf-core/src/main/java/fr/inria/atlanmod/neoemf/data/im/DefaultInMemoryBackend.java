@@ -61,10 +61,10 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
      */
     public DefaultInMemoryBackend() {
         final int id = COUNTER.getAndIncrement();
-        final String prefix = "default/";
+        final String prefix = "default";
 
         containers = ChronicleMapBuilder.of(Id.class, SingleFeatureBean.class)
-                .name(prefix + id + "/containers")
+                .name(String.format("%s/%d/%s", prefix, id, "containers"))
                 .entries(Sizes.ENTRIES)
                 .averageKeySize(Sizes.ID)
                 .averageValueSize(Sizes.FEATURE)
@@ -73,7 +73,7 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
                 .create();
 
         instances = ChronicleMapBuilder.of(Id.class, ClassBean.class)
-                .name(prefix + id + "/instances")
+                .name(String.format("%s/%d/%s", prefix, id, "instances"))
                 .entries(Sizes.ENTRIES)
                 .averageKeySize(Sizes.ID)
                 .averageValueSize(Sizes.CLASS)
@@ -82,7 +82,7 @@ public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
                 .create();
 
         features = ChronicleMapBuilder.of(SingleFeatureBean.class, Object.class)
-                .name(prefix + id + "/features")
+                .name(String.format("%s/%d/%s", prefix, id, "features"))
                 .entries(Sizes.ENTRIES)
                 .averageKeySize(Sizes.FEATURE)
                 .averageValueSize(Sizes.FEATURE_VALUE)
