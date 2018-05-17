@@ -10,9 +10,7 @@ package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperTest;
-
-import fr.inria.atlanmod.neoemf.data.mongodb.context.MongoDbContext;
-import org.junit.jupiter.api.AfterAll;
+import fr.inria.atlanmod.neoemf.data.mongodb.context.MongoDbDefaultContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -26,6 +24,6 @@ class DefaultMongoDbBackendTest extends AbstractDataMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return MongoDbContext.getDefault();
+        return new MongoDbDefaultContext();
     }
 }

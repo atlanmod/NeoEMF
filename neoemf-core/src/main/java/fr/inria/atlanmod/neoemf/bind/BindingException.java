@@ -10,8 +10,6 @@ package fr.inria.atlanmod.neoemf.bind;
 
 /**
  * Exception thrown when an error occurred when using bindings across reflection.
- *
- * @see BindingEngine
  */
 public class BindingException extends RuntimeException {
 

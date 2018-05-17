@@ -6,9 +6,9 @@ environment. Maven-based examples will be added in the future.
 
 ## Installation
 
-NeoEMF demo runs on Eclipse Luna or newer, and you need the following plugins in your installation to resolve the dependencies (these are installable from the software repository of your Eclipse release):
+NeoEMF demo runs on Eclipse Oxygen or newer, and you need the following plugins in your installation to resolve the dependencies (these are installable from the software repository of your Eclipse release):
  - __EMF plugins__: v2.6.0 or later
- - __NeoEMF plugins__ : v1.0.2
+ - __NeoEMF plugins__ : v1.0.3
  - __EMF Compare__: v3.1 or later
  - __Guava Library__ : v11 or later (required by EMF Compare)
  - __Eclipse OCL plugins__: v3.3.1 or later

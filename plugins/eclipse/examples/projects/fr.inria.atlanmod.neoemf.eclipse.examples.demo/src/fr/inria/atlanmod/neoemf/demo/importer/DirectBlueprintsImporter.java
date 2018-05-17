@@ -13,7 +13,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUriFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.io.Migrator;
@@ -33,13 +33,12 @@ public class DirectBlueprintsImporter {
     public static void main(String[] args) throws Exception {
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE);
 
-        ImmutableConfig config = BlueprintsNeo4jConfig.newConfig()
-                .autoSave();
+        ImmutableConfig config = new BlueprintsNeo4jConfig().autoSave();
 
-        BackendFactory factory = BlueprintsBackendFactory.getInstance();
+        BackendFactory factory = new BlueprintsBackendFactory();
 
         File sourceFile = new File("model/sample.xmi");
-        URI targetUri = BlueprintsUri.builder().fromFile("databases/sample2.graphdb");
+        URI targetUri = new BlueprintsUriFactory().createLocalUri("databases/sample2.graphdb");
 
         try (Backend backend = factory.createBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
             Migrator.fromXmi(sourceFile)

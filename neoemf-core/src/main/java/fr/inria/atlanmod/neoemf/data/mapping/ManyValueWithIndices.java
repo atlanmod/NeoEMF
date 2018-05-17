@@ -85,15 +85,15 @@ public interface ManyValueWithIndices extends ManyValueMapper {
     }
 
     @Override
-    default <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+    default <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
         checkNotNull(feature, "feature");
-        checkNotNull(values, "values");
-        checkNotContainsNull(values, "values");
+        checkNotNull(collection, "collection");
+        checkNotContainsNull(collection, "collection");
 
         int firstPosition = feature.position();
 
-        IntStream.range(0, values.size())
-                .forEachOrdered(i -> addValue(feature.withPosition(firstPosition + i), values.get(i)));
+        IntStream.range(0, collection.size())
+                .forEachOrdered(i -> addValue(feature.withPosition(firstPosition + i), collection.get(i)));
     }
 
     @Nonnull

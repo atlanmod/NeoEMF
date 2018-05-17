@@ -9,6 +9,7 @@
 package fr.inria.atlanmod.neoemf.core;
 
 import fr.inria.atlanmod.commons.AbstractTest;
+import fr.inria.atlanmod.neoemf.core.internal.UndefinedId;
 
 import org.junit.jupiter.api.Test;
 

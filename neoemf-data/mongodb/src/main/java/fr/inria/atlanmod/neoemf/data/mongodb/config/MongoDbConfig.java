@@ -10,10 +10,12 @@ package fr.inria.atlanmod.neoemf.data.mongodb.config;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
-
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.mongodb.MongoDbBackendFactory;
 
-import javax.annotation.Nonnull;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -21,24 +23,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
+@Component(service = Config.class, scope = ServiceScope.PROTOTYPE)
 @FactoryBinding(factory = MongoDbBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class MongoDbConfig extends BaseConfig<MongoDbConfig> {
+
     /**
      * Constructs a new {@code MongoDbConfig}.
      */
-    protected MongoDbConfig() {
+    public MongoDbConfig() {
         withDefault();
-    }
-
-    /**
-     * Constructs a new {@code MongoDbConfig} instance with default settings.
-     *
-     * @return a new configuration
-     */
-    @Nonnull
-    public static MongoDbConfig newConfig() {
-        return new MongoDbConfig();
     }
 
     /**
@@ -49,6 +43,4 @@ public class MongoDbConfig extends BaseConfig<MongoDbConfig> {
     protected MongoDbConfig withDefault() {
         return setMappingWithCheck("fr.inria.atlanmod.neoemf.data.mongodb.DefaultMongoDbBackend", false);
     }
-
-    // TODO Add mapping declarations
 }

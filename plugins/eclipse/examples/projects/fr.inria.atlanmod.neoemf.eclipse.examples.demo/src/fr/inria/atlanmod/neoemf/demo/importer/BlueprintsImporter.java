@@ -12,7 +12,7 @@ import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUriFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.util.URI;
@@ -38,10 +38,9 @@ public class BlueprintsImporter {
         resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 
         URI sourceUri = URI.createURI("model/sample.xmi");
-        URI targetUri = BlueprintsUri.builder().fromFile("databases/sample.graphdb");
+        URI targetUri = new BlueprintsUriFactory().createLocalUri("databases/sample.graphdb");
 
-        ImmutableConfig config = BlueprintsNeo4jConfig.newConfig()
-                .autoSave();
+        ImmutableConfig config = new BlueprintsNeo4jConfig().autoSave();
 
         try (PersistentResource targetResource = (PersistentResource) resourceSet.createResource(targetUri)) {
             targetResource.save(config.toMap());

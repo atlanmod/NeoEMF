@@ -105,12 +105,12 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
     }
 
     @Override
-    default void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+    default void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
         checkNotNull(feature, "feature");
-        checkNotNull(references, "references");
-        checkNotContainsNull(references, "references");
+        checkNotNull(collection, "collection");
+        checkNotContainsNull(collection, "collection");
 
-        if (references.isEmpty()) {
+        if (collection.isEmpty()) {
             return;
         }
 
@@ -123,7 +123,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
         int firstPosition = feature.position();
         checkPositionIndex(firstPosition, ids.size());
 
-        ids.addAll(firstPosition, references);
+        ids.addAll(firstPosition, collection);
 
         valueFor(feature.withoutPosition(), converter.convert(ids));
     }

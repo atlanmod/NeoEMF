@@ -16,7 +16,7 @@
  * The {@link fr.inria.atlanmod.neoemf.data.hbase.HBaseBackendFactory} has to be registered to enable {@link
  * fr.inria.atlanmod.neoemf.resource.PersistentResource} creation with a HBase storage:
  * <pre>{@code
- * BackendFactoryRegistry.register(HBaseBackendFactory.getInstance());
+ * BackendFactoryRegistry.register(new HBaseBackendFactory());
  * }</pre>
  */
 

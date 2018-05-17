@@ -10,8 +10,12 @@ package ${package}.config;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.Config;
 
 import ${package}.${databaseName}BackendFactory;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,6 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
+@Component(service = Config.class, scope = ServiceScope.PROTOTYPE)
 @FactoryBinding(factory = ${databaseName}BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class ${databaseName}Config extends BaseConfig<${databaseName}Config> {
@@ -28,20 +33,10 @@ public class ${databaseName}Config extends BaseConfig<${databaseName}Config> {
     /**
      * Constructs a new {@code ${databaseName}Config}.
      */
-    protected ${databaseName}Config() {
+    public ${databaseName}Config() {
         withDefault();
 
         // TODO Declare all default values
-    }
-
-    /**
-     * Constructs a new {@code ${databaseName}Config} instance with default settings.
-     *
-     * @return a new configuration
-     */
-    @Nonnull
-    public static ${databaseName}Config newConfig() {
-        return new ${databaseName}Config();
     }
 
     /**
@@ -49,6 +44,7 @@ public class ${databaseName}Config extends BaseConfig<${databaseName}Config> {
      *
      * @return this configuration (for chaining)
      */
+    @Nonnull
     protected ${databaseName}Config withDefault() {
         return setMappingWithCheck("${package}.Default${databaseName}Backend", false);
     }

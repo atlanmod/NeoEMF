@@ -13,12 +13,12 @@ import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.core.internal.AllContentsIterator;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsCopier;
-import fr.inria.atlanmod.neoemf.core.internal.ContentsList;
-import fr.inria.atlanmod.neoemf.core.internal.DirectStoreFeatureMap;
-import fr.inria.atlanmod.neoemf.core.internal.DirectStoreList;
-import fr.inria.atlanmod.neoemf.core.internal.DirectStoreMap;
+import fr.inria.atlanmod.neoemf.core.internal.collect.AllContentsIterator;
+import fr.inria.atlanmod.neoemf.core.internal.collect.ContentsList;
+import fr.inria.atlanmod.neoemf.core.internal.collect.DirectStoreFeatureMap;
+import fr.inria.atlanmod.neoemf.core.internal.collect.DirectStoreList;
+import fr.inria.atlanmod.neoemf.core.internal.collect.DirectStoreMap;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.im.BoundInMemoryBackend;
 import fr.inria.atlanmod.neoemf.data.store.Store;
@@ -118,8 +118,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
      *
      * @param id the identifier of this object
      */
-    @VisibleForTesting
-    public DefaultPersistentEObject(Id id) {
+    protected DefaultPersistentEObject(Id id) {
         this.id = checkNotNull(id, "id");
     }
 
@@ -313,7 +312,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         }
         // Create a new transient store
         else {
-            ImmutableConfig config = BaseConfig.newConfig();
+            ImmutableConfig config = new BaseConfig<>();
 
             Backend backend = new BoundInMemoryBackend(id());
             Store baseStore = StoreFactory.getInstance().createStore(backend, config);

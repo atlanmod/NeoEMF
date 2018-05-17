@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -17,27 +16,56 @@
     <description>MongoDb extension of the core component.</description>
 
     <properties>
-        <!-- TODO Declare the version of dependencies -->
+        <mongodb.version>3.7.0</mongodb.version>
+
+        <mongodb-embed.version>2.0.3</mongodb-embed.version>
     </properties>
 
     <dependencies>
+
+        <!-- Database -->
+
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver</artifactId>
-            <version>3.6.3</version>
         </dependency>
 
+        <!-- Test: Database -->
+
         <dependency>
-            <groupId>com.github.fakemongo</groupId>
-            <artifactId>fongo</artifactId>
-            <version>2.2.0-RC1</version>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <scope>compile</scope><!-- FIXME Use 'test' scope: 'compile' is used to avoid errors in 'neoemf-tests' -->
         </dependency>
+
+        <!-- Test -->
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
 
-            <!-- TODO Declare the versionned dependencies -->
+            <!-- Database -->
+
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver</artifactId>
+                <version>${mongodb.version}</version>
+            </dependency>
+
+            <!-- Test: Database -->
+
+            <dependency>
+                <groupId>de.flapdoodle.embed</groupId>
+                <artifactId>de.flapdoodle.embed.mongo</artifactId>
+                <version>${mongodb-embed.version}</version>
+                <scope>test</scope>
+            </dependency>
 
         </dependencies>
     </dependencyManagement>
@@ -52,6 +80,7 @@
                     <instructions>
                         <Bundle-SymbolicName>fr.inria.atlanmod.neoemf.data.mongodb</Bundle-SymbolicName>
                         <Export-Package>
+                            !fr.inria.atlanmod.neoemf.data.mongodb.*.internal.*,
                             fr.inria.atlanmod.neoemf.data.mongodb.*
                         </Export-Package>
                         <Require-Bundle>

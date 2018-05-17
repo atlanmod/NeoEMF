@@ -113,7 +113,7 @@ class StoreAdapterTest extends AbstractTest {
 
     @BeforeEach
     void initStoreAdapter() {
-        Store innerStore = StoreFactory.getInstance().createStore(new DefaultInMemoryBackend(), BaseConfig.newConfig());
+        Store innerStore = StoreFactory.getInstance().createStore(new DefaultInMemoryBackend(), new BaseConfig<>());
 
         store = new AbstractStoreAdapter(innerStore, null) {
 

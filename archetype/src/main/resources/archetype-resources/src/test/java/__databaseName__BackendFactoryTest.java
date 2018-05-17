@@ -37,7 +37,7 @@ class ${databaseName}BackendFactoryTest extends AbstractBackendFactoryTest {
     @Override
     protected Stream<Arguments> allMappings() {
         return Stream.of(
-                Arguments.of(${databaseName}Config.newConfig(), Default${databaseName}Backend.class)
+                Arguments.of(new ${databaseName}Config(), Default${databaseName}Backend.class)
 
                 // TODO Fill with other mappings
         );

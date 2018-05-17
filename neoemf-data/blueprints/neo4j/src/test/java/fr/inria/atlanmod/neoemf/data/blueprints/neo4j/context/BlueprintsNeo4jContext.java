@@ -13,38 +13,27 @@
 package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.context;
 
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.AbstractBlueprintsContext;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A specific {@link Context} for the Blueprints Neo4j implementation.
+ * A specific {@link AbstractBlueprintsContext} for the Neo4j implementation.
  */
 @ParametersAreNonnullByDefault
-public abstract class BlueprintsNeo4jContext extends BlueprintsContext {
+public class BlueprintsNeo4jContext extends AbstractBlueprintsContext {
 
-    /**
-     * Creates a new {@code BlueprintsContext} with a mapping with indices.
-     *
-     * @return a new context.
-     */
     @Nonnull
-    public static Context getDefault() {
-        return new BlueprintsNeo4jContext() {
-            @Nonnull
-            @Override
-            public ImmutableConfig config() {
-                return BlueprintsNeo4jConfig.newConfig();
-            }
-        };
+    @Override
+    public ImmutableConfig config() {
+        return new BlueprintsNeo4jConfig();
     }
 
     @Nonnull
     @Override
     public String name() {
-        return "Blueprints-Neo4j";
+        return super.name() + "-Neo4j";
     }
 }

@@ -26,7 +26,7 @@
         <maven.deploy.skip>true</maven.deploy.skip>
 
         <cdo.version>4.6.2</cdo.version>
-        <jmh.version>1.20</jmh.version>
+        <jmh.version>1.21</jmh.version>
     </properties>
 
     <dependencyManagement>
@@ -83,6 +83,18 @@
             <dependency>
                 <groupId>fr.inria.atlanmod.neoemf</groupId>
                 <artifactId>neoemf-data-berkeleydb</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-data-hbase</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-data-mongodb</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

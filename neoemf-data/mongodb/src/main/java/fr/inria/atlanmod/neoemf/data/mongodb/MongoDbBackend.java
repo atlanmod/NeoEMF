@@ -8,8 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoDatabase;
 import fr.inria.atlanmod.neoemf.data.Backend;
 
 import javax.annotation.ParametersAreNonnullByDefault;

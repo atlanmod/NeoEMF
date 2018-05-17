@@ -1,0 +1,12 @@
+fr.inria.atlanmod.neoemf.benchmarks.adapter.XmiAdapter
+fr.inria.atlanmod.neoemf.benchmarks.adapter.CdoAdapter
+fr.inria.atlanmod.neoemf.benchmarks.adapter.BerkeleyDbAdapter$WithIndices
+fr.inria.atlanmod.neoemf.benchmarks.adapter.BerkeleyDbAdapter$WithLists
+fr.inria.atlanmod.neoemf.benchmarks.adapter.BerkeleyDbAdapter$WithArrays
+fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter$WithIndices
+fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter$WithLists
+fr.inria.atlanmod.neoemf.benchmarks.adapter.MapDbAdapter$WithArrays
+fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsAdapter$Tinker
+fr.inria.atlanmod.neoemf.benchmarks.adapter.BlueprintsAdapter$Neo4j
+fr.inria.atlanmod.neoemf.benchmarks.adapter.HBaseAdapter
+fr.inria.atlanmod.neoemf.benchmarks.adapter.MongoDbAdapter

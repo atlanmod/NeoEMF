@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.demo.notification;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUriFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -42,8 +42,8 @@ public class NewResourceNotifier {
 
         ResourceSet resourceSet = new ResourceSetImpl();
 
-        URI uri = BlueprintsUri.builder().fromFile("databases/notifier_example.graphdb");
-        ImmutableConfig options = BlueprintsNeo4jConfig.newConfig();
+        URI uri = new BlueprintsUriFactory().createLocalUri("databases/notifier_example.graphdb");
+        ImmutableConfig options = new BlueprintsNeo4jConfig();
 
         try (PersistentResource resource = (PersistentResource) resourceSet.createResource(uri)) {
             resource.save(options.toMap());

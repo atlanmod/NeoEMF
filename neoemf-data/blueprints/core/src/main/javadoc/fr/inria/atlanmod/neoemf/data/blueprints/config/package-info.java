@@ -27,7 +27,7 @@
  * behavior is a Blueprints specific option, while the caching behavior is defined at the core level.
  * <pre>{@code
  * // Create the option map
- * Map<String, Object> options = BlueprintsTinkerConfig.newConfig()
+ * Map<String, Object> options = new BlueprintsTinkerConfig()
  *     .cacheFeatures()
  *     .toMap();
  *

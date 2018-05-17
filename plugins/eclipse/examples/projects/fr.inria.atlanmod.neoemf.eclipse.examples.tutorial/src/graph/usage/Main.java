@@ -10,9 +10,9 @@ package graph.usage;
 
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
-import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUri;
-import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUri;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
+import fr.inria.atlanmod.neoemf.data.blueprints.util.BlueprintsUriFactory;
+import fr.inria.atlanmod.neoemf.data.hbase.util.HBaseUriFactory;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUriFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import org.eclipse.emf.ecore.resource.Resource;
@@ -30,7 +30,7 @@ import graph.Vertice;
  * <p>
  * This class contains the tutorial code and additional examples showing how to instantiate {@link PersistentResource}s
  * relying on Neo4j, MapDB, and HBase.
- * <p>
+ *
  * <b>Note:</b> HBase resource creation is presented in this file but not used to perform read/write operations, because
  * HBase needs to be installed separately and started to store a model. To enable HBase storage see the HBase
  * Configuration page on the wiki.
@@ -44,14 +44,14 @@ public class Main {
      * @return the created resource
      */
     public static Resource createBlueprintsResource() throws IOException {
-        Resource resource = new ResourceSetImpl().createResource(BlueprintsUri.builder().fromFile("databases/myGraph.graphdb"));
+        Resource resource = new ResourceSetImpl().createResource(new BlueprintsUriFactory().createLocalUri("databases/myGraph.graphdb"));
 
         /*
          * Specify that Neo4j is used as the underlying blueprints backend.
          * Note using the BlueprintsNeo4jOptions class to create the option map automatically sets Neo4j as the graph
          * backend.
          */
-        resource.save(BlueprintsNeo4jConfig.newConfig().toMap());
+        resource.save(new BlueprintsNeo4jConfig().toMap());
         return resource;
     }
 
@@ -61,7 +61,7 @@ public class Main {
      * @return the created resource
      */
     public static Resource createMapDbResource() {
-        return new ResourceSetImpl().createResource(MapDbUri.builder().fromFile("databases/myGraph.mapdb"));
+        return new ResourceSetImpl().createResource(new MapDbUriFactory().createLocalUri("databases/myGraph.mapdb"));
     }
 
     /**
@@ -71,7 +71,7 @@ public class Main {
      * @return the created resource
      */
     public static Resource createHBaseResource() {
-        return new ResourceSetImpl().createResource(HBaseUri.builder().fromServer("localhost", 2181, "myModel.hbase"));
+        return new ResourceSetImpl().createResource(new HBaseUriFactory().createRemoteUri("localhost", 2181, "myModel.hbase"));
     }
 
     /**
@@ -82,7 +82,7 @@ public class Main {
      * @throws IOException if an error occurs when loading the resource
      */
     public static void read(Resource resource) throws IOException {
-        resource.load(BaseConfig.newConfig().toMap());
+        resource.load(new BaseConfig().toMap());
         Graph graph = (Graph) resource.getContents().get(0);
         for (Edge each : graph.getEdges()) {
             System.out.println(each.getFrom().getLabel() + "--->" + each.getTo().getLabel());
@@ -117,12 +117,12 @@ public class Main {
         }
 
         resource.getContents().add(graph);
-        resource.save(BaseConfig.newConfig().toMap());
+        resource.save(new BaseConfig().toMap());
     }
 
     /**
      * Run the tutorial using a Blueprints and a MapDB resource.
-     * <p>
+     *
      * <b>Note:</b> HBase resource creation is presented in this file but not used to perform read/write operations,
      * because HBase needs to be installed separately and started to store a model. To enable HBase storage see the
      * HBase Configuration page on the wiki.

@@ -8,21 +8,24 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
-import com.github.fakemongo.Fongo;
-import com.mongodb.*;
+import com.mongodb.MongoClient;
+import com.mongodb.ReadConcern;
+import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoDatabase;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.log.Log;
+
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mongodb.config.MongoDbConfig;
+
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
+import org.osgi.service.component.annotations.Component;
+
+import java.net.URL;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.net.URL;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
@@ -30,85 +33,56 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 /**
  * A {@link BackendFactory} that creates {@link MongoDbBackend} instances.
  */
+@Component(service = BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig> {
 
     /**
-     * The literal description of the factory.
-     */
-    private static final String NAME = "mongodb";
-
-    /**
-     * Indicate if the tests should run on Fongo.
-     */
-    private static final boolean TESTS_SHOULD_USE_MOCK = true;
-
-    /**
      * Constructs a new {@code MongoDbBackendFactory}.
      */
-    protected MongoDbBackendFactory() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
-     */
-    @Nonnull
-    public static BackendFactory getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    @Override
-    public String name() {
-        return NAME;
+    public MongoDbBackendFactory() {
+        super("mongodb", false);
     }
 
     @Nonnull
     @Override
-    protected Backend createRemoteBackend(URL url, MongoDbConfig config) throws Exception {
-        final boolean isReadOnly = config.isReadOnly();
-
-        String databaseName = url.getPath().substring(1);
-        String hostName = url.getHost();
-        int port = url.getPort();
-
-        Log.info("Opening MongoDb database " + databaseName);
-
-        //This will not throw any exception even if the connection failed
-        //due to MongoDb driver's asynchronous nature
-
-        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(), fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-
-        MongoClient client;
-        MongoDatabase database;
-
-        if(databaseName.contains("test") && TESTS_SHOULD_USE_MOCK){
-            Fongo fongoTestServer = new Fongo("MongoTestServer");
-
-            database = fongoTestServer.getDatabase(databaseName).withCodecRegistry(pojoCodecRegistry);
-            client = fongoTestServer.getMongo();
-        }
-        else{
-            client = new MongoClient(hostName, port);
-            database = client.getDatabase(databaseName)
-                    .withCodecRegistry(pojoCodecRegistry);
-
-        }
-
+    protected Backend createRemoteBackend(URL url, MongoDbConfig config) {
+        final MongoClient client = createClient(url);
+        final MongoDatabase database = createDatabase(client, url.getPath().substring(1));
 
         return createMapper(config.getMapping(), client, database);
     }
 
     /**
-     * The initialization-on-demand holder of the singleton of this class.
+     * Creates a new MongoDB client on a server located by the specified {@code url}.
+     *
+     * @param url the URL locating the MongoDB server
+     *
+     * @return a new client
      */
-    @Static
-    private static final class Holder {
+    @Nonnull
+    private MongoClient createClient(URL url) {
+        return new MongoClient(url.getHost(), url.getPort());
+    }
 
-        /**
-         * The instance of the outer class.
-         */
-        static final BackendFactory INSTANCE = new MongoDbBackendFactory();
+    /**
+     * Retrieves the database with the specified {@code name} on the {@code client}.
+     * The database will be created if it does not already exist.
+     *
+     * @param client the MongoDB client, connected on the server
+     * @param name   the name of the database
+     *
+     * @return the database
+     */
+    @Nonnull
+    private MongoDatabase createDatabase(MongoClient client, String name) {
+        final CodecRegistry registry = fromRegistries(
+                client.getMongoClientOptions().getCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+
+        return client.getDatabase(name)
+                .withCodecRegistry(registry)
+                .withWriteConcern(WriteConcern.MAJORITY)
+                .withReadConcern(ReadConcern.MAJORITY);
     }
 }

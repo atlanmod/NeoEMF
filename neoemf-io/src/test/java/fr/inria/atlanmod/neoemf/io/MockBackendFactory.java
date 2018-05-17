@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
+import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.Config;
@@ -17,8 +18,8 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.InvalidBackend;
-import fr.inria.atlanmod.neoemf.util.AbstractUriBuilder;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -28,18 +29,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A mocked {@link BackendFactory} that always returns the same {@link Backend}.
  * <p>
- * <b>NOTE:</b> This class exists for binding a {@link Config} and {@link UriBuilder} to this {@link BackendFactory}.
+ * <b>NOTE:</b> This class exists for binding a {@link Config} and {@link UriFactory} to this {@link BackendFactory}.
  * You need to register the factory you want to use, with {@link BackendFactoryRegistry#register(String,
  * BackendFactory)}, before any call to {@link BackendFactory#createBackend(URI, ImmutableConfig)}.
  */
 @ParametersAreNonnullByDefault
 public final class MockBackendFactory extends AbstractBackendFactory<MockBackendFactory.MockConfig> {
-
-    /**
-     * The literal description of the factory.
-     */
-    @Nonnull
-    private static final String NAME = "mock";
 
     /**
      * The back-end returned by {@link #createBackend(URI, ImmutableConfig)}.
@@ -49,26 +44,20 @@ public final class MockBackendFactory extends AbstractBackendFactory<MockBackend
 
     /**
      * Constructs a new {@code MockBackendFactory}.
+     */
+    @VisibleForReflection
+    public MockBackendFactory() {
+        this(new InvalidBackend("You need to register the instance you want to use with BackendFactoryRegistry.register() first"));
+    }
+
+    /**
+     * Constructs a new {@code MockBackendFactory} that always returns the specified {@code backend}.
      *
      * @param backend the back-end returned by {@link #createBackend(URI, ImmutableConfig)}
      */
     public MockBackendFactory(Backend backend) {
+        super("mock", true);
         this.backend = backend;
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
-     */
-    @Nonnull
-    public static BackendFactory getInstance() {
-        return new MockBackendFactory(new InvalidBackend("You need to register the instance you want to use with BackendFactoryRegistry.register() first"));
-    }
-
-    @Override
-    public String name() {
-        return NAME;
     }
 
     @Nonnull
@@ -83,43 +72,21 @@ public final class MockBackendFactory extends AbstractBackendFactory<MockBackend
     @FactoryBinding(factory = MockBackendFactory.class)
     @ParametersAreNonnullByDefault
     public static final class MockConfig extends BaseConfig<MockConfig> {
-
-        /**
-         * Constructs a new {@code MockConfig} instance with default settings.
-         *
-         * @return a new configuration
-         */
-        @Nonnull
-        public static MockConfig newConfig() {
-            return new MockConfig();
-        }
     }
 
     /**
-     * A {@link UriBuilder} that creates URIs that reference the {@link MockBackendFactory}.
+     * A {@link UriFactory} that creates URIs that reference the {@link MockBackendFactory}.
      */
     @FactoryBinding(factory = MockBackendFactory.class)
     @ParametersAreNonnullByDefault
-    public static final class MockUri extends AbstractUriBuilder {
+    public static final class MockUriFactory extends AbstractUriFactory {
 
         /**
-         * Creates a new {@link UriBuilder} with the pre-configured scheme.
-         *
-         * @return a new builder
+         * Constructs a new {@code MockUriFactory}.
          */
-        @Nonnull
-        public static UriBuilder builder() {
-            return new MockUri();
-        }
-
-        @Override
-        public boolean supportsFile() {
-            return true;
-        }
-
-        @Override
-        public boolean supportsServer() {
-            return false;
+        @VisibleForReflection
+        public MockUriFactory() {
+            super(true, false);
         }
     }
 }

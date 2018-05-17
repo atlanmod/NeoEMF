@@ -1,0 +1,3 @@
+fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbIndicesContext
+fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbArraysContext
+fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbListsContext

@@ -20,7 +20,7 @@
  * BerkeleyDB specific option, while the caching behavior is defined at the core level.
  * <pre>{@code
  * // Create the option map
- * Map<String, Object> options = BerkeleyDbConfig.newConfig()
+ * Map<String, Object> options = new BerkeleyDbConfig()
  *     .withIndices()
  *     .cacheFeatures()
  *     .toMap();

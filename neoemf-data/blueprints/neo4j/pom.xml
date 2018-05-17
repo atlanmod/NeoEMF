@@ -44,12 +44,6 @@
 
         <dependency>
             <groupId>org.neo4j</groupId>
-            <artifactId>neo4j</artifactId>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.neo4j</groupId>
             <artifactId>neo4j-kernel</artifactId>
         </dependency>
 
@@ -92,6 +86,10 @@
                 <version>${blueprints.version}</version>
                 <exclusions>
                     <exclusion>
+                        <groupId>com.tinkerpop.blueprints</groupId>
+                        <artifactId>blueprints-core</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>org.neo4j</groupId>
                         <artifactId>neo4j</artifactId>
                     </exclusion>
@@ -104,13 +102,6 @@
                         <artifactId>neo4j-management</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>org.neo4j</groupId>
-                <artifactId>neo4j</artifactId>
-                <version>${neo4j.version}</version>
-                <type>pom</type>
             </dependency>
 
             <dependency>
@@ -147,17 +138,11 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.data.blueprints.neo4j</Bundle-SymbolicName>
                         <Import-Package>
-                            com.tinkerpop.blueprints;version="${blueprints.version}",
+                            com.tinkerpop.blueprints.*;version="${blueprints.version}",
                             org.apache.commons.configuration;version="${commons-configuration.version}"
                         </Import-Package>
                         <Export-Package>
-                            org.neo4j.kernel;version="${neo4j.version}",
-                            org.neo4j.graphdb;version="${neo4j.version}",
-                            org.neo4j.graphdb.index;version="${neo4j.version}",
-                            org.neo4j.graphdb.factory;version="${neo4j.version}",
-                            org.neo4j.cypher.javacompat;version="${neo4j.version}";-split-package:=first,
-                            org.apache.lucene.*;version="${lucene.version}";-split-package:=merge-first,
-                            javax.transaction.*;version="${jta.version}",
+                            !fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*.internal.*,
                             fr.inria.atlanmod.neoemf.data.blueprints.neo4j.*
                         </Export-Package>
                         <_exportcontents>

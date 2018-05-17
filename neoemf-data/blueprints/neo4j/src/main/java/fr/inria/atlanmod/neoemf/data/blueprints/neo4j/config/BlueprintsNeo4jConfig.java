@@ -15,8 +15,12 @@ package fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config;
 import com.tinkerpop.blueprints.impls.neo4j2.Neo4j2Graph;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BaseBlueprintsConfig;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 import java.nio.file.Path;
 
@@ -28,6 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
+@Component(service = Config.class, scope = ServiceScope.PROTOTYPE)
 @FactoryBinding(factory = BlueprintsBackendFactory.class, variant = "neo4j")
 @ParametersAreNonnullByDefault
 public class BlueprintsNeo4jConfig extends BaseBlueprintsConfig<BlueprintsNeo4jConfig> {
@@ -38,20 +43,10 @@ public class BlueprintsNeo4jConfig extends BaseBlueprintsConfig<BlueprintsNeo4jC
     static final String NEO4J_PREFIX = createKey(BLUEPRINTS_PREFIX, "neo4j");
 
     /**
-     * Constructs a new {@code BlueprintsNeo4jConfig}.
+     * Constructs a new {@code BlueprintsNeo4jConfig} with default settings.
      */
-    protected BlueprintsNeo4jConfig() {
+    public BlueprintsNeo4jConfig() {
         setGraph(Neo4j2Graph.class);
-    }
-
-    /**
-     * Constructs a new {@code BlueprintsNeo4jConfig} instance with default settings.
-     *
-     * @return a new configuration
-     */
-    @Nonnull
-    public static BlueprintsNeo4jConfig newConfig() {
-        return new BlueprintsNeo4jConfig();
     }
 
     @Override

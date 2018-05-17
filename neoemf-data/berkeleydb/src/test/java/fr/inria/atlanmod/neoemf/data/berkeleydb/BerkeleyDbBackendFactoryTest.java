@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.berkeleydb;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
-import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbContext;
+import fr.inria.atlanmod.neoemf.data.berkeleydb.context.BerkeleyDbIndicesContext;
 
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -29,16 +29,16 @@ class BerkeleyDbBackendFactoryTest extends AbstractBackendFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BerkeleyDbContext.getWithIndices();
+        return new BerkeleyDbIndicesContext();
     }
 
     @Nonnull
     @Override
     protected Stream<Arguments> allMappings() {
         return Stream.of(
-                Arguments.of(BerkeleyDbConfig.newConfig().withIndices(), BerkeleyDbBackendIndices.class),
-                Arguments.of(BerkeleyDbConfig.newConfig().withArrays(), BerkeleyDbBackendArrays.class),
-                Arguments.of(BerkeleyDbConfig.newConfig().withLists(), BerkeleyDbBackendLists.class)
+                Arguments.of(new BerkeleyDbConfig().withIndices(), BerkeleyDbBackendIndices.class),
+                Arguments.of(new BerkeleyDbConfig().withArrays(), BerkeleyDbBackendArrays.class),
+                Arguments.of(new BerkeleyDbConfig().withLists(), BerkeleyDbBackendLists.class)
         );
     }
 }

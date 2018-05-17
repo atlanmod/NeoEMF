@@ -13,11 +13,12 @@ import com.tinkerpop.blueprints.GraphFactory;
 import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.util.wrappers.readonly.ReadOnlyKeyIndexableGraph;
 
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BaseBlueprintsConfig;
+
+import org.osgi.service.component.annotations.Component;
 
 import java.nio.file.Path;
 
@@ -29,33 +30,15 @@ import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
 /**
  * A {@link fr.inria.atlanmod.neoemf.data.BackendFactory} that creates {@link BlueprintsBackend} instances.
  */
+@Component(service = BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class BlueprintsBackendFactory extends AbstractBackendFactory<BaseBlueprintsConfig<?>> {
 
     /**
-     * The literal description of the factory.
-     */
-    private static final String NAME = "blueprints";
-
-    /**
      * Constructs a new {@code BlueprintsBackendFactory}.
      */
-    protected BlueprintsBackendFactory() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
-     */
-    @Nonnull
-    public static BackendFactory getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    @Override
-    public String name() {
-        return NAME;
+    public BlueprintsBackendFactory() {
+        super("blueprints");
     }
 
     @Nonnull
@@ -71,17 +54,5 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory<BaseBluepri
         }
 
         return createMapper(config.getMapping(), graph);
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final BackendFactory INSTANCE = new BlueprintsBackendFactory();
     }
 }

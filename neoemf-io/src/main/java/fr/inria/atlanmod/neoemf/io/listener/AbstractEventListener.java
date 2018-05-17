@@ -15,7 +15,9 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link EventListener} that does nothing.
+ * An abstract {@link EventListener}.
+ * <p>
+ * By default, all methods do nothing.
  */
 @ParametersAreNonnullByDefault
 public abstract class AbstractEventListener implements EventListener {

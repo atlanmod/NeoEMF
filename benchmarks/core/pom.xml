@@ -15,8 +15,8 @@
     <name>NeoEMF Benchmarks Core</name>
 
     <properties>
-        <uberjar.name>benchmarks</uberjar.name>
-        <uberjar.directory>${project.build.directory}/exec</uberjar.directory>
+        <uberjar.name>neoemf-benchmarks</uberjar.name>
+        <uberjar.directory>${project.build.directory}/dist</uberjar.directory>
     </properties>
 
     <dependencies>
@@ -91,10 +91,12 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-data-mongodb</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
-            <scope>compile</scope>
+            <artifactId>neoemf-data-hbase</artifactId>
+        </dependency>
 
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-mongodb</artifactId>
         </dependency>
 
         <!-- Benchmark -->
@@ -132,32 +134,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.neo4j</groupId>
-                                    <artifactId>neo4j-lucene-index</artifactId>
-                                    <version>2.1.8</version>
-                                    <type>jar</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <stripVersion>true</stripVersion>
-                            <outputDirectory>${uberjar.directory}/lib</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.1.0</version>
                 <executions>
@@ -171,13 +147,12 @@
                             <outputDirectory>${uberjar.directory}</outputDirectory>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <Main-Class>org.openjdk.jmh.Main</Main-Class>
-                                        <Class-Path>lib/neo4j-lucene-index.jar</Class-Path>
                                     </manifestEntries>
                                 </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                             </transformers>
                             <filters>
                                 <filter>
@@ -190,11 +165,6 @@
                                     </excludes>
                                 </filter>
                             </filters>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.neo4j:neo4j-lucene-index</exclude>
-                                </excludes>
-                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>

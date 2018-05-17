@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- *
+ * A {@link Query}
  */
 @ParametersAreNonnullByDefault
 class GetThrownExceptions extends AbstractQuery<Collection<TypeAccess>> {

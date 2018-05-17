@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactoryTest;
 import fr.inria.atlanmod.neoemf.data.blueprints.config.BlueprintsTinkerConfig;
-import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsContext;
+import fr.inria.atlanmod.neoemf.data.blueprints.context.BlueprintsTinkerContext;
 
 import org.junit.jupiter.params.provider.Arguments;
 
@@ -29,14 +29,14 @@ class BlueprintsBackendFactoryTest extends AbstractBackendFactoryTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BlueprintsContext.getDefault();
+        return new BlueprintsTinkerContext();
     }
 
     @Nonnull
     @Override
     protected Stream<Arguments> allMappings() {
         return Stream.of(
-                Arguments.of(BlueprintsTinkerConfig.newConfig(), DefaultBlueprintsBackend.class)
+                Arguments.of(new BlueprintsTinkerConfig(), DefaultBlueprintsBackend.class)
         );
     }
 }

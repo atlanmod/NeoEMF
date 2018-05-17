@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.commons.annotation.Singleton;
 import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
@@ -32,14 +31,38 @@ import static java.util.Objects.isNull;
 /**
  * An abstract {@link BackendFactory}.
  */
-@Singleton
 @ParametersAreNonnullByDefault
 public abstract class AbstractBackendFactory<C extends Config> extends AbstractMapperFactory implements BackendFactory {
 
     /**
-     * Constructs a new {@code AbstractBackendFactory}.
+     * The literal description of this factory.
      */
-    protected AbstractBackendFactory() {
+    @Nonnull
+    private final String name;
+
+    /**
+     * {@code true} if the {@link Backend}s created by this factory support the transient state
+     */
+    private final boolean supportsTransient;
+
+    /**
+     * Constructs a new {@code AbstractBackendFactory}.
+     *
+     * @param name the literal description of this factory
+     */
+    protected AbstractBackendFactory(String name) {
+        this(name, true);
+    }
+
+    /**
+     * Constructs a new {@code AbstractBackendFactory}.
+     *
+     * @param name              the literal description of this factory
+     * @param supportsTransient {@code true} if the backends created by this factory support the transient state
+     */
+    protected AbstractBackendFactory(String name, boolean supportsTransient) {
+        this.name = name;
+        this.supportsTransient = supportsTransient;
     }
 
     /**
@@ -75,8 +98,17 @@ public abstract class AbstractBackendFactory<C extends Config> extends AbstractM
                 .map(s -> s.replaceAll("-", delimiter))
                 .collect(Collectors.joining(delimiter, "/", Strings.EMPTY));
 
-
         return new URL(protocol, uri.host(), port, path);
+    }
+
+    @Override
+    public final String name() {
+        return name;
+    }
+
+    @Override
+    public boolean supportsTransient() {
+        return supportsTransient;
     }
 
     @Nonnull
@@ -84,8 +116,7 @@ public abstract class AbstractBackendFactory<C extends Config> extends AbstractM
     public Backend createBackend(URI uri, ImmutableConfig baseConfig) {
         checkNotNull(uri, "uri");
         checkNotNull(baseConfig, "baseConfig");
-        // TODO check if there's no other way for the URL
-        checkArgument(uri.isFile() || uri.isHierarchical() || uri.scheme().equals("http"), "URI '%s' must be either file-based or hierarchical", uri.toString());
+        checkArgument(uri.isFile() || uri.isHierarchical(), "URI '%s' must be either file-based or hierarchical", uri.toString());
 
         try {
             return uri.isFile()

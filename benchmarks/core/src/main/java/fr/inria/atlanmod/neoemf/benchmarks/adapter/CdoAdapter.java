@@ -26,9 +26,8 @@ import org.eclipse.emf.cdo.server.net4j.CDONet4jServerUtil;
 import org.eclipse.emf.cdo.session.CDOSession;
 import org.eclipse.emf.cdo.spi.server.ISessionProtocol;
 import org.eclipse.emf.cdo.transaction.CDOTransaction;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.net4j.Net4jUtil;
 import org.eclipse.net4j.connector.IConnector;
 import org.eclipse.net4j.db.DBUtil;
@@ -45,9 +44,8 @@ import org.eclipse.net4j.util.lifecycle.ILifecycle;
 import org.h2.jdbcx.JdbcDataSource;
 
 import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -62,6 +60,7 @@ import static java.util.Objects.nonNull;
 /**
  * An {@link Adapter} on top of a CDO server.
  */
+@AdapterName("cdo")
 @ParametersAreNonnullByDefault
 public class CdoAdapter extends AbstractAdapter {
 
@@ -73,47 +72,44 @@ public class CdoAdapter extends AbstractAdapter {
     /**
      * Constructs a new {@code CdoAdapter}.
      */
-    @SuppressWarnings("unused") // Called dynamically
     public CdoAdapter() {
-        super("cdo", "resource", org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class);
+        super("cdo", org.eclipse.gmt.modisco.java.cdo.impl.JavaPackageImpl.class);
     }
 
     @Nonnull
     @Override
-    public Resource createResource(File file, ResourceSet resourceSet) {
-        server = new EmbeddedCdoServer(file.toPath());
-        return server.getTransaction().getOrCreateResource(file.getName());
+    public URI createUri(Path directory, String fileName) {
+        return URI.createFileURI(directory.resolve(fileName).toFile().getAbsolutePath());
     }
 
     @Nonnull
     @Override
-    public Map<String, ?> getOptions() {
-        checkState(nonNull(server), "The CDO server has not been initialized");
+    public Resource create(URI uri) {
+        checkState(uri.isFile());
 
-        Map<String, Object> saveOpts = new HashMap<>();
-        saveOpts.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, server.getTransaction());
-        return saveOpts;
-    }
+        final Path file = Paths.get(uri.toFileString());
 
-    @Nonnull
-    @Override
-    public Resource load(File file, ImmutableConfig config) throws IOException {
-        initAndGetEPackage();
-
-        Resource resource = createResource(file, new ResourceSetImpl());
-        resource.load(getOptions());
-        return resource;
+        server = new EmbeddedCdoServer(file);
+        return server.getTransaction().getOrCreateResource(file.getFileName().toString());
     }
 
     @Override
     public void unload(Resource resource) {
-        if (resource.isLoaded()) {
-            resource.unload();
-        }
+        super.unload(resource);
 
         if (nonNull(server)) {
             server.close();
         }
+    }
+
+    @Nonnull
+    @Override
+    protected Map<String, ?> getOptions(ImmutableConfig config) {
+        checkState(nonNull(server), "The CDO server has not been initialized");
+
+        Map<String, Object> options = new HashMap<>();
+        options.put(CDOResource.OPTION_SAVE_OVERRIDE_TRANSACTION, server.getTransaction());
+        return options;
     }
 
     /**

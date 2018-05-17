@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- *
+ * A {@link Query}
  */
 @ParametersAreNonnullByDefault
 class GetThrownExceptionsPerPackage extends AbstractQuery<Map<String, Iterable<TypeAccess>>> {

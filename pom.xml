@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -51,7 +51,7 @@
         <module>neoemf-utils</module>
         <module>neoemf-utils/p2</module>
         <module>neoemf-tests</module>
-  </modules>
+    </modules>
 
     <developers>
         <developer>
@@ -111,9 +111,10 @@
     </developers>
 
     <properties>
-        <argLine.global>-XX:+UseConcMarkSweepGC</argLine.global>
+        <argLine.global>-XX:+UseConcMarkSweepGC -Xmx2g</argLine.global>
 
         <commons.version>1.0.2-SNAPSHOT</commons.version>
+
         <emf.version>2.12.0</emf.version>
     </properties>
 
@@ -176,15 +177,14 @@
                                 1.0.3.${maven.build.timestamp}
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
-                            <Import-Package/>
-                            <Embed-Dependency>
+                            <Import-Package />
+                            <Embed-Dependency><!-- Inherited -->
                                 *;
                                 scope=compile|runtime;
                                 type=!pom;
-                                groupId=!${project.groupId}|org.eclipse.emf
+                                groupId=!${project.groupId}|fr.inria.atlanmod.commons|org.eclipse.emf
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
-                            <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
                         </instructions>
                     </configuration>
                 </plugin>

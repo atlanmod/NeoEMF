@@ -12,7 +12,7 @@ import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.InvalidBackendException;
 import fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin;
 import fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -68,20 +68,20 @@ public class OpenBackendCommand extends AbstractHandler {
     }
 
     /**
-     * Retrieves the {@link UriBuilder} to use from the NeoEMF configuration in the given {@code directory}.
+     * Retrieves the {@link UriFactory} to use from the NeoEMF configuration in the given {@code directory}.
      *
      * @param directory the directory where to find the configuration
      *
-     * @return the {@link UriBuilder}
+     * @return the {@link UriFactory}
      *
      * @throws IOException             if the {@code directory} does not have configuration file
      * @throws InvalidBackendException if the information stored in the configuration does not permit to retrieve the
-     *                                 {@link UriBuilder}
+     *                                 {@link UriFactory}
      */
-    private UriBuilder getUriBuilder(Path directory) throws IOException {
+    private UriFactory getUriFactory(Path directory) throws IOException {
         return Config.load(directory)
                 .map(Config::getName)
-                .map(UriBuilder::forName)
+                .map(UriFactory::forName)
                 .<FileNotFoundException>orElseThrow(() -> new FileNotFoundException(String.format("Unable to find the configuration from %s", directory)));
     }
 
@@ -105,7 +105,7 @@ public class OpenBackendCommand extends AbstractHandler {
             Path root = Paths.get(currentDirectory.getRawLocation().toOSString());
 
             try {
-                URI uri = getUriBuilder(root).fromFile(root.toFile());
+                URI uri = getUriFactory(root).createLocalUri(root.toFile());
 
                 PlatformUI.getWorkbench()
                         .getActiveWorkbenchWindow()

@@ -16,7 +16,7 @@
  * The {@link fr.inria.atlanmod.neoemf.data.blueprints.BlueprintsBackendFactory} has to be registered to enable {@link
  * fr.inria.atlanmod.neoemf.resource.PersistentResource} creation with a Blueprints storage:
  * <pre>{@code
- * BackendFactoryRegistry.register(BlueprintsBackendFactory.getInstance());
+ * BackendFactoryRegistry.register(new BlueprintsBackendFactory());
  * }</pre>
  */
 

@@ -11,7 +11,6 @@ package fr.inria.atlanmod.neoemf.data.store.listener;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.log.Logger;
-import fr.inria.atlanmod.neoemf.data.store.Store;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -19,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link Store} wrapper that logs every calls in the {@link Log}.
+ * A {@link StoreListener} that logs every calls in the {@link Log}.
  */
 @ParametersAreNonnullByDefault
 public class LoggingStoreListener implements StoreListener {

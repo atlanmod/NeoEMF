@@ -10,11 +10,14 @@ package fr.inria.atlanmod.neoemf.data.im.config;
 
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
+import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackendFactory;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 import java.nio.file.Path;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -23,25 +26,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * <p>
  * All features are all optional: configuration can be created using all or none of them.
  */
+@Component(service = Config.class, scope = ServiceScope.PROTOTYPE)
 @FactoryBinding(factory = InMemoryBackendFactory.class)
 @ParametersAreNonnullByDefault
 public class InMemoryConfig extends BaseConfig<InMemoryConfig> {
 
     /**
-     * Constructs a new {@code BerkeleyDbConfig}.
+     * Constructs a new {@code InMemoryConfig} with default settings.
      */
-    protected InMemoryConfig() {
+    public InMemoryConfig() {
         // Don't set a default mapping for a multi-mapping configuration.
-    }
-
-    /**
-     * Constructs a new {@code InMemoryConfig} instance with default settings.
-     *
-     * @return a new configuration
-     */
-    @Nonnull
-    public static InMemoryConfig newConfig() {
-        return new InMemoryConfig();
     }
 
     @Override

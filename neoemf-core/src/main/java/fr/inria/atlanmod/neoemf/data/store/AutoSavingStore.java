@@ -130,8 +130,8 @@ public class AutoSavingStore extends AbstractStore {
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
-        thenIncrementAndSave(() -> super.addAllValues(feature, values), values.size());
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
+        thenIncrementAndSave(() -> super.addAllValues(feature, collection), collection.size());
     }
 
     @Nonnegative
@@ -142,8 +142,8 @@ public class AutoSavingStore extends AbstractStore {
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
-        return thenIncrementAndSave(() -> super.appendAllValues(feature, values), values.size());
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> collection) {
+        return thenIncrementAndSave(() -> super.appendAllValues(feature, collection), collection.size());
     }
 
     @Nonnull
@@ -169,8 +169,8 @@ public class AutoSavingStore extends AbstractStore {
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
-        thenIncrementAndSave(() -> super.addAllReferences(feature, references), references.size());
+    public void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
+        thenIncrementAndSave(() -> super.addAllReferences(feature, collection), collection.size());
     }
 
     @Nonnegative
@@ -181,8 +181,8 @@ public class AutoSavingStore extends AbstractStore {
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
-        return thenIncrementAndSave(() -> super.appendAllReferences(feature, references), references.size());
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> collection) {
+        return thenIncrementAndSave(() -> super.appendAllReferences(feature, collection), collection.size());
     }
 
     @Nonnull

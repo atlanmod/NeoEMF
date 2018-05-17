@@ -74,7 +74,7 @@ class StoreFactoryTest extends AbstractTest {
      */
     @Test
     void testNoStore() {
-        ImmutableConfig config = BaseConfig.newConfig();
+        ImmutableConfig config = new BaseConfig<>();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isExactlyInstanceOf(NoopStore.class);
@@ -85,8 +85,7 @@ class StoreFactoryTest extends AbstractTest {
      */
     @Test
     void testLogging() {
-        ImmutableConfig config = BaseConfig.newConfig()
-                .log();
+        ImmutableConfig config = new BaseConfig<>().log();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(ListeningStore.class);
@@ -100,8 +99,7 @@ class StoreFactoryTest extends AbstractTest {
      */
     @Test
     void testSizeCaching() {
-        ImmutableConfig config = BaseConfig.newConfig()
-                .cacheSizes();
+        ImmutableConfig config = new BaseConfig<>().cacheSizes();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(SizeCachingStore.class);
@@ -115,8 +113,7 @@ class StoreFactoryTest extends AbstractTest {
      */
     @Test
     void testFeatureCaching() {
-        ImmutableConfig config = BaseConfig.newConfig()
-                .cacheFeatures();
+        ImmutableConfig config = new BaseConfig<>().cacheFeatures();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(FeatureCachingStore.class);
@@ -130,8 +127,7 @@ class StoreFactoryTest extends AbstractTest {
      */
     @Test
     void testContainerCaching() {
-        ImmutableConfig config = BaseConfig.newConfig()
-                .cacheContainers();
+        ImmutableConfig config = new BaseConfig<>().cacheContainers();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(ContainerCachingStore.class);
@@ -145,8 +141,7 @@ class StoreFactoryTest extends AbstractTest {
      */
     @Test
     void testMetaclassCaching() {
-        ImmutableConfig config = BaseConfig.newConfig()
-                .cacheMetaClasses();
+        ImmutableConfig config = new BaseConfig<>().cacheMetaClasses();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(ClassCachingStore.class);
@@ -160,8 +155,7 @@ class StoreFactoryTest extends AbstractTest {
      */
     @Test
     void testStatsCaching() {
-        ImmutableConfig config = BaseConfig.newConfig()
-                .recordStats(new StoreStats());
+        ImmutableConfig config = new BaseConfig<>().recordStats(new StoreStats());
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(ListeningStore.class);
@@ -175,8 +169,7 @@ class StoreFactoryTest extends AbstractTest {
      */
     @Test
     void testAutoSave() {
-        ImmutableConfig config = BaseConfig.newConfig()
-                .autoSave();
+        ImmutableConfig config = new BaseConfig<>().autoSave();
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(AutoSavingStore.class);
@@ -192,8 +185,7 @@ class StoreFactoryTest extends AbstractTest {
     void testAutoSaveWithChunk() {
         final long expectedChunk = 12_345;
 
-        ImmutableConfig config = BaseConfig.newConfig()
-                .autoSave(expectedChunk);
+        ImmutableConfig config = new BaseConfig<>().autoSave(expectedChunk);
 
         Store store = StoreFactory.getInstance().createStore(mock(Backend.class), config);
         assertThat(store).isInstanceOf(AutoSavingStore.class);
@@ -210,8 +202,7 @@ class StoreFactoryTest extends AbstractTest {
      */
     @Test
     void testAutoSaveWithNegativeChunk() {
-        assertThat(catchThrowable(() -> BaseConfig.newConfig().autoSave(-2)))
-                .isExactlyInstanceOf(InvalidConfigException.class);
+        assertThat(catchThrowable(() -> new BaseConfig<>().autoSave(-2))).isExactlyInstanceOf(InvalidConfigException.class);
     }
 
     /**
@@ -221,7 +212,7 @@ class StoreFactoryTest extends AbstractTest {
     void testAllStores() {
         long expectedChunk = 12_345;
 
-        ImmutableConfig config = BaseConfig.newConfig()
+        ImmutableConfig config = new BaseConfig<>()
                 .cacheSizes()
                 .cacheFeatures()
                 .log(Level.DEBUG)

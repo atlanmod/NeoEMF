@@ -9,29 +9,33 @@
 package fr.inria.atlanmod.neoemf.data.mongodb.util;
 
 import fr.inria.atlanmod.neoemf.context.Context;
-import fr.inria.atlanmod.neoemf.data.mongodb.context.MongoDbContext;
-import fr.inria.atlanmod.neoemf.util.AbstractUriTest;
+import fr.inria.atlanmod.neoemf.data.mongodb.context.MongoDbDefaultContext;
+import fr.inria.atlanmod.neoemf.util.AbstractUriFactoryTest;
+
 import org.junit.jupiter.api.Disabled;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
 
 /**
- * A test-case about {@link MongoDbUri}.
+ * A test-case about {@link MongoDbUriFactory}.
  */
 @ParametersAreNonnullByDefault
-class MongoDbUriTest extends AbstractUriTest {
+class MongoDbUriTest extends AbstractUriFactoryTest {
 
     @Nonnull
     @Override
     protected Context context() {
-        return MongoDbContext.getDefault();
+        return new MongoDbDefaultContext();
     }
 
-    @Disabled
+    @Disabled("Not supported")
     @Override
     public void testCreateUriFromStandardUriInvalidScheme() {
-        super.testCreateUriFromStandardUriInvalidScheme();
+    }
+
+    @Disabled("Not supported")
+    @Override
+    public void testCreateUriFromFileUri() {
     }
 }

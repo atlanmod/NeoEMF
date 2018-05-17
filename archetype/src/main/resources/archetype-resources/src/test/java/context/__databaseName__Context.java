@@ -9,7 +9,7 @@
 package ${package}.context;
 
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.context.AbstractContext;
+import fr.inria.atlanmod.neoemf.context.AbstractLocalContext;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 
@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A specific {@link Context} for the ${databaseName} implementation.
  */
 @ParametersAreNonnullByDefault
-public abstract class ${databaseName}Context extends AbstractContext {
+public abstract class ${databaseName}Context extends AbstractLocalContext {
 
     /**
      * Creates a new {@code BerkeleyDbContext}.
@@ -36,7 +36,7 @@ public abstract class ${databaseName}Context extends AbstractContext {
             @Nonnull
             @Override
             public ImmutableConfig config() {
-                return ${databaseName}Config.newConfig();
+                return new ${databaseName}Config();
             }
         };
     }
@@ -50,6 +50,6 @@ public abstract class ${databaseName}Context extends AbstractContext {
     @Nonnull
     @Override
     public BackendFactory factory() {
-        return ${databaseName}BackendFactory.getInstance();
+        return new ${databaseName}BackendFactory();
     }
 }

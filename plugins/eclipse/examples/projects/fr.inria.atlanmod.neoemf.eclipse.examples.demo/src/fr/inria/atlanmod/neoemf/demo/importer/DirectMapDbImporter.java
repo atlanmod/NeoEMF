@@ -13,7 +13,7 @@ import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.MapDbBackendFactory;
 import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
-import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUri;
+import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUriFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
 import fr.inria.atlanmod.neoemf.io.Migrator;
@@ -33,14 +33,12 @@ public class DirectMapDbImporter {
     public static void main(String[] args) throws Exception {
         EPackage.Registry.INSTANCE.put(JavaPackage.eNS_URI, JavaPackage.eINSTANCE);
 
-        ImmutableConfig config = MapDbConfig.newConfig()
-                .withIndices()
-                .autoSave();
+        ImmutableConfig config = new MapDbConfig().withIndices().autoSave();
 
-        BackendFactory factory = MapDbBackendFactory.getInstance();
+        BackendFactory factory = new MapDbBackendFactory();
 
         File sourceFile = new File("model/sample.xmi");
-        URI targetUri = MapDbUri.builder().fromFile("databases/sample2.mapdb");
+        URI targetUri = new MapDbUriFactory().createLocalUri("databases/sample2.mapdb");
 
         try (Backend backend = factory.createBackend(targetUri, config); DataMapper mapper = StoreFactory.getInstance().createStore(backend, config)) {
             Migrator.fromXmi(sourceFile)

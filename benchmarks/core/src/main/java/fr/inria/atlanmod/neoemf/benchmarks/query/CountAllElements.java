@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A query that counts the number of elements in a {@link Resource} by using {@link Resource#getAllContents()}.
+ * A {@link Query} that counts the number of elements in a {@link Resource} by using {@link Resource#getAllContents()}.
  */
 @ParametersAreNonnullByDefault
 class CountAllElements extends AbstractQuery<Long> {

@@ -12,11 +12,12 @@ import com.sleepycat.je.DatabaseConfig;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
+
+import org.osgi.service.component.annotations.Component;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,33 +28,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A {@link fr.inria.atlanmod.neoemf.data.BackendFactory} that creates {@link BerkeleyDbBackend} instances.
  */
+@Component(service = BackendFactory.class)
 @ParametersAreNonnullByDefault
 public class BerkeleyDbBackendFactory extends AbstractBackendFactory<BerkeleyDbConfig> {
 
     /**
-     * The literal description of the factory.
-     */
-    private static final String NAME = "berkeleydb";
-
-    /**
      * Constructs a new {@code BerkeleyDbBackendFactory}.
      */
-    protected BerkeleyDbBackendFactory() {
-    }
-
-    /**
-     * Returns the instance of this class.
-     *
-     * @return the instance of this class
-     */
-    @Nonnull
-    public static BackendFactory getInstance() {
-        return Holder.INSTANCE;
-    }
-
-    @Override
-    public String name() {
-        return NAME;
+    public BerkeleyDbBackendFactory() {
+        super("berkeleydb");
     }
 
     @Nonnull
@@ -78,17 +61,5 @@ public class BerkeleyDbBackendFactory extends AbstractBackendFactory<BerkeleyDbC
         Environment environment = new Environment(directory.toFile(), environmentConfig);
 
         return createMapper(config.getMapping(), environment, databaseConfig);
-    }
-
-    /**
-     * The initialization-on-demand holder of the singleton of this class.
-     */
-    @Static
-    private static final class Holder {
-
-        /**
-         * The instance of the outer class.
-         */
-        static final BackendFactory INSTANCE = new BerkeleyDbBackendFactory();
     }
 }

@@ -38,8 +38,7 @@ public abstract class AbstractMapperFactory {
     @SuppressWarnings("unchecked")
     protected final <T extends DataMapper> T createMapper(String typeName, Object... parameters) {
         try {
-            ClassLoader currentClassLoader = getClass().getClassLoader();
-            Class<T> type = (Class<T>) Class.forName(typeName, true, currentClassLoader);
+            final Class<T> type = (Class<T>) Class.forName(typeName, true, getClass().getClassLoader());
 
             return createMapper(type, parameters);
         }

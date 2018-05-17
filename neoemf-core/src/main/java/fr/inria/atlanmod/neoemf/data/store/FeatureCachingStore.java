@@ -96,16 +96,16 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
     }
 
     @Override
-    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> values) {
+    public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
         int firstPosition = feature.position();
 
-        IntStream.range(0, values.size())
-                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), values.get(i)));
+        IntStream.range(0, collection.size())
+                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), collection.get(i)));
 
-        IntStream.range(firstPosition + values.size(), sizeOfValue(feature.withoutPosition()).orElseGet(() -> firstPosition + values.size()))
+        IntStream.range(firstPosition + collection.size(), sizeOfValue(feature.withoutPosition()).orElseGet(() -> firstPosition + collection.size()))
                 .forEachOrdered(i -> cache.invalidate(feature.withPosition(i)));
 
-        super.addAllValues(feature, values);
+        super.addAllValues(feature, collection);
     }
 
     @Nonnegative
@@ -120,11 +120,11 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
 
     @Nonnegative
     @Override
-    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> values) {
-        int firstPosition = super.appendAllValues(feature, values);
+    public <V> int appendAllValues(SingleFeatureBean feature, List<? extends V> collection) {
+        int firstPosition = super.appendAllValues(feature, collection);
 
-        IntStream.range(0, values.size())
-                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), values.get(i)));
+        IntStream.range(0, collection.size())
+                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), collection.get(i)));
 
         return firstPosition;
     }
@@ -171,16 +171,16 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
     }
 
     @Override
-    public void addAllReferences(ManyFeatureBean feature, List<Id> references) {
+    public void addAllReferences(ManyFeatureBean feature, List<Id> collection) {
         int firstPosition = feature.position();
 
-        IntStream.range(0, references.size())
-                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), references.get(i)));
+        IntStream.range(0, collection.size())
+                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), collection.get(i)));
 
-        IntStream.range(firstPosition + references.size(), sizeOfReference(feature.withoutPosition()).orElseGet(() -> firstPosition + references.size()))
+        IntStream.range(firstPosition + collection.size(), sizeOfReference(feature.withoutPosition()).orElseGet(() -> firstPosition + collection.size()))
                 .forEachOrdered(i -> cache.invalidate(feature.withPosition(i)));
 
-        super.addAllReferences(feature, references);
+        super.addAllReferences(feature, collection);
     }
 
     @Nonnegative
@@ -195,11 +195,11 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
 
     @Nonnegative
     @Override
-    public int appendAllReferences(SingleFeatureBean feature, List<Id> references) {
-        int firstPosition = super.appendAllReferences(feature, references);
+    public int appendAllReferences(SingleFeatureBean feature, List<Id> collection) {
+        int firstPosition = super.appendAllReferences(feature, collection);
 
-        IntStream.range(0, references.size())
-                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), references.get(i)));
+        IntStream.range(0, collection.size())
+                .forEachOrdered(i -> cache.put(feature.withPosition(firstPosition + i), collection.get(i)));
 
         return firstPosition;
     }

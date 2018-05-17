@@ -26,6 +26,6 @@ class BlueprintsNeo4jIndicesTest extends AbstractDataMapperTest {
     @Nonnull
     @Override
     protected Context context() {
-        return BlueprintsNeo4jContext.getDefault();
+        return new BlueprintsNeo4jContext();
     }
 }

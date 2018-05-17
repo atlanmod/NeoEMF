@@ -13,11 +13,13 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceFactoryRegistryImpl;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
-import java.io.File;
-import java.io.IOException;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -25,44 +27,40 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An {@link Adapter} on top a an original XMI {@link Resource}.
  */
+@AdapterName("xmi")
 @ParametersAreNonnullByDefault
 public class XmiAdapter extends AbstractAdapter {
+
+    private static Resource.Factory.Registry REGISTRY = new ResourceFactoryRegistryImpl();
+
+    static {
+        REGISTRY.getExtensionToFactoryMap().put("*", new XMIResourceFactoryImpl());
+    }
 
     /**
      * Constructs a new {@code XmiAdapter}.
      */
-    @SuppressWarnings("unused") // Called dynamically
     public XmiAdapter() {
-        super("xmi", "xmi", org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class);
+        super("xmi", org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.class);
     }
 
     @Nonnull
     @Override
-    public Resource createResource(File file, ResourceSet resourceSet) {
-        URI targetUri = URI.createFileURI(file.getAbsolutePath());
-
-        return resourceSet.createResource(targetUri);
+    public URI createUri(Path directory, String fileName) {
+        return URI.createFileURI(directory.resolve(fileName).toFile().getAbsolutePath());
     }
 
     @Nonnull
     @Override
-    public Resource load(File file, ImmutableConfig config) throws IOException {
-        initAndGetEPackage();
-
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
-
-        Resource resource = createResource(file, resourceSet);
-        resource.load(getOptions());
-
-        return resource;
+    public Resource create(URI uri) {
+        final ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.setResourceFactoryRegistry(REGISTRY);
+        return resourceSet.createResource(uri);
     }
 
+    @Nonnull
     @Override
-    public void unload(Resource resource) {
-        if (resource.isLoaded()) {
-            resource.unload();
-        }
+    protected Map<String, ?> getOptions(ImmutableConfig config) {
+        return Collections.emptyMap();
     }
 }

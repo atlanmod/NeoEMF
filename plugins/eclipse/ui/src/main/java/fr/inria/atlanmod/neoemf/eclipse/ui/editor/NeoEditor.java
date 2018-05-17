@@ -12,7 +12,7 @@ import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
-import fr.inria.atlanmod.neoemf.util.UriBuilder;
+import fr.inria.atlanmod.neoemf.util.UriFactory;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.presentation.EcoreEditor;
@@ -45,7 +45,7 @@ public class NeoEditor extends EcoreEditor {
             URI uri = EditUIUtil.getURI(getEditorInput());
             String uriScheme = uri.scheme();
 
-            uri = UriBuilder.forScheme(uriScheme).fromUri(uri);
+            uri = UriFactory.forScheme(uriScheme).createLocalUri(uri);
 
             // Create a default configuration: the exact instance will be create when loading the existing configuration
             ImmutableConfig config = Config.forScheme(uriScheme)

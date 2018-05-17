@@ -56,7 +56,7 @@ public class BasicNamespace implements Basic<BasicNamespace, EPackage> {
      * The {@link EPackage} represented by this object.
      */
     @Nonnull
-    private LazyReference<EPackage> ePackage = LazyReference.soft(() -> {
+    private final LazyReference<EPackage> ePackage = LazyReference.soft(() -> {
         EPackage p = EPackage.Registry.INSTANCE.getEPackage(getUri());
         checkNotNull(p, "EPackage %s is not registered.", getUri());
         return p;
@@ -169,7 +169,7 @@ public class BasicNamespace implements Basic<BasicNamespace, EPackage> {
          */
         @Nonnull
         @VisibleForTesting
-        public Iterable<String> getPrefixes() {
+        Iterable<String> getPrefixes() {
             return Collections.unmodifiableSet(namespacesByPrefix.keySet());
         }
 

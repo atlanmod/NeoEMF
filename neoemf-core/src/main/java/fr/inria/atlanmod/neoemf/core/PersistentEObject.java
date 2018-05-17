@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
+import fr.inria.atlanmod.neoemf.core.internal.PersistenceAdapter;
 import fr.inria.atlanmod.neoemf.data.store.Storable;
 
 import org.eclipse.emf.ecore.EObject;

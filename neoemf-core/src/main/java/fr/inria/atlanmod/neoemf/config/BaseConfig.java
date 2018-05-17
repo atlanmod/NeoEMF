@@ -8,10 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.config;
 
-import fr.inria.atlanmod.commons.annotation.Builder;
 import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.neoemf.bind.BindingEngine;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.AutoSavingStore;
 import fr.inria.atlanmod.neoemf.data.store.ClassCachingStore;
@@ -53,7 +52,6 @@ import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
  *
  * @param <C> the "self"-type of this {@link Config}
  */
-@Builder("newConfig")
 @ParametersAreNonnullByDefault
 // TODO Split the back-end configuration and stores configuration in different classes
 public class BaseConfig<C extends BaseConfig<C>> implements Config {
@@ -129,28 +127,19 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     private final Set<StoreListener> listeners = new HashSet<>();
 
     /**
-     * Constructs a new {@code BaseConfig}.
-     */
-    protected BaseConfig() {
-        if (getClass() != BaseConfig.class) { // The only exception
-            setName(BindingEngine.nameOf(getClass()));
-            setVariant(BindingEngine.variantOf(getClass()));
-        }
-    }
-
-    /**
-     * Constructs a new {@code BaseConfig} instance.
+     * Constructs a new {@code BaseConfig} with default settings.
      * <p>
      * <b>NOTE:</b> This implementation is intended to configure a {@link fr.inria.atlanmod.neoemf.data.store.Store}'
      * chain. The created configuration is not associated with any {@link fr.inria.atlanmod.neoemf.data.BackendFactory},
      * so it cannot be used to configure a {@link fr.inria.atlanmod.neoemf.data.Backend}. Use the specific
      * implementation for this.
-     *
-     * @return a new configuration
      */
-    @Nonnull
-    public static Config newConfig() {
-        return new BaseConfig<>();
+    public BaseConfig() {
+        if (getClass() != BaseConfig.class) { // The only exception
+            setName(Bindings.nameOf(getClass()));
+
+            Bindings.variantOf(getClass()).ifPresent(this::setVariant);
+        }
     }
 
     /**
@@ -450,24 +439,24 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Nonnull
     @SuppressWarnings("unchecked")
     protected final C setMappingWithCheck(String mappingType, boolean checkConflict) {
+        checkNotNull(mappingType, "mappingType");
+
         if (checkConflict) {
             checkConflict(BACKEND_MAPPING, mappingType);
         }
 
-        Class<? extends DataMapper> mappingClass;
         try {
-            mappingClass = (Class<? extends DataMapper>) Class.forName(mappingType);
+            final Class<?> mappingClass = Class.forName(mappingType, false, getClass().getClassLoader());
+            if (!DataMapper.class.isAssignableFrom(mappingClass)) {
+                throw new InvalidConfigException(String.format("The %s must be assignable to %s", mappingType, DataMapper.class.getName()));
+            }
         }
         catch (ClassNotFoundException e) {
             throw new InvalidConfigException(e);
         }
-        catch (ClassCastException e) {
-            throw new InvalidConfigException(
-                    String.format("The %s must be assignable to %s", mappingType, DataMapper.class.getName()));
-        }
 
         // Don't use addOption to avoid double checking
-        options.put(BACKEND_MAPPING, checkNotNull(mappingClass.getName(), "mapping.name"));
+        options.put(BACKEND_MAPPING, mappingType);
         return me();
     }
 

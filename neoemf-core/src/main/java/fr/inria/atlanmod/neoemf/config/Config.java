@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.config;
 
 import fr.inria.atlanmod.commons.log.Level;
-import fr.inria.atlanmod.neoemf.bind.BindingEngine;
+import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.listener.StoreListener;
 import fr.inria.atlanmod.neoemf.data.store.listener.StoreStats;
@@ -48,11 +48,11 @@ public interface Config extends ImmutableConfig {
      */
     @Nonnull
     static <C extends Config> C forName(String name, @Nullable String variant) {
-        return BindingEngine.findBy(Config.class, BindingEngine::nameOf, name, variant);
+        return Bindings.find(Config.class, Bindings::nameOf, name, variant);
     }
 
     /**
-     * Retrieves the instance of {@code Config} that is associated to a {@link fr.inria.atlanmod.neoemf.util.UriBuilder}
+     * Retrieves the instance of {@code Config} that is associated to a {@link fr.inria.atlanmod.neoemf.util.UriFactory}
      * which use the specified {@code scheme}.
      *
      * @param scheme the scheme of the factory
@@ -62,7 +62,7 @@ public interface Config extends ImmutableConfig {
      */
     @Nonnull
     static <C extends Config> C forScheme(String scheme) {
-        return BindingEngine.findBy(Config.class, BindingEngine::schemeOf, scheme, null);
+        return Bindings.find(Config.class, Bindings::schemeOf, scheme, null);
     }
 
     /**

@@ -11,14 +11,13 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
+import java.nio.file.Path;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -28,6 +27,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 public interface Adapter {
+
+    /**
+     * Retrieves and initializes the {@link EPackage} used by this adapter.
+     *
+     * @return the package
+     */
+    @Nonnull
+    EPackage initAndGetEPackage();
 
     /**
      * Creates a resource from the given {@code name} and returns its path.
@@ -41,18 +48,42 @@ public interface Adapter {
      * Creates a datastore from the given {@code file} in the default location.
      *
      * @return the datastore location
+     *
+     * @throws IOException if an I/O error occurs when creating the datastore
      */
     @Nonnull
-    File getOrCreateStore(File file, ImmutableConfig config, boolean useDirectImport) throws IOException;
+    URI getOrCreateStore(File resourceFile, ImmutableConfig config, boolean useDirectImport) throws IOException;
 
     /**
-     * Creates a datastore from the given {@code file} in a temporary location.
+     * Creates a datastore from the given {@code resourceFile} in a temporary location.
      *
      * @return the datastore location
+     *
+     * @throws IOException if an I/O error occurs when creating the datastore
      */
     @Nonnull
     @SuppressWarnings("UnusedReturnValue")
-    File createTempStore(File file, ImmutableConfig config, boolean useDirectImport) throws IOException;
+    URI createTempStore(File resourceFile, ImmutableConfig config, boolean useDirectImport) throws IOException;
+
+    /**
+     * Creates a URI from the specified {@code file}.
+     *
+     * @param fileName the file
+     *
+     * @return a new URI
+     */
+    @Nonnull
+    URI createUri(Path directory, String fileName);
+
+    /**
+     * Creates a new {@link Resource} in the given {@code file}.
+     *
+     * @param uri the URI of the resource to create
+     *
+     * @return a new resource
+     */
+    @Nonnull
+    Resource create(URI uri);
 
     /**
      * Loads a resource file from the given {@code file}.
@@ -60,7 +91,7 @@ public interface Adapter {
      * @return the loaded resource
      */
     @Nonnull
-    Resource load(File file, ImmutableConfig config) throws IOException;
+    Resource load(URI uri, ImmutableConfig config) throws IOException;
 
     /**
      * Saves the given {@code resource}.
@@ -73,12 +104,12 @@ public interface Adapter {
     void unload(Resource resource);
 
     /**
-     * Copies a datastore from the {@code file} to a temporary location.
+     * Copies a datastore from the {@code uri} to a temporary location.
      *
      * @return the location of the new datastore
      */
     @Nonnull
-    File copy(File file) throws IOException;
+    URI copy(URI uri) throws IOException;
 
     /**
      * An {@link Adapter} used to create {@link Resource}s.
@@ -87,23 +118,14 @@ public interface Adapter {
     interface Internal extends Adapter {
 
         /**
-         * Checks that this {@code Adapter} supports the creation of {@link DataMapper}s.
-         *
-         * @return {@code true} if this {@code Adapter} supports the creation of {@link DataMapper}s
-         */
-        default boolean supportsMapper() {
-            return false;
-        }
-
-        /**
          * Creates a new {@link DataMapper} in the given {@code file}.
          *
          * @return a new {@link DataMapper}
          *
          * @throws UnsupportedOperationException if this {@code Adapter} does not support {@link DataMapper} creation
-         * @see #supportsMapper()
          */
-        default DataMapper createMapper(File file, ImmutableConfig config) {
+        @Nonnull
+        default DataMapper createMapper(URI uri, ImmutableConfig config) {
             throw new UnsupportedOperationException("This adapter does not support DataMapper creation");
         }
 
@@ -122,34 +144,5 @@ public interface Adapter {
          */
         @Nonnull
         String getStoreExtension();
-
-        /**
-         * Retrieves and initializes the {@link EPackage} used by this adapter.
-         *
-         * @return the package
-         */
-        @Nonnull
-        EPackage initAndGetEPackage();
-
-        /**
-         * Creates a new {@link Resource} in the given {@code file}, by using the given {@code resourceSet}.
-         *
-         * @param file        the file to create the resource
-         * @param resourceSet the resource set used to created the resource
-         *
-         * @return a new resource
-         */
-        @Nonnull
-        Resource createResource(File file, ResourceSet resourceSet);
-
-        /**
-         * Returns the default {@link Map} options of this adapter
-         *
-         * @return the {@link Map} options
-         */
-        @Nonnull
-        default Map<String, ?> getOptions() {
-            return Collections.emptyMap();
-        }
     }
 }

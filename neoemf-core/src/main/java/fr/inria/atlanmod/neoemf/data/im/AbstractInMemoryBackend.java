@@ -220,12 +220,12 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
         /**
          * The estimated size of a {@link ClassBean}.
          */
-        protected static final long CLASS = (long) Math.pow(2, 6);
+        protected static final long CLASS = (long) Math.pow(2, 7);
 
         /**
          * The estimated size of a {@link FeatureBean}.
          */
-        protected static final long FEATURE = (long) Long.BYTES + (long) Integer.BYTES;
+        protected static final long FEATURE = ID + (long) Integer.BYTES;
 
         /**
          * The estimated size of a feature value. Can be a simple value or an array for multi-valued features.
