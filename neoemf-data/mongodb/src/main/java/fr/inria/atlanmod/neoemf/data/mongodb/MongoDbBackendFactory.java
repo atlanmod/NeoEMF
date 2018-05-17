@@ -48,9 +48,15 @@ public class MongoDbBackendFactory extends AbstractBackendFactory<MongoDbConfig>
     @Override
     protected Backend createRemoteBackend(URL url, MongoDbConfig config) {
         final MongoClient client = createClient(url);
-        final MongoDatabase database = createDatabase(client, url.getPath().substring(1));
 
-        return createMapper(config.getMapping(), client, database);
+        try {
+            final MongoDatabase database = createDatabase(client, url.getPath().substring(1));
+            return createMapper(config.getMapping(), client, database);
+        }
+        catch (RuntimeException e) {
+            client.close();
+            throw e;
+        }
     }
 
     /**
