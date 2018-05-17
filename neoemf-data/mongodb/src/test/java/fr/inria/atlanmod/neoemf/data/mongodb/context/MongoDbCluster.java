@@ -75,7 +75,7 @@ class MongoDbCluster {
             mongo = starter.prepare(mongodConfig);
             mongo.start();
 
-            host = mongodConfig.net().getServerAddress().getHostAddress();
+            host = "localhost"; // FIXME Find host dynamically (failure with Linux - 127.0.1.1)
             port = mongodConfig.net().getPort();
 
             Log.info("MongoDB cluster running at {0}:{1,number,#}", host, port);

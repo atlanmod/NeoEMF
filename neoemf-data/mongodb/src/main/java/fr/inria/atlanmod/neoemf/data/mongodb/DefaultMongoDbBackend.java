@@ -19,7 +19,7 @@ import fr.inria.atlanmod.commons.io.serializer.StringSerializerFactory;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
-import fr.inria.atlanmod.neoemf.data.mongodb.model.StoredInstance;
+import fr.inria.atlanmod.neoemf.data.mongodb.document.ModelDocument;
 
 import org.bson.conversions.Bson;
 
@@ -34,7 +34,9 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.exists;
 import static com.mongodb.client.model.Projections.include;
 import static com.mongodb.client.model.Updates.pushEach;
 import static com.mongodb.client.model.Updates.set;
@@ -51,35 +53,6 @@ import static java.util.Objects.nonNull;
  */
 @ParametersAreNonnullByDefault
 class DefaultMongoDbBackend extends AbstractMongoDbBackend {
-
-    // region Fields
-    // TODO Move fields in their respectives classes (StoredInstance)
-
-    /**
-     *
-     */
-    @Nonnull
-    private static final String FIELD_SINGLE_VALUE = "singlevaluedValues";
-
-    /**
-     *
-     */
-    @Nonnull
-    private static final String FIELD_SINGLE_REF = "singlevaluedReferences";
-
-    /**
-     *
-     */
-    @Nonnull
-    private static final String FIELD_MANY_VALUE = "multivaluedValues";
-
-    /**
-     *
-     */
-    @Nonnull
-    private static final String FIELD_MANY_REF = "multivaluedReferences";
-
-    // endregion
 
     /**
      *
@@ -106,15 +79,22 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_SINGLE_VALUE, featureId)))
+        final Bson query = and(
+                eq(ModelDocument.F_ID, ownerId),
+                exists(ModelDocument.F_SINGLE_VALUE)
+        );
+
+        final Bson projection = include(fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId));
+
+        final ModelDocument instance = find(query, ModelDocument.class)
+                .projection(projection)
                 .first();
 
-        if (nonNull(instance) && nonNull(instance.getSinglevaluedValues()) && instance.getSinglevaluedValues().containsKey(featureId)) {
-            return Optional.of(deserializeValue(instance.getSinglevaluedValues().get(featureId)));
-        }
-
-        return Optional.empty();
+        return Optional.ofNullable(instance)
+                .map(ModelDocument::getSingleValues)
+                .filter(m -> m.containsKey(featureId))
+                .map(m -> m.get(featureId))
+                .map(this::deserializeValue);
     }
 
     @Nonnull
@@ -126,25 +106,25 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_SINGLE_VALUE, featureId)))
+        ModelDocument instance = find(eq(ModelDocument.F_ID, ownerId), ModelDocument.class)
+                .projection(include(fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId)))
                 .first();
 
         if (isNull(instance)) {
-            instance = new StoredInstance();
+            instance = new ModelDocument();
             instance.setId(ownerId);
-            instance.getSinglevaluedValues().put(featureId, serializeValue(value));
+            instance.getSingleValues().put(featureId, serializeValue(value));
 
             insertOne(instance);
         }
         else {
             updateOne(
-                    eq(FIELD_ID, ownerId),
-                    set(combineField(FIELD_SINGLE_VALUE, featureId), serializeValue(value))
+                    eq(ModelDocument.F_ID, ownerId),
+                    set(fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId), serializeValue(value))
             );
 
-            if (instance.getSinglevaluedValues().containsKey(featureId)) {
-                return Optional.of(deserializeValue(instance.getSinglevaluedValues().get(featureId)));
+            if (instance.getSingleValues().containsKey(featureId)) {
+                return Optional.of(deserializeValue(instance.getSingleValues().get(featureId)));
             }
         }
 
@@ -159,8 +139,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String featureId = Integer.toString(feature.id());
 
         updateOne(
-                eq(FIELD_ID, ownerId),
-                unset(combineField(FIELD_SINGLE_VALUE, featureId))
+                eq(ModelDocument.F_ID, ownerId),
+                unset(fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId))
         );
     }
 
@@ -176,15 +156,22 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_SINGLE_REF, featureId)))
+        final Bson query = and(
+                eq(ModelDocument.F_ID, ownerId),
+                exists(ModelDocument.F_SINGLE_REFERENCE)
+        );
+
+        final Bson projection = include(fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId));
+
+        final ModelDocument instance = find(query, ModelDocument.class)
+                .projection(projection)
                 .first();
 
-        if (nonNull(instance) && nonNull(instance.getSinglevaluedReferences()) && instance.getSinglevaluedReferences().containsKey(featureId)) {
-            return Optional.of(idConverter.revert(instance.getSinglevaluedReferences().get(featureId)));
-        }
-
-        return Optional.empty();
+        return Optional.ofNullable(instance)
+                .map(ModelDocument::getSingleReferences)
+                .filter(m -> m.containsKey(featureId))
+                .map(m -> m.get(featureId))
+                .map(idConverter::revert);
     }
 
     @Nonnull
@@ -196,25 +183,25 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_SINGLE_REF, featureId)))
+        ModelDocument instance = find(eq(ModelDocument.F_ID, ownerId), ModelDocument.class)
+                .projection(include(fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId)))
                 .first();
 
         if (isNull(instance)) {
-            instance = new StoredInstance();
+            instance = new ModelDocument();
             instance.setId(ownerId);
-            instance.getSinglevaluedReferences().put(featureId, idConverter.convert(reference));
+            instance.getSingleReferences().put(featureId, idConverter.convert(reference));
 
             insertOne(instance);
         }
         else {
             updateOne(
-                    eq(FIELD_ID, ownerId),
-                    set(combineField(FIELD_SINGLE_REF, featureId), idConverter.convert(reference))
+                    eq(ModelDocument.F_ID, ownerId),
+                    set(fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId), idConverter.convert(reference))
             );
 
-            if (instance.getSinglevaluedReferences().containsKey(featureId)) {
-                return Optional.of(idConverter.revert(instance.getSinglevaluedReferences().get(featureId)));
+            if (instance.getSingleReferences().containsKey(featureId)) {
+                return Optional.of(idConverter.revert(instance.getSingleReferences().get(featureId)));
             }
         }
 
@@ -229,8 +216,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String featureId = Integer.toString(feature.id());
 
         updateOne(
-                eq(FIELD_ID, ownerId),
-                unset(combineField(FIELD_SINGLE_REF, featureId))
+                eq(ModelDocument.F_ID, ownerId),
+                unset(fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId))
         );
     }
 
@@ -246,12 +233,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
+        final ModelDocument instance = find(eq(ModelDocument.F_ID, ownerId), ModelDocument.class)
+                .projection(include(fieldWithSuffix(ModelDocument.F_MANY_VALUE, featureId)))
                 .first();
 
-        if (nonNull(instance) && nonNull(instance.getMultivaluedValues()) && instance.getMultivaluedValues().containsKey(featureId) && instance.getMultivaluedValues().get(featureId).size() > feature.position()) {
-            return Optional.of(deserializeValue(instance.getMultivaluedValues().get(featureId).get(feature.position())));
+        if (nonNull(instance) && nonNull(instance.getManyValues()) && instance.getManyValues().containsKey(featureId) && instance.getManyValues().get(featureId).size() > feature.position()) {
+            return Optional.of(deserializeValue(instance.getManyValues().get(featureId).get(feature.position())));
         }
 
         return Optional.empty();
@@ -265,12 +252,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
+        final ModelDocument instance = find(eq(ModelDocument.F_ID, ownerId), ModelDocument.class)
+                .projection(include(fieldWithSuffix(ModelDocument.F_MANY_VALUE, featureId)))
                 .first();
 
-        if (nonNull(instance) && !instance.getMultivaluedValues().isEmpty() && instance.getMultivaluedValues().containsKey(featureId)) {
-            List<String> values = instance.getMultivaluedValues().get(featureId);
+        if (nonNull(instance) && !instance.getManyValues().isEmpty() && instance.getManyValues().containsKey(featureId)) {
+            List<String> values = instance.getManyValues().get(featureId);
             return MoreIterables.stream(values).map(this::<V>deserializeValue);
         }
 
@@ -286,26 +273,26 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
+        final ModelDocument instance = find(eq(ModelDocument.F_ID, ownerId), ModelDocument.class)
+                .projection(include(fieldWithSuffix(ModelDocument.F_MANY_VALUE, featureId)))
                 .first();
 
         if (isNull(instance)) {
             return Optional.empty();
         }
 
-        if (!instance.getMultivaluedValues().containsKey(featureId) || feature.position() >= instance.getMultivaluedValues().get(featureId).size()) {
+        if (!instance.getManyValues().containsKey(featureId) || feature.position() >= instance.getManyValues().get(featureId).size()) {
             throw new NoSuchElementException();
         }
 
-        List<String> values = instance.getMultivaluedValues().get(featureId);
+        List<String> values = instance.getManyValues().get(featureId);
 
-        Optional<V> previousValue = Optional.of(deserializeValue(instance.getMultivaluedValues().get(featureId).get(feature.position())));
+        Optional<V> previousValue = Optional.of(deserializeValue(instance.getManyValues().get(featureId).get(feature.position())));
         values.set(feature.position(), serializeValue(value));
 
         updateOne(
-                eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_VALUE, featureId), values)
+                eq(ModelDocument.F_ID, ownerId),
+                set(fieldWithSuffix(ModelDocument.F_MANY_VALUE, featureId), values)
         );
 
         return previousValue;
@@ -340,14 +327,14 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         List<String> newValues = collection.stream().map(this::serializeValue).collect(Collectors.toList());
 
-        final String fieldName = combineField(FIELD_MANY_VALUE, featureId);
+        final String fieldName = fieldWithSuffix(ModelDocument.F_MANY_VALUE, featureId);
 
         final Bson update = size > 0
                 ? pushEach(fieldName, newValues, new PushOptions().position(feature.position()))
                 : set(fieldName, newValues);
 
         updateOne(
-                eq(FIELD_ID, ownerId),
+                eq(ModelDocument.F_ID, ownerId),
                 update
         );
     }
@@ -360,22 +347,22 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_VALUE, featureId)))
+        final ModelDocument instance = find(eq(ModelDocument.F_ID, ownerId), ModelDocument.class)
+                .projection(include(fieldWithSuffix(ModelDocument.F_MANY_VALUE, featureId)))
                 .first();
 
-        if (isNull(instance) || !instance.getMultivaluedValues().containsKey(featureId) || instance.getMultivaluedValues().get(featureId).size() < feature.position()) {
+        if (isNull(instance) || !instance.getManyValues().containsKey(featureId) || instance.getManyValues().get(featureId).size() < feature.position()) {
             return Optional.empty();
         }
 
-        List<String> values = instance.getMultivaluedValues().get(featureId);
+        List<String> values = instance.getManyValues().get(featureId);
         Optional<V> previousValue = Optional.of(deserializeValue(values.get(feature.position())));
 
         values.remove(feature.position());
 
         updateOne(
-                eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_VALUE, featureId), values)
+                eq(ModelDocument.F_ID, ownerId),
+                set(fieldWithSuffix(ModelDocument.F_MANY_VALUE, featureId), values)
         );
 
         return previousValue;
@@ -388,8 +375,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
 
         updateOne(
-                eq(FIELD_ID, ownerId),
-                unset(FIELD_MANY_VALUE)
+                eq(ModelDocument.F_ID, ownerId),
+                unset(ModelDocument.F_MANY_VALUE)
         );
     }
 
@@ -401,7 +388,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         final String ownerId = idConverter.convert(feature.owner());
 
-        return Optional.of(sizeOf(ownerId, FIELD_MANY_VALUE, feature.id()))
+        return Optional.of(sizeOf(ownerId, ModelDocument.F_MANY_VALUE, feature.id()))
                 .filter(s -> s != 0);
     }
 
@@ -417,12 +404,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_REF, featureId)))
+        final ModelDocument instance = find(eq(ModelDocument.F_ID, ownerId), ModelDocument.class)
+                .projection(include(fieldWithSuffix(ModelDocument.F_MANY_REFERENCE, featureId)))
                 .first();
 
-        if (nonNull(instance) && nonNull(instance.getMultivaluedReferences()) && instance.getMultivaluedReferences().containsKey(featureId) && instance.getMultivaluedReferences().get(featureId).size() > feature.position()) {
-            return Optional.of(idConverter.revert(instance.getMultivaluedReferences().get(featureId).get(feature.position())));
+        if (nonNull(instance) && nonNull(instance.getManyReferences()) && instance.getManyReferences().containsKey(featureId) && instance.getManyReferences().get(featureId).size() > feature.position()) {
+            return Optional.of(idConverter.revert(instance.getManyReferences().get(featureId).get(feature.position())));
         }
 
         return Optional.empty();
@@ -436,12 +423,12 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_REF, featureId)))
+        final ModelDocument instance = find(eq(ModelDocument.F_ID, ownerId), ModelDocument.class)
+                .projection(include(fieldWithSuffix(ModelDocument.F_MANY_REFERENCE, featureId)))
                 .first();
 
-        if (nonNull(instance) && !instance.getMultivaluedReferences().isEmpty() && instance.getMultivaluedReferences().containsKey(featureId)) {
-            List<String> references = instance.getMultivaluedReferences().get(featureId);
+        if (nonNull(instance) && !instance.getManyReferences().isEmpty() && instance.getManyReferences().containsKey(featureId)) {
+            List<String> references = instance.getManyReferences().get(featureId);
             return MoreIterables.stream(references).map(idConverter::revert);
         }
 
@@ -457,26 +444,26 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_REF, featureId)))
+        final ModelDocument instance = find(eq(ModelDocument.F_ID, ownerId), ModelDocument.class)
+                .projection(include(fieldWithSuffix(ModelDocument.F_MANY_REFERENCE, featureId)))
                 .first();
 
         if (isNull(instance)) {
             return Optional.empty();
         }
 
-        if (!instance.getMultivaluedReferences().containsKey(featureId) || feature.position() >= instance.getMultivaluedReferences().get(featureId).size()) {
+        if (!instance.getManyReferences().containsKey(featureId) || feature.position() >= instance.getManyReferences().get(featureId).size()) {
             throw new NoSuchElementException();
         }
 
-        List<String> rs = instance.getMultivaluedReferences().get(featureId);
+        List<String> rs = instance.getManyReferences().get(featureId);
 
-        Optional<Id> previousId = Optional.of(idConverter.revert(instance.getMultivaluedReferences().get(featureId).get(feature.position())));
+        Optional<Id> previousId = Optional.of(idConverter.revert(instance.getManyReferences().get(featureId).get(feature.position())));
         rs.set(feature.position(), idConverter.convert(reference));
 
         updateOne(
-                eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_REF, featureId), rs)
+                eq(ModelDocument.F_ID, ownerId),
+                set(fieldWithSuffix(ModelDocument.F_MANY_REFERENCE, featureId), rs)
         );
 
         return previousId;
@@ -511,14 +498,14 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         List<String> newReferences = collection.stream().map(idConverter::convert).collect(Collectors.toList());
 
-        final String fieldName = combineField(FIELD_MANY_REF, featureId);
+        final String fieldName = fieldWithSuffix(ModelDocument.F_MANY_REFERENCE, featureId);
 
         final Bson update = size > 0
                 ? pushEach(fieldName, newReferences, new PushOptions().position(feature.position()))
                 : set(fieldName, newReferences);
 
         updateOne(
-                eq(FIELD_ID, ownerId),
+                eq(ModelDocument.F_ID, ownerId),
                 update
         );
     }
@@ -531,22 +518,22 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final StoredInstance instance = find(eq(FIELD_ID, ownerId))
-                .projection(include(combineField(FIELD_MANY_REF, featureId)))
+        final ModelDocument instance = find(eq(ModelDocument.F_ID, ownerId), ModelDocument.class)
+                .projection(include(fieldWithSuffix(ModelDocument.F_MANY_REFERENCE, featureId)))
                 .first();
 
-        if (isNull(instance) || !instance.getMultivaluedReferences().containsKey(featureId) || instance.getMultivaluedReferences().get(featureId).size() < feature.position()) {
+        if (isNull(instance) || !instance.getManyReferences().containsKey(featureId) || instance.getManyReferences().get(featureId).size() < feature.position()) {
             return Optional.empty();
         }
 
-        List<String> references = instance.getMultivaluedReferences().get(featureId);
+        List<String> references = instance.getManyReferences().get(featureId);
         Optional<Id> previousId = Optional.of(idConverter.revert(references.get(feature.position())));
 
         references.remove(feature.position());
 
         updateOne(
-                eq(FIELD_ID, ownerId),
-                set(combineField(FIELD_MANY_REF, featureId), references)
+                eq(ModelDocument.F_ID, ownerId),
+                set(fieldWithSuffix(ModelDocument.F_MANY_REFERENCE, featureId), references)
         );
 
         return previousId;
@@ -559,8 +546,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
 
         updateOne(
-                eq(FIELD_ID, ownerId),
-                unset(FIELD_MANY_REF)
+                eq(ModelDocument.F_ID, ownerId),
+                unset(ModelDocument.F_MANY_REFERENCE)
         );
     }
 
@@ -571,7 +558,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         final String ownerId = idConverter.convert(feature.owner());
 
-        return Optional.of(sizeOf(ownerId, FIELD_MANY_REF, feature.id()))
+        return Optional.of(sizeOf(ownerId, ModelDocument.F_MANY_REFERENCE, feature.id()))
                 .filter(s -> s != 0);
     }
 
