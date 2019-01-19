@@ -37,8 +37,8 @@ class Grabats extends AbstractQuery<Collection<ClassDeclaration>> {
 
         for (ClassDeclaration type : classDeclarations) {
             for (BodyDeclaration body : type.getBodyDeclarations()) {
-                if (MethodDeclaration.class.isInstance(body)) {
-                    MethodDeclaration method = MethodDeclaration.class.cast(body);
+                if (body instanceof MethodDeclaration) {
+                    MethodDeclaration method = (MethodDeclaration) body;
                     if (isStaticAndReturns(type, method)) {
                         result.add(type);
                     }

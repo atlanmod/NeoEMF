@@ -37,12 +37,12 @@ class GetTagComments extends AbstractQuery<Collection<TextElement>> {
 
         for (CompilationUnit cu : model.getCompilationUnits()) {
             for (Comment comment : cu.getCommentList()) {
-                if (Javadoc.class.isInstance(comment)) {
-                    Javadoc javadoc = Javadoc.class.cast(comment);
+                if (comment instanceof Javadoc) {
+                    Javadoc javadoc = (Javadoc) comment;
                     for (TagElement tag : javadoc.getTags()) {
                         for (ASTNode node : tag.getFragments()) {
-                            if (TextElement.class.isInstance(node)) {
-                                TextElement text = TextElement.class.cast(node);
+                            if (node instanceof TextElement) {
+                                TextElement text = (TextElement) node;
                                 result.add(text);
                             }
                         }

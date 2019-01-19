@@ -57,7 +57,7 @@ class GetInvisibleMethodsSpecific extends GetInvisibleMethods {
 
         for (AbstractTypeDeclaration abstractType : basePackage.getOwnedElements()) {
             if (eClass.isInstance(abstractType)) {
-                ClassDeclaration type = ClassDeclaration.class.cast(abstractType);
+                ClassDeclaration type = (ClassDeclaration) abstractType;
                 appendInvisibleMethods(type, invisibleMethods);
             }
         }
@@ -73,8 +73,8 @@ class GetInvisibleMethodsSpecific extends GetInvisibleMethods {
      */
     protected void appendInvisibleMethods(ClassDeclaration type, Collection<MethodDeclaration> invisibleMethods) {
         for (BodyDeclaration bd : type.getBodyDeclarations()) {
-            if (MethodDeclaration.class.isInstance(bd)) {
-                MethodDeclaration md = MethodDeclaration.class.cast(bd);
+            if (bd instanceof MethodDeclaration) {
+                MethodDeclaration md = (MethodDeclaration) bd;
                 if (isInvisible(md)) {
                     invisibleMethods.add(md);
                 }

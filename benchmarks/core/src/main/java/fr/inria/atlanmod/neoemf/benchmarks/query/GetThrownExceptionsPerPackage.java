@@ -39,8 +39,8 @@ class GetThrownExceptionsPerPackage extends AbstractQuery<Map<String, Iterable<T
         for (Package pkg : packages) {
             Collection<TypeAccess> thrownExceptions = createUniqueCollection();
             for (AbstractTypeDeclaration abstractType : pkg.getOwnedElements()) {
-                if (ClassDeclaration.class.isInstance(abstractType)) {
-                    ClassDeclaration type = ClassDeclaration.class.cast(abstractType);
+                if (abstractType instanceof ClassDeclaration) {
+                    ClassDeclaration type = (ClassDeclaration) abstractType;
                     appendThrownExceptions(type, thrownExceptions);
                 }
             }
@@ -56,8 +56,8 @@ class GetThrownExceptionsPerPackage extends AbstractQuery<Map<String, Iterable<T
      */
     protected void appendThrownExceptions(ClassDeclaration type, Collection<TypeAccess> thrownExceptions) {
         for (BodyDeclaration body : type.getBodyDeclarations()) {
-            if (MethodDeclaration.class.isInstance(body)) {
-                MethodDeclaration method = MethodDeclaration.class.cast(body);
+            if (body instanceof MethodDeclaration) {
+                MethodDeclaration method = (MethodDeclaration) body;
                 thrownExceptions.addAll(method.getThrownExceptions());
             }
         }

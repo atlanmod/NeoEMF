@@ -156,8 +156,8 @@ public class CdoAdapter extends AbstractAdapter {
                     @Override
                     protected void onAdded(IContainer<ISession> container, ISession session) {
                         ISessionProtocol protocol = session.getProtocol();
-                        if (ISignalProtocol.class.isInstance(protocol)) {
-                            ISignalProtocol<?> signalProtocol = ISignalProtocol.class.cast(protocol);
+                        if (protocol instanceof ISignalProtocol) {
+                            ISignalProtocol<?> signalProtocol = (ISignalProtocol) protocol;
                             signalProtocol.setTimeout(60000);
                         }
                     }

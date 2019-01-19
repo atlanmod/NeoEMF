@@ -34,10 +34,10 @@ class GetOrphanNonPrimitiveTypes extends AbstractQuery<Collection<Type>> {
     public Collection<Type> executeOn(Resource resource) {
         Collection<Type> result = createOrderedCollection();
 
-        Model model = Model.class.cast(resource.getContents().get(0));
+        Model model = (Model) resource.getContents().get(0);
 
         for (Type type : model.getOrphanTypes()) {
-            if (!PrimitiveType.class.isInstance(type)) {
+            if (!(type instanceof PrimitiveType)) {
                 result.add(type);
             }
         }

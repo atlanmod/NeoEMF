@@ -51,8 +51,8 @@ class GetClassFields extends AbstractQuery<Map<String, Iterable<NamedElement>>> 
         Collection<NamedElement> fields = createOrderedCollection();
 
         for (BodyDeclaration body : bodyDeclarations) {
-            if (FieldDeclaration.class.isInstance(body)) {
-                FieldDeclaration field = FieldDeclaration.class.cast(body);
+            if (body instanceof FieldDeclaration) {
+                FieldDeclaration field = (FieldDeclaration) body;
                 if (field.getFragments().isEmpty()) {
                     fields.add(field);
                 }

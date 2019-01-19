@@ -22,6 +22,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -89,9 +90,9 @@ abstract class AbstractPersistentAdapter extends AbstractAdapter {
 
         try {
             final Class<? extends BackendFactory> factoryType = annotation.factory();
-            return factoryType.newInstance();
+            return factoryType.getConstructor().newInstance();
         }
-        catch (InstantiationException | IllegalAccessException e) {
+        catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw Throwables.shouldNeverHappen(e);
         }
     }

@@ -46,8 +46,8 @@ class GetThrownExceptions extends AbstractQuery<Collection<TypeAccess>> {
      */
     protected void appendThrownExceptions(ClassDeclaration type, Collection<TypeAccess> thrownExceptions) {
         for (BodyDeclaration body : type.getBodyDeclarations()) {
-            if (MethodDeclaration.class.isInstance(body)) {
-                MethodDeclaration method = MethodDeclaration.class.cast(body);
+            if (body instanceof MethodDeclaration) {
+                MethodDeclaration method = (MethodDeclaration) body;
                 thrownExceptions.addAll(method.getThrownExceptions());
             }
         }

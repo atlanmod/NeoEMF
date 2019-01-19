@@ -59,15 +59,15 @@ public final class Resources {
     private static final String RESOURCES_PROPERTIES = "resources.properties";
 
     /**
-     * A {@link Map} that holds all available resources in {@link #RESOURCES_ZIP}.
-     */
-    private static List<String> availableResources;
-
-    /**
      * A {@link Map} that holds all registered resources.
      */
     @Nonnull
-    private static Lazy<Map<String, String>> registeredResources = Lazy.with(Resources::getRegisteredResources);
+    private static final Lazy<Map<String, String>> registeredResources = Lazy.with(Resources::getRegisteredResources);
+
+    /**
+     * A {@link Map} that holds all available resources in {@link #RESOURCES_ZIP}.
+     */
+    private static List<String> availableResources;
 
     private Resources() {
         throw new IllegalStateException("This class should not be instantiated");

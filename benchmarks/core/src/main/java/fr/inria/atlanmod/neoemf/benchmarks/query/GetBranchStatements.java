@@ -56,7 +56,7 @@ class GetBranchStatements extends AbstractQuery<Collection<Statement>> {
 
         for (AbstractTypeDeclaration abstractType : basePackage.getOwnedElements()) {
             if (eClass.isInstance(abstractType)) {
-                ClassDeclaration type = ClassDeclaration.class.cast(abstractType);
+                ClassDeclaration type = (ClassDeclaration) abstractType;
                 appendAccessedTypes(type, accessedTypes);
             }
         }
@@ -72,8 +72,8 @@ class GetBranchStatements extends AbstractQuery<Collection<Statement>> {
      */
     protected void appendAccessedTypes(ClassDeclaration type, Collection<Statement> accessedTypes) {
         for (BodyDeclaration body : type.getBodyDeclarations()) {
-            if (MethodDeclaration.class.isInstance(body)) {
-                MethodDeclaration method = MethodDeclaration.class.cast(body);
+            if (body instanceof MethodDeclaration) {
+                MethodDeclaration method = (MethodDeclaration) body;
 
                 if (nonNull(method.getBody())) {
                     appendAccessedTypes(method.getBody().getStatements(), accessedTypes);
@@ -88,8 +88,8 @@ class GetBranchStatements extends AbstractQuery<Collection<Statement>> {
      */
     protected void appendAccessedTypes(Iterable<Statement> statements, Collection<Statement> accessedTypes) {
         for (Statement statement : statements) {
-            if (Block.class.isInstance(statement)) {
-                Block block = Block.class.cast(statement);
+            if (statement instanceof Block) {
+                Block block = (Block) statement;
                 appendAccessedTypes(block.getStatements(), accessedTypes);
             }
             accessedTypes.add(statement);
