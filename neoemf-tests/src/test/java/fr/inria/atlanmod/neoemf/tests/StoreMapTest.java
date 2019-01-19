@@ -44,7 +44,7 @@ class StoreMapTest extends AbstractResourceBasedTest {
         try (PersistentResource resource = createPersistentResource(context)) {
             resource.getContents().add(EFACTORY.createETypes());
 
-            ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+            ETypes eTypes = (ETypes) resource.getContents().get(0);
             assertThat(eTypes.getStringValues()).isInstanceOf(EMap.class);
 
             EMap<String, String> map = eTypes.getStringValues();
@@ -58,7 +58,7 @@ class StoreMapTest extends AbstractResourceBasedTest {
         try (PersistentResource resource = createPersistentResource(context)) {
             resource.getContents().add(EFACTORY.createETypes());
 
-            ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+            ETypes eTypes = (ETypes) resource.getContents().get(0);
             EMap<String, String> map = eTypes.getStringValues();
             map.put(KEY1, VALUE1);
             map.put(KEY2, VALUE2);
@@ -77,7 +77,7 @@ class StoreMapTest extends AbstractResourceBasedTest {
         try (PersistentResource resource = createPersistentResource(context)) {
             resource.getContents().add(EFACTORY.createETypes());
 
-            ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+            ETypes eTypes = (ETypes) resource.getContents().get(0);
             assertThat(eTypes.getValues()).isInstanceOf(EMap.class);
 
             EMap<Type, Value> map = eTypes.getValues();
@@ -91,7 +91,7 @@ class StoreMapTest extends AbstractResourceBasedTest {
         try (PersistentResource resource = createPersistentResource(context)) {
             resource.getContents().add(EFACTORY.createETypes());
 
-            ETypes eTypes = ETypes.class.cast(resource.getContents().get(0));
+            ETypes eTypes = (ETypes) resource.getContents().get(0);
             EMap<Type, Value> map = eTypes.getValues();
 
             Type k1 = EFACTORY.createType();

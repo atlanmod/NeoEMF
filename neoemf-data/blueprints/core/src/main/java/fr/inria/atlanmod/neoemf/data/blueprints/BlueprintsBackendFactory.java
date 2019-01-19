@@ -50,7 +50,7 @@ public class BlueprintsBackendFactory extends AbstractBackendFactory<BaseBluepri
         checkArgument(graph.getFeatures().supportsKeyIndices, "%s does not support key indices", graph.getClass().getSimpleName());
 
         if (config.isReadOnly()) {
-            graph = new ReadOnlyKeyIndexableGraph<>(KeyIndexableGraph.class.cast(graph));
+            graph = new ReadOnlyKeyIndexableGraph<>((KeyIndexableGraph) graph);
         }
 
         return createMapper(config.getMapping(), graph);

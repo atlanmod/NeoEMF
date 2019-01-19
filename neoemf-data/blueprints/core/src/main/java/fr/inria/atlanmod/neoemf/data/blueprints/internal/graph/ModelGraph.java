@@ -93,7 +93,7 @@ public class ModelGraph extends IdGraph<ModelGraph> implements Copiable<ModelGra
         classVerticesByName = getOrCreateIndex("instances-all", Vertex.class, ClassVertex::from);
 
         Graph originGraph = getOrigin(baseGraph);
-        if (TinkerGraph.class.isInstance(originGraph)) {
+        if (originGraph instanceof TinkerGraph) {
             // Tinkergraph is stored as XML: prefer using String-based identifiers
             idConverter = Converter.compose(IdConverters.withHexString(), Converter.from(Function.identity(), String.class::cast));
             requiresUniqueLabels = true;
@@ -116,9 +116,17 @@ public class ModelGraph extends IdGraph<ModelGraph> implements Copiable<ModelGra
      */
     @Nonnull
     private static Graph getOrigin(Graph graph) {
-        return graph.getFeatures().isWrapper
-                ? getOrigin(WrapperGraph.class.cast(graph).getBaseGraph())
-                : graph;
+        Graph origin;
+
+        if (graph.getFeatures().isWrapper) {
+            final WrapperGraph<?> wrapperGraph = (WrapperGraph) graph;
+            origin = getOrigin(wrapperGraph.getBaseGraph());
+        }
+        else {
+            origin = graph;
+        }
+
+        return origin;
     }
 
     /**

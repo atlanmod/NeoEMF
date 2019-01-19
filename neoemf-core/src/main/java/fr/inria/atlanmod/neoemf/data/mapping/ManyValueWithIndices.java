@@ -77,7 +77,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkPositionIndex(feature.position(), size);
 
         for (int i = size - 1; i >= feature.position(); i--) {
-            valueForNullable(feature.withPosition(i + 1), valueOf(feature.withPosition(i)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+            valueForNullable(feature.withPosition(i + 1), valueOf(feature.withPosition(i)).orElseThrow(IllegalStateException::new));
         }
 
         sizeForValue(feature.withoutPosition(), size + 1);
@@ -110,7 +110,7 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         Optional<V> previousValue = valueOf(feature);
 
         for (int i = feature.position(); i < size - 1; i++) {
-            valueForNullable(feature.withPosition(i), valueOf(feature.withPosition(i + 1)).<IllegalStateException>orElseThrow(IllegalStateException::new));
+            valueForNullable(feature.withPosition(i), valueOf(feature.withPosition(i + 1)).orElseThrow(IllegalStateException::new));
         }
 
         valueForNullable(feature.withPosition(size - 1), null);

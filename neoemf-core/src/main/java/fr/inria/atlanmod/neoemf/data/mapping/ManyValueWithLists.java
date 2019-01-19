@@ -59,8 +59,7 @@ public interface ManyValueWithLists extends ManyValueMapper {
         checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        List<V> values = this.<List<V>>valueOf(feature.withoutPosition())
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+        List<V> values = this.<List<V>>valueOf(feature.withoutPosition()).orElseThrow(NoSuchElementException::new);
 
         if (feature.position() >= values.size()) {
             throw new NoSuchElementException();

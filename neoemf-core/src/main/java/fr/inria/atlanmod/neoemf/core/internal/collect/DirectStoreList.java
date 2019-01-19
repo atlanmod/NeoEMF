@@ -174,11 +174,11 @@ public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> implemen
             return true;
         }
 
-        if (!List.class.isInstance(object)) {
+        if (!(object instanceof List)) {
             return false;
         }
 
-        List<?> list = List.class.cast(object);
+        List<?> list = (List) object;
         return list.size() == delegateSize() && list.equals(delegateGetAll());
     }
 
@@ -222,7 +222,7 @@ public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> implemen
     @Nonnull
     @SuppressWarnings("unchecked")
     protected List<E> delegateGetAll() {
-        return List.class.cast(eStore().getAll(owner, eStructuralFeature));
+        return (List) eStore().getAll(owner, eStructuralFeature);
     }
 
     /**

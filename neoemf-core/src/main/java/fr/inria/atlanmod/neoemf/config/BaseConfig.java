@@ -153,7 +153,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Nonnull
     protected static String createKey(String... segments) {
         checkNotNull(segments, "segments");
-        return Arrays.stream(segments).collect(Collectors.joining("."));
+        return String.join(".", segments);
     }
 
     @Override
@@ -181,8 +181,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Nonnull
     @Override
     public String getName() {
-        return this.<String>getOption(BACKEND_TYPE)
-                .<InvalidConfigException>orElseThrow(() -> new InvalidConfigException("The name is not defined"));
+        return this.<String>getOption(BACKEND_TYPE).orElseThrow(() -> new InvalidConfigException("The name is not defined"));
     }
 
     @Nonnull
@@ -194,8 +193,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Nonnull
     @Override
     public String getVariant() {
-        return this.<String>getOption(BACKEND_VARIANT)
-                .<InvalidConfigException>orElseThrow(() -> new InvalidConfigException("The variant is not defined"));
+        return this.<String>getOption(BACKEND_VARIANT).orElseThrow(() -> new InvalidConfigException("The variant is not defined"));
     }
 
     @Nonnull
@@ -207,8 +205,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     @Nonnull
     @Override
     public String getMapping() {
-        return this.<String>getOption(BACKEND_MAPPING)
-                .<InvalidConfigException>orElseThrow(() -> new InvalidConfigException("The mapping is not defined"));
+        return this.<String>getOption(BACKEND_MAPPING).orElseThrow(() -> new InvalidConfigException("The mapping is not defined"));
     }
 
     @Nonnull
@@ -238,7 +235,7 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
     public C addStore(Store store) {
         checkNotNull(store, "store");
 
-        if (ListeningStore.class.isInstance(store)) {
+        if (store instanceof ListeningStore) {
             throw new InvalidConfigException(String.format("Cannot add %s: Use #addListener() instead", store.getClass().getName()));
         }
 

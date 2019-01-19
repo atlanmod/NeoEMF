@@ -8,6 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
+import org.atlanmod.commons.Throwables;
 import org.atlanmod.commons.function.BiConverter;
 import org.atlanmod.commons.primitive.Primitives;
 import org.eclipse.emf.ecore.EAttribute;
@@ -66,12 +67,12 @@ public class AttributeConverter implements BiConverter<Object, EAttribute, Objec
 
         final EDataType dataType = attribute.getEAttributeType();
 
-        if (!EEnum.class.isInstance(dataType) && Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
+        if (!(dataType instanceof EEnum) && Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
             return value;
         }
 
         if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-            return featureMapConverter.convert(FeatureMap.Entry.class.cast(value), attribute);
+            return featureMapConverter.convert((FeatureMap.Entry) value, attribute);
         }
 
         return EcoreUtil.convertToString(dataType, value);
@@ -99,16 +100,17 @@ public class AttributeConverter implements BiConverter<Object, EAttribute, Objec
 
         final EDataType dataType = attribute.getEAttributeType();
 
-        if (!EEnum.class.isInstance(dataType) && Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
+        if (!(dataType instanceof EEnum) && Primitives.isPrimitiveOrString(dataType.getInstanceClass())) {
             return value;
         }
 
         // From this point, the value is considered as a String.
+        final String strValue = (String) value;
 
         if (FeatureMapUtil.isFeatureMapEntry(dataType)) {
-            return featureMapConverter.revert(String.class.cast(value), attribute);
+            return featureMapConverter.revert(strValue, attribute);
         }
 
-        return EcoreUtil.createFromString(dataType, String.class.cast(value));
+        return EcoreUtil.createFromString(dataType, strValue);
     }
 }

@@ -112,7 +112,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     @Override
     protected void internalCopyTo(DataMapper target) {
-        AbstractBerkeleyDbBackend to = AbstractBerkeleyDbBackend.class.cast(target);
+        AbstractBerkeleyDbBackend to = (AbstractBerkeleyDbBackend) target;
 
         copy(containers, to.containers);
         copy(instances, to.instances);

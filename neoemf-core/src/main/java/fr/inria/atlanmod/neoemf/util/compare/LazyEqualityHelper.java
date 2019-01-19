@@ -71,7 +71,7 @@ class LazyEqualityHelper extends EqualityHelper {
                     match.getLeft(),
                     match.getRight());
 
-            if (PersistentEObject.class.isInstance(object2) || branches.stream().anyMatch(PersistentEObject.class::isInstance)) {
+            if (object2 instanceof PersistentEObject || branches.stream().anyMatch(PersistentEObject.class::isInstance)) {
                 return branches.stream().anyMatch(o -> Objects.equals(o, object2));
             }
             else {

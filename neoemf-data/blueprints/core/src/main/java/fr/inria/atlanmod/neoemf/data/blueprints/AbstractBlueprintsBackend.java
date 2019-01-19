@@ -96,7 +96,7 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
      */
     @Override
     protected void internalCopyTo(DataMapper target) {
-        AbstractBlueprintsBackend to = AbstractBlueprintsBackend.class.cast(target);
+        AbstractBlueprintsBackend to = (AbstractBlueprintsBackend) target;
 
         graph.copyTo(to.graph);
     }

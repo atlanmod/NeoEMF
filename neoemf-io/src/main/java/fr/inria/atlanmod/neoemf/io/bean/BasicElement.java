@@ -122,7 +122,7 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
             return false;
         }
 
-        BasicElement that = BasicElement.class.cast(o);
+        BasicElement that = (BasicElement) o;
         return Objects.equals(id, that.id);
     }
 }

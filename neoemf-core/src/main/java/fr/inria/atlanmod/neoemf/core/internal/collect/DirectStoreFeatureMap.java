@@ -172,11 +172,11 @@ public class DirectStoreFeatureMap extends DelegatingFeatureMap implements Stora
             return true;
         }
 
-        if (!List.class.isInstance(object)) {
+        if (!(object instanceof List)) {
             return false;
         }
 
-        List<?> list = List.class.cast(object);
+        List<?> list = (List) object;
         return list.size() == delegateSize() && list.equals(delegateGetAll());
     }
 
@@ -220,7 +220,7 @@ public class DirectStoreFeatureMap extends DelegatingFeatureMap implements Stora
     @Nonnull
     @SuppressWarnings("unchecked")
     protected List<Entry> delegateGetAll() {
-        return List.class.cast(eStore().getAll(owner, eStructuralFeature));
+        return (List) eStore().getAll(owner, eStructuralFeature);
     }
 
     /**

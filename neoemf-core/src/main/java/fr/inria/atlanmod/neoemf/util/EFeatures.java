@@ -37,7 +37,7 @@ public final class EFeatures {
      * @return {@code true} if the {@code feature} represents an attribute
      */
     public static boolean isAttribute(EStructuralFeature feature) {
-        return EAttribute.class.isInstance(feature);
+        return feature instanceof EAttribute;
     }
 
     /**
@@ -48,7 +48,7 @@ public final class EFeatures {
      * @return {@code true} if the {@code feature} represents an reference
      */
     public static boolean isReference(EStructuralFeature feature) {
-        return EReference.class.isInstance(feature);
+        return feature instanceof EReference;
     }
 
     /**
@@ -63,7 +63,7 @@ public final class EFeatures {
      */
     @Nonnull
     public static EAttribute asAttribute(EStructuralFeature feature) {
-        return EAttribute.class.cast(feature);
+        return (EAttribute) feature;
     }
 
     /**
@@ -78,6 +78,6 @@ public final class EFeatures {
      */
     @Nonnull
     public static EReference asReference(EStructuralFeature feature) {
-        return EReference.class.cast(feature);
+        return (EReference) feature;
     }
 }

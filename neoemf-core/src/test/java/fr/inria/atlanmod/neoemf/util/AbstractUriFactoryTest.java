@@ -75,7 +75,7 @@ public abstract class AbstractUriFactoryTest extends AbstractUnitTest {
      */
     @Test
     public void testCreateUriFromUriIfNotSupported() {
-        AbstractUriFactory uriBuilder = AbstractUriFactory.class.cast(UriFactory.forScheme(context().uriScheme()));
+        AbstractUriFactory uriBuilder = (AbstractUriFactory) UriFactory.forScheme(context().uriScheme());
         assumeFalse(uriBuilder.supportsLocalUris(), String.format("%s supports file-based URI", uriBuilder.getClass().getSimpleName()));
 
         assertThat(catchThrowable(() -> uriBuilder.createLocalUri(URI.createURI("uri0"))))

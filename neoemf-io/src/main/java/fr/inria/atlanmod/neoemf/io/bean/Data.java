@@ -153,7 +153,7 @@ public final class Data<V> {
             return false;
         }
 
-        Data<?> that = Data.class.cast(o);
+        Data<?> that = (Data) o;
         return resolved == that.resolved && Objects.equals(value, that.value);
     }
 }

@@ -72,7 +72,8 @@ public final class StoreFactory {
                     .collect(Collectors.toList());
 
             for (Store s : reverseStores) {
-                AbstractStore.class.cast(s).next(currentStore);
+                final AbstractStore as = (AbstractStore) s;
+                as.next(currentStore);
                 currentStore = s;
             }
 

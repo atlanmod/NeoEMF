@@ -117,7 +117,7 @@ public class ContentsList<E extends EObject> extends AbstractSequentialInternalE
     @Nonnull
     public static <E extends EObject> ContentsList<E> newList(PersistentEObject owner) {
         List<EStructuralFeature> features = owner.eClass().getEAllStructuralFeatures();
-        EStructuralFeature[] containments = EClassImpl.FeatureSubsetSupplier.class.cast(features).containments();
+        EStructuralFeature[] containments = ((EClassImpl.FeatureSubsetSupplier) features).containments();
 
         return nonNull(containments)
                 ? new ContentsList<>(owner, Arrays.asList(containments), true)
@@ -206,14 +206,16 @@ public class ContentsList<E extends EObject> extends AbstractSequentialInternalE
         final Object value = owner.eGet(feature, false);
 
         if (FeatureMapUtil.isFeatureMap(feature)) {
-            return FeatureMap.class.cast(value).stream()
+            final FeatureMap featureMap = (FeatureMap) value;
+            return featureMap.stream()
                     .filter(this::isIncludedEntry)
                     .mapToInt(e -> 1)
                     .sum();
         }
 
         if (feature.isMany()) {
-            return Collection.class.cast(value).size();
+            final Collection collection = (Collection) value;
+            return collection.size();
         }
 
         return Booleans.toInt(nonNull(value));
@@ -230,12 +232,13 @@ public class ContentsList<E extends EObject> extends AbstractSequentialInternalE
         final Object value = owner.eGet(feature, false);
 
         if (FeatureMapUtil.isFeatureMap(feature)) {
-            return FeatureMap.class.cast(value).stream()
-                    .noneMatch(this::isIncludedEntry);
+            final FeatureMap featureMap = (FeatureMap) value;
+            return featureMap.stream().noneMatch(this::isIncludedEntry);
         }
 
         if (feature.isMany()) {
-            return Collection.class.cast(value).isEmpty();
+            final Collection collection = (Collection) value;
+            return collection.isEmpty();
         }
 
         return isNull(value);
@@ -266,7 +269,7 @@ public class ContentsList<E extends EObject> extends AbstractSequentialInternalE
             return false;
         }
 
-        ContentsList<?> that = ContentsList.class.cast(o);
+        ContentsList<?> that = (ContentsList) o;
         return Objects.equals(owner, that.owner);
     }
 

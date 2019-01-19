@@ -175,7 +175,7 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, R, 
             return false;
         }
 
-        AbstractBasicFeature<?, ?, ?> that = AbstractBasicFeature.class.cast(o);
+        AbstractBasicFeature<?, ?, ?> that = (AbstractBasicFeature) o;
         return Objects.equals(owner, that.owner);
     }
 }

@@ -64,7 +64,7 @@ class BerkeleyDbBackendIndices extends AbstractBerkeleyDbBackend implements Many
     protected void internalCopyTo(DataMapper target) {
         super.internalCopyTo(target);
 
-        BerkeleyDbBackendIndices to = BerkeleyDbBackendIndices.class.cast(target);
+        BerkeleyDbBackendIndices to = (BerkeleyDbBackendIndices) target;
         this.copy(manyFeatures, to.manyFeatures);
     }
 

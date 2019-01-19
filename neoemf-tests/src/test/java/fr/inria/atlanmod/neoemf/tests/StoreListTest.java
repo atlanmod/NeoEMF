@@ -41,7 +41,7 @@ class StoreListTest extends AbstractResourceBasedTest {
         try (PersistentResource resource = createPersistentResource(context)) {
             List<TargetObject> content = fillResource(resource, count);
 
-            PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
+            PrimaryObject primary = (PrimaryObject) resource.getContents().get(0);
 
             assertThat(primary.getManyContainmentReferences()).hasSize(content.size());
             assertThat(primary.getManyContainmentReferences()).containsExactlyElementsOf(content);

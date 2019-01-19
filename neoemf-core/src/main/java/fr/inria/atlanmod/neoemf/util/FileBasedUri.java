@@ -60,7 +60,7 @@ class FileBasedUri extends UriDecorator {
 
     @Override
     public boolean equals(@Nullable Object o) {
-        if (nonNull(o) && URI.class.isInstance(o)) {
+        if (nonNull(o) && o instanceof URI) {
             return Objects.equals(this.toString(), o.toString());
         }
 

@@ -120,7 +120,7 @@ public class BasicNamespace implements Basic<BasicNamespace, EPackage> {
             return false;
         }
 
-        BasicNamespace that = BasicNamespace.class.cast(o);
+        BasicNamespace that = (BasicNamespace) o;
         return Objects.equals(uri, that.uri);
     }
 

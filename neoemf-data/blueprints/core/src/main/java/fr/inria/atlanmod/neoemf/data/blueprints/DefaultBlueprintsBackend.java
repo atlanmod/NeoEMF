@@ -147,7 +147,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
 
         V previousValue = graph.getVertex(feature.owner())
                 .flatMap(v -> v.replaceValue(feature, feature.position(), value))
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+                .orElseThrow(NoSuchElementException::new);
 
         return Optional.of(previousValue);
     }
@@ -289,7 +289,7 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         Id previousId = graph.getVertex(feature.owner())
                 .flatMap(v -> v.replaceReference(feature, feature.position(), reference))
                 .map(ElementVertex::getElementId)
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+                .orElseThrow(NoSuchElementException::new);
 
         return Optional.of(previousId);
     }

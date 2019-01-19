@@ -93,8 +93,8 @@ public final class PersistenceAdapter {
         if (type.isInstance(object)) {
             adaptedInstance = object;
         }
-        else if (InternalEObject.class.isInstance(object)) {
-            adaptedInstance = cache.get(object, o -> createProxy(InternalEObject.class.cast(o), type));
+        else if (object instanceof InternalEObject) {
+            adaptedInstance = cache.get(object, o -> createProxy((InternalEObject) o, type));
         }
 
         // Check the instance has been resolved
@@ -181,7 +181,7 @@ public final class PersistenceAdapter {
             logInvocation(proxy, method);
 
             final Object resolvedInstance = nonNull(proxy)
-                    ? resolve(InternalEObject.class.cast(proxy))
+                    ? resolve((InternalEObject) proxy)
                     : null;
 
             return method.invoke(resolvedInstance, args);

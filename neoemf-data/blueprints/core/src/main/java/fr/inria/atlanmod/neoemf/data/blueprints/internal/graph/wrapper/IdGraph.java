@@ -244,15 +244,17 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
 
     @Override
     public void commit() {
-        if (TransactionalGraph.class.isInstance(baseGraph)) {
-            TransactionalGraph.class.cast(baseGraph).commit();
+        if (baseGraph instanceof TransactionalGraph) {
+            final TransactionalGraph transactionalGraph = (TransactionalGraph) baseGraph;
+            transactionalGraph.commit();
         }
     }
 
     @Override
     public void rollback() {
-        if (TransactionalGraph.class.isInstance(baseGraph)) {
-            TransactionalGraph.class.cast(baseGraph).rollback();
+        if (baseGraph instanceof TransactionalGraph) {
+            final TransactionalGraph transactionalGraph = (TransactionalGraph) baseGraph;
+            transactionalGraph.rollback();
         }
     }
 

@@ -353,8 +353,8 @@ public final class Migrator<T> {
      */
     @Nonnull
     public Migrator<T> withProgress() {
-        checkState(InputStream.class.isInstance(source), "Progress feature can only be used when reading a file or stream");
-        return with(new ProgressEventListener(InputStream.class.cast(source)));
+        checkState(source instanceof InputStream, "Progress feature can only be used when reading a file or stream");
+        return with(new ProgressEventListener((InputStream) source));
     }
 
     //endregion
@@ -387,8 +387,9 @@ public final class Migrator<T> {
     private void closeAll() {
         for (Closeable closeable : streamsToClose) {
             try {
-                if (ZipOutputStream.class.isInstance(closeable)) {
-                    ZipOutputStream.class.cast(closeable).closeEntry();
+                if (closeable instanceof ZipOutputStream) {
+                    final ZipOutputStream zipStream = (ZipOutputStream) closeable;
+                    zipStream.closeEntry();
                 }
 
                 closeable.close();

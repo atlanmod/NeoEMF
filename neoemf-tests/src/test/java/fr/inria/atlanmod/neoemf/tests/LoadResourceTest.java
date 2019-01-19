@@ -39,7 +39,7 @@ class LoadResourceTest extends AbstractResourceBasedTest {
     void testElementsContainer(Context context) throws IOException {
         try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
-            PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
+            PrimaryObject primary = (PrimaryObject) resource.getContents().get(0);
             assertThat(primary.eContainer()).isNull();
             assertThat(primary.eInternalContainer()).isNull();
 
@@ -56,11 +56,11 @@ class LoadResourceTest extends AbstractResourceBasedTest {
 
             Iterator<EObject> it = resource.getAllContents();
 
-            PrimaryObject primary = PrimaryObject.class.cast(it.next());
+            PrimaryObject primary = (PrimaryObject) it.next();
             assertThat(primary.eContainer()).isNull();
             assertThat(primary.eInternalContainer()).isNull();
 
-            TargetObject target = TargetObject.class.cast(it.next());
+            TargetObject target = (TargetObject) it.next();
             assertThat(target.eContainer()).isEqualTo(primary);
             assertThat(target.eInternalContainer()).isEqualTo(primary);
         }
@@ -71,7 +71,7 @@ class LoadResourceTest extends AbstractResourceBasedTest {
     void testElementsResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
-            PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
+            PrimaryObject primary = (PrimaryObject) resource.getContents().get(0);
             assertThat(primary.eResource()).isSameAs(resource);
 
             TargetObject target = primary.getManyContainmentReferences().get(0);
@@ -86,10 +86,10 @@ class LoadResourceTest extends AbstractResourceBasedTest {
 
             Iterator<EObject> it = resource.getAllContents();
 
-            PrimaryObject primary = PrimaryObject.class.cast(it.next());
+            PrimaryObject primary = (PrimaryObject) it.next();
             assertThat(primary.eResource()).isSameAs(resource);
 
-            TargetObject target = TargetObject.class.cast(it.next());
+            TargetObject target = (TargetObject) it.next();
             assertThat(target.eResource()).isSameAs(resource);
         }
     }
@@ -99,7 +99,7 @@ class LoadResourceTest extends AbstractResourceBasedTest {
     void testElementsDirectResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentLoadedResource(context)) {
 
-            PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
+            PrimaryObject primary = (PrimaryObject) resource.getContents().get(0);
             assertThat(primary.eDirectResource()).isNull();
 
             TargetObject target = primary.getManyContainmentReferences().get(0);
@@ -114,10 +114,10 @@ class LoadResourceTest extends AbstractResourceBasedTest {
 
             Iterator<EObject> it = resource.getAllContents();
 
-            PrimaryObject primary = PrimaryObject.class.cast(it.next());
+            PrimaryObject primary = (PrimaryObject) it.next();
             assertThat(primary.eDirectResource()).isNull();
 
-            TargetObject target = TargetObject.class.cast(it.next());
+            TargetObject target = (TargetObject) it.next();
             assertThat(target.eDirectResource()).isNull();
         }
     }

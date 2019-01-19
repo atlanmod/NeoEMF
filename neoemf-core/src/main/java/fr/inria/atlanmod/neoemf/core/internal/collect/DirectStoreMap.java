@@ -40,7 +40,7 @@ public class DirectStoreMap<K, V> extends EcoreEMap<K, V> {
      * @param feature the feature associated with this map
      */
     public DirectStoreMap(PersistentEObject owner, EStructuralFeature feature) {
-        super(EClass.class.cast(feature.getEType()), Entry.class, null);
+        super((EClass) feature.getEType(), Entry.class, null);
 
         this.delegateEList = new EntryList(owner, feature);
         this.size = delegateEList.size();

@@ -72,7 +72,7 @@ public abstract class AbstractNamedElement<T extends AbstractNamedElement<T>> {
             return false;
         }
 
-        AbstractNamedElement<?> that = AbstractNamedElement.class.cast(o);
+        AbstractNamedElement<?> that = (AbstractNamedElement) o;
         return Objects.equals(name, that.name);
     }
 

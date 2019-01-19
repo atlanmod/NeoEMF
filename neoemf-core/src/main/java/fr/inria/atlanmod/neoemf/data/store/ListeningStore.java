@@ -338,8 +338,8 @@ public class ListeningStore extends AbstractStore {
             Object resultToLog = result;
 
             // Clone the stream
-            if (Stream.class.isInstance(result)) {
-                Stream<?> stream = Stream.class.cast(result);
+            if (result instanceof Stream) {
+                Stream<?> stream = (Stream) result;
                 List<?> list = stream.collect(Collectors.toList());
 
                 result = (R) list.stream();

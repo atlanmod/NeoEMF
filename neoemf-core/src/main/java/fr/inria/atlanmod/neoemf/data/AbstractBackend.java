@@ -150,15 +150,20 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
             Log.warn("Copy of a distributed back-end may lead to unexpected errors");
         }
 
-        if (Backend.class.isInstance(target)) {
-            copyTo(Backend.class.cast(target));
+        Backend targetBackend;
+
+        if (target instanceof Backend) {
+            targetBackend = (Backend) target;
         }
-        else if (Store.class.isInstance(target)) {
-            copyTo(Store.class.cast(target).backend());
+        else if (target instanceof Store) {
+            final Store targetStore = (Store) target;
+            targetBackend = targetStore.backend();
         }
         else {
             throw new IllegalStateException(String.format("Unable to copy a DataMapper of type %s", target.getClass()));
         }
+
+        copyTo(targetBackend);
     }
 
     /**
@@ -195,7 +200,7 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
                 .load(DataCopier.class)
                 .findFirst()
                 .map(ServiceDefinition::get)
-                .<UnsupportedOperationException>orElseThrow(() -> new UnsupportedOperationException("Unable to find any DataCopier implementation"));
+                .orElseThrow(() -> new UnsupportedOperationException("Unable to find any DataCopier implementation"));
 
         Store store = StoreFactory.getInstance().createStore(target, new BaseConfig<>().autoSave());
         copier.copy(this, store);

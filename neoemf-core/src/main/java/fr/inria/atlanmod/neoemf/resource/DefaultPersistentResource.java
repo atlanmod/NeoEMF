@@ -100,7 +100,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     @Override
     @SuppressWarnings("unchecked")
     public TreeIterator<EObject> getAllContents() {
-        return TreeIterator.class.cast(new AllContentsIterator<>(this));
+        return (TreeIterator) new AllContentsIterator<>(this);
     }
 
     @Nonnull
@@ -118,13 +118,11 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void save(Map<?, ?> options) {
         save(createConfig(options));
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void load(Map<?, ?> options) throws IOException {
         load(createConfig(options));
     }

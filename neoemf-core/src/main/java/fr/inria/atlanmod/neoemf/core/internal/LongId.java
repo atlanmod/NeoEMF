@@ -87,7 +87,7 @@ public class LongId implements Id {
             return false;
         }
 
-        LongId that = LongId.class.cast(o);
+        LongId that = (LongId) o;
         return value == that.value;
     }
 

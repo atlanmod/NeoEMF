@@ -87,6 +87,6 @@ public interface PersistentEObject extends InternalEObject, Storable, Iterable<P
     @Override
     @SuppressWarnings("unchecked")
     default Iterator<PersistentEObject> iterator() {
-        return Iterator.class.cast(eContents().iterator());
+        return (Iterator) eContents().iterator();
     }
 }

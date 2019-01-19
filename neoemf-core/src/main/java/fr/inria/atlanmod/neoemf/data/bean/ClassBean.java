@@ -74,7 +74,7 @@ public class ClassBean implements Serializable {
             checkNotNull(p, "Unable to find EPackage associated with URI: %s. " +
                     "Make sure it is registered in EPackage.Registry", uri);
 
-            EClass c = EClass.class.cast(p.getEClassifier(name));
+            EClass c = (EClass) p.getEClassifier(name);
             checkNotNull(c, "Unable to find EClass '%s' from EPackage '%s'", name, uri);
 
             return c;
@@ -240,11 +240,11 @@ public class ClassBean implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!ClassBean.class.isInstance(o)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        ClassBean that = ClassBean.class.cast(o);
+        ClassBean that = (ClassBean) o;
         return Objects.equals(name, that.name)
                 && Objects.equals(uri, that.uri);
     }

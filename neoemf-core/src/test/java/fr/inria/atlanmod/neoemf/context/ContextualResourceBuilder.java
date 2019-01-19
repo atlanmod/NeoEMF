@@ -135,7 +135,7 @@ final class ContextualResourceBuilder {
      */
     @Nonnull
     public PersistentResource createResource() throws IOException {
-        PersistentResource resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
+        PersistentResource resource = (PersistentResource) new ResourceSetImpl().createResource(uri);
         if (isPersistent) {
             resource.save(defaultConfig());
         }
@@ -155,7 +155,7 @@ final class ContextualResourceBuilder {
      */
     @Nonnull
     public PersistentResource loadResource() throws IOException {
-        PersistentResource resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
+        PersistentResource resource = (PersistentResource) new ResourceSetImpl().createResource(uri);
         resource.load(defaultConfig().toMap());
 
         reset();

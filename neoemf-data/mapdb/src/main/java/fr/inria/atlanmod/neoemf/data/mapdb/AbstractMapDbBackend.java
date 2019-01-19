@@ -124,12 +124,12 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected void internalCopyTo(DataMapper target) {
-        AbstractMapDbBackend to = AbstractMapDbBackend.class.cast(target);
+        AbstractMapDbBackend to = (AbstractMapDbBackend) target;
 
         for (Map.Entry<String, Object> entry : database.getAll().entrySet()) {
             Object collection = entry.getValue();
-            if (Map.class.isInstance(collection)) {
-                Map fromMap = Map.class.cast(collection);
+            if (collection instanceof Map) {
+                Map fromMap = (Map) collection;
                 Map toMap = to.database.hashMap(entry.getKey()).open();
 
                 toMap.putAll(fromMap);
@@ -308,7 +308,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
 
         @Override
         public void serialize(DataOutput2 out, T value) throws IOException {
-            delegate.serialize(value, DataOutput.class.cast(out));
+            delegate.serialize(value, (DataOutput) out);
         }
 
         @Nonnull

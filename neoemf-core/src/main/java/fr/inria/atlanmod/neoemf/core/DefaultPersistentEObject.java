@@ -197,7 +197,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Override
     @SuppressWarnings("unchecked")
     public TreeIterator<EObject> eAllContents() {
-        return TreeIterator.class.cast(new AllContentsIterator<>(this));
+        return (TreeIterator) new AllContentsIterator<>(this);
     }
 
     @Nullable
@@ -210,7 +210,7 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     public void eSetStore(EStore store) {
         checkNotNull(store, "store");
         checkInstanceOf(store, StoreAdapter.class, "store must be instance of %d", StoreAdapter.class.getName());
-        refreshStore(StoreAdapter.class.cast(store));
+        refreshStore((StoreAdapter) store);
     }
 
     @Override
@@ -301,8 +301,9 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     @Nonnull
     private StoreAdapter getOrCreateStore(@Nullable Resource.Internal resource) {
         // Use the store of the resource
-        if (PersistentResource.class.isInstance(resource)) {
-            return PersistentResource.class.cast(resource).eStore();
+        if (resource instanceof PersistentResource) {
+            final PersistentResource persistentResource = (PersistentResource) resource;
+            return persistentResource.eStore();
         }
         // Adapt the current store
         else if (lazyStore.isLoaded()) {
@@ -359,11 +360,11 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
         if (this == o) {
             return true;
         }
-        if (!PersistentEObject.class.isInstance(o)) {
+        if (!(o instanceof PersistentEObject)) {
             return false;
         }
 
-        PersistentEObject that = PersistentEObject.class.cast(o);
+        PersistentEObject that = (PersistentEObject) o;
         return Objects.equals(id(), that.id());
     }
 }

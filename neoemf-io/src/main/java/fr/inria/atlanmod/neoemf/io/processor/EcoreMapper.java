@@ -146,7 +146,7 @@ public class EcoreMapper extends AbstractProcessor {
         }
 
         final EReference eReference = EFeatures.asReference(feature);
-        final EClass baseClass = EClass.class.cast(eReference.getEType());
+        final EClass baseClass = (EClass) eReference.getEType();
 
         // Retrieve the type the reference
         if (nonNull(element.getMetaClass())) {
@@ -281,7 +281,7 @@ public class EcoreMapper extends AbstractProcessor {
      */
     @Nonnull
     private EClass getClass(String name, EPackage ePackage) {
-        EClass eClass = EClass.class.cast(ePackage.getEClassifier(name));
+        EClass eClass = (EClass) ePackage.getEClassifier(name);
         checkNotNull(eClass, "Unable to find EClass '%s' from EPackage '%s'", name, ePackage.getNsURI());
 
         return eClass;

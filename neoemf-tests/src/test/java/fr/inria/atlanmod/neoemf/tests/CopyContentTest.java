@@ -72,7 +72,7 @@ class CopyContentTest extends AbstractResourceBasedTest {
             assertThat(resource.getContents()).isNotEmpty();
             assertThat(resource.getContents().get(0)).isInstanceOf(PrimaryObject.class);
 
-            PrimaryObject primary = PrimaryObject.class.cast(resource.getContents().get(0));
+            PrimaryObject primary = (PrimaryObject) resource.getContents().get(0);
             assertThat(primary.getName()).isEqualTo(PRIMARY_NAME);
 
             List<TargetObject> targets = primary.getManyContainmentReferences();

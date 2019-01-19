@@ -74,7 +74,7 @@ public class TransientStoreAdapter extends AbstractStoreAdapter {
 
     @Override
     public void resource(@Nullable Resource.Internal resource) {
-        if (holder.resource == resource || PersistentResource.class.isInstance(resource)) {
+        if (holder.resource == resource || resource instanceof PersistentResource) {
             // A transient store cannot be attached to a persistent resource
             return;
         }

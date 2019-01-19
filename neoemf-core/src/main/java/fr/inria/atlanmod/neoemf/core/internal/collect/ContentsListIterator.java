@@ -336,7 +336,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
 
         // Feature is multi-valued, or a feature map
         if (isFeatureMap || feature.isMany()) {
-            List<?> newValues = List.class.cast(value);
+            List<?> newValues = (List) value;
             setValues(newValues, direction.getFirstIndex(newValues));
 
             if (hasRemainingValues(direction)) {
@@ -366,7 +366,8 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
             values = newValues.listIterator(firstIndex);
         }
         else {
-            values = InternalEList.class.cast(newValues).basicListIterator(firstIndex);
+            final InternalEList<?> newValuesAsBasic = (InternalEList) newValues;
+            values = newValuesAsBasic.basicListIterator(firstIndex);
         }
     }
 
@@ -395,7 +396,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
 
         // Filter the entries of the feature map
         while (direction.hasMoreElements(values)) {
-            FeatureMap.Entry entry = FeatureMap.Entry.class.cast(direction.advance(values));
+            final FeatureMap.Entry entry = (FeatureMap.Entry) direction.advance(values);
             if (isIncludedEntry(entry)) {
                 direction.reverse(values);
                 return true;
@@ -421,7 +422,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
         final Object value = direction.advance(values);
 
         return isFeatureMap
-                ? new IterationResult<>(direction, FeatureMap.Entry.class.cast(value))
+                ? new IterationResult<>(direction, (FeatureMap.Entry) value)
                 : new IterationResult<>(direction, value, feature);
     }
 
@@ -480,7 +481,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
 
         // Feature is a feature map
         if (FeatureMapUtil.isFeatureMap(feature)) {
-            List<FeatureMap.Entry> newValues = FeatureMap.class.cast(value);
+            final List<FeatureMap.Entry> newValues = (FeatureMap) value;
             SortedMap<Integer, Integer> indexMapping = fastFilterEntries(newValues);
             steps = indexMapping.lastKey(); // Size of included entries only
 
@@ -492,7 +493,7 @@ class ContentsListIterator<E extends EObject> implements EContentsEList.FeatureL
         }
         // Feature is multi-valued
         else if (feature.isMany()) {
-            List<?> newValues = List.class.cast(value);
+            final List<?> newValues = (List) value;
             steps = newValues.size();
 
             if (cursor + steps >= expectedIndex) {

@@ -61,8 +61,7 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        V[] values = this.<V[]>valueOf(feature.withoutPosition())
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+        V[] values = this.<V[]>valueOf(feature.withoutPosition()).orElseThrow(NoSuchElementException::new);
 
         if (feature.position() >= values.length) {
             throw new NoSuchElementException();

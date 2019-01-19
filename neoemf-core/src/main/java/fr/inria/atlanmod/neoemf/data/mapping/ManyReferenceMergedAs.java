@@ -72,7 +72,7 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
         List<Id> ids = this.<M>valueOf(feature.withoutPosition())
                 .map(converter::revert)
-                .<NoSuchElementException>orElseThrow(NoSuchElementException::new);
+                .orElseThrow(NoSuchElementException::new);
 
         if (feature.position() >= ids.size()) {
             throw new NoSuchElementException();

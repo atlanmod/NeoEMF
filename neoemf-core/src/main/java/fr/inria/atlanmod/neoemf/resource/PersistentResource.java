@@ -63,7 +63,7 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
      * @return {@code true} if the resource is persistent
      */
     static boolean isPersistent(@Nullable Resource resource) {
-        return PersistentResource.class.isInstance(resource);
+        return resource instanceof PersistentResource;
     }
 
     @Override
@@ -128,6 +128,6 @@ public interface PersistentResource extends Resource, Resource.Internal, Storabl
     @Override
     @SuppressWarnings("unchecked")
     default Iterator<PersistentEObject> iterator() {
-        return Iterator.class.cast(getContents().iterator());
+        return (Iterator) getContents().iterator();
     }
 }

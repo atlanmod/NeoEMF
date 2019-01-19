@@ -57,11 +57,11 @@ class SaveResourceTest extends AbstractResourceBasedTest {
 
             Iterator<EObject> it = resource.getAllContents();
 
-            PrimaryObject primary = PrimaryObject.class.cast(it.next());
+            PrimaryObject primary = (PrimaryObject) it.next();
             assertThat(primary.eContainer()).isNull();
             assertThat(primary.eInternalContainer()).isNull();
 
-            TargetObject target = TargetObject.class.cast(it.next());
+            TargetObject target = (TargetObject) it.next();
             assertThat(target.eContainer()).isEqualTo(primary);
             assertThat(target.eInternalContainer()).isEqualTo(primary);
         }
@@ -86,10 +86,10 @@ class SaveResourceTest extends AbstractResourceBasedTest {
 
             Iterator<EObject> it = resource.getAllContents();
 
-            PrimaryObject primary = PrimaryObject.class.cast(it.next());
+            PrimaryObject primary = (PrimaryObject) it.next();
             assertThat(primary.eResource()).isSameAs(resource);
 
-            TargetObject target = TargetObject.class.cast(it.next());
+            TargetObject target = (TargetObject) it.next();
             assertThat(target.eResource()).isSameAs(resource);
         }
     }
@@ -113,10 +113,10 @@ class SaveResourceTest extends AbstractResourceBasedTest {
 
             Iterator<EObject> it = resource.getAllContents();
 
-            PrimaryObject primary = PrimaryObject.class.cast(it.next());
+            PrimaryObject primary = (PrimaryObject) it.next();
             assertThat(primary.eDirectResource()).isSameAs(resource);
 
-            TargetObject target = TargetObject.class.cast(it.next());
+            TargetObject target = (TargetObject) it.next();
             assertThat(target.eDirectResource()).isNull();
         }
     }

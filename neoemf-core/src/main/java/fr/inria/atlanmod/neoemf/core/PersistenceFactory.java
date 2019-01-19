@@ -92,7 +92,7 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
 
         boolean updated = false;
 
-        if (ePackage.getClass() == EPackageImpl.class && !PersistenceFactory.class.isInstance(ePackage.getEFactoryInstance())) {
+        if (ePackage.getClass() == EPackageImpl.class && !(ePackage.getEFactoryInstance() instanceof PersistenceFactory)) {
             ePackage.setEFactoryInstance(new PersistenceFactory(ePackage));
             updated = true;
         }

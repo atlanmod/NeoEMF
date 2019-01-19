@@ -161,7 +161,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
         final EClass containerClass = classes.getLast();
         final EStructuralFeature referencingFeature = containerClass.getEStructuralFeature(element.getName());
 
-        final EClass baseType = EClass.class.cast(referencingFeature.getEType());
+        final EClass baseType = (EClass) referencingFeature.getEType();
         final EClass specificType = element.getMetaClass().getReal();
 
         return specificType != baseType;

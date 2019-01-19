@@ -57,7 +57,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
     @BeforeEach
     public void initResource() throws IOException {
         URI uri = new BlueprintsUriFactory().createLocalUri(currentTempFile());
-        resource = PersistentResource.class.cast(new ResourceSetImpl().createResource(uri));
+        resource = (PersistentResource) new ResourceSetImpl().createResource(uri);
     }
 
     /**
@@ -92,7 +92,7 @@ public class BlueprintsTinkerConfigTest extends AbstractUnitTest {
         Optional<Config> config = Config.load(configPath);
         assertThat(config).isNotEmpty();
 
-        return config.<IllegalStateException>orElseThrow(IllegalStateException::new);
+        return config.orElseThrow(IllegalStateException::new);
     }
 
     /**

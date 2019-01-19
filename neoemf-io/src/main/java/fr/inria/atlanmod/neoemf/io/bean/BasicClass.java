@@ -46,7 +46,7 @@ public class BasicClass extends AbstractNamedElement<BasicClass> implements Basi
     @Nonnull
     private final LazyReference<EClass> eClass = LazyReference.soft(() -> {
         final EPackage p = getNamespace().getReal();
-        final EClass c = EClass.class.cast(p.getEClassifier(getName()));
+        final EClass c = (EClass) p.getEClassifier(getName());
         checkNotNull(c, "Unable to find EClass '%s' from EPackage '%s'", getName(), p.getNsURI());
         return c;
     });
@@ -125,7 +125,7 @@ public class BasicClass extends AbstractNamedElement<BasicClass> implements Basi
             return false;
         }
 
-        BasicClass that = BasicClass.class.cast(o);
+        BasicClass that = (BasicClass) o;
         return Objects.equals(ns, that.ns);
     }
 

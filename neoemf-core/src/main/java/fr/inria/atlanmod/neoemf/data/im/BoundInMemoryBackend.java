@@ -157,7 +157,7 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
             return false;
         }
 
-        BoundInMemoryBackend that = BoundInMemoryBackend.class.cast(o);
+        BoundInMemoryBackend that = (BoundInMemoryBackend) o;
         return Objects.equals(owner, that.owner);
     }
 

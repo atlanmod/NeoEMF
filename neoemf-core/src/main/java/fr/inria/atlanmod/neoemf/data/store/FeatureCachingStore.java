@@ -31,7 +31,7 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
     @Override
     @SuppressWarnings("unchecked")
     public <V> Optional<V> valueOf(SingleFeatureBean feature) {
-        return Optional.ofNullable((V) cache.get(feature, k -> super.valueOf(SingleFeatureBean.class.cast(k)).orElse(null)));
+        return Optional.ofNullable((V) cache.get(feature, k -> super.valueOf((SingleFeatureBean) k).orElse(null)));
     }
 
     @Nonnull
@@ -52,7 +52,7 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
     @Nonnull
     @Override
     public Optional<Id> referenceOf(SingleFeatureBean feature) {
-        return Optional.ofNullable(Id.class.cast(cache.get(feature, k -> super.referenceOf(SingleFeatureBean.class.cast(k)).orElse(null))));
+        return Optional.ofNullable((Id) cache.get(feature, k -> super.referenceOf((SingleFeatureBean) k).orElse(null)));
     }
 
     @Nonnull
@@ -74,7 +74,7 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
     @Override
     @SuppressWarnings("unchecked")
     public <V> Optional<V> valueOf(ManyFeatureBean feature) {
-        return Optional.ofNullable((V) cache.get(feature, k -> super.valueOf(ManyFeatureBean.class.cast(k)).orElse(null)));
+        return Optional.ofNullable((V) cache.get(feature, k -> super.valueOf((ManyFeatureBean) k).orElse(null)));
     }
 
     @Nonnull
@@ -149,7 +149,7 @@ public class FeatureCachingStore extends AbstractCachingStore<FeatureBean, Objec
     @Nonnull
     @Override
     public Optional<Id> referenceOf(ManyFeatureBean feature) {
-        return Optional.ofNullable(Id.class.cast(cache.get(feature, k -> super.referenceOf(ManyFeatureBean.class.cast(k)).orElse(null))));
+        return Optional.ofNullable((Id) cache.get(feature, k -> super.referenceOf((ManyFeatureBean) k).orElse(null)));
     }
 
     @Nonnull

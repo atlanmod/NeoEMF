@@ -148,11 +148,11 @@ public abstract class AbstractFeatureBean implements FeatureBean {
         if (this == o) {
             return true;
         }
-        if (!AbstractFeatureBean.class.isInstance(o)) {
+        if (!(o instanceof AbstractFeatureBean)) {
             return false;
         }
 
-        AbstractFeatureBean that = AbstractFeatureBean.class.cast(o);
+        AbstractFeatureBean that = (AbstractFeatureBean) o;
         return isMany() == that.isMany()
                 && position == that.position
                 && Objects.equals(owner, that.owner)

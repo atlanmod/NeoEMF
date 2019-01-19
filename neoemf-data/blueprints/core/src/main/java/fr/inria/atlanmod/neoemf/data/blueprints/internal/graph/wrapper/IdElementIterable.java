@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * An {@link Iterable} able to map the result of each method call to a dedicated implementation.
  * <p>
- * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdVertexIterable} and {@link
+ * Re-implemented from {@code com.tinkerpop.blueprints.util.wrappers.id.IdVertexIterable} and {@code
  * com.tinkerpop.blueprints.util.wrappers.id.IdEdgeIterable}.
  *
  * @param <T> the type of the base elements
@@ -51,8 +51,9 @@ class IdElementIterable<T extends Element, U extends T> extends AbstractBasedObj
 
     @Override
     public void close() {
-        if (CloseableIterable.class.isInstance(base)) {
-            CloseableIterable.class.cast(base).close();
+        if (base instanceof CloseableIterable) {
+            final CloseableIterable<?> closeable = (CloseableIterable) base;
+            closeable.close();
         }
     }
 

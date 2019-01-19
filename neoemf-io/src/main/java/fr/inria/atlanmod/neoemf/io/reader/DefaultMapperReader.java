@@ -82,7 +82,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
         // Retrieve the meta-class and namespace
         EClass eClass = mapper.metaClassOf(id)
                 .map(ClassBean::get)
-                .<IllegalArgumentException>orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(IllegalArgumentException::new);
 
         // Retrieve the name of the element
         // If root it's the name of the meta-class, otherwise the name of the containing feature from the previous class
@@ -90,7 +90,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                 .map(SingleFeatureBean::id)
                 .map(classes.getLast()::getEStructuralFeature)
                 .map(EStructuralFeature::getName)
-                .<IllegalStateException>orElseThrow(IllegalStateException::new);
+                .orElseThrow(IllegalStateException::new);
 
         // Create the meta-class
         BasicClass metaClass = new BasicClass(eClass);
