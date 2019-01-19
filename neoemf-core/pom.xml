@@ -19,12 +19,12 @@
     </description>
 
     <properties>
-        <chronicle-map.version>3.14.5</chronicle-map.version>
-        <chronicle-bytes.version>1.12.8</chronicle-bytes.version>
+        <chronicle-map.version>3.17.0</chronicle-map.version>
+        <chronicle-bytes.version>2.17.11</chronicle-bytes.version>
 
-        <log4j.version>2.11.0</log4j.version>
+        <log4j.version>2.11.1</log4j.version>
 
-        <cglib.version>3.2.6</cglib.version>
+        <cglib.version>3.2.10</cglib.version>
     </properties>
 
     <dependencies>

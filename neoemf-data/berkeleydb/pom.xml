@@ -16,7 +16,7 @@
     <description>BerkeleyDB extension of the core component.</description>
 
     <properties>
-        <berkeleydb.version>5.0.73</berkeleydb.version>
+        <berkeleydb.version>18.3.12</berkeleydb.version>
     </properties>
 
     <dependencies>

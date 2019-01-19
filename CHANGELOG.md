@@ -8,6 +8,7 @@ No migration helper is provided: the simplest way to transfer the old databases 
 __NOTE:__ The changelog of this version is not exhaustive and regroup only major changes.
 
 ### Core
+-   __\[NEW\]__ Use `ServiceLoader` and OSGI Services to retrieve implementations of `Config`, `BackendFactory` and `UriFactory`
 -   __\[NEW\]__ `Id` instances are created by an `IdProvider` instead of static methods
 -   __\[UPD\]__ `Id`s use a `long` representation, or a 64-bits word. They can be converted to a hexadecimal string and vice versa to maintain compatibility with `Backend`s that don't support `long`
 -   __\[UPD\]__ The hasher used to generate new `Id` from a value is now [xxHash](https://github.com/Cyan4973/xxHash) that provides better performance than MurmurHash3
@@ -107,11 +108,12 @@ They are presented as several interfaces and each have their responsibility:
 -   __\[UPD\]__ `ContainerValue` has been merged with `SingleFeatureBean`
 
 ### Dependencies
--   __\[NEW\]__ `chronicle-map` : `3.14.5`
--   __\[NEW\]__ `org.reflections` : `0.9.9`
+-   __\[NEW\]__ `chronicle-map` : `3.17.0`
+-   __\[UPD\]__ `com.sleepycat:je` : `5.0.73` to `18.3.12` _(BerkeleyDB)_
+-   __\[UPD\]__ `mapdb`: `3.0.5` to `3.0.7`
 -   __\[UPD\]__ `org.eclipse.emf` : `2.12.0` to `2.15.0` (including associated dependencies)
--   __\[UPD\]__ `cglib` : `3.2.4` to `3.2.6`
--   __\[UPD\]__ `log4j` : `2.7` to `2.8.2`
+-   __\[UPD\]__ `cglib` : `3.2.4` to `3.2.10`
+-   __\[UPD\]__ `log4j` : `2.7` to `2.11.1`
 -   __\[UPD\]__ `org.neo4j` : `1.9.6` to `2.1.8` (include `blueprints-neo4j-graph` to `blueprints-neo4j2-graph`)
 -   __\[DEL\]__ `junit`: No longer needed, managed by `atlanmod:commons-core` (`5.0.3+`)
 -   __\[DEL\]__ `assertj` : No longer needed, managed by `atlanmod:commons-core` (`3.9.0+`)
