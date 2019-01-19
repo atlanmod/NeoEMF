@@ -16,7 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An object that can save its current state.
  */
 @ParametersAreNonnullByDefault
-public interface Savable extends Closeable {
+public interface Saveable extends Closeable {
 
     /**
      * {@inheritDoc}

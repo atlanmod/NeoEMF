@@ -10,7 +10,7 @@ package fr.inria.atlanmod.neoemf.data.store.adapter;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
-import fr.inria.atlanmod.neoemf.data.Savable;
+import fr.inria.atlanmod.neoemf.data.Saveable;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 
@@ -37,7 +37,7 @@ import javax.annotation.concurrent.Immutable;
  */
 @Immutable
 @ParametersAreNonnullByDefault
-public interface StoreAdapter extends Savable, Copiable<StoreAdapter>, InternalEObject.EStore {
+public interface StoreAdapter extends Saveable, Copiable<StoreAdapter>, InternalEObject.EStore {
 
     /**
      * Returns the adapted store chain.
