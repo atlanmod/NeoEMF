@@ -62,7 +62,6 @@ public abstract class AbstractMapperFactory {
      * @throws InvalidDataMapperException if an error occurs during the instantiation
      */
     @Nonnull
-    @SuppressWarnings("unchecked")
     protected final <T extends DataMapper> T createMapper(Class<T> type, Object... parameters) {
         try {
             Class<?>[] types = Arrays.stream(parameters)

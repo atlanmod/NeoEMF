@@ -27,7 +27,6 @@ import javax.annotation.WillNotClose;
 @ParametersAreNonnullByDefault
 final class ClassSerializer extends AbstractBinarySerializer<ClassBean> {
 
-    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 2381621024821659111L;
 
     @Override

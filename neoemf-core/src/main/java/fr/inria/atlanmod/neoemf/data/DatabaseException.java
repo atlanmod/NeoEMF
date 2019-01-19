@@ -16,7 +16,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class DatabaseException extends RuntimeException {
 
-    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -5045169255855866489L;
 
     /**

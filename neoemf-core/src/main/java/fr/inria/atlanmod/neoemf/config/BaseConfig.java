@@ -435,7 +435,6 @@ public class BaseConfig<C extends BaseConfig<C>> implements Config {
      * @return this configuration (for chaining)
      */
     @Nonnull
-    @SuppressWarnings("unchecked")
     protected final C setMappingWithCheck(String mappingType, boolean checkConflict) {
         checkNotNull(mappingType, "mappingType");
 

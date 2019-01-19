@@ -40,7 +40,6 @@ import static org.atlanmod.commons.Preconditions.checkArgument;
 @ParametersAreNonnullByDefault
 public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
 
-    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 4130828923851153715L;
 
     /**

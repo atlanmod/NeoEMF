@@ -30,7 +30,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class DirectStoreMap<K, V> extends EcoreEMap<K, V> {
 
-    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 9173875843551606055L;
 
     /**
@@ -52,7 +51,6 @@ public class DirectStoreMap<K, V> extends EcoreEMap<K, V> {
     @ParametersAreNonnullByDefault
     private class EntryList extends DirectStoreList<Entry<K, V>> {
 
-        @SuppressWarnings("JavaDoc")
         private static final long serialVersionUID = 3373155561238654363L;
 
         /**

@@ -125,7 +125,6 @@ public final class ResourceManager {
     private static final class ResourceLoader {
 
         @Nonnull
-        @SuppressWarnings("JavaDoc")
         public static ResourceLoader getInstance() {
             return Holder.INSTANCE;
         }

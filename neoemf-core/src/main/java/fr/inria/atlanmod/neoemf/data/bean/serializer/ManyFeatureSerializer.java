@@ -28,7 +28,6 @@ import javax.annotation.WillNotClose;
 @ParametersAreNonnullByDefault
 final class ManyFeatureSerializer extends AbstractBinarySerializer<ManyFeatureBean> {
 
-    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -8503200234566675439L;
 
     @Override

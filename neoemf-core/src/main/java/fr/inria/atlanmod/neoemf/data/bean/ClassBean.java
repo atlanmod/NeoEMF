@@ -36,7 +36,6 @@ import static org.atlanmod.commons.Preconditions.checkNotNull;
 @ParametersAreNonnullByDefault
 public class ClassBean implements Serializable {
 
-    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 3630220484508625215L;
 
     /**

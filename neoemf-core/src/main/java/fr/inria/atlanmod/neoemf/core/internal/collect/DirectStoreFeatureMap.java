@@ -127,13 +127,11 @@ public class DirectStoreFeatureMap extends DelegatingFeatureMap implements Stora
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Entry delegateGet(int index) {
         return (Entry) eStore().get(owner, eStructuralFeature, index);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Entry delegateSet(int index, Entry object) {
         return (Entry) eStore().set(owner, eStructuralFeature, index, object);
     }
@@ -149,7 +147,6 @@ public class DirectStoreFeatureMap extends DelegatingFeatureMap implements Stora
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Entry delegateRemove(int index) {
         return (Entry) eStore().remove(owner, eStructuralFeature, index);
     }
@@ -160,7 +157,6 @@ public class DirectStoreFeatureMap extends DelegatingFeatureMap implements Stora
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Entry delegateMove(int targetIndex, int sourceIndex) {
         return (Entry) eStore().move(owner, eStructuralFeature, targetIndex, sourceIndex);
     }
@@ -265,7 +261,6 @@ public class DirectStoreFeatureMap extends DelegatingFeatureMap implements Stora
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected boolean doAddAllUnique(int index, Object[] objects, int start, int end) {
         return doAddAllUnique(index, Arrays.asList((Entry[]) objects));
     }

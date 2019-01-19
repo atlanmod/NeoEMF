@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.data.mapping;
  */
 public class InvalidDataMapperException extends RuntimeException {
 
-    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -7365877931773274125L;
 
     /**

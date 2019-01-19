@@ -13,7 +13,6 @@ package fr.inria.atlanmod.neoemf.config;
  */
 public class InvalidConfigException extends RuntimeException {
 
-    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = -412929183916507518L;
 
     /**

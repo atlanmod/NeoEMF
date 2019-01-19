@@ -44,7 +44,6 @@ import static org.atlanmod.commons.Preconditions.checkPositionIndex;
 @ParametersAreNonnullByDefault
 public class DirectStoreList<E> extends DelegatingEcoreEList.Dynamic<E> implements Storable {
 
-    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 2630358403343923944L;
 
     /**

@@ -27,7 +27,6 @@ import javax.annotation.concurrent.Immutable;
 @ParametersAreNonnullByDefault
 public class ManyFeatureBean extends AbstractFeatureBean {
 
-    @SuppressWarnings("JavaDoc")
     private static final long serialVersionUID = 7159493156068733506L;
 
     /**
