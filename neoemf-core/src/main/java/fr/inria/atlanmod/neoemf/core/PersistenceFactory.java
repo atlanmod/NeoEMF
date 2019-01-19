@@ -32,7 +32,7 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
     /**
      * Constructs a new {@code PersistenceFactory}.
      */
-    protected PersistenceFactory() {
+    public PersistenceFactory() {
     }
 
     /**
@@ -40,7 +40,7 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
      *
      * @param ePackage the package associated to this factory
      */
-    protected PersistenceFactory(EPackage ePackage) {
+    public PersistenceFactory(EPackage ePackage) {
         this.ePackage = ePackage;
     }
 
@@ -105,5 +105,10 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
         return Objects.equals(eClass.getInstanceClassName(), java.util.Map.Entry.class.getName())
                 ? new DynamicPersistentEObject.MapEntry<String, String>(eClass)
                 : new DynamicPersistentEObject(eClass);
+    }
+
+    @Override
+    public EObject create(EClass eClass) {
+        return super.create(eClass);
     }
 }
