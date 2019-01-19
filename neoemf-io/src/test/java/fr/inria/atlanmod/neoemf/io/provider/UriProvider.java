@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.io.provider;
 
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 
+import org.atlanmod.commons.annotation.Static;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;

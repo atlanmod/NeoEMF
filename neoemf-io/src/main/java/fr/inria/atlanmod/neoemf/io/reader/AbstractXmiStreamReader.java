@@ -8,14 +8,15 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.bean.Data;
 import fr.inria.atlanmod.neoemf.io.processor.AbstractProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.EcoreMapper;
 import fr.inria.atlanmod.neoemf.io.processor.XPathResolver;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
+
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.primitive.Strings;
 
 import java.io.IOException;
 import java.util.Arrays;

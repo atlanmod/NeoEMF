@@ -8,11 +8,12 @@
 
 package fr.inria.atlanmod.neoemf.config;
 
-import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.listener.StoreListener;
 import fr.inria.atlanmod.neoemf.data.store.listener.StoreStats;
+
+import org.atlanmod.commons.log.Level;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -252,7 +253,7 @@ public interface Config extends ImmutableConfig {
     /**
      * Adds the {@code log} feature, with a defined {@code level}, in this configuration.
      *
-     * @param level the logging {@link fr.inria.atlanmod.commons.log.Level} to use
+     * @param level the logging {@link org.atlanmod.commons.log.Level} to use
      *
      * @return this configuration (for chaining)
      *

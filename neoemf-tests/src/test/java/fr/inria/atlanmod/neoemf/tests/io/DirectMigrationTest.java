@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.tests.io;
 
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
@@ -19,6 +18,7 @@ import fr.inria.atlanmod.neoemf.tests.provider.ContextProvider;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
 import org.apache.logging.log4j.util.Strings;
+import org.atlanmod.commons.log.Log;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.BeforeAll;

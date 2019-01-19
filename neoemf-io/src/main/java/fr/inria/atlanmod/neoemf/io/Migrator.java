@@ -8,9 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
-import fr.inria.atlanmod.commons.log.Level;
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.listener.CountingEventListener;
 import fr.inria.atlanmod.neoemf.io.listener.EventListener;
@@ -26,6 +23,10 @@ import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.writer.DefaultMapperWriter;
 import fr.inria.atlanmod.neoemf.io.writer.Writer;
 import fr.inria.atlanmod.neoemf.io.writer.XmiStreamWriter;
+
+import org.atlanmod.commons.annotation.VisibleForTesting;
+import org.atlanmod.commons.log.Level;
+import org.atlanmod.commons.log.Log;
 
 import java.io.Closeable;
 import java.io.File;
@@ -51,10 +52,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.WillNotClose;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkArgument;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkState;
 
 /**
  * The builder that creates {@link fr.inria.atlanmod.neoemf.io.reader.Reader} and {@link

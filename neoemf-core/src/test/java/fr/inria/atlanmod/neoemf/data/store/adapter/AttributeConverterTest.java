@@ -8,8 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
-import fr.inria.atlanmod.commons.AbstractTest;
-
+import org.atlanmod.commons.AbstractTest;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EDataType;
 import org.junit.jupiter.api.BeforeEach;

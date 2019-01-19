@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A {@link PersistentResource} wrapper that delegates all method calls to the decorated resource.

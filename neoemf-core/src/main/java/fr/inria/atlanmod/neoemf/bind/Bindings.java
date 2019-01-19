@@ -8,14 +8,15 @@
 
 package fr.inria.atlanmod.neoemf.bind;
 
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.reflect.MoreReflection;
-import fr.inria.atlanmod.commons.reflect.ReflectionException;
-import fr.inria.atlanmod.commons.service.ServiceDefinition;
-import fr.inria.atlanmod.commons.service.ServiceProvider;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.util.UriFactory;
+
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.reflect.MoreReflection;
+import org.atlanmod.commons.reflect.ReflectionException;
+import org.atlanmod.commons.service.ServiceDefinition;
+import org.atlanmod.commons.service.ServiceProvider;
 
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +29,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A static utility class for binding.
@@ -173,7 +174,7 @@ public final class Bindings {
      * @return a new instance of the {@code type}
      *
      * @throws BindingException if no instance of {@code type} is found for the {@code value} by using the {@code valueMapping}
-     * @see fr.inria.atlanmod.commons.service.ServiceProvider#load(Class)
+     * @see org.atlanmod.commons.service.ServiceProvider#load(Class)
      */
     @Nonnull
     @SuppressWarnings("unchecked")

@@ -8,10 +8,10 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.data.DataCopier;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
+import org.atlanmod.commons.Throwables;
 import org.osgi.service.component.annotations.Component;
 
 import java.io.IOException;

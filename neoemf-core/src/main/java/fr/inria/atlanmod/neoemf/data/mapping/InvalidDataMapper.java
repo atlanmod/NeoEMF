@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An invalid {@link DataMapper} that throws a {@link RuntimeException} at each call.

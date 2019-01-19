@@ -22,7 +22,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.commons</groupId>
+            <groupId>org.atlanmod.commons</groupId>
             <artifactId>commons-core</artifactId>
         </dependency>
 

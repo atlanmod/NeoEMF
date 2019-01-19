@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
-import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 
+import org.atlanmod.commons.AbstractTest;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.ParametersAreNonnullByDefault;

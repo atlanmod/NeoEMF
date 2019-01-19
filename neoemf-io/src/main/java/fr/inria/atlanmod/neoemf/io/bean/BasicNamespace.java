@@ -8,11 +8,10 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
-import fr.inria.atlanmod.commons.LazyReference;
-import fr.inria.atlanmod.commons.annotation.Singleton;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
-
+import org.atlanmod.commons.LazyReference;
+import org.atlanmod.commons.annotation.Singleton;
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.annotation.VisibleForTesting;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
 
@@ -26,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A simple representation of a {@link org.eclipse.emf.ecore.EPackage}.

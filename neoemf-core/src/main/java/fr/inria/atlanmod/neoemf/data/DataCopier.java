@@ -8,8 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.commons.function.Copier;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
+
+import org.atlanmod.commons.function.Copier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

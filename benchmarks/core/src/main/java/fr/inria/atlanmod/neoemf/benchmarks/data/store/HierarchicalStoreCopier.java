@@ -8,13 +8,13 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.data.store;
 
-import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.io.LocalWorkspace;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.data.DataCopier;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
+import org.atlanmod.commons.collect.MoreIterables;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ import java.util.ServiceLoader;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Preconditions.checkState;
 
 /**
  * A {@link StoreCopier} that uses a {@link fr.inria.atlanmod.neoemf.data.DataCopier}.

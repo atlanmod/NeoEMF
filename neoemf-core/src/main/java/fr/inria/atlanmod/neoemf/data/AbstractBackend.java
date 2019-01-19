@@ -8,9 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.service.ServiceDefinition;
-import fr.inria.atlanmod.commons.service.ServiceProvider;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
@@ -18,6 +15,10 @@ import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapper;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.data.store.StoreFactory;
+
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.service.ServiceDefinition;
+import org.atlanmod.commons.service.ServiceProvider;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -29,7 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link Backend} that provides a global behavior about the closure.

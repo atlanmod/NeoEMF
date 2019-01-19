@@ -22,8 +22,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A {@link BerkeleyDbBackend} that use a {@link ManyValueWithIndices} mapping for storing features.

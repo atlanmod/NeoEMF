@@ -8,12 +8,13 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.Handler;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+
+import org.atlanmod.commons.log.Log;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -28,8 +29,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkEqualTo;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkEqualTo;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link Writer} that acts as an accumulator of multi-value features in order to notify them once. This

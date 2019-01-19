@@ -8,8 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.commons.function.Converter;
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.mapping.ManyReferenceMergedAs;
@@ -17,6 +15,8 @@ import fr.inria.atlanmod.neoemf.data.mapping.ManyValueWithArrays;
 import fr.inria.atlanmod.neoemf.data.mapping.ReferenceAs;
 
 import org.apache.hadoop.hbase.client.Table;
+import org.atlanmod.commons.function.Converter;
+import org.atlanmod.commons.primitive.Strings;
 
 import java.util.Arrays;
 import java.util.List;

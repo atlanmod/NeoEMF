@@ -19,8 +19,8 @@ import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkArgument;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An object that pre-process a {@link Resource}.

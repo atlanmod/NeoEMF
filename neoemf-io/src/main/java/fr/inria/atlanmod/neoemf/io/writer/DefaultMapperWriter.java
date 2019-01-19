@@ -25,7 +25,7 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Preconditions.checkState;
 
 /**
  * A {@link Writer} that persists data into a {@link fr.inria.atlanmod.neoemf.data.mapping.DataMapper}.

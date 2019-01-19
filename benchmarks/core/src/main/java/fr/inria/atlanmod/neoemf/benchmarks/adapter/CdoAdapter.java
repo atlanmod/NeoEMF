@@ -8,10 +8,10 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.commons.concurrent.MoreThreads;
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
+import org.atlanmod.commons.concurrent.MoreThreads;
+import org.atlanmod.commons.log.Log;
 import org.eclipse.emf.cdo.eresource.CDOResource;
 import org.eclipse.emf.cdo.net4j.CDONet4jSession;
 import org.eclipse.emf.cdo.net4j.CDONet4jSessionConfiguration;
@@ -54,8 +54,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkState;
 
 /**
  * An {@link Adapter} on top of a CDO server.

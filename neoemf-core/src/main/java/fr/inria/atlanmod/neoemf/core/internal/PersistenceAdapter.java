@@ -8,18 +8,18 @@
 
 package fr.inria.atlanmod.neoemf.core.internal;
 
-import fr.inria.atlanmod.commons.annotation.Singleton;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.cache.Cache;
-import fr.inria.atlanmod.commons.cache.CacheBuilder;
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.reflect.MoreReflection;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
+import org.atlanmod.commons.annotation.Singleton;
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.cache.Cache;
+import org.atlanmod.commons.cache.CacheBuilder;
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.reflect.MoreReflection;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,9 +32,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkArgument;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * The factory that adapts {@link Object}s in a specific {@link PersistentEObject}.

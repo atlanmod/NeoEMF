@@ -16,8 +16,8 @@ import java.util.function.IntSupplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Preconditions.checkPositionIndex;
+import static org.atlanmod.commons.Preconditions.checkState;
 
 /**
  * A lazy {@link ListIterator} that delegates its operations (structural and verification) to the containing list.

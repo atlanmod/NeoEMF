@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.data;
 
-import fr.inria.atlanmod.commons.annotation.Singleton;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.concurrent.MoreThreads;
+import org.atlanmod.commons.annotation.Singleton;
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.concurrent.MoreThreads;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

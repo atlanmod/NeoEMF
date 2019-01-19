@@ -20,5 +20,5 @@ Require-Bundle: org.eclipse.emf.ecore,
 Import-Package: org.eclipse.emf.ecore,
  org.eclipse.emf.common,
  org.eclipse.ocl,
- fr.inria.atlanmod.commons,
+ org.atlanmod.commons,
  org.eclipse.gmt.modisco.java

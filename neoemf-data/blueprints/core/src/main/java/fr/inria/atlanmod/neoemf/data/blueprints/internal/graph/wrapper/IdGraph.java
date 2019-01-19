@@ -20,8 +20,8 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.StringFactory;
 import com.tinkerpop.blueprints.util.wrappers.WrapperGraph;
 
-import fr.inria.atlanmod.commons.collect.MoreIterables;
-import fr.inria.atlanmod.commons.log.Log;
+import org.atlanmod.commons.collect.MoreIterables;
+import org.atlanmod.commons.log.Log;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -33,10 +33,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
-import static fr.inria.atlanmod.commons.Preconditions.checkInstanceOf;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkArgument;
+import static org.atlanmod.commons.Preconditions.checkInstanceOf;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A {@link com.tinkerpop.blueprints.KeyIndexableGraph} able to map the result of each method call to a dedicated implementation.

@@ -8,11 +8,12 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.commons.AbstractFileBasedTest;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.tests.sample.SampleFactory;
 import fr.inria.atlanmod.neoemf.tests.sample.SamplePackage;
+
+import org.atlanmod.commons.AbstractFileBasedTest;
 
 import java.io.IOException;
 

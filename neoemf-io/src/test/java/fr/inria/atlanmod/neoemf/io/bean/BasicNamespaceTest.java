@@ -8,8 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
-import fr.inria.atlanmod.commons.AbstractTest;
-
+import org.atlanmod.commons.AbstractTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -20,8 +20,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkState;
 
 /**
  * An abstract {@link Notifier} that provides overall behavior for the management of handlers.

@@ -8,9 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.im;
 
-import fr.inria.atlanmod.commons.annotation.Singleton;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.FeatureBean;
@@ -19,6 +16,10 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
 import net.openhft.chronicle.map.ChronicleMap;
 import net.openhft.chronicle.map.ChronicleMapBuilder;
+
+import org.atlanmod.commons.annotation.Singleton;
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.log.Log;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -33,9 +34,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkEqualTo;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkEqualTo;
 
 /**
  * A {@link InMemoryBackend}, bound to a unique {@link fr.inria.atlanmod.neoemf.core.Id}, that stores all elements in

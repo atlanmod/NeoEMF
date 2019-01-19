@@ -17,7 +17,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
+import static org.atlanmod.commons.Preconditions.checkArgument;
 
 /**
  * An abstract {@link Element} able to map the result of each method call to a dedicated implementation.

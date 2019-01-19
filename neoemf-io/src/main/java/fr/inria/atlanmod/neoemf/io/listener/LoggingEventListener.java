@@ -8,13 +8,14 @@
 
 package fr.inria.atlanmod.neoemf.io.listener;
 
-import fr.inria.atlanmod.commons.log.Level;
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
 import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+
+import org.atlanmod.commons.log.Level;
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.primitive.Strings;
 
 import java.util.Objects;
 

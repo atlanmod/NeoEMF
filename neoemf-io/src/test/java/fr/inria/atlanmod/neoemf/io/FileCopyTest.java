@@ -8,13 +8,13 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.commons.AbstractFileBasedTest;
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
+import org.atlanmod.commons.AbstractFileBasedTest;
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.primitive.Strings;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.BeforeAll;

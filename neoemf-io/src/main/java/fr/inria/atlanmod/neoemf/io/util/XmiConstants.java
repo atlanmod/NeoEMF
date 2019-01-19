@@ -8,16 +8,16 @@
 
 package fr.inria.atlanmod.neoemf.io.util;
 
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.primitive.Strings;
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.primitive.Strings;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A utility class that contains all the constants used in an XMI file.

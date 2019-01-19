@@ -21,13 +21,13 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.END_EXPR;
 import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.INDEX_SEPARATOR;
 import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.START_ELT;
 import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.START_EXPR;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A {@link Processor} that analyses XPath references and transforms them in {@link fr.inria.atlanmod.neoemf.core.Id}.

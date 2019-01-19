@@ -8,12 +8,12 @@
 
 package fr.inria.atlanmod.neoemf.tests.provider;
 
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.context.Context;
 import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.collect.MoreIterables;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;

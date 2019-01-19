@@ -8,9 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.benchmarks.data.resource.Resources;
 import fr.inria.atlanmod.neoemf.benchmarks.data.store.DirectStoreCreator;
 import fr.inria.atlanmod.neoemf.benchmarks.data.store.FileStoreCopier;
@@ -22,6 +19,9 @@ import fr.inria.atlanmod.neoemf.benchmarks.io.LocalWorkspace;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.primitive.Strings;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -36,8 +36,8 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * The abstract implementation of an {@link Adapter.Internal}.

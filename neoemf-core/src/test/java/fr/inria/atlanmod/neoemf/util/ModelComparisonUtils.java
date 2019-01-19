@@ -8,11 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.util.compare.LazyMatchEngineFactory;
 
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.log.Log;
 import org.eclipse.emf.compare.Comparison;
 import org.eclipse.emf.compare.Diff;
 import org.eclipse.emf.compare.EMFCompare;

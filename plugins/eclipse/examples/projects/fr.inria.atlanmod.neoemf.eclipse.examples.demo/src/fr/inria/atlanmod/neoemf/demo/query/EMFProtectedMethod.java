@@ -8,8 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.demo.query;
 
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.config.BerkeleyDbConfig;
 import fr.inria.atlanmod.neoemf.data.berkeleydb.util.BerkeleyDbUriFactory;
 import fr.inria.atlanmod.neoemf.data.blueprints.neo4j.config.BlueprintsNeo4jConfig;
@@ -18,6 +16,8 @@ import fr.inria.atlanmod.neoemf.data.mapdb.config.MapDbConfig;
 import fr.inria.atlanmod.neoemf.data.mapdb.util.MapDbUriFactory;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.time.Stopwatch;
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;

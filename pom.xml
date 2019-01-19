@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.commons</groupId>
+        <groupId>org.atlanmod.commons</groupId>
         <artifactId>commons</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf</groupId>
@@ -113,7 +113,7 @@
     <properties>
         <argLine.global>-XX:+UseConcMarkSweepGC -Xmx2g</argLine.global>
 
-        <commons.version>1.0.2-SNAPSHOT</commons.version>
+        <commons.version>1.0.3-SNAPSHOT</commons.version>
 
         <emf.version>2.12.0</emf.version>
     </properties>
@@ -124,7 +124,7 @@
             <!-- Commons -->
 
             <dependency>
-                <groupId>fr.inria.atlanmod.commons</groupId>
+                <groupId>org.atlanmod.commons</groupId>
                 <artifactId>commons-core</artifactId>
                 <version>${commons.version}</version>
             </dependency>
@@ -152,7 +152,7 @@
             <!-- Test -->
 
             <dependency>
-                <groupId>fr.inria.atlanmod.commons</groupId>
+                <groupId>org.atlanmod.commons</groupId>
                 <artifactId>commons-core</artifactId>
                 <version>${commons.version}</version>
                 <type>test-jar</type>
@@ -182,7 +182,7 @@
                                 *;
                                 scope=compile|runtime;
                                 type=!pom;
-                                groupId=!${project.groupId}|fr.inria.atlanmod.commons|org.eclipse.emf
+                                groupId=!${project.groupId}|org.atlanmod.commons|org.eclipse.emf
                             </Embed-Dependency>
                             <Embed-Transitive>true</Embed-Transitive>
                         </instructions>
@@ -280,7 +280,7 @@
             <dependencies>
 
                 <dependency>
-                    <groupId>fr.inria.atlanmod.commons</groupId>
+                    <groupId>org.atlanmod.commons</groupId>
                     <artifactId>commons-core</artifactId>
                     <version>${commons.version}</version>
                 </dependency>
@@ -309,11 +309,11 @@
                             <configuration>
                                 <includeDependencySources>true</includeDependencySources>
                                 <dependencySourceIncludes>
-                                    <dependencySourceInclude>fr.inria.atlanmod.commons:*</dependencySourceInclude>
+                                    <dependencySourceInclude>org.atlanmod.commons:*</dependencySourceInclude>
                                     <dependencySourceInclude>org.eclipse.emf:*</dependencySourceInclude>
                                 </dependencySourceIncludes>
                                 <excludePackageNames>
-                                    fr.inria.atlanmod.commons*;
+                                    org.atlanmod.commons*;
                                     fr.inria.atlanmod.neoemf.tests*;
                                     org.eclipse.emf*;
                                     javax.annotation*;

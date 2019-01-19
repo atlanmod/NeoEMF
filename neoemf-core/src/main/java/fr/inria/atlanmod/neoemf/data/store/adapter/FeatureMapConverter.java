@@ -8,11 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
-import fr.inria.atlanmod.commons.function.BiConverter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.util.EFeatures;
 
+import org.atlanmod.commons.function.BiConverter;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link fr.inria.atlanmod.commons.function.BiConverter} that transforms the value of {@link
+ * A {@link org.atlanmod.commons.function.BiConverter} that transforms the value of {@link
  * org.eclipse.emf.ecore.util.FeatureMap.Entry} instances.
  */
 @ParametersAreNonnullByDefault

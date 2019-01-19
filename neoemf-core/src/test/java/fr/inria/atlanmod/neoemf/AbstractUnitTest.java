@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf;
 
-import fr.inria.atlanmod.commons.AbstractFileBasedTest;
 import fr.inria.atlanmod.neoemf.context.Context;
 
+import org.atlanmod.commons.AbstractFileBasedTest;
 import org.junit.jupiter.api.BeforeEach;
 
 import javax.annotation.Nonnull;

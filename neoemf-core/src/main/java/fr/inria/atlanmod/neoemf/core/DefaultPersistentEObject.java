@@ -8,9 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.commons.Lazy;
-import fr.inria.atlanmod.commons.LazyReference;
-import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.core.internal.ContentsCopier;
@@ -27,6 +24,9 @@ import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 import fr.inria.atlanmod.neoemf.data.store.adapter.TransientStoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.atlanmod.commons.Lazy;
+import org.atlanmod.commons.LazyReference;
+import org.atlanmod.commons.annotation.VisibleForTesting;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
@@ -45,9 +45,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkInstanceOf;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkInstanceOf;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * The default implementation of a {@link PersistentEObject}.

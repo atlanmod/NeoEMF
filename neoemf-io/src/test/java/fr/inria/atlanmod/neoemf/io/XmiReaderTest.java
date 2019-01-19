@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
@@ -19,6 +18,7 @@ import fr.inria.atlanmod.neoemf.io.util.InMemoryElement;
 import fr.inria.atlanmod.neoemf.io.util.InMemoryWriter;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 
+import org.atlanmod.commons.AbstractTest;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -35,10 +35,10 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkGreaterThan;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.atlanmod.commons.Preconditions.checkGreaterThan;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A test-case about the reading of a model.

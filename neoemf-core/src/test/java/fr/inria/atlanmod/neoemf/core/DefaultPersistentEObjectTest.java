@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.data.store.adapter.TransientStoreAdapter;
 
+import org.atlanmod.commons.AbstractTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;

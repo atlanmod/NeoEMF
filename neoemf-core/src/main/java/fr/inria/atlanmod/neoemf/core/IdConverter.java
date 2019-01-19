@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.commons.function.Converter;
+import org.atlanmod.commons.function.Converter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

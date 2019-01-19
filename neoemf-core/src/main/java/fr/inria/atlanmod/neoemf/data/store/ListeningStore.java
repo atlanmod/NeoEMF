@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.commons.Lazy;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
@@ -18,6 +17,8 @@ import fr.inria.atlanmod.neoemf.data.store.listener.BackendReport;
 import fr.inria.atlanmod.neoemf.data.store.listener.FailureCallReport;
 import fr.inria.atlanmod.neoemf.data.store.listener.StoreListener;
 import fr.inria.atlanmod.neoemf.data.store.listener.SuccessCallReport;
+
+import org.atlanmod.commons.Lazy;
 
 import java.util.ArrayList;
 import java.util.Collection;

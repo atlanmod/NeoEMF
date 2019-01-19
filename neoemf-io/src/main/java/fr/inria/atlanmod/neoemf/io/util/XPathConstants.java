@@ -8,8 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.io.util;
 
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.annotation.Static;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

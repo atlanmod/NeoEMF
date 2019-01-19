@@ -8,8 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.io;
 
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.log.Log;
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.log.Log;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;

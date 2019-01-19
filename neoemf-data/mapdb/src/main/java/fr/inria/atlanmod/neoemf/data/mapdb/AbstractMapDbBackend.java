@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.mapdb;
 
-import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
@@ -18,6 +17,8 @@ import fr.inria.atlanmod.neoemf.data.bean.serializer.BeanSerializerFactory;
 import fr.inria.atlanmod.neoemf.data.mapping.AllReferenceAs;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
+import org.atlanmod.commons.function.Converter;
+import org.atlanmod.commons.io.serializer.BinarySerializer;
 import org.mapdb.DB;
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
@@ -35,8 +36,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link MapDbBackend} that provides overall behavior for the management of a MapDB database.
@@ -45,7 +46,7 @@ import static java.util.Objects.isNull;
 abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBackend, AllReferenceAs<Long> {
 
     /**
-     * The {@link BeanSerializerFactory} to use for creating the {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer}
+     * The {@link BeanSerializerFactory} to use for creating the {@link org.atlanmod.commons.io.serializer.BinarySerializer}
      * instances.
      */
     @Nonnull
@@ -280,7 +281,7 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     }
 
     /**
-     * A MapDB serializer that delegates its processing to an internal {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer}.
+     * A MapDB serializer that delegates its processing to an internal {@link org.atlanmod.commons.io.serializer.BinarySerializer}.
      *
      * @param <T> the type of the (de)serialized value
      */
@@ -292,14 +293,14 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
          * The serializer where to delegate the serialization process.
          */
         @Nonnull
-        private final fr.inria.atlanmod.commons.io.serializer.BinarySerializer<T> delegate;
+        private final BinarySerializer<T> delegate;
 
         /**
          * Constructs a new {@code SerializerDecorator} on the specified {@code delegate}.
          *
          * @param delegate the serializer where to delegate the serialization process
          */
-        public SerializerDecorator(fr.inria.atlanmod.commons.io.serializer.BinarySerializer<T> delegate) {
+        public SerializerDecorator(BinarySerializer<T> delegate) {
             checkNotNull(delegate, "delegate");
 
             this.delegate = delegate;

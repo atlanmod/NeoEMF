@@ -8,9 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.commons.function.BiConverter;
-import fr.inria.atlanmod.commons.primitive.Primitives;
-
+import org.atlanmod.commons.function.BiConverter;
+import org.atlanmod.commons.primitive.Primitives;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
@@ -24,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link fr.inria.atlanmod.commons.function.BiConverter} that transforms the value of {@link
+ * A {@link org.atlanmod.commons.function.BiConverter} that transforms the value of {@link
  * org.eclipse.emf.ecore.EAttribute} instances.
  */
 @ParametersAreNonnullByDefault

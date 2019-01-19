@@ -8,11 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.core.internal.collect;
 
-import fr.inria.atlanmod.commons.LazyReference;
-import fr.inria.atlanmod.commons.primitive.Booleans;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.util.EFeatures;
 
+import org.atlanmod.commons.LazyReference;
+import org.atlanmod.commons.primitive.Booleans;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.impl.EClassImpl;

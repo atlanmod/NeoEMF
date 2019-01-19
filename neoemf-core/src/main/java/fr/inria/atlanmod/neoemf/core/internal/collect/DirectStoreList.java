@@ -30,8 +30,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
+import static org.atlanmod.commons.Preconditions.checkPositionIndex;
 
 /**
  * A {@link List} representing a multi-valued feature which behaves as a proxy and that delegates its operations to the

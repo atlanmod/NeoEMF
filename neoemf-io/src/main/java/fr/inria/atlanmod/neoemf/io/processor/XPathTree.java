@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.processor;
 
-import fr.inria.atlanmod.commons.primitive.Strings;
+import org.atlanmod.commons.primitive.Strings;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -21,11 +21,11 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.INDEX_SEPARATOR;
 import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.START_ELT;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A structure representing an XPath.

@@ -8,15 +8,15 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.data.resource;
 
-import fr.inria.atlanmod.commons.Lazy;
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.io.MoreFiles;
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.io.LocalWorkspace;
 
+import org.atlanmod.commons.Lazy;
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.io.MoreFiles;
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.primitive.Strings;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.File;
@@ -34,10 +34,10 @@ import java.util.zip.ZipInputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkArgument;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A class that provides static methods for {@link Resource} management.

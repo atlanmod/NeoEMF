@@ -8,13 +8,13 @@
 
 package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
-import fr.inria.atlanmod.commons.io.serializer.AbstractSerializerTest;
-import fr.inria.atlanmod.commons.io.serializer.BinarySerializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
+import org.atlanmod.commons.io.serializer.AbstractSerializerTest;
+import org.atlanmod.commons.io.serializer.BinarySerializer;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

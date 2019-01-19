@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.core.internal.collect;
 
-import fr.inria.atlanmod.commons.LazyInt;
+import org.atlanmod.commons.LazyInt;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -20,7 +20,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Preconditions.checkState;
 
 /**
  * A lazy {@link Iterator} that delegates its operations (structural and verification) to the containing list.

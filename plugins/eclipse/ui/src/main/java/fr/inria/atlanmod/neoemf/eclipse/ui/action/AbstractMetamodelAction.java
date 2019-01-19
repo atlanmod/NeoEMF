@@ -8,8 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.action;
 
-import fr.inria.atlanmod.commons.collect.MoreIterables;
-
+import org.atlanmod.commons.collect.MoreIterables;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;

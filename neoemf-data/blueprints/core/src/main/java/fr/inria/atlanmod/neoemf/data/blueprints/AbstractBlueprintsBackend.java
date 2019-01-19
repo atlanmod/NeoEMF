@@ -14,7 +14,6 @@ import com.tinkerpop.blueprints.KeyIndexableGraph;
 import com.tinkerpop.blueprints.util.ElementHelper;
 import com.tinkerpop.blueprints.util.GraphHelper;
 
-import fr.inria.atlanmod.commons.collect.MoreIterables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
@@ -25,6 +24,8 @@ import fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.ElementVertex;
 import fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.ModelGraph;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 
+import org.atlanmod.commons.collect.MoreIterables;
+
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link BlueprintsBackend} that provides overall behavior for the management of a Blueprints database.

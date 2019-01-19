@@ -8,8 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.bean;
 
-import fr.inria.atlanmod.commons.LazyReference;
-
+import org.atlanmod.commons.LazyReference;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
@@ -20,8 +19,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A simple representation of a {@link org.eclipse.emf.ecore.EClass}.

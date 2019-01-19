@@ -8,11 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.data.resource;
 
-import fr.inria.atlanmod.commons.io.MoreFiles;
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.benchmarks.adapter.Adapter;
 import fr.inria.atlanmod.neoemf.benchmarks.io.LocalWorkspace;
 
+import org.atlanmod.commons.io.MoreFiles;
+import org.atlanmod.commons.log.Log;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;

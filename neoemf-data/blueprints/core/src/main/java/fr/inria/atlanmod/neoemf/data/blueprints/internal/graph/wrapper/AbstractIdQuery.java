@@ -19,7 +19,7 @@ import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.collect.MoreIterables.firstElement;
+import static org.atlanmod.commons.collect.MoreIterables.firstElement;
 
 /**
  * An abstract {@link Query} able to map the result of each method call to a dedicated implementation.

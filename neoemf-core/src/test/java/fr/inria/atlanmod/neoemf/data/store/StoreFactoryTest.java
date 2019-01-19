@@ -8,9 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.commons.AbstractTest;
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.log.Level;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.config.InvalidConfigException;
@@ -20,6 +17,9 @@ import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
 import fr.inria.atlanmod.neoemf.data.store.listener.RecordingStoreListener;
 import fr.inria.atlanmod.neoemf.data.store.listener.StoreStats;
 
+import org.atlanmod.commons.AbstractTest;
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.log.Level;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -27,9 +27,9 @@ import java.lang.reflect.Field;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkInstanceOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.atlanmod.commons.Preconditions.checkInstanceOf;
 import static org.mockito.Mockito.mock;
 
 /**

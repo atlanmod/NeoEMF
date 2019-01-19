@@ -8,12 +8,12 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui.editor;
 
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.time.Stopwatch;
 import fr.inria.atlanmod.neoemf.config.Config;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.util.UriFactory;
 
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.time.Stopwatch;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.presentation.EcoreEditor;
 import org.eclipse.emf.ecore.presentation.EcoreEditorPlugin;

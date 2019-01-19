@@ -8,7 +8,6 @@
 
 package ${package};
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
@@ -22,7 +21,9 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import org.atlanmod.commons.Throwables;
+
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link ${databaseName}Backend} that provides overall behavior for the management of a ${databaseName}

@@ -8,8 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.commons.AbstractTest;
-
+import org.atlanmod.commons.AbstractTest;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.impl.DynamicEObjectImpl;
 import org.junit.jupiter.api.Test;

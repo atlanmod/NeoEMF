@@ -8,11 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase;
 
-import fr.inria.atlanmod.commons.function.Converter;
-import fr.inria.atlanmod.commons.io.serializer.BinarySerializer;
-import fr.inria.atlanmod.commons.primitive.Bytes;
-import fr.inria.atlanmod.commons.primitive.Ints;
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
@@ -26,6 +21,11 @@ import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Table;
+import org.atlanmod.commons.function.Converter;
+import org.atlanmod.commons.io.serializer.BinarySerializer;
+import org.atlanmod.commons.primitive.Bytes;
+import org.atlanmod.commons.primitive.Ints;
+import org.atlanmod.commons.primitive.Strings;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -34,8 +34,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link HBaseBackend} that provides overall behavior for the management of a HBase database.

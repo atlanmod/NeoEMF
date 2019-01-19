@@ -10,9 +10,9 @@ package fr.inria.atlanmod.neoemf.io.reader;
 
 import com.ctc.wstx.api.WstxInputProperties;
 
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
+import org.atlanmod.commons.primitive.Strings;
 import org.codehaus.stax2.XMLInputFactory2;
 
 import java.io.BufferedInputStream;
@@ -28,10 +28,10 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static org.atlanmod.commons.Preconditions.checkState;
 
 /**
  * An {@link AbstractXmiStreamReader} that uses a StAX implementation with cursors for reading and parsing XMI files.

@@ -8,8 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.commons.annotation.Beta;
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
 import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
@@ -19,6 +17,8 @@ import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.processor.ValueConverter;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
+import org.atlanmod.commons.annotation.Beta;
+import org.atlanmod.commons.primitive.Strings;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EStructuralFeature;

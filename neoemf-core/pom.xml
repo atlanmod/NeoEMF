@@ -32,7 +32,7 @@
         <!-- Commons -->
 
         <dependency>
-            <groupId>fr.inria.atlanmod.commons</groupId>
+            <groupId>org.atlanmod.commons</groupId>
             <artifactId>commons-core</artifactId>
         </dependency>
 
@@ -104,7 +104,7 @@
         <!-- Test -->
 
         <dependency>
-            <groupId>fr.inria.atlanmod.commons</groupId>
+            <groupId>org.atlanmod.commons</groupId>
             <artifactId>commons-core</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
@@ -118,6 +118,11 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
         </dependency>
 
         <dependency>
@@ -252,10 +257,10 @@
                             *;
                             scope=compile|runtime;
                             type=!pom;
-                            groupId=!${project.groupId}|fr.inria.atlanmod.commons|org.eclipse.emf|org.apache.logging.log4j
+                            groupId=!${project.groupId}|org.atlanmod.commons|org.eclipse.emf|org.apache.logging.log4j
                         </Embed-Dependency>
                         <Require-Bundle>
-                            fr.inria.atlanmod.commons;visibility:=reexport,
+                            org.atlanmod.commons;visibility:=reexport,
                             org.eclipse.emf.ecore;visibility:=reexport,
                             org.eclipse.emf.compare;resolution:=optional
                         </Require-Bundle>

@@ -8,8 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.collect.MoreIterables;
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.collect.MoreIterables;
 
 import java.util.ServiceLoader;
 

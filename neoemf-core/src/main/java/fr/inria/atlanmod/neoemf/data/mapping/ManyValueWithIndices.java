@@ -8,10 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
-import fr.inria.atlanmod.commons.collect.MoreIterables;
-import fr.inria.atlanmod.commons.collect.SizedIterator;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+
+import org.atlanmod.commons.collect.MoreIterables;
+import org.atlanmod.commons.collect.SizedIterator;
 
 import java.util.Iterator;
 import java.util.List;
@@ -25,10 +26,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkGreaterThanOrEqualTo;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
+import static org.atlanmod.commons.Preconditions.checkGreaterThanOrEqualTo;
+import static org.atlanmod.commons.Preconditions.checkNotContainsNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkPositionIndex;
 
 /**
  * A {@link ManyValueMapper} that provides a default behavior to represent the "multi-valued" directly with their

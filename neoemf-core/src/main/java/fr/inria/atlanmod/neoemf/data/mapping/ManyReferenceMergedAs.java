@@ -8,10 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.data.mapping;
 
-import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
+
+import org.atlanmod.commons.function.Converter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +24,10 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
-import static fr.inria.atlanmod.commons.Preconditions.checkPositionIndex;
 import static java.util.Objects.isNull;
+import static org.atlanmod.commons.Preconditions.checkNotContainsNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkPositionIndex;
 
 /**
  * A {@link ManyReferenceMapper} that provides a default behavior to use {@code M} instead of a set of {@link Id} for

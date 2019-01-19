@@ -8,8 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.data.store.listener;
 
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.data.store.Store;
+
+import org.atlanmod.commons.primitive.Strings;
 
 import java.util.Collections;
 import java.util.HashMap;

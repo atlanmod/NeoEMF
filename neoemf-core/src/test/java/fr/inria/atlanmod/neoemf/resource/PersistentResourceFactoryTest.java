@@ -8,13 +8,13 @@
 
 package fr.inria.atlanmod.neoemf.resource;
 
-import fr.inria.atlanmod.commons.AbstractTest;
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 import fr.inria.atlanmod.neoemf.data.im.InMemoryBackend;
 
+import org.atlanmod.commons.AbstractTest;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.Test;
 

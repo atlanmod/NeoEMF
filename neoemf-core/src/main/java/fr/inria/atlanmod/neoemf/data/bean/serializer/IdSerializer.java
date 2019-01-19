@@ -8,9 +8,10 @@
 
 package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
-import fr.inria.atlanmod.commons.io.serializer.AbstractBinarySerializer;
-import fr.inria.atlanmod.commons.io.serializer.BinarySerializer;
 import fr.inria.atlanmod.neoemf.core.Id;
+
+import org.atlanmod.commons.io.serializer.AbstractBinarySerializer;
+import org.atlanmod.commons.io.serializer.BinarySerializer;
 
 import java.io.DataInput;
 import java.io.DataOutput;

@@ -15,7 +15,7 @@ import org.eclipse.gmt.modisco.java.emf.meta.JavaPackage;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A {@link Query} that renames all methods.

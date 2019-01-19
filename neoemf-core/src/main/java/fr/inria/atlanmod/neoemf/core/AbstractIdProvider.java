@@ -8,8 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.commons.hash.Hasher;
-import fr.inria.atlanmod.commons.hash.StandardHashers;
+import org.atlanmod.commons.hash.Hasher;
+import org.atlanmod.commons.hash.StandardHashers;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;

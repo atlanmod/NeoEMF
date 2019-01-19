@@ -8,12 +8,12 @@
 
 package fr.inria.atlanmod.neoemf.eclipse.ui;
 
-import fr.inria.atlanmod.commons.collect.MoreIterables;
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.primitive.Strings;
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
 import fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction;
 
+import org.atlanmod.commons.collect.MoreIterables;
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.primitive.Strings;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;

@@ -8,20 +8,21 @@
 
 package fr.inria.atlanmod.neoemf.data.bean.serializer;
 
-import fr.inria.atlanmod.commons.annotation.Singleton;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.io.serializer.BinarySerializer;
-import fr.inria.atlanmod.commons.io.serializer.BinarySerializerFactory;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
+import org.atlanmod.commons.annotation.Singleton;
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.io.serializer.BinarySerializer;
+import org.atlanmod.commons.io.serializer.BinarySerializerFactory;
+
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * The factory that creates {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer} instances.
+ * The factory that creates {@link org.atlanmod.commons.io.serializer.BinarySerializer} instances.
  */
 @Singleton
 @ParametersAreNonnullByDefault
@@ -64,7 +65,7 @@ public class BeanSerializerFactory extends BinarySerializerFactory {
     }
 
     /**
-     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer} for {@link
+     * Gets the {@link org.atlanmod.commons.io.serializer.BinarySerializer} for {@link
      * fr.inria.atlanmod.neoemf.core.Id}s.
      *
      * @return a serializer
@@ -75,7 +76,7 @@ public class BeanSerializerFactory extends BinarySerializerFactory {
     }
 
     /**
-     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer} for {@link
+     * Gets the {@link org.atlanmod.commons.io.serializer.BinarySerializer} for {@link
      * fr.inria.atlanmod.neoemf.data.bean.ClassBean}s.
      *
      * @return a serializer
@@ -86,7 +87,7 @@ public class BeanSerializerFactory extends BinarySerializerFactory {
     }
 
     /**
-     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer} for {@link
+     * Gets the {@link org.atlanmod.commons.io.serializer.BinarySerializer} for {@link
      * fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean}s.
      *
      * @return a serializer
@@ -97,7 +98,7 @@ public class BeanSerializerFactory extends BinarySerializerFactory {
     }
 
     /**
-     * Gets the {@link fr.inria.atlanmod.commons.io.serializer.BinarySerializer} for {@link
+     * Gets the {@link org.atlanmod.commons.io.serializer.BinarySerializer} for {@link
      * fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean}s.
      *
      * @return a serializer

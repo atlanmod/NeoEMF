@@ -8,11 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.core.internal;
 
-import fr.inria.atlanmod.commons.function.Copier;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 import fr.inria.atlanmod.neoemf.util.EFeatures;
 
+import org.atlanmod.commons.function.Copier;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -23,12 +23,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkState;
 
 /**
- * A {@link fr.inria.atlanmod.commons.function.Copier} that recursively copies the content related to a {@link
+ * A {@link org.atlanmod.commons.function.Copier} that recursively copies the content related to a {@link
  * fr.inria.atlanmod.neoemf.core.PersistentEObject}, from a {@link StoreAdapter} to another, by using the EMF methods.
  */
 @ParametersAreNonnullByDefault

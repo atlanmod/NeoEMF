@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.tests;
 
-import fr.inria.atlanmod.commons.Throwables;
+import org.atlanmod.commons.Throwables;
 
 /**
  * This is a dummy class : <b>DON'T USE IT</b> !

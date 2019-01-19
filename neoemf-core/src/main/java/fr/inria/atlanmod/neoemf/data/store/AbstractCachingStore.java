@@ -8,13 +8,13 @@
 
 package fr.inria.atlanmod.neoemf.data.store;
 
-import fr.inria.atlanmod.commons.cache.Cache;
-import fr.inria.atlanmod.commons.cache.CacheBuilder;
+import org.atlanmod.commons.cache.Cache;
+import org.atlanmod.commons.cache.CacheBuilder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * An abstract {@link Store} that provides a pre-loaded {@link fr.inria.atlanmod.commons.cache.Cache}.
+ * An abstract {@link Store} that provides a pre-loaded {@link org.atlanmod.commons.cache.Cache}.
  *
  * @param <K> the type of keys maintained by the cache
  * @param <V> the type of cached values

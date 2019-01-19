@@ -8,9 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.benchmarks.query;
 
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Static;
-
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.annotation.Static;
 import org.eclipse.gmt.modisco.java.ClassDeclaration;
 import org.eclipse.gmt.modisco.java.MethodDeclaration;
 import org.eclipse.gmt.modisco.java.Statement;

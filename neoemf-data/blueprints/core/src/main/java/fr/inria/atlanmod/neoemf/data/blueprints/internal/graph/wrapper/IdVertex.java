@@ -19,7 +19,7 @@ import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.collect.MoreIterables.onlyElement;
+import static org.atlanmod.commons.collect.MoreIterables.onlyElement;
 
 /**
  * An {@link Vertex} able to map the result of each method call to a dedicated implementation.
@@ -118,7 +118,7 @@ public class IdVertex<G extends IdGraph<G>> extends IdElement<Vertex, G> impleme
      *
      * @return the incident edge
      *
-     * @see fr.inria.atlanmod.commons.collect.MoreIterables#onlyElement(Iterable)
+     * @see org.atlanmod.commons.collect.MoreIterables#onlyElement(Iterable)
      * @see #getEdges(Direction, String...)
      */
     @Nonnull
@@ -136,7 +136,7 @@ public class IdVertex<G extends IdGraph<G>> extends IdElement<Vertex, G> impleme
      *
      * @return the adjacent vertex
      *
-     * @see fr.inria.atlanmod.commons.collect.MoreIterables#onlyElement(Iterable)
+     * @see org.atlanmod.commons.collect.MoreIterables#onlyElement(Iterable)
      * @see #getVertices(Direction, String...)
      */
     @Nonnull

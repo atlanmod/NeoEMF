@@ -8,10 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.core;
 
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Static;
 import fr.inria.atlanmod.neoemf.core.internal.LongIdConverter;
 import fr.inria.atlanmod.neoemf.core.internal.StringIdConverter;
+
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.annotation.Static;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;

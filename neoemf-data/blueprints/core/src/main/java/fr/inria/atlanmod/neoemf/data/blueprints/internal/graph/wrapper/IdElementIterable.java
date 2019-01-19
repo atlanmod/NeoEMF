@@ -11,7 +11,7 @@ package fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.wrapper;
 import com.tinkerpop.blueprints.CloseableIterable;
 import com.tinkerpop.blueprints.Element;
 
-import fr.inria.atlanmod.commons.collect.DelegatedIterator;
+import org.atlanmod.commons.collect.DelegatedIterator;
 
 import java.util.Iterator;
 import java.util.function.Function;

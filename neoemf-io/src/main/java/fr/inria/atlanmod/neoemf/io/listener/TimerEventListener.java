@@ -8,8 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.io.listener;
 
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.time.Stopwatch;
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.time.Stopwatch;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;

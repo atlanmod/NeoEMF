@@ -8,7 +8,6 @@
 
 package ${package};
 
-import fr.inria.atlanmod.commons.Throwables;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
@@ -21,8 +20,10 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotContainsNull;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import org.atlanmod.commons.Throwables;
+
+import static org.atlanmod.commons.Preconditions.checkNotContainsNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * The default {@link ${databaseName}Backend} mapping.

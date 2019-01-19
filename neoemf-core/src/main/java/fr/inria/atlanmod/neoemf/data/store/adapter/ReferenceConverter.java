@@ -8,9 +8,10 @@
 
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
-import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
+
+import org.atlanmod.commons.function.Converter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.isNull;
 
 /**
- * A {@link fr.inria.atlanmod.commons.function.Converter} that transforms the value of {@link
+ * A {@link org.atlanmod.commons.function.Converter} that transforms the value of {@link
  * org.eclipse.emf.ecore.EReference} instances.
  */
 @ParametersAreNonnullByDefault

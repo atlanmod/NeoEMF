@@ -8,19 +8,18 @@
 
 package fr.inria.atlanmod.neoemf.data.hbase.context;
 
-import fr.inria.atlanmod.commons.concurrent.MoreThreads;
-import fr.inria.atlanmod.commons.log.Log;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
+import org.atlanmod.commons.concurrent.MoreThreads;
+import org.atlanmod.commons.log.Log;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkState;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkState;
 
 /**
  * An object that holds the HBase mini-cluster instance.

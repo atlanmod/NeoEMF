@@ -11,9 +11,10 @@ package fr.inria.atlanmod.neoemf.data.blueprints.internal.graph;
 import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 
-import fr.inria.atlanmod.commons.LazyInt;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.wrapper.IdEdge;
+
+import org.atlanmod.commons.LazyInt;
 
 import java.util.function.IntUnaryOperator;
 

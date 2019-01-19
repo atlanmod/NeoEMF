@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.data.bean;
 
-import fr.inria.atlanmod.commons.LazyReference;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 
+import org.atlanmod.commons.LazyReference;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A simple representation of a {@link org.eclipse.emf.ecore.EClass}.

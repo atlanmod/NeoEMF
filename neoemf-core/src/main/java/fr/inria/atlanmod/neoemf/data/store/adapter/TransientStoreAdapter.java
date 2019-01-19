@@ -8,12 +8,12 @@
 
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
-import fr.inria.atlanmod.commons.cache.Cache;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.PersistentEObject;
 import fr.inria.atlanmod.neoemf.data.store.Store;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
+import org.atlanmod.commons.cache.Cache;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.io.Closeable;

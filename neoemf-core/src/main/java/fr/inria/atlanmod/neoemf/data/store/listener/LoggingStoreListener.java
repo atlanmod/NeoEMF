@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.data.store.listener;
 
-import fr.inria.atlanmod.commons.log.Level;
-import fr.inria.atlanmod.commons.log.Log;
-import fr.inria.atlanmod.commons.log.Logger;
+import org.atlanmod.commons.log.Level;
+import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.log.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;

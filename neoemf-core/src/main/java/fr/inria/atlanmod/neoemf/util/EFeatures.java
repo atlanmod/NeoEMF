@@ -8,9 +8,8 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Static;
-
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.annotation.Static;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;

@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.writer;
 
-import fr.inria.atlanmod.commons.primitive.Strings;
+import org.atlanmod.commons.primitive.Strings;
 
 import java.io.IOException;
 import java.io.OutputStream;

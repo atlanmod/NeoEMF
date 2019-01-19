@@ -8,10 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.im;
 
-import fr.inria.atlanmod.commons.Throwables;
-import fr.inria.atlanmod.commons.annotation.Static;
-import fr.inria.atlanmod.commons.function.Converter;
-import fr.inria.atlanmod.commons.io.serializer.BinarySerializer;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
@@ -26,6 +22,11 @@ import net.openhft.chronicle.bytes.Bytes;
 import net.openhft.chronicle.hash.serialization.BytesReader;
 import net.openhft.chronicle.hash.serialization.BytesWriter;
 
+import org.atlanmod.commons.Throwables;
+import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.commons.function.Converter;
+import org.atlanmod.commons.io.serializer.BinarySerializer;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
@@ -37,8 +38,8 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link InMemoryBackend} that provides the default behavior of containers and meta-classes management.

@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.commons.annotation.VisibleForReflection;
 import fr.inria.atlanmod.neoemf.bind.FactoryBinding;
 import fr.inria.atlanmod.neoemf.config.BaseConfig;
 import fr.inria.atlanmod.neoemf.config.Config;
@@ -21,6 +20,7 @@ import fr.inria.atlanmod.neoemf.data.InvalidBackend;
 import fr.inria.atlanmod.neoemf.util.AbstractUriFactory;
 import fr.inria.atlanmod.neoemf.util.UriFactory;
 
+import org.atlanmod.commons.annotation.VisibleForReflection;
 import org.eclipse.emf.common.util.URI;
 
 import javax.annotation.Nonnull;

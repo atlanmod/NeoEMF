@@ -8,7 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.io.listener;
 
-import fr.inria.atlanmod.commons.log.Log;
+import org.atlanmod.commons.log.Log;
 
 import java.io.IOException;
 import java.io.InputStream;

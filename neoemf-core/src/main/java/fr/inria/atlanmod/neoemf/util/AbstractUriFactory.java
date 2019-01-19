@@ -8,12 +8,12 @@
 
 package fr.inria.atlanmod.neoemf.util;
 
-import fr.inria.atlanmod.commons.Lazy;
-import fr.inria.atlanmod.commons.annotation.VisibleForTesting;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.BackendFactoryRegistry;
 
+import org.atlanmod.commons.Lazy;
+import org.atlanmod.commons.annotation.VisibleForTesting;
 import org.eclipse.emf.common.util.URI;
 
 import java.io.File;
@@ -24,10 +24,10 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkArgument;
-import static fr.inria.atlanmod.commons.Preconditions.checkGreaterThanOrEqualTo;
-import static fr.inria.atlanmod.commons.Preconditions.checkLessThanOrEqualTo;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkArgument;
+import static org.atlanmod.commons.Preconditions.checkGreaterThanOrEqualTo;
+import static org.atlanmod.commons.Preconditions.checkLessThanOrEqualTo;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link fr.inria.atlanmod.neoemf.util.UriFactory} that manages the assembly and the construction of {@link

@@ -19,16 +19,17 @@ import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.wrappers.WrapperGraph;
 
-import fr.inria.atlanmod.commons.Copiable;
-import fr.inria.atlanmod.commons.cache.Cache;
-import fr.inria.atlanmod.commons.cache.CacheBuilder;
-import fr.inria.atlanmod.commons.collect.MoreIterables;
-import fr.inria.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.wrapper.IdGraph;
 import fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.wrapper.IdVertex;
+
+import org.atlanmod.commons.Copiable;
+import org.atlanmod.commons.cache.Cache;
+import org.atlanmod.commons.cache.CacheBuilder;
+import org.atlanmod.commons.collect.MoreIterables;
+import org.atlanmod.commons.function.Converter;
 
 import java.util.Arrays;
 import java.util.List;

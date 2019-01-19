@@ -8,8 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.config;
 
-import fr.inria.atlanmod.commons.log.Level;
-import fr.inria.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.bind.Bindings;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.data.store.AutoSavingStore;
@@ -24,6 +22,9 @@ import fr.inria.atlanmod.neoemf.data.store.listener.LoggingStoreListener;
 import fr.inria.atlanmod.neoemf.data.store.listener.RecordingStoreListener;
 import fr.inria.atlanmod.neoemf.data.store.listener.StoreListener;
 import fr.inria.atlanmod.neoemf.data.store.listener.StoreStats;
+
+import org.atlanmod.commons.log.Level;
+import org.atlanmod.commons.log.Log;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -42,7 +43,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * The base {@link Config} that creates and manages common configuration that are available for all back-end
