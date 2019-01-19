@@ -1,4 +1,4 @@
-## *1.0.3*
+## *2.0.0*
 
 Current SNAPSHOT.
 
@@ -109,6 +109,7 @@ They are presented as several interfaces and each have their responsibility:
 ### Dependencies
 -   __\[NEW\]__ `chronicle-map` : `3.14.5`
 -   __\[NEW\]__ `org.reflections` : `0.9.9`
+-   __\[UPD\]__ `org.eclipse.emf` : `2.12.0` to `2.15.0` (including associated dependencies)
 -   __\[UPD\]__ `cglib` : `3.2.4` to `3.2.6`
 -   __\[UPD\]__ `log4j` : `2.7` to `2.8.2`
 -   __\[UPD\]__ `org.neo4j` : `1.9.6` to `2.1.8` (include `blueprints-neo4j-graph` to `blueprints-neo4j2-graph`)

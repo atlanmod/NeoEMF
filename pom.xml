@@ -115,7 +115,7 @@
 
         <commons.version>1.0.3-SNAPSHOT</commons.version>
 
-        <emf.version>2.12.0</emf.version>
+        <emf.version>2.15.0</emf.version>
     </properties>
 
     <dependencyManagement>
@@ -169,7 +169,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>4.1.0</version>
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
@@ -192,7 +192,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.7.0</version>
+                    <version>3.8.0</version>
                     <configuration>
                         <compilerArgs>
                             <!--<arg>-Xlint:all</arg>-->
@@ -203,7 +203,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.9</version>
+                    <version>0.8.2</version>
                     <configuration>
                         <excludes>
                             <exclude>**/tests/*</exclude>
@@ -215,7 +215,7 @@
                     <!-- `deploy-javadoc` profile comes in addition to this configuration -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.0.0-M1</version>
+                    <version>3.0.1</version>
                     <configuration>
                         <overview>overview.html</overview>
                         <groups>
@@ -258,6 +258,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.1</version>
                     <configuration>
                         <properties>
                             <excludeTags>slowest</excludeTags>
@@ -305,7 +306,7 @@
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-javadoc-plugin</artifactId>
-                            <version>3.0.0-M1</version>
+                            <version>3.0.1</version>
                             <configuration>
                                 <includeDependencySources>true</includeDependencySources>
                                 <dependencySourceIncludes>
