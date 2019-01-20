@@ -31,11 +31,11 @@ class HBaseUriFactoryTest extends AbstractUriFactoryTest {
 
     @Disabled("Not supported")
     @Override
-    public void testCreateUriFromStandardUriInvalidScheme() {
+    public void testCreateUriFromFileUri() {
     }
 
     @Disabled("Not supported")
     @Override
-    public void testCreateUriFromFileUri() {
+    public void testCreateUriFromStandardUriInvalidScheme() {
     }
 }

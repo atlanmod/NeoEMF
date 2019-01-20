@@ -162,8 +162,8 @@ public class IdVertex<G extends IdGraph<G>> extends IdElement<Vertex, G> impleme
     }
 
     /**
-     * Return the vertices adjacent to the vertex according to the provided direction and edge labels.
-     * This method does not remove duplicate vertices (i.e. those vertices that are connected by more than one edge).
+     * Return the vertices adjacent to the vertex according to the provided direction and edge labels. This method does
+     * not remove duplicate vertices (i.e. those vertices that are connected by more than one edge).
      *
      * @param direction   the direction of the edges of the adjacent vertices
      * @param labels      the labels of the edges of the adjacent vertices

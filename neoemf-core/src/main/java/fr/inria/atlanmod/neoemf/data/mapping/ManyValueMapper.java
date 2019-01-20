@@ -88,9 +88,9 @@ public interface ManyValueMapper extends ValueMapper {
     /**
      * Adds all the {@code collection} to the specified {@code feature} from the position of the {@code feature}.
      *
-     * @param feature the bean identifying the multi-valued attribute
-     * @param collection  the values to add
-     * @param <V>     the type of value
+     * @param feature    the bean identifying the multi-valued attribute
+     * @param collection the values to add
+     * @param <V>        the type of value
      *
      * @throws NullPointerException      if any parameter is {@code null}
      * @throws IndexOutOfBoundsException if {@code feature#position() > size}
@@ -124,9 +124,9 @@ public interface ManyValueMapper extends ValueMapper {
     /**
      * Adds all the {@code collection} to the specified {@code feature} from the last position.
      *
-     * @param feature the bean identifying the multi-valued attribute
-     * @param collection  the values to add
-     * @param <V>     the type of values
+     * @param feature    the bean identifying the multi-valued attribute
+     * @param collection the values to add
+     * @param <V>        the type of values
      *
      * @return the position to which the first value was added
      *

@@ -8,7 +8,6 @@
 
 package fr.inria.atlanmod.neoemf.data.store.adapter;
 
-import org.atlanmod.commons.Throwables;
 import org.atlanmod.commons.function.BiConverter;
 import org.atlanmod.commons.primitive.Primitives;
 import org.eclipse.emf.ecore.EAttribute;

@@ -49,7 +49,8 @@ public @interface FactoryBinding {
     String variant() default DEFAULT_VARIANT;
 
     /**
-     * {@code true} if the annotated class represents a concrete implementation, {@code false} if it's an abstract or a base class.
+     * {@code true} if the annotated class represents a concrete implementation, {@code false} if it's an abstract or a
+     * base class.
      *
      * @return {@code true} if the annotated class represents a reel instance
      */

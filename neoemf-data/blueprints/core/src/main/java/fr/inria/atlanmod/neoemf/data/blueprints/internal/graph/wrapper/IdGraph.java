@@ -39,7 +39,8 @@ import static org.atlanmod.commons.Preconditions.checkInstanceOf;
 import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * A {@link com.tinkerpop.blueprints.KeyIndexableGraph} able to map the result of each method call to a dedicated implementation.
+ * A {@link com.tinkerpop.blueprints.KeyIndexableGraph} able to map the result of each method call to a dedicated
+ * implementation.
  * <p>
  * Re-implemented from {@link com.tinkerpop.blueprints.util.wrappers.id.IdGraph}.
  *
@@ -469,7 +470,8 @@ public class IdGraph<G extends IdGraph<G>> implements WrapperGraph<KeyIndexableG
     }
 
     /**
-     * Add an edge to the graph. The added edges requires a recommended identifier, a tail vertex, an head vertex, and a label.
+     * Add an edge to the graph. The added edges requires a recommended identifier, a tail vertex, an head vertex, and a
+     * label.
      *
      * @param id          the identifier of the edge
      * @param outVertex   the vertex on the tail of the edge

@@ -20,8 +20,8 @@ import org.eclipse.emf.compare.match.impl.MatchEngineFactoryImpl;
 import org.eclipse.emf.compare.utils.UseIdentifiers;
 
 /**
- * A {@link org.eclipse.emf.compare.match.impl.MatchEngineFactoryImpl} that creates instances of {@link
- * org.eclipse.emf.compare.match.IComparisonFactory} for comparing {@link PersistentEObject}s.
+ * A {@link MatchEngineFactoryImpl} that creates instances of {@link IComparisonFactory} for comparing {@link
+ * PersistentEObject}s.
  *
  * @see LazyEqualityHelperFactory
  */
@@ -30,7 +30,7 @@ public class LazyMatchEngineFactory extends MatchEngineFactoryImpl {
     /**
      * Constructs a new {@code LazyMatchEngineFactory}.
      * <p>
-     * This match engine will use the standalone weight provider registry {@link org.eclipse.emf.compare.match.eobject.WeightProviderDescriptorRegistryImpl#createStandaloneInstance()}.
+     * This match engine will use the standalone weight provider registry {@link WeightProviderDescriptorRegistryImpl#createStandaloneInstance()}.
      */
     public LazyMatchEngineFactory() {
         this(UseIdentifiers.WHEN_AVAILABLE);
@@ -40,7 +40,7 @@ public class LazyMatchEngineFactory extends MatchEngineFactoryImpl {
      * Constructs a new {@code LazyMatchEngineFactory} that will use identifiers as specified by the given {@code
      * useIDs} enumeration.
      * <p>
-     * This match engine will use a the standalone weight provider registry {@link org.eclipse.emf.compare.match.eobject.WeightProviderDescriptorRegistryImpl#createStandaloneInstance()}.
+     * This match engine will use a the standalone weight provider registry {@link WeightProviderDescriptorRegistryImpl#createStandaloneInstance()}.
      *
      * @param useIDs the kinds of matcher to use.
      */

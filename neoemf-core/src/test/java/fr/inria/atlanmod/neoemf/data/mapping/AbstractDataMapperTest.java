@@ -211,7 +211,8 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
     }
 
     /**
-     * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureBean)} when the element doesn't exist.
+     * Checks the behavior of {@link ContainerMapper#containerFor(Id, SingleFeatureBean)} when the element doesn't
+     * exist.
      */
     @Test
     public void testRemove_Container_NotDefined() {

@@ -89,7 +89,8 @@ public final class BackendFactoryRegistry {
      *
      * @return the factory
      *
-     * @throws IllegalArgumentException if {@code scheme} is {@code null}, or if no factory is registered for the {@code scheme}
+     * @throws IllegalArgumentException if {@code scheme} is {@code null}, or if no factory is registered for the {@code
+     *                                  scheme}
      */
     @Nonnull
     public BackendFactory getFactoryFor(String scheme) {

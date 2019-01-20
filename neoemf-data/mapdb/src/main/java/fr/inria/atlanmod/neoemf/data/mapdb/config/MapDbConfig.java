@@ -22,8 +22,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A {@link fr.inria.atlanmod.neoemf.config.Config} that creates MapDB specific configuration.
  * <p>
- * The mapping is the only required option.
- * All the others are optional: configuration can be created using all or none of them.
+ * The mapping is the only required option. All the others are optional: configuration can be created using all or none
+ * of them.
  */
 @Component(service = Config.class, scope = ServiceScope.PROTOTYPE)
 @FactoryBinding(factory = MapDbBackendFactory.class)

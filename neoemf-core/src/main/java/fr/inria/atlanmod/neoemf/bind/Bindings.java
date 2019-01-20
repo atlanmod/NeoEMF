@@ -160,8 +160,8 @@ public final class Bindings {
     }
 
     /**
-     * Retrieves the instance of the {@code type} that is bound to a {@link BackendFactory} with the given {@code value},
-     * by using the speficied {@code valueMapping}.
+     * Retrieves the instance of the {@code type} that is bound to a {@link BackendFactory} with the given {@code
+     * value}, by using the speficied {@code valueMapping}.
      * <p>
      * The {@code type} <b>must</b> be annotated with {@link FactoryBinding}.
      *
@@ -173,7 +173,8 @@ public final class Bindings {
      *
      * @return a new instance of the {@code type}
      *
-     * @throws BindingException if no instance of {@code type} is found for the {@code value} by using the {@code valueMapping}
+     * @throws BindingException if no instance of {@code type} is found for the {@code value} by using the {@code
+     *                          valueMapping}
      * @see org.atlanmod.commons.service.ServiceProvider#load(Class)
      */
     @Nonnull

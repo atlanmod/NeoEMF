@@ -9,7 +9,8 @@
 /**
  * Provides dynamic re-implementations of the Id-based structure of Blueprints.
  * <p>
- * Each methods has been re-implemented to allow a mapping to a specific implementation after the call to the internal graph.
+ * Each methods has been re-implemented to allow a mapping to a specific implementation after the call to the internal
+ * graph.
  */
 
 package fr.inria.atlanmod.neoemf.data.blueprints.internal.graph.wrapper;

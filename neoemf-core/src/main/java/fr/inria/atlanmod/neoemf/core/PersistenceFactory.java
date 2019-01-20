@@ -106,9 +106,4 @@ public class PersistenceFactory extends EFactoryImpl implements EFactory {
                 ? new DynamicPersistentEObject.MapEntry<String, String>(eClass)
                 : new DynamicPersistentEObject(eClass);
     }
-
-    @Override
-    public EObject create(EClass eClass) {
-        return super.create(eClass);
-    }
 }

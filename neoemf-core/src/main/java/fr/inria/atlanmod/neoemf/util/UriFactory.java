@@ -21,8 +21,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 /**
  * A factory that creates {@link org.eclipse.emf.common.util.URI} instances.
  * <p>
- * Created URIs are used to locate a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} and select the
- * {@link fr.inria.atlanmod.neoemf.data.BackendFactory} to use for persistence.
+ * Created URIs are used to locate a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource} and select the {@link
+ * fr.inria.atlanmod.neoemf.data.BackendFactory} to use for persistence.
  */
 @ParametersAreNonnullByDefault
 public interface UriFactory {
