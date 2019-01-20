@@ -41,6 +41,13 @@ import static org.atlanmod.commons.Preconditions.checkEqualTo;
 /**
  * A {@link InMemoryBackend}, bound to a unique {@link fr.inria.atlanmod.neoemf.core.Id}, that stores all elements in
  * {@link Map}s.
+ * <p>
+ * This {@link fr.inria.atlanmod.neoemf.data.Backend} is fully transient and used when a {@link
+ * fr.inria.atlanmod.neoemf.core.PersistentEObject} is not owned by a {@link org.eclipse.emf.ecore.resource.Resource},
+ * persistent or not.
+ * <p>
+ * For performance reason, each instance is bound to a unique {@link Id}, but data are stored in maps shared between all
+ * instances.
  */
 @ParametersAreNonnullByDefault
 public final class BoundInMemoryBackend extends AbstractInMemoryBackend {

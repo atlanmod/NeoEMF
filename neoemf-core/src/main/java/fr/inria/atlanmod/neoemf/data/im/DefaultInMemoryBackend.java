@@ -24,6 +24,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A {@link InMemoryBackend} that stores all elements in {@link Map}s.
+ * <p>
+ * This {@link fr.inria.atlanmod.neoemf.data.Backend} is semi-transient and used when a {@link
+ * fr.inria.atlanmod.neoemf.core.PersistentEObject} is attached to a {@link org.eclipse.emf.ecore.resource.Resource}
+ * that is <b>not</b> persistent.
  */
 @ParametersAreNonnullByDefault
 public class DefaultInMemoryBackend extends AbstractInMemoryBackend {
