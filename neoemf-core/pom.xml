@@ -246,6 +246,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.core</Bundle-SymbolicName>
                         <Import-Package>
+                            org.eclipse.emf.compare;resolution:=optional,
                             com.google.common.cache;resolution:=optional
                         </Import-Package>
                         <Export-Package>
@@ -261,8 +262,7 @@
                         </Embed-Dependency>
                         <Require-Bundle>
                             org.atlanmod.commons;visibility:=reexport,
-                            org.eclipse.emf.ecore;visibility:=reexport,
-                            org.eclipse.emf.compare;resolution:=optional
+                            org.eclipse.emf.ecore;visibility:=reexport
                         </Require-Bundle>
                     </instructions>
                 </configuration>
