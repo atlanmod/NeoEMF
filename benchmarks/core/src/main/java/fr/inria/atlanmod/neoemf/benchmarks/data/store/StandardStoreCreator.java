@@ -13,8 +13,10 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMIResource;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,14 +53,7 @@ public class StandardStoreCreator implements StoreCreator {
         adapter.initAndGetEPackage();
         org.eclipse.gmt.modisco.java.emf.impl.JavaPackageImpl.init();
 
-        URI sourceUri = URI.createFileURI(resourceFile.getAbsolutePath());
-        Resource sourceResource = new ResourceSetImpl().createResource(sourceUri);
-
-        Map<String, Object> loadOpts = new HashMap<>();
-        if (Objects.equals("zxmi", sourceUri.fileExtension())) {
-            loadOpts.put(XMIResource.OPTION_ZIP, true);
-        }
-        sourceResource.load(loadOpts);
+        final Resource sourceResource = loadResource(resourceFile);
 
         Resource targetResource = adapter.create(uri);
         adapter.save(targetResource, config);
@@ -69,5 +64,24 @@ public class StandardStoreCreator implements StoreCreator {
 
         sourceResource.unload();
         adapter.unload(targetResource);
+    }
+
+    @Nonnull
+    private Resource loadResource(File file) throws IOException {
+        final ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put("zxmi", new XMIResourceFactoryImpl());
+
+        URI sourceUri = URI.createFileURI(file.getAbsolutePath());
+        Resource sourceResource = resourceSet.createResource(sourceUri);
+
+        Map<String, Object> loadOpts = new HashMap<>();
+        if (Objects.equals("zxmi", sourceUri.fileExtension())) {
+            loadOpts.put(XMIResource.OPTION_ZIP, true);
+        }
+
+        sourceResource.load(loadOpts);
+
+        return sourceResource;
     }
 }
