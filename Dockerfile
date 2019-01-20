@@ -32,7 +32,7 @@ VOLUME $NEOEMF_HOME
 # Build project & benchmarks
 WORKDIR /tmp/neoemf
 COPY . .
-RUN mvn -B install -DskipTests -pl !neoemf-data/hbase,!neoemf-tests  \
+RUN mvn -B install -DskipTests -pl !neoemf-tests  \
  && mvn -B package -DskipTests -f benchmarks/pom.xml -Duberjar.directory=/root/ \
  && rm -rf /root/.m2/* /tmp/*
 
