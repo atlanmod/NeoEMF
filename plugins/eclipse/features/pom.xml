@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <name>NeoEMF Eclipse Features</name>
-    <description>Parent project for the generation of features.</description>
+    <description />
 
     <modules>
         <module>fr.inria.atlanmod.neoemf.core.feature</module>

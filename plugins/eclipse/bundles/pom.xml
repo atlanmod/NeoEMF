@@ -4,22 +4,20 @@
 
     <parent>
         <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
-        <artifactId>fr.inria.atlanmod.neoemf.eclipse.configuration</artifactId>
+        <artifactId>fr.inria.atlanmod.neoemf.eclipse</artifactId>
         <version>1.0.3-SNAPSHOT</version>
-        <relativePath>releng/configuration</relativePath>
     </parent>
 
-    <artifactId>fr.inria.atlanmod.neoemf.eclipse</artifactId>
+    <artifactId>fr.inria.atlanmod.neoemf.eclipse.bundles</artifactId>
 
     <packaging>pom</packaging>
 
-    <name>NeoEMF Eclipse</name>
+    <name>NeoEMF Eclipse Bundles</name>
     <description />
 
     <modules>
-        <module>bundles</module>
-        <module>features</module>
-        <module>examples</module>
-        <module>releng</module>
+        <module>ui</module>
     </modules>
+
 </project>
+

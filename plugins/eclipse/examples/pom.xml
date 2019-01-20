@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <name>NeoEMF Eclipse Examples</name>
-    <description>Parent project for the generation of examples.</description>
+    <description />
 
     <modules>
         <module>core</module>
