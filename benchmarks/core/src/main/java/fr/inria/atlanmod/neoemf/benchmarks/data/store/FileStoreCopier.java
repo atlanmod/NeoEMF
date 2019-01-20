@@ -25,6 +25,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 import static org.atlanmod.commons.Preconditions.checkState;
 
 /**
@@ -34,7 +35,7 @@ import static org.atlanmod.commons.Preconditions.checkState;
 public class FileStoreCopier implements StoreCopier {
 
     /**
-     *
+     * The adapter used to create the store where data will be saved.
      */
     @Nonnull
     private final Adapter adapter;
@@ -42,10 +43,10 @@ public class FileStoreCopier implements StoreCopier {
     /**
      * Constructs a new {@code FileStoreCopier}.
      *
-     * @param adapter
+     * @param adapter the adapter used to create the store where data will be saved
      */
     public FileStoreCopier(Adapter adapter) {
-        this.adapter = adapter;
+        this.adapter = checkNotNull(adapter, "adapter");
     }
 
     @Nonnull
@@ -54,16 +55,15 @@ public class FileStoreCopier implements StoreCopier {
         checkState(uri.isFile(), "URI must be file but was %s", uri);
 
         final Path file = Paths.get(uri.toFileString());
-
-        final Path directory = LocalWorkspace.newTempDirectory();
         final String fileName = file.getFileName().toString();
 
-        Path outputFile = directory.resolve(fileName);
+        final Path outputDirectory = LocalWorkspace.newTempDirectory();
+        final Path outputFilePath = outputDirectory.resolve(fileName);
 
         Files.walkFileTree(file, new SimpleFileVisitor<Path>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                Path targetPath = outputFile.resolve(file.relativize(dir));
+                Path targetPath = outputFilePath.resolve(file.relativize(dir));
                 if (!Files.exists(targetPath)) {
                     Files.createDirectory(targetPath);
                 }
@@ -72,11 +72,11 @@ public class FileStoreCopier implements StoreCopier {
 
             @Override
             public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-                Files.copy(path, outputFile.resolve(file.relativize(path)), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(path, outputFilePath.resolve(file.relativize(path)), StandardCopyOption.REPLACE_EXISTING);
                 return FileVisitResult.CONTINUE;
             }
         });
 
-        return adapter.createUri(directory, fileName);
+        return adapter.createUri(outputDirectory, fileName);
     }
 }

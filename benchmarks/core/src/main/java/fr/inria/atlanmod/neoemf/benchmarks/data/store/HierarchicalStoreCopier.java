@@ -33,7 +33,7 @@ import static org.atlanmod.commons.Preconditions.checkState;
 public class HierarchicalStoreCopier implements StoreCopier {
 
     /**
-     *
+     * The adapter used to create the store where data will be saved.
      */
     @Nonnull
     private final Adapter.Internal adapter;
@@ -41,7 +41,7 @@ public class HierarchicalStoreCopier implements StoreCopier {
     /**
      * Constructs a new {@code HierarchicalStoreCopier}.
      *
-     * @param adapter
+     * @param adapter the adapter used to create the store where data will be saved
      */
     public HierarchicalStoreCopier(Adapter.Internal adapter) {
         this.adapter = adapter;

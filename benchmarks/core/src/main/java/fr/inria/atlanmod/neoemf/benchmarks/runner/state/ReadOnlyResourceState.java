@@ -25,8 +25,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link ResourceState} that provides a ready-to-use datastore.
- * It is automatically preloaded and unloaded from the default location.
+ * A {@link ResourceState} that provides a ready-to-use datastore. It is automatically preloaded and unloaded from the
+ * default location.
  * <p/>
  * It is used for simple queries.
  */

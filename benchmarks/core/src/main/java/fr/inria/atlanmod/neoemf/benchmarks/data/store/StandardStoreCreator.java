@@ -34,7 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class StandardStoreCreator implements StoreCreator {
 
     /**
-     *
+     * The adapter used to create the store.
      */
     @Nonnull
     private final Adapter.Internal adapter;
@@ -42,7 +42,7 @@ public class StandardStoreCreator implements StoreCreator {
     /**
      * Constructs a new {@code StandardStoreCreator}.
      *
-     * @param adapter
+     * @param adapter the adapter used to create the store
      */
     public StandardStoreCreator(Adapter.Internal adapter) {
         this.adapter = adapter;

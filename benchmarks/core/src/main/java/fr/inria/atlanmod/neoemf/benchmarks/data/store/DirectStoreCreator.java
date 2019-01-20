@@ -18,7 +18,10 @@ import org.eclipse.emf.common.util.URI;
 import java.io.File;
 import java.io.IOException;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * A {@link StoreCreator} that uses a {@link fr.inria.atlanmod.neoemf.data.DataCopier}.
@@ -29,17 +32,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class DirectStoreCreator implements StoreCreator {
 
     /**
-     *
+     * The adapter used to create the store.
      */
+    @Nonnull
     private final Adapter.Internal adapter;
 
     /**
      * Constructs a new {@code DirectStoreCreator}.
      *
-     * @param adapter
+     * @param adapter the adapter used to create the store
      */
     public DirectStoreCreator(Adapter.Internal adapter) {
-        this.adapter = adapter;
+        this.adapter = checkNotNull(adapter, "adapter");
     }
 
     @Override
