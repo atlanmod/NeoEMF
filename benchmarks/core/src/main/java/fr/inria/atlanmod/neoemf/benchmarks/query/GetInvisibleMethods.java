@@ -85,7 +85,7 @@ class GetInvisibleMethods extends AbstractQuery<Collection<MethodDeclaration>> {
      */
     protected boolean hasNoChildTypes(ClassDeclaration superType) {
         for (ClassDeclaration type : classDeclarations) {
-            if (Objects.equals(superType, type.getSuperClass())) {
+            if (Objects.equals(superType, type.getSuperClass().getType())) {
                 return false;
             }
         }

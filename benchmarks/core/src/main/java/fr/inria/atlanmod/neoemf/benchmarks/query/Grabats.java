@@ -62,6 +62,6 @@ class Grabats extends AbstractQuery<Collection<ClassDeclaration>> {
 
         return nonNull(modifier)
                 && modifier.isStatic()
-                && method.getReturnType() == type;
+                && method.getReturnType().getType() == type;
     }
 }
