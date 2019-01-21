@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.eclipse.ui;
 
 import fr.inria.atlanmod.neoemf.core.PersistenceFactory;
-import fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction;
 
 import org.atlanmod.commons.collect.MoreIterables;
 import org.atlanmod.commons.log.Log;
@@ -44,8 +43,6 @@ import static java.util.Objects.nonNull;
 
 /**
  * A registry that manage metamodels.
- * <p>
- * The metamodels are added by using the {@link RegisterMetamodelAction} extension point on {@code *.ecore} files.
  * <p>
  * These metamodels are saved in the {@link NeoUIPlugin} store.
  */

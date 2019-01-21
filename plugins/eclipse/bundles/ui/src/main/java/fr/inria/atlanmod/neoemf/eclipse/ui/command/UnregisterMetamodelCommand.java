@@ -6,21 +6,17 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.eclipse.ui.action;
+package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 
 import fr.inria.atlanmod.neoemf.eclipse.ui.MetamodelRegistry;
 
-import org.eclipse.ui.IActionDelegate;
-
-import java.util.function.Consumer;
-
 /**
- * A {@link IActionDelegate} that unregisters metamodels.
+ * A {@link org.eclipse.core.commands.IHandler} that unregisters metamodels.
  */
-public class UnregisterMetamodelAction extends AbstractMetamodelAction {
+public class UnregisterMetamodelCommand extends AbstractMetamodelCommand {
 
     @Override
-    protected Consumer<String> consume() {
-        return fn -> MetamodelRegistry.getInstance().unregister(fn);
+    public void accept(String filePath) {
+        MetamodelRegistry.getInstance().unregister(filePath);
     }
 }
