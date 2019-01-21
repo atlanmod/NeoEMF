@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.emf.common.ui.URIEditorInput;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -191,12 +191,12 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 
                         // Save the contents of the resource to the file system.
                         resource.save(options);
-                        dbFolder.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(progressMonitor, 1));
+                        dbFolder.refreshLocal(IResource.DEPTH_INFINITE, SubMonitor.convert(progressMonitor, 1));
                     }
                     catch (Exception exception) {
                         exception.printStackTrace();
                         try {
-                            dbFolder.delete(true, new SubProgressMonitor(progressMonitor, 1));
+                            dbFolder.delete(true, SubMonitor.convert(progressMonitor, 1));
                         }
                         catch (CoreException e) {
                             e.printStackTrace();
