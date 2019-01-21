@@ -242,7 +242,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
     }
 
     /**
-     * A {@link WizardPage} for selecting the type of a Blueprints {@link fr.inria.atlanmod.neoemf.data.Backend}.
+     * A {@link WizardPage} for selecting the type of a Blueprints {@code Backend}.
      */
     static class SelectBlueprintsGraphTypeWizardPage extends WizardPage {
 
@@ -330,9 +330,9 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
             removeButton.addSelectionListener(new SelectionAdapter() {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
-                    IStructuredSelection selection = IStructuredSelection.class.cast(tableViewer.getSelection());
+                    IStructuredSelection selection = (IStructuredSelection) tableViewer.getSelection();
                     if (!selection.isEmpty()) {
-                        GraphProperty selectedElement = GraphProperty.class.cast(selection.getFirstElement());
+                        GraphProperty selectedElement = (GraphProperty) selection.getFirstElement();
                         graphProperties.remove(selectedElement);
                         tableViewer.refresh();
                     }
@@ -348,7 +348,7 @@ public class DynamicModelWizard extends Wizard implements INewWizard {
 
         private void configureDefaultValues() {
             comboViewer.addSelectionChangedListener(event -> {
-                IStructuredSelection selection = IStructuredSelection.class.cast(event.getSelection());
+                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
                 if (!selection.isEmpty()) {
                     String graphName = selection.getFirstElement().toString();
                     String[] splitName = graphName.split("\\.");

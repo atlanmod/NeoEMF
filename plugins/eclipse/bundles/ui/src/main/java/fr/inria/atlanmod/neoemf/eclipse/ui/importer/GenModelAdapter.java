@@ -32,12 +32,12 @@ import java.util.function.Function;
 public class GenModelAdapter {
 
     /**
-     * The base interface of {@link org.eclipse.emf.ecore.EObject} to use with NeoEMF.
+     * The base interface of {@code EObject} to use with NeoEMF.
      */
     private static final String ROOT_EXTENDS_INTERFACE = PersistentEObject.class.getName();
 
     /**
-     * The base class of {@link org.eclipse.emf.ecore.EObject} to use with NeoEMF.
+     * The base class of {@code EObject} to use with NeoEMF.
      */
     private static final String ROOT_EXTENDS_CLASS = DefaultPersistentEObject.class.getName();
 

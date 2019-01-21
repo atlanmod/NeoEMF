@@ -36,7 +36,7 @@ class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProvider im
     @Override
     public void updateElement(Object parent, int index) {
         childOf(parent, index).ifPresent(c -> {
-            TreeViewer treeViewer = TreeViewer.class.cast(viewer);
+            final TreeViewer treeViewer = (TreeViewer) viewer;
             treeViewer.replace(parent, index, c);
             sizeOf(c).ifPresent(s -> treeViewer.setChildCount(c, s));
         });
@@ -44,7 +44,10 @@ class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProvider im
 
     @Override
     public void updateChildCount(Object element, int currentChildCount) {
-        sizeOf(element).ifPresent(s -> TreeViewer.class.cast(viewer).setChildCount(element, s));
+        sizeOf(element).ifPresent(s -> {
+            final TreeViewer treeViewer = (TreeViewer) viewer;
+            treeViewer.setChildCount(element, s);
+        });
     }
 
     /**
@@ -78,16 +81,19 @@ class LazyAdapterFactoryContentProvider extends AdapterFactoryContentProvider im
      * @return the content of the parent
      */
     private List<?> getContents(Object parent) {
-        if (ResourceSet.class.isInstance(parent)) {
-            return ResourceSet.class.cast(parent).getResources();
+        if (parent instanceof ResourceSet) {
+            final ResourceSet resourceSet = (ResourceSet) parent;
+            return resourceSet.getResources();
         }
 
-        if (Resource.class.isInstance(parent)) {
-            return Resource.class.cast(parent).getContents();
+        if (parent instanceof Resource) {
+            final Resource resource = (Resource) parent;
+            return resource.getContents();
         }
 
-        if (EObject.class.isInstance(parent)) {
-            return EObject.class.cast(parent).eContents();
+        if (parent instanceof EObject) {
+            final EObject object = (EObject) parent;
+            return object.eContents();
         }
 
         return null;

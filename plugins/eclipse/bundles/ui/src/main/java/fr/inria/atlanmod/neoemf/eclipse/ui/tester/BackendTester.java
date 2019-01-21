@@ -17,7 +17,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 /**
- * A {@link PropertyTester} that checks if a directory represents a {@link fr.inria.atlanmod.neoemf.data.Backend}.
+ * A {@link PropertyTester} that checks if a directory represents a {@code Backend}.
  */
 public class BackendTester extends PropertyTester {
 

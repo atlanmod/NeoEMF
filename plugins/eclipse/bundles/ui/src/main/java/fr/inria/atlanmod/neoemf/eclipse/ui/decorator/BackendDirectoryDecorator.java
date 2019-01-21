@@ -27,7 +27,7 @@ import java.util.Optional;
 import static java.util.Objects.nonNull;
 
 /**
- * A {@link ILabelDecorator} that decorates {@link fr.inria.atlanmod.neoemf.data.Backend} directories with an icon.
+ * A {@link ILabelDecorator} that decorates {@code Backend} directories with an icon and a suffix.
  */
 public class BackendDirectoryDecorator extends LabelProvider implements ILabelDecorator {
 
