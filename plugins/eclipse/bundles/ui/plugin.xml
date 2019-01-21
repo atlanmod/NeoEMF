@@ -8,7 +8,7 @@
         <editor class="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor"
                 contributorClass="org.eclipse.emf.ecore.presentation.EcoreActionBarContributor"
                 default="false"
-                icon="platform:/plugin/org.eclipse.emf.edit/icons/full/obj16/ModelFile.gif"
+                icon="icons/full/obj16/modelFile.gif"
                 id="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor"
                 name="NeoEMF Editor">
         </editor>
