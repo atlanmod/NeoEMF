@@ -19,15 +19,18 @@ import java.util.Objects;
 /**
  * A {@link PropertyTester} that checks if a directory represents a {@link fr.inria.atlanmod.neoemf.data.Backend}.
  */
-public class IsBackendTester extends PropertyTester {
+public class BackendTester extends PropertyTester {
+
+    private static final String IS = "isBackend";
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        if (!Objects.equals("isNeoEMFDB", property) || !IFolder.class.isInstance(receiver)) {
-            return false;
+        if (Objects.equals(IS, property) && receiver instanceof IFolder) {
+            final IFolder folder = (IFolder) receiver;
+            final Path directory = folder.getLocation().toFile().toPath();
+            return Config.exists(directory) == (Boolean) expectedValue;
         }
 
-        Path directory = IFolder.class.cast(receiver).getLocation().toFile().toPath();
-        return Config.exists(directory) == Boolean.class.cast(expectedValue);
+        return false;
     }
 }

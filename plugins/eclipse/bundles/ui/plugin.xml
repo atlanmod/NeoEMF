@@ -48,7 +48,7 @@
                         <with variable="activeMenuSelection">
                             <iterate ifEmpty="false">
                                 <adapt type="org.eclipse.core.resources.IFolder">
-                                    <test property="fr.inria.atlanmod.neoemf.eclipse.ui.isNeoEMFDB" value="true" />
+                                    <test property="fr.inria.atlanmod.neoemf.ui.backend.is" value="true" />
                                 </adapt>
                             </iterate>
                         </with>
@@ -127,10 +127,10 @@
     <!-- Testers -->
 
     <extension point="org.eclipse.core.expressions.propertyTesters">
-        <propertyTester class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.IsBackendTester"
-                        id="fr.inria.atlanmod.neoemf.eclipse.ui.isNeoEMFDB"
-                        namespace="fr.inria.atlanmod.neoemf.eclipse.ui"
-                        properties="isNeoEMFDB"
+        <propertyTester class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.BackendTester"
+                        id="fr.inria.atlanmod.neoemf.ui.backend.is"
+                        namespace="fr.inria.atlanmod.neoemf.ui"
+                        properties="isBackend"
                         type="org.eclipse.core.resources.IFolder" />
     </extension>
 
