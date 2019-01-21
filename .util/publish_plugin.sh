@@ -38,7 +38,7 @@ checkBuildInfo() {
 generate() {
     e "Generating $TYPE..."
 
-    local outputDir=plugins/eclipse/update/target/repository
+    local outputDir=plugins/eclipse/releng/update/target/repository
 
     mvn -q -B -f plugins/eclipse package
 
