@@ -38,4 +38,10 @@ Import-Package: org.eclipse.emf.common,
  org.eclipse.swt,
  org.eclipse.jface,
  org.osgi.framework
-Export-Package: fr.inria.atlanmod.neoemf.eclipse.ui.*
+Export-Package: fr.inria.atlanmod.neoemf.eclipse.ui,
+ fr.inria.atlanmod.neoemf.eclipse.ui.command,
+ fr.inria.atlanmod.neoemf.eclipse.ui.decorator,
+ fr.inria.atlanmod.neoemf.eclipse.ui.editor,
+ fr.inria.atlanmod.neoemf.eclipse.ui.importer,
+ fr.inria.atlanmod.neoemf.eclipse.ui.tester,
+ fr.inria.atlanmod.neoemf.eclipse.ui.wizard
