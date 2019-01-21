@@ -11,9 +11,7 @@ package fr.inria.atlanmod.neoemf.eclipse.ui.command;
 import fr.inria.atlanmod.neoemf.eclipse.ui.importer.GenModelAdapter;
 import fr.inria.atlanmod.neoemf.eclipse.ui.importer.NeoModelImporter;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -26,15 +24,11 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
@@ -42,83 +36,38 @@ import static java.util.Objects.nonNull;
 /**
  * A {@link org.eclipse.core.commands.IHandler} that migrates a model to another.
  */
-public class MigrateCommand extends AbstractHandler {
+public class MigrateCommand extends AbstractSelectionSingleHandler<IFile> {
 
-    /**
-     * The current selection.
-     */
-    private ISelection currentFile;
+    public MigrateCommand() {
+        super(IFile.class, f -> f.getFileExtension().equals("genmodel"));
+    }
 
     @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException {
-        currentFile = HandlerUtil.getActiveWorkbenchWindowChecked(event)
-                .getSelectionService()
-                .getSelection();
-
-        new MigrateJob().schedule();
-
-        return null;
-    }
-
-    /**
-     * Retrieves the current {@link IFile} from the {@link #currentFile}.
-     *
-     * @return an {@link Optional} containing the file, or {@link Optional#empty()} if the selection does not represents
-     * a file
-     */
-    private Optional<IFile> currentFile() {
-        return Optional.ofNullable(currentFile)
-                .filter(IStructuredSelection.class::isInstance)
-                .map(IStructuredSelection.class::cast)
-                .map(IStructuredSelection::getFirstElement)
-                .filter(IFile.class::isInstance)
-                .map(IFile.class::cast)
-                .filter(selected -> Objects.equals("genmodel", selected.getFileExtension()));
-    }
-
-    /**
-     * Retrieves the {@link GenModel} from the specified {@code file}.
-     *
-     * @param file the genmodel file
-     *
-     * @return an {@link Optional} containing the {@link GenModel}, or {@link Optional#empty()} if the {@code file} does
-     * not contains a generator model
-     */
-    private Optional<GenModel> genModelFrom(IFile file) {
-        ResourceSet resourceSet = new ResourceSetImpl();
-
-        resourceSet.getResourceFactoryRegistry()
-                .getExtensionToFactoryMap()
-                .put("*", new XMIResourceFactoryImpl());
-
-        URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), false);
-        Resource resource = resourceSet.getResource(uri, true);
-
-        return Optional.ofNullable(resource.getContents())
-                .filter(c -> !c.isEmpty())
-                .map(c -> c.get(0))
-                .filter(GenModel.class::isInstance)
-                .map(GenModel.class::cast);
+    protected void execute(ExecutionEvent event, IFile selectedFile) {
+        new MigrateJob(selectedFile).schedule();
     }
 
     /**
      * A {@link Job} that migrates a model to another.
      */
-    private class MigrateJob extends Job {
+    private static class MigrateJob extends Job {
+
+        private final IFile file;
 
         /**
          * Constructs a new {@code MigrateJob}.
          */
-        public MigrateJob() {
+        public MigrateJob(IFile file) {
             super("Migrating EMF Model");
+
+            this.file = file;
         }
 
         @Override
         protected IStatus run(IProgressMonitor monitor) {
             try {
-                Optional<IFile> file = currentFile();
-                if (file.isPresent()) {
-                    Optional<GenModel> genModel = genModelFrom(file.get());
+                if (nonNull(file)) {
+                    Optional<GenModel> genModel = genModelFrom(file);
                     if (genModel.isPresent()) {
                         String msg = new GenModelAdapter(genModel.get()).adapt();
                         if (nonNull(msg)) {
@@ -142,6 +91,31 @@ public class MigrateCommand extends AbstractHandler {
             }
 
             return Status.OK_STATUS;
+        }
+
+        /**
+         * Retrieves the {@link GenModel} from the specified {@code file}.
+         *
+         * @param file the genmodel file
+         *
+         * @return an {@link Optional} containing the {@link GenModel}, or {@link Optional#empty()} if the {@code file}
+         * does not contains a generator model
+         */
+        private Optional<GenModel> genModelFrom(IFile file) {
+            ResourceSet resourceSet = new ResourceSetImpl();
+
+            resourceSet.getResourceFactoryRegistry()
+                    .getExtensionToFactoryMap()
+                    .put("*", new XMIResourceFactoryImpl());
+
+            URI uri = URI.createPlatformResourceURI(file.getFullPath().toString(), false);
+            Resource resource = resourceSet.getResource(uri, true);
+
+            return Optional.ofNullable(resource.getContents())
+                    .filter(c -> !c.isEmpty())
+                    .map(c -> c.get(0))
+                    .filter(GenModel.class::isInstance)
+                    .map(GenModel.class::cast);
         }
 
         /**
