@@ -37,7 +37,7 @@ public class NeoEditor extends EcoreEditor {
     /**
      * The unique identifier of this editor.
      */
-    public static final String EDITOR_ID = NeoEditor.class.getName();
+    public static final String EDITOR_ID = "fr.inria.atlanmod.neoemf.ui.editor." + NeoEditor.class.getSimpleName();
 
     @Override
     public void createModel() {
