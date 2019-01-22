@@ -25,6 +25,7 @@
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
 
+        <neoemf.version>${project.version}</neoemf.version>
         <cdo.version>4.6.2</cdo.version>
         <jmh.version>1.21</jmh.version>
     </properties>
@@ -41,91 +42,14 @@
                 <type>pom</type>
             </dependency>
 
-            <dependency>
-                <groupId>org.eclipselabs</groupId>
-                <artifactId>net4j.h2</artifactId>
-                <version>${cdo.version}</version>
-                <type>pom</type>
-            </dependency>
-
             <!-- NeoEMF -->
 
             <dependency>
                 <groupId>fr.inria.atlanmod.neoemf</groupId>
                 <artifactId>neoemf-core</artifactId>
-                <version>${project.version}</version>
+                <version>${neoemf.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>neoemf-io</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>neoemf-data-blueprints-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>neoemf-data-blueprints-neo4j</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>neoemf-data-mapdb</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>neoemf-data-berkeleydb</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>fr.inria.atlanmod.neoemf</groupId>
-                <artifactId>neoemf-data-hbase</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <!-- Local -->
-
-            <dependency>
-                <groupId>org.eclipse.gmt</groupId>
-                <artifactId>org.eclipse.gmt.modisco.java</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.gmt</groupId>
-                <artifactId>org.eclipse.gmt.modisco.java.cdo</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.gmt</groupId>
-                <artifactId>org.eclipse.gmt.modisco.java.neoemf</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <!-- Benchmark -->
-
-            <dependency>
-                <groupId>org.openjdk.jmh</groupId>
-                <artifactId>jmh-core</artifactId>
-                <version>${jmh.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.openjdk.jmh</groupId>
-                <artifactId>jmh-generator-annprocess</artifactId>
-                <version>${jmh.version}</version>
-                <scope>provided</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

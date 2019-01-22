@@ -54,6 +54,7 @@
         <dependency>
             <groupId>org.eclipselabs</groupId>
             <artifactId>net4j.h2</artifactId>
+            <version>${cdo.version}</version>
             <type>pom</type>
         </dependency>
 
@@ -67,31 +68,37 @@
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-io</artifactId>
+            <version>${neoemf.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-blueprints-core</artifactId>
+            <version>${neoemf.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-blueprints-neo4j</artifactId>
+            <version>${neoemf.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-mapdb</artifactId>
+            <version>${neoemf.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-berkeleydb</artifactId>
+            <version>${neoemf.version}</version>
         </dependency>
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-hbase</artifactId>
+            <version>${neoemf.version}</version>
         </dependency>
 
         <!-- Benchmark -->
@@ -99,30 +106,36 @@
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
+            <version>${jmh.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
+            <version>${jmh.version}</version>
             <scope>provided</scope>
         </dependency>
 
-        <!-- Internal -->
+        <!-- Models -->
 
         <dependency>
             <groupId>org.eclipse.gmt</groupId>
             <artifactId>org.eclipse.gmt.modisco.java</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.gmt</groupId>
             <artifactId>org.eclipse.gmt.modisco.java.cdo</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.gmt</groupId>
             <artifactId>org.eclipse.gmt.modisco.java.neoemf</artifactId>
+            <version>${project.version}</version>
         </dependency>
+
     </dependencies>
 
     <build>
