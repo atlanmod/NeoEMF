@@ -17,18 +17,24 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 /**
- * A {@link PropertyTester} that checks if a directory represents a {@code Backend}.
+ * A {@link PropertyTester} that tests a {@code Backend}.
  */
-public class BackendTester extends PropertyTester {
+public class BackendPropertyTester extends PropertyTester {
 
-    private static final String IS = "isBackend";
+    /**
+     * A property indicating whether a directory represents a backend.
+     */
+    private static final String IS = "is";
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        if (Objects.equals(IS, property) && receiver instanceof IFolder) {
+        if (receiver instanceof IFolder) {
             final IFolder folder = (IFolder) receiver;
-            final Path directory = folder.getLocation().toFile().toPath();
-            return Config.exists(directory) == (Boolean) expectedValue;
+
+            if (Objects.equals(IS, property)) {
+                final Path directory = folder.getLocation().toFile().toPath();
+                return Config.exists(directory) == (Boolean) expectedValue;
+            }
         }
 
         return false;
