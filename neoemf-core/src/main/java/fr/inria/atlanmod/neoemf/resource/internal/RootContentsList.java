@@ -13,16 +13,11 @@ import fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter;
 import fr.inria.atlanmod.neoemf.resource.DefaultPersistentResource;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
-import org.atlanmod.commons.collect.MoreIterables;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.EStoreEObjectImpl;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -51,7 +46,7 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     /**
      * Constructs a new {@code RootContentsList}.
      *
-     * @param resource
+     * @param resource the owner resource
      */
     public RootContentsList(DefaultPersistentResource resource) {
         super(new RootObject(resource), new RootContentsReference());
@@ -68,7 +63,7 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
 
     @Override
     protected void delegateAdd(int index, Object value) {
-        hardAllContents(PersistentEObject.from(value)).forEach(e -> e.resource(resource));
+        PersistentEObject.from(value).resource(resource);
         super.delegateAdd(index, value);
     }
 
@@ -80,7 +75,7 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     @Override
     protected E delegateRemove(int index) {
         E previousValue = super.delegateRemove(index);
-        hardAllContents(PersistentEObject.from(previousValue)).forEach(e -> e.resource(null));
+        PersistentEObject.from(previousValue).resource(null);
         return previousValue;
     }
 
@@ -191,26 +186,4 @@ public class RootContentsList<E> extends EStoreEObjectImpl.BasicEStoreEList<E> {
     }
 
     // endregion
-
-    /**
-     * Retrieves all the content of the specified {@code rootObject} and stores it in a {@link List}.
-     * <p>
-     * By iterating using the hard links list instead the {@link PersistentResource#getAllContents()}, we ensure that
-     * the content is not taken out by JIT compiler.
-     *
-     * @param rootObject the object from which to retrieve the content
-     *
-     * @return the content of {@code rootObject}
-     */
-    @Nonnull
-    private Iterable<PersistentEObject> hardAllContents(PersistentEObject rootObject) {
-        Collection<PersistentEObject> allContents = new ArrayDeque<>();
-        allContents.add(rootObject);
-
-        MoreIterables.stream(rootObject::eAllContents)
-                .map(PersistentEObject::from)
-                .collect(Collectors.toCollection(() -> allContents));
-
-        return allContents;
-    }
 }
