@@ -227,11 +227,12 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         final String ownerId = idConverter.convert(id);
         final ClassDocument newMetaClass = ClassDocument.fromBean(metaClass);
 
-        final Bson existsQuery = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_METACLASS));
-        final boolean notExists = !Optional.ofNullable(find(existsQuery, ModelDocument.class).first()).isPresent();
+        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson existsFilter = and(filter, exists(ModelDocument.F_METACLASS));
+
+        final boolean notExists = !Optional.ofNullable(find(existsFilter, ModelDocument.class).first()).isPresent();
 
         if (notExists) {
-            final Bson filter = eq(ModelDocument.F_ID, ownerId);
             final Bson update = combine(
                     setOnInsert(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_NAME), newMetaClass.getName()),
                     setOnInsert(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_URI), newMetaClass.getUri())
