@@ -37,28 +37,16 @@ public class ModelDocument {
     public static final String F_CONTAINER = "container";
 
     /**
-     * The field name of the single-valued attributes values.
+     * The field name of the single-valued features values.
      */
     @Nonnull
-    public static final String F_SINGLE_VALUE = "singleValues";
+    public static final String F_SINGLE_FEATURE = "singleFeatures";
 
     /**
-     * The fields name of the single-valued references.
+     * The field name of the multi-valued features values.
      */
     @Nonnull
-    public static final String F_SINGLE_REFERENCE = "singleReferences";
-
-    /**
-     * The field name of the multi-valued attributes values.
-     */
-    @Nonnull
-    public static final String F_MANY_VALUE = "manyValues";
-
-    /**
-     * The field name of the multi-valued references.
-     */
-    @Nonnull
-    public static final String F_MANY_REFERENCE = "manyReferences";
+    public static final String F_MANY_FEATURE = "manyFeatures";
 
     /**
      * The unique identifier of the model object.
@@ -79,28 +67,16 @@ public class ModelDocument {
     private ContainerDocument container;
 
     /**
-     * The single-valued attributes values of the related model object.
+     * The single-valued features values of the related model object.
      */
-    @BsonProperty(F_SINGLE_VALUE)
-    private Map<String, String> singleValues = new HashMap<>();
+    @BsonProperty(F_SINGLE_FEATURE)
+    private Map<String, String> singleFeatures = new HashMap<>();
 
     /**
-     * The single-valued references of the related model object.
+     * The multi-valued features values of the related model object.
      */
-    @BsonProperty(F_SINGLE_REFERENCE)
-    private Map<String, String> singleReferences = new HashMap<>();
-
-    /**
-     * The multi-valued attributes values of the related model object.
-     */
-    @BsonProperty(F_MANY_VALUE)
-    private Map<String, List<String>> manyValues = new HashMap<>();
-
-    /**
-     * The multi-valued references of the related model object.
-     */
-    @BsonProperty(F_MANY_REFERENCE)
-    private Map<String, List<String>> manyReferences = new HashMap<>();
+    @BsonProperty(F_MANY_FEATURE)
+    private Map<String, List<String>> manyFeatures = new HashMap<>();
 
     public String getId() {
         return id;
@@ -126,39 +102,21 @@ public class ModelDocument {
         this.container = container;
     }
 
-    public Map<String, String> getSingleValues() {
-        return singleValues;
+    public Map<String, String> getSingleFeatures() {
+        return singleFeatures;
     }
 
     @VisibleForReflection
-    public void setSingleValues(Map<String, String> singleValues) {
-        this.singleValues = singleValues;
+    public void setSingleFeatures(Map<String, String> singleFeatures) {
+        this.singleFeatures = singleFeatures;
     }
 
-    public Map<String, String> getSingleReferences() {
-        return singleReferences;
-    }
-
-    @VisibleForReflection
-    public void setSingleReferences(Map<String, String> singleReferences) {
-        this.singleReferences = singleReferences;
-    }
-
-    public Map<String, List<String>> getManyValues() {
-        return manyValues;
+    public Map<String, List<String>> getManyFeatures() {
+        return manyFeatures;
     }
 
     @VisibleForReflection
-    public void setManyValues(Map<String, List<String>> manyValues) {
-        this.manyValues = manyValues;
-    }
-
-    public Map<String, List<String>> getManyReferences() {
-        return manyReferences;
-    }
-
-    @VisibleForReflection
-    public void setManyReferences(Map<String, List<String>> references) {
-        this.manyReferences = references;
+    public void setManyFeatures(Map<String, List<String>> manyFeatures) {
+        this.manyFeatures = manyFeatures;
     }
 }

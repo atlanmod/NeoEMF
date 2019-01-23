@@ -8,11 +8,7 @@
 
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.MongoCommandException;
-import com.mongodb.QueryOperators;
-import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -29,27 +25,19 @@ import fr.inria.atlanmod.neoemf.data.mongodb.document.ModelDocument;
 
 import org.atlanmod.commons.collect.MoreIterables;
 import org.atlanmod.commons.function.Converter;
-import org.bson.Document;
 import org.bson.conversions.Bson;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.mongodb.client.model.Aggregates.limit;
-import static com.mongodb.client.model.Aggregates.match;
-import static com.mongodb.client.model.Aggregates.project;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.exists;
 import static com.mongodb.client.model.Filters.or;
-import static com.mongodb.client.model.Projections.computed;
 import static com.mongodb.client.model.Projections.include;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
@@ -238,34 +226,4 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
                 .map(idConverter::revert)
                 .collect(Collectors.toList());
     }
-
-    // region MongoDB
-
-    @Nonnegative
-    protected int sizeOf(String id, String name, int index) {
-        final String sizeField = "size";
-
-        final Bson filter = and(eq(ModelDocument.F_ID, id), exists(name));
-        final Bson projection = computed(sizeField, new Document(QueryOperators.SIZE, fieldWithSuffix('$' + name, Integer.toString(index))));
-
-        final List<Bson> pipeline = Arrays.asList(
-                match(filter),
-                limit(1),
-                project(projection)
-        );
-
-        try {
-            final AggregateIterable<BasicDBObject> aggregate = documents.aggregate(pipeline, BasicDBObject.class);
-            return MoreIterables.onlyElement(aggregate).map(o -> o.getInt(sizeField)).orElse(0);
-        }
-        catch (MongoCommandException e) {
-            // FIXME Don't use an exception to determine the presence of an index
-            if (e.getErrorCode() != 17124) { // "the $size operator requires an list" when index does not exist in collection
-                throw e;
-            }
-            return 0;
-        }
-    }
-
-    // endregion
 }
