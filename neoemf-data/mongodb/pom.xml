@@ -38,13 +38,6 @@
             <scope>compile</scope><!-- FIXME Use 'test' scope: 'compile' is used to avoid errors in 'neoemf-tests' -->
         </dependency>
 
-        <!-- Test -->
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-        </dependency>
-
     </dependencies>
 
     <dependencyManagement>
