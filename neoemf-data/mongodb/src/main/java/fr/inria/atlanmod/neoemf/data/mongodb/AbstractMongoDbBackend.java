@@ -9,12 +9,10 @@
 package fr.inria.atlanmod.neoemf.data.mongodb;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.ClientSessionOptions;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCommandException;
 import com.mongodb.QueryOperators;
 import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.ClientSession;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -31,7 +29,6 @@ import fr.inria.atlanmod.neoemf.data.mongodb.document.ModelDocument;
 
 import org.atlanmod.commons.collect.MoreIterables;
 import org.atlanmod.commons.function.Converter;
-import org.atlanmod.commons.log.Log;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -43,7 +40,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.mongodb.client.model.Aggregates.limit;
@@ -59,7 +55,6 @@ import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 import static com.mongodb.client.model.Updates.setOnInsert;
 import static com.mongodb.client.model.Updates.unset;
-import static java.util.Objects.nonNull;
 import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
@@ -75,6 +70,12 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     protected final Converter<Id, String> idConverter = IdConverters.withHexString();
 
     /**
+     * The MongoDB collection where to store the model.
+     */
+    @Nonnull
+    protected final MongoCollection<ModelDocument> documents;
+
+    /**
      * The MongoDB client.
      */
     @Nonnull
@@ -87,39 +88,18 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     private final MongoDatabase database;
 
     /**
-     * The MongoDB collection where to store the model.
-     */
-    @Nonnull
-    private final MongoCollection<ModelDocument> collection;
-
-    /**
-     * The current client session, {@code null} if the {@link #client} does not support sessions.
-     */
-    @Nullable
-    private ClientSession clientSession;
-
-    /**
      * Constructs a new {@code AbstractMongoDbBackend}.
      */
     protected AbstractMongoDbBackend(MongoClient client, MongoDatabase database) {
         this.client = client;
         this.database = database;
 
-        this.collection = getOrCreateCollection("instances", ModelDocument.class);
-
-        // Causally-consistent session
-        try {
-            this.clientSession = client.startSession(ClientSessionOptions.builder().causallyConsistent(true).build());
-        }
-        catch (Exception ignored) {
-            this.clientSession = null;
-            Log.debug("Sessions are not supported by the MongoDB cluster to which this client is connected");
-        }
+        this.documents = getOrCreateCollection("instances", ModelDocument.class);
     }
 
     @Nonnull
-    protected static String fieldWithSuffix(String fieldName, String suffix) {
-        return fieldName + '.' + suffix;
+    protected static String fieldWithSuffix(String... parts) {
+        return String.join(".", parts);
     }
 
     /**
@@ -142,18 +122,12 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     @Override
     protected void internalClose() {
-        if (nonNull(clientSession)) {
-            clientSession.close();
-        }
-
         client.close();
     }
 
     @Override
     protected void internalSave() {
-        if (nonNull(clientSession) && clientSession.hasActiveTransaction()) {
-            clientSession.commitTransaction();
-        }
+        // Do nothing
     }
 
     @Nonnull
@@ -166,7 +140,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_CONTAINER));
         final Bson projection = include(ModelDocument.F_CONTAINER);
 
-        final ModelDocument instance = find(filter, ModelDocument.class).projection(projection).first();
+        final ModelDocument instance = documents.find(filter).projection(projection).first();
 
         return Optional.ofNullable(instance)
                 .map(ModelDocument::getContainer)
@@ -187,7 +161,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
                 set(fieldWithSuffix(ModelDocument.F_CONTAINER, ContainerDocument.F_ID), newContainer.getId())
         );
 
-        updateOne(filter, update, new UpdateOptions().upsert(true));
+        documents.updateOne(filter, update, new UpdateOptions().upsert(true));
     }
 
     @Override
@@ -199,7 +173,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_CONTAINER));
         final Bson update = unset(ModelDocument.F_CONTAINER);
 
-        updateOne(filter, update);
+        documents.updateOne(filter, update);
     }
 
     @Nonnull
@@ -212,7 +186,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_METACLASS));
         final Bson projection = include(ModelDocument.F_METACLASS);
 
-        final ModelDocument instance = find(filter, ModelDocument.class).projection(projection).first();
+        final ModelDocument instance = documents.find(filter).projection(projection).first();
 
         return Optional.ofNullable(instance)
                 .map(ModelDocument::getMetaClass)
@@ -230,7 +204,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         final Bson filter = eq(ModelDocument.F_ID, ownerId);
         final Bson existsFilter = and(filter, exists(ModelDocument.F_METACLASS));
 
-        final boolean notExists = !Optional.ofNullable(find(existsFilter, ModelDocument.class).first()).isPresent();
+        final boolean notExists = !Optional.ofNullable(documents.find(existsFilter).first()).isPresent();
 
         if (notExists) {
             final Bson update = combine(
@@ -238,7 +212,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
                     setOnInsert(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_URI), newMetaClass.getUri())
             );
 
-            updateOne(filter, update, new UpdateOptions().upsert(true));
+            documents.updateOne(filter, update, new UpdateOptions().upsert(true));
         }
 
         return notExists;
@@ -257,7 +231,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         final Bson filter = or(andFilters);
         final Bson projection = include(ModelDocument.F_ID);
 
-        final FindIterable<ModelDocument> find = find(filter, ModelDocument.class).projection(projection);
+        final FindIterable<ModelDocument> find = documents.find(filter).projection(projection);
 
         return MoreIterables.stream(find)
                 .map(ModelDocument::getId)
@@ -266,82 +240,6 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     }
 
     // region MongoDB
-
-    /**
-     * Finds all documents in the collection that match the specified {@code filter}.
-     *
-     * @param filter a document describing the query filter
-     * @param type   the class to decode each document into
-     *
-     * @return an iterable of all matching documents
-     */
-    @Nonnull
-    protected <T> FindIterable<T> find(Bson filter, Class<T> type) {
-        if (nonNull(clientSession)) {
-            return collection.find(clientSession, filter, type);
-        }
-        else {
-            return collection.find(filter, type);
-        }
-    }
-
-    /**
-     * Aggregates documents according to the specified aggregation {@code pipeline}.
-     *
-     * @param pipeline the aggregation pipeline
-     * @param type     the class to decode each document into
-     *
-     * @return an iterable containing the result of the aggregation operation
-     */
-    @Nonnull
-    protected <T> AggregateIterable<T> aggregate(List<? extends Bson> pipeline, Class<T> type) {
-        if (nonNull(clientSession)) {
-            return collection.aggregate(clientSession, pipeline, type);
-        }
-        else {
-            return collection.aggregate(pipeline, type);
-        }
-    }
-
-    /**
-     * Update a single document in the collection according to the specified arguments.
-     *
-     * @param filter a document describing the query filter
-     * @param update a document describing the update
-     */
-    protected void updateOne(Bson filter, Bson update) {
-        updateOne(filter, update, new UpdateOptions());
-    }
-
-    /**
-     * Update a single document in the collection according to the specified arguments.
-     *
-     * @param filter  a document describing the query filter
-     * @param update  a document describing the update
-     * @param options the options to apply to the update operation
-     */
-    protected void updateOne(Bson filter, Bson update, UpdateOptions options) {
-        if (nonNull(clientSession)) {
-            collection.updateOne(clientSession, filter, update, options);
-        }
-        else {
-            collection.updateOne(filter, update, options);
-        }
-    }
-
-    /**
-     * Inserts the provided {@code document} in the collection.
-     *
-     * @param document the instance to store
-     */
-    protected void insertOne(ModelDocument document) {
-        if (nonNull(clientSession)) {
-            collection.insertOne(clientSession, document);
-        }
-        else {
-            collection.insertOne(document);
-        }
-    }
 
     @Nonnegative
     protected int sizeOf(String id, String name, int index) {
@@ -357,7 +255,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         );
 
         try {
-            final AggregateIterable<BasicDBObject> aggregate = aggregate(pipeline, BasicDBObject.class);
+            final AggregateIterable<BasicDBObject> aggregate = documents.aggregate(pipeline, BasicDBObject.class);
             return MoreIterables.onlyElement(aggregate).map(o -> o.getInt(sizeField)).orElse(0);
         }
         catch (MongoCommandException e) {
