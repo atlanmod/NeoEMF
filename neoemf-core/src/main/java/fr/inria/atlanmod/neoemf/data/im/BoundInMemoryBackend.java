@@ -275,13 +275,15 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
          * Cleans all data, and closes every maps.
          */
         private void closeAll() {
-            Log.info("Cleaning BoundInMemoryBackend#DataHolder");
+            if (!isClosed()) {
+                Log.info("Cleaning BoundInMemoryBackend#DataHolder");
 
-            containers.close();
-            instances.close();
-            features.close();
+                containers.close();
+                instances.close();
+                features.close();
 
-            featuresById.clear();
+                featuresById.clear();
+            }
         }
 
         /**
