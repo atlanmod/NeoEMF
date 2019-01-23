@@ -151,7 +151,9 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     @Override
     protected void internalSave() {
-        // Do nothing
+        if (nonNull(clientSession) && clientSession.hasActiveTransaction()) {
+            clientSession.commitTransaction();
+        }
     }
 
     @Nonnull
