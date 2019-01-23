@@ -79,8 +79,10 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_SINGLE_VALUE));
-        final Bson projection = include(fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId));
+        final String fieldName = fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId);
+
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldName));
+        final Bson projection = include(fieldName);
 
         final ModelDocument instance = documents.find(filter).projection(projection).first();
 
@@ -99,9 +101,11 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
+        final String fieldName = fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId);
+
         final Bson filter = eq(ModelDocument.F_ID, ownerId);
-        final Bson projection = include(fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId));
-        final Bson update = set(fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId), serializeValue(value));
+        final Bson projection = include(fieldName);
+        final Bson update = set(fieldName, serializeValue(value));
 
         final ModelDocument instance = documents.findOneAndUpdate(filter, update, new FindOneAndUpdateOptions().upsert(true).projection(projection));
 
@@ -118,8 +122,10 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_SINGLE_VALUE));
-        final Bson update = unset(fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId));
+        final String fieldName = fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId);
+
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldName));
+        final Bson update = unset(fieldName);
 
         documents.updateOne(filter, update);
     }
@@ -136,8 +142,10 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_SINGLE_REFERENCE));
-        final Bson projection = include(fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId));
+        final String fieldName = fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId);
+
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldName));
+        final Bson projection = include(fieldName);
 
         final ModelDocument instance = documents.find(filter).projection(projection).first();
 
@@ -157,9 +165,11 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
+        final String fieldName = fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId);
+
         final Bson filter = eq(ModelDocument.F_ID, ownerId);
-        final Bson projection = include(fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId));
-        final Bson update = set(fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId), idConverter.convert(reference));
+        final Bson projection = include(fieldName);
+        final Bson update = set(fieldName, idConverter.convert(reference));
 
         final ModelDocument instance = documents.findOneAndUpdate(filter, update, new FindOneAndUpdateOptions().upsert(true).projection(projection));
 
@@ -176,8 +186,10 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_SINGLE_REFERENCE));
-        final Bson update = unset(fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId));
+        final String fieldName = fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId);
+
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldName));
+        final Bson update = unset(fieldName);
 
         documents.updateOne(filter, update);
     }
