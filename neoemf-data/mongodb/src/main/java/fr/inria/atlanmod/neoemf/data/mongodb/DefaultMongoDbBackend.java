@@ -209,29 +209,23 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String featureId = Integer.toString(feature.id());
 
         final String fieldName = fieldWithSuffix(ModelDocument.F_MANY_FEATURE, featureId);
+        final String fieldNameWithPos = fieldWithSuffix(fieldName, Integer.toString(feature.position()));
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldNameWithPos));
         final Bson projection = include(fieldName);
+        final Bson update = set(fieldNameWithPos, serializeValue(value));
 
-        final ModelDocument instance = documents.find(filter).projection(projection).first();
+        final ModelDocument instance = documents.findOneAndUpdate(filter, update, new FindOneAndUpdateOptions().projection(projection));
 
-        if (isNull(instance)) {
-            return Optional.empty();
-        }
+        final Optional<V> previousValue = Optional.ofNullable(instance)
+                .map(ModelDocument::getManyFeatures)
+                .map(m -> m.get(featureId))
+                .map(l -> l.get(feature.position()))
+                .map(this::deserializeValue);
 
-        if (!instance.getManyFeatures().containsKey(featureId) || feature.position() >= instance.getManyFeatures().get(featureId).size()) {
+        if (!previousValue.isPresent()) {
             throw new NoSuchElementException();
         }
-
-        List<String> values = instance.getManyFeatures().get(featureId);
-
-        final Optional<V> previousValue = Optional.ofNullable(values.get(feature.position())).map(this::deserializeValue);
-
-        values.set(feature.position(), serializeValue(value));
-
-        final Bson update = set(fieldName, values);
-
-        documents.updateOne(filter, update);
 
         return previousValue;
     }
@@ -284,25 +278,25 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String featureId = Integer.toString(feature.id());
 
         final String fieldName = fieldWithSuffix(ModelDocument.F_MANY_FEATURE, featureId);
+        final String fieldNameWithPos = fieldWithSuffix(fieldName, Integer.toString(feature.position()));
 
-        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldName));
+        final Bson baseFilter = eq(ModelDocument.F_ID, ownerId);
+        final Bson getFilter = and(baseFilter, exists(fieldNameWithPos));
         final Bson projection = include(fieldName);
 
-        final ModelDocument instance = documents.find(filter).projection(projection).first();
+        final ModelDocument instance = documents.find(getFilter).projection(projection).first();
 
-        if (isNull(instance) || !instance.getManyFeatures().containsKey(featureId) || instance.getManyFeatures().get(featureId).size() < feature.position()) {
+        if (isNull(instance)) {
             return Optional.empty();
         }
 
-        List<String> values = instance.getManyFeatures().get(featureId);
+        final List<String> values = instance.getManyFeatures().get(featureId);
+        final Optional<V> previousValue = Optional.of(values.remove(feature.position())).map(this::deserializeValue);
 
-        final Optional<V> previousValue = Optional.ofNullable(values.get(feature.position())).map(this::deserializeValue);
-
-        values.remove(feature.position());
-
+        final Bson updateFilter = and(baseFilter, exists(fieldName));
         final Bson update = set(fieldName, values);
 
-        documents.updateOne(filter, update);
+        documents.updateOne(updateFilter, update);
 
         return previousValue;
     }
