@@ -163,16 +163,10 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
         final String ownerId = idConverter.convert(id);
 
-        final Bson query = and(
-                eq(ModelDocument.F_ID, ownerId),
-                exists(ModelDocument.F_CONTAINER)
-        );
-
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_CONTAINER));
         final Bson projection = include(ModelDocument.F_CONTAINER);
 
-        final ModelDocument instance = find(query, ModelDocument.class)
-                .projection(projection)
-                .first();
+        final ModelDocument instance = find(filter, ModelDocument.class).projection(projection).first();
 
         return Optional.ofNullable(instance)
                 .map(ModelDocument::getContainer)
@@ -188,7 +182,6 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         final ContainerDocument newContainer = ContainerDocument.fromBean(container);
 
         final Bson filter = eq(ModelDocument.F_ID, ownerId);
-
         final Bson update = combine(
                 set(fieldWithSuffix(ModelDocument.F_CONTAINER, ContainerDocument.F_OWNER), newContainer.getOwner()),
                 set(fieldWithSuffix(ModelDocument.F_CONTAINER, ContainerDocument.F_ID), newContainer.getId())
@@ -204,7 +197,6 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         final String ownerId = idConverter.convert(id);
 
         final Bson filter = eq(ModelDocument.F_ID, ownerId);
-
         final Bson update = unset(ModelDocument.F_CONTAINER);
 
         updateOne(filter, update);
@@ -217,16 +209,10 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
         final String ownerId = idConverter.convert(id);
 
-        final Bson query = and(
-                eq(ModelDocument.F_ID, ownerId),
-                exists(ModelDocument.F_METACLASS)
-        );
-
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_METACLASS));
         final Bson projection = include(ModelDocument.F_METACLASS);
 
-        final ModelDocument instance = find(query, ModelDocument.class)
-                .projection(projection)
-                .first();
+        final ModelDocument instance = find(filter, ModelDocument.class).projection(projection).first();
 
         return Optional.ofNullable(instance)
                 .map(ModelDocument::getMetaClass)
@@ -241,16 +227,11 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         final String ownerId = idConverter.convert(id);
         final ClassDocument newMetaClass = ClassDocument.fromBean(metaClass);
 
-        final Bson existsQuery = and(
-                eq(ModelDocument.F_ID, ownerId),
-                exists(ModelDocument.F_METACLASS)
-        );
-
+        final Bson existsQuery = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_METACLASS));
         final boolean notExists = !Optional.ofNullable(find(existsQuery, ModelDocument.class).first()).isPresent();
 
         if (notExists) {
             final Bson filter = eq(ModelDocument.F_ID, ownerId);
-
             final Bson update = combine(
                     setOnInsert(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_NAME), newMetaClass.getName()),
                     setOnInsert(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_URI), newMetaClass.getUri())
@@ -272,12 +253,10 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
                 )
                 .collect(Collectors.toList());
 
-        final Bson query = or(andFilters);
-
+        final Bson filter = or(andFilters);
         final Bson projection = include(ModelDocument.F_ID);
 
-        final FindIterable<ModelDocument> find = find(query, ModelDocument.class)
-                .projection(projection);
+        final FindIterable<ModelDocument> find = find(filter, ModelDocument.class).projection(projection);
 
         return MoreIterables.stream(find)
                 .map(ModelDocument::getId)
@@ -367,11 +346,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     protected int sizeOf(String id, String name, int index) {
         final String sizeField = "size";
 
-        final Bson filter = and(
-                eq(ModelDocument.F_ID, id),
-                exists(name)
-        );
-
+        final Bson filter = and(eq(ModelDocument.F_ID, id), exists(name));
         final Bson projection = computed(sizeField, new Document(QueryOperators.SIZE, fieldWithSuffix('$' + name, Integer.toString(index))));
 
         final List<Bson> pipeline = Arrays.asList(
