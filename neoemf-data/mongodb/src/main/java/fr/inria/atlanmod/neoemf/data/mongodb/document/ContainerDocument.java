@@ -1,10 +1,10 @@
 package fr.inria.atlanmod.neoemf.data.mongodb.document;
 
-import org.atlanmod.commons.function.Converter;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
+import org.atlanmod.commons.function.Converter;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import javax.annotation.Nonnull;

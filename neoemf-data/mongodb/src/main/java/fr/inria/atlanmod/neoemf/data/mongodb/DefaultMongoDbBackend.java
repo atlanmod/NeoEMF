@@ -12,15 +12,15 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.PushOptions;
 
-import org.atlanmod.commons.collect.MoreIterables;
-import org.atlanmod.commons.io.serializer.BinarySerializerFactory;
-import org.atlanmod.commons.io.serializer.StringSerializer;
-import org.atlanmod.commons.io.serializer.StringSerializerFactory;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mongodb.document.ModelDocument;
 
+import org.atlanmod.commons.collect.MoreIterables;
+import org.atlanmod.commons.io.serializer.BinarySerializerFactory;
+import org.atlanmod.commons.io.serializer.StringSerializer;
+import org.atlanmod.commons.io.serializer.StringSerializerFactory;
 import org.bson.conversions.Bson;
 
 import java.util.Collections;
@@ -41,10 +41,10 @@ import static com.mongodb.client.model.Projections.include;
 import static com.mongodb.client.model.Updates.pushEach;
 import static com.mongodb.client.model.Updates.set;
 import static com.mongodb.client.model.Updates.unset;
-import static org.atlanmod.commons.Preconditions.checkNotContainsNull;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkNotContainsNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * The default {@link MongoDbBackend} mapping.

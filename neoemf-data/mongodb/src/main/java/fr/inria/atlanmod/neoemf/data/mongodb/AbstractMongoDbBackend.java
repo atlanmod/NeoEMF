@@ -20,9 +20,6 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.session.ClientSession;
 
-import org.atlanmod.commons.collect.MoreIterables;
-import org.atlanmod.commons.function.Converter;
-import org.atlanmod.commons.log.Log;
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdConverters;
 import fr.inria.atlanmod.neoemf.data.AbstractBackend;
@@ -32,6 +29,9 @@ import fr.inria.atlanmod.neoemf.data.mongodb.document.ClassDocument;
 import fr.inria.atlanmod.neoemf.data.mongodb.document.ContainerDocument;
 import fr.inria.atlanmod.neoemf.data.mongodb.document.ModelDocument;
 
+import org.atlanmod.commons.collect.MoreIterables;
+import org.atlanmod.commons.function.Converter;
+import org.atlanmod.commons.log.Log;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -59,8 +59,8 @@ import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 import static com.mongodb.client.model.Updates.setOnInsert;
 import static com.mongodb.client.model.Updates.unset;
-import static fr.inria.atlanmod.commons.Preconditions.checkNotNull;
 import static java.util.Objects.nonNull;
+import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
  * An abstract {@link MongoDbBackend} that provides overall behavior for the management of a MongoDb database.

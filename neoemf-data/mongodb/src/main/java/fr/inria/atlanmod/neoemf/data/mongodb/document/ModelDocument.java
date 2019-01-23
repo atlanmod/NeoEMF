@@ -1,7 +1,6 @@
 package fr.inria.atlanmod.neoemf.data.mongodb.document;
 
 import org.atlanmod.commons.annotation.VisibleForReflection;
-
 import org.bson.codecs.pojo.annotations.BsonId;
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
