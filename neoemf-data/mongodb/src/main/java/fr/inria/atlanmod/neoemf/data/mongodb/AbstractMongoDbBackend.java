@@ -12,6 +12,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.CountOptions;
 import com.mongodb.client.model.UpdateOptions;
 
 import fr.inria.atlanmod.neoemf.core.Id;
@@ -190,9 +191,9 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         final ClassDocument newMetaClass = ClassDocument.fromBean(metaClass);
 
         final Bson filter = eq(ModelDocument.F_ID, ownerId);
-        final Bson existsFilter = and(filter, exists(ModelDocument.F_METACLASS));
 
-        final boolean notExists = !Optional.ofNullable(documents.find(existsFilter).first()).isPresent();
+        final Bson existsFilter = and(filter, exists(ModelDocument.F_METACLASS));
+        final boolean notExists = documents.countDocuments(existsFilter, new CountOptions().limit(1)) == 0;
 
         if (notExists) {
             final Bson update = combine(
