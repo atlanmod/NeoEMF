@@ -94,6 +94,11 @@
             <artifactId>neoemf-data-hbase</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-mongodb</artifactId>
+        </dependency>
+
         <!-- Benchmark -->
 
         <dependency>

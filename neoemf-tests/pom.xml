@@ -117,6 +117,13 @@
 
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-mongodb</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-hbase</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -172,6 +179,14 @@
         <dependency>
             <groupId>fr.inria.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-berkeleydb</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-data-mongodb</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>

@@ -92,6 +92,12 @@
                 <version>${project.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-data-mongodb</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
             <!-- Local -->
 
             <dependency>
