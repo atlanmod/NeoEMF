@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <artifactId>neoemf-data</artifactId>
+        <version>1.0.3-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>neoemf-data-mongodb</artifactId>
+
+    <packaging>bundle</packaging>
+
+    <name>NeoEMF Data MongoDb</name>
+    <description>MongoDb extension of the core component.</description>
+
+    <properties>
+        <mongodb.version>3.7.0</mongodb.version>
+
+        <mongodb-embed.version>2.0.3</mongodb-embed.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- Database -->
+
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver</artifactId>
+        </dependency>
+
+        <!-- Test: Database -->
+
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <scope>compile</scope><!-- FIXME Use 'test' scope: 'compile' is used to avoid errors in 'neoemf-tests' -->
+        </dependency>
+
+        <!-- Test -->
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- Database -->
+
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver</artifactId>
+                <version>${mongodb.version}</version>
+            </dependency>
+
+            <!-- Test: Database -->
+
+            <dependency>
+                <groupId>de.flapdoodle.embed</groupId>
+                <artifactId>de.flapdoodle.embed.mongo</artifactId>
+                <version>${mongodb-embed.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>fr.inria.atlanmod.neoemf.data.mongodb</Bundle-SymbolicName>
+                        <Export-Package>
+                            !fr.inria.atlanmod.neoemf.data.mongodb.*.internal.*,
+                            fr.inria.atlanmod.neoemf.data.mongodb.*
+                        </Export-Package>
+                        <Require-Bundle>
+                            ${project.groupId}.core
+                        </Require-Bundle>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
