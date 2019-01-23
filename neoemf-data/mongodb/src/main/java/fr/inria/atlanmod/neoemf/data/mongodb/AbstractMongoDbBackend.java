@@ -196,7 +196,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
         final String ownerId = idConverter.convert(id);
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_CONTAINER));
         final Bson update = unset(ModelDocument.F_CONTAINER);
 
         updateOne(filter, update);

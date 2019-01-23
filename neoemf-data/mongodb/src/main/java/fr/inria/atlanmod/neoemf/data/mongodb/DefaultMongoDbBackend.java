@@ -131,7 +131,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_SINGLE_VALUE));
         final Bson update = unset(fieldWithSuffix(ModelDocument.F_SINGLE_VALUE, featureId));
 
         updateOne(filter, update);
@@ -203,7 +203,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_SINGLE_REFERENCE));
         final Bson update = unset(fieldWithSuffix(ModelDocument.F_SINGLE_REFERENCE, featureId));
 
         updateOne(filter, update);
@@ -221,7 +221,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_MANY_VALUE));
         final Bson projection = include(fieldWithSuffix(ModelDocument.F_MANY_VALUE, featureId));
 
         final ModelDocument instance = find(filter, ModelDocument.class).projection(projection).first();
@@ -242,7 +242,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_MANY_VALUE));
         final Bson projection = include(fieldWithSuffix(ModelDocument.F_MANY_VALUE, featureId));
 
         final ModelDocument instance = find(filter, ModelDocument.class).projection(projection).first();
@@ -337,7 +337,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_MANY_VALUE));
         final Bson projection = include(fieldWithSuffix(ModelDocument.F_MANY_VALUE, featureId));
 
         final ModelDocument instance = find(filter, ModelDocument.class).projection(projection).first();
@@ -365,7 +365,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         final String ownerId = idConverter.convert(feature.owner());
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_MANY_VALUE));
         final Bson update = unset(ModelDocument.F_MANY_VALUE);
 
         updateOne(filter, update);
@@ -394,7 +394,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_MANY_REFERENCE));
         final Bson projection = include(fieldWithSuffix(ModelDocument.F_MANY_REFERENCE, featureId));
 
         final ModelDocument instance = find(filter, ModelDocument.class).projection(projection).first();
@@ -415,7 +415,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_MANY_REFERENCE));
         final Bson projection = include(fieldWithSuffix(ModelDocument.F_MANY_REFERENCE, featureId));
 
         final ModelDocument instance = find(filter, ModelDocument.class).projection(projection).first();
@@ -511,7 +511,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_MANY_REFERENCE));
         final Bson projection = include(fieldWithSuffix(ModelDocument.F_MANY_REFERENCE, featureId));
 
         final ModelDocument instance = find(filter, ModelDocument.class).projection(projection).first();
@@ -539,7 +539,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend {
 
         final String ownerId = idConverter.convert(feature.owner());
 
-        final Bson filter = eq(ModelDocument.F_ID, ownerId);
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(ModelDocument.F_MANY_REFERENCE));
         final Bson update = unset(ModelDocument.F_MANY_REFERENCE);
 
         updateOne(filter, update);
