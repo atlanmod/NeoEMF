@@ -94,7 +94,7 @@ public class ModelDocument {
      * The multi-valued attributes values of the related model object.
      */
     @BsonProperty(F_MANY_VALUE)
-    private HashMap<String, List<String>> manyValues = new HashMap<>();
+    private Map<String, List<String>> manyValues = new HashMap<>();
 
     /**
      * The multi-valued references of the related model object.
@@ -144,12 +144,12 @@ public class ModelDocument {
         this.singleReferences = singleReferences;
     }
 
-    public HashMap<String, List<String>> getManyValues() {
+    public Map<String, List<String>> getManyValues() {
         return manyValues;
     }
 
     @VisibleForReflection
-    public void setManyValues(HashMap<String, List<String>> manyValues) {
+    public void setManyValues(Map<String, List<String>> manyValues) {
         this.manyValues = manyValues;
     }
 
