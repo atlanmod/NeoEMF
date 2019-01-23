@@ -1,13 +1,20 @@
 package fr.inria.atlanmod.neoemf.data.mongodb.context;
 
+import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.IMongodConfig;
 import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
+import de.flapdoodle.embed.mongo.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.mongo.distribution.Version;
+import de.flapdoodle.embed.process.config.IRuntimeConfig;
+import de.flapdoodle.embed.process.config.io.ProcessOutput;
+import de.flapdoodle.embed.process.io.IStreamProcessor;
 
 import org.atlanmod.commons.concurrent.MoreThreads;
+import org.atlanmod.commons.log.Level;
 import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.log.Logger;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -21,6 +28,11 @@ import static org.atlanmod.commons.Preconditions.checkState;
  */
 @ParametersAreNonnullByDefault
 class MongoDbCluster {
+
+    /**
+     * The global logger for MongoDB clusters.
+     */
+    private static final Logger LOG = Log.forName("org.mongodb.driver");
 
     /**
      * Facility for testing MongoDB.
@@ -56,7 +68,6 @@ class MongoDbCluster {
      * <p>
      * If the cluster is already initialized, then calling this method does nothing.
      */
-    // TODO Disable MongoDb logging
     public static void init() {
         // If already initialized, then do nothing
         if (initialized) {
@@ -68,9 +79,22 @@ class MongoDbCluster {
         try {
             Log.info("Initializing the MongoDB cluster... (This may take several minutes)");
 
-            final MongodStarter starter = MongodStarter.getDefaultInstance();
+            final ProcessOutput processOutput = new ProcessOutput(
+                    new CommonsStreamProcessor(LOG, Level.INFO),
+                    new CommonsStreamProcessor(LOG, Level.ERROR),
+                    new CommonsStreamProcessor(LOG, Level.DEBUG)
+            );
 
-            final IMongodConfig mongodConfig = new MongodConfigBuilder().version(Version.Main.DEVELOPMENT).build();
+            final IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder()
+                    .defaults(Command.MongoD)
+                    .processOutput(processOutput)
+                    .build();
+
+            final MongodStarter starter = MongodStarter.getInstance(runtimeConfig);
+
+            final IMongodConfig mongodConfig = new MongodConfigBuilder()
+                    .version(Version.Main.DEVELOPMENT)
+                    .build();
 
             mongo = starter.prepare(mongodConfig);
             mongo.start();
@@ -133,5 +157,43 @@ class MongoDbCluster {
         checkState(isInitialized(), "The cluster has not been initialized");
 
         return port;
+    }
+
+    /**
+     * An {@link IStreamProcessor} that logs events on a {@link Logger}.
+     */
+    @ParametersAreNonnullByDefault
+    private static class CommonsStreamProcessor implements IStreamProcessor {
+
+        /**
+         * The logger where to log events.
+         */
+        private final Logger logger;
+
+        /**
+         * The logging level.
+         */
+        private final Level level;
+
+        /**
+         * Constructs a new {@code CommonsStreamProcessor}.
+         *
+         * @param logger the logger where to log events
+         * @param level  the logging level
+         */
+        public CommonsStreamProcessor(Logger logger, Level level) {
+            this.logger = logger;
+            this.level = level;
+        }
+
+        @Override
+        public void process(String s) {
+            logger.log(level, s);
+        }
+
+        @Override
+        public void onProcessed() {
+            // Do nothing
+        }
     }
 }
