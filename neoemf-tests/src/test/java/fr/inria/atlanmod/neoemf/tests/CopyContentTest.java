@@ -94,7 +94,7 @@ class CopyContentTest extends AbstractResourceBasedTest {
     @Tag("slower")
     @ParameterizedTest
     @ArgumentsSource(ContextProvider.All.class)
-    // FIXME May failed with HBase when using no caching store
+    // FIXME May failed with distributed backends when using no caching store
     void testMoveStandardToPersistentResource(Context context) throws IOException {
         try (PersistentResource resource = createPersistentResource(context)) {
             EObject expected = ResourceManager.load(ResourceManager.xmiStandard());
