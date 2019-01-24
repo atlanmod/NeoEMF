@@ -47,13 +47,3 @@ after_success:
 
   # Publish update-site of Eclipse plugin in Github
   - bash .util/publish_plugin.sh
-
-notifications:
-  slack:
-    rooms:
-      secure: I+soWCTe4u34GgD8069hEcSswPYPuKDjxjbM0/W5UsjBcog+G+9WfMM/NdXpi6MFKg7FnSdudTH34yLLoqYDVkDOqIZ+o/UG/jaTjHtqZeoJg5aQAXWVl0EVBfrPTltCwdDsrIwIuPJRk2RV5/0x4/Hp7KPtWfiRsweiu/0DQ4Zh0QbLMOgoXWKymU8g4x17ruJnJ8+1M//OCAfSZouJVga5U/RX1nPhB5lJtya6p27Nf1kRLTIh9Jksyv1fRhJE5qDrZCL1Qah5WvWJLraTy4Fs1hnY8ACMQURq/0nx4C37MsAYR2jFoixm+oCIxJlYrMWh7/wKS7UrAzniieXAYitMX7SnUWaihgE+3FRnD8QliPb8UeBAh0CUDHUxzrD7Jslbt+DVk4MjXfYPRzWfWHEIBzzIIPGwN540bKlHcTl5TD0eoKIzBc1DOxCCrAHmL5CfIIr5hj2/b7ZwTUIpYrtupBSV8sFD3X449VdRz+pVkDKj7FEVpAZ1Ywylg52wa0/2hObvfG9SbrhqSQZvKkTyEs4kdNuCjqUYlILOiqdz0fNbW4M7qvskONt9h5BunV7KyQkrnwfUVW0yA0D9eEG339aYbLwmLeSrrxMUFngK/9U63JsGmPmUQGafiomvLog6KJ04lXDTEURM1N1lZCGuJ5uYbqIpnSm9QwpmnWA=
-    template:
-      - Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository} [%{branch}] %{result} in %{duration}
-    on_success: always
-    on_failure: always
-    on_pull_requests: true
