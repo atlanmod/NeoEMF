@@ -98,7 +98,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final String fieldName = fieldWithSuffix(ModelDocument.F_SINGLE_FEATURE, featureId);
+        final String fieldName = concat(ModelDocument.F_SINGLE_FEATURE, featureId);
 
         final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldName));
         final Bson projection = include(fieldName);
@@ -120,7 +120,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final String fieldName = fieldWithSuffix(ModelDocument.F_SINGLE_FEATURE, featureId);
+        final String fieldName = concat(ModelDocument.F_SINGLE_FEATURE, featureId);
 
         final Bson filter = eq(ModelDocument.F_ID, ownerId);
         final Bson projection = include(fieldName);
@@ -141,7 +141,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final String fieldName = fieldWithSuffix(ModelDocument.F_SINGLE_FEATURE, featureId);
+        final String fieldName = concat(ModelDocument.F_SINGLE_FEATURE, featureId);
 
         final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldName));
         final Bson update = unset(fieldName);
@@ -161,9 +161,10 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final String fieldName = fieldWithSuffix(ModelDocument.F_MANY_FEATURE, featureId);
+        final String fieldName = concat(ModelDocument.F_MANY_FEATURE, featureId);
+        final String fieldNameWithPos = concat(fieldName, Integer.toString(feature.position()));
 
-        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldName));
+        final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldNameWithPos));
         final Bson projection = slice(fieldName, feature.position(), 1);
 
         final ModelDocument instance = documents.find(filter).projection(projection).first();
@@ -184,7 +185,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final String fieldName = fieldWithSuffix(ModelDocument.F_MANY_FEATURE, featureId);
+        final String fieldName = concat(ModelDocument.F_MANY_FEATURE, featureId);
 
         final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldName));
         final Bson projection = include(fieldName);
@@ -208,8 +209,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final String fieldName = fieldWithSuffix(ModelDocument.F_MANY_FEATURE, featureId);
-        final String fieldNameWithPos = fieldWithSuffix(fieldName, Integer.toString(feature.position()));
+        final String fieldName = concat(ModelDocument.F_MANY_FEATURE, featureId);
+        final String fieldNameWithPos = concat(fieldName, Integer.toString(feature.position()));
 
         final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldNameWithPos));
         final Bson projection = slice(fieldName, feature.position(), 1);
@@ -260,7 +261,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
 
         List<String> newValues = collection.stream().map(this::serializeValue).collect(Collectors.toList());
 
-        final String fieldName = fieldWithSuffix(ModelDocument.F_MANY_FEATURE, featureId);
+        final String fieldName = concat(ModelDocument.F_MANY_FEATURE, featureId);
 
         final Bson filter = eq(ModelDocument.F_ID, ownerId);
         final Bson update = pushEach(fieldName, newValues, new PushOptions().position(feature.position()));
@@ -276,8 +277,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String ownerId = idConverter.convert(feature.owner());
         final String featureId = Integer.toString(feature.id());
 
-        final String fieldName = fieldWithSuffix(ModelDocument.F_MANY_FEATURE, featureId);
-        final String fieldNameWithPos = fieldWithSuffix(fieldName, Integer.toString(feature.position()));
+        final String fieldName = concat(ModelDocument.F_MANY_FEATURE, featureId);
+        final String fieldNameWithPos = concat(fieldName, Integer.toString(feature.position()));
 
         final Bson baseFilter = eq(ModelDocument.F_ID, ownerId);
         final Bson getFilter = and(baseFilter, exists(fieldNameWithPos));
@@ -326,7 +327,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String fieldSize = "size";
 
         final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldName));
-        final Bson projection = computed(fieldSize, new Document(QueryOperators.SIZE, fieldWithSuffix('$' + fieldName, Integer.toString(feature.id()))));
+        final Bson projection = computed(fieldSize, new Document(QueryOperators.SIZE, concat('$' + fieldName, Integer.toString(feature.id()))));
 
         final List<Bson> pipeline = Arrays.asList(
                 match(filter),

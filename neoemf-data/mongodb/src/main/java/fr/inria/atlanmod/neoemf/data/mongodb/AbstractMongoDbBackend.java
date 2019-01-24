@@ -87,8 +87,8 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     }
 
     @Nonnull
-    protected static String fieldWithSuffix(String... parts) {
-        return String.join(".", parts);
+    protected static String concat(String... fieldNames) {
+        return String.join(".", fieldNames);
     }
 
     /**
@@ -146,8 +146,8 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
         final Bson filter = eq(ModelDocument.F_ID, ownerId);
         final Bson update = combine(
-                set(fieldWithSuffix(ModelDocument.F_CONTAINER, ContainerDocument.F_OWNER), newContainer.getOwner()),
-                set(fieldWithSuffix(ModelDocument.F_CONTAINER, ContainerDocument.F_ID), newContainer.getId())
+                set(concat(ModelDocument.F_CONTAINER, ContainerDocument.F_OWNER), newContainer.getOwner()),
+                set(concat(ModelDocument.F_CONTAINER, ContainerDocument.F_ID), newContainer.getId())
         );
 
         documents.updateOne(filter, update, new UpdateOptions().upsert(true));
@@ -197,8 +197,8 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
         if (notExists) {
             final Bson update = combine(
-                    setOnInsert(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_NAME), newMetaClass.getName()),
-                    setOnInsert(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_URI), newMetaClass.getUri())
+                    setOnInsert(concat(ModelDocument.F_METACLASS, ClassDocument.F_NAME), newMetaClass.getName()),
+                    setOnInsert(concat(ModelDocument.F_METACLASS, ClassDocument.F_URI), newMetaClass.getUri())
             );
 
             documents.updateOne(filter, update, new UpdateOptions().upsert(true));
@@ -212,8 +212,8 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
     public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         final Iterable<Bson> andFilters = metaClasses.stream()
                 .map(c -> and(
-                        eq(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_NAME), c.name()),
-                        eq(fieldWithSuffix(ModelDocument.F_METACLASS, ClassDocument.F_URI), c.uri()))
+                        eq(concat(ModelDocument.F_METACLASS, ClassDocument.F_NAME), c.name()),
+                        eq(concat(ModelDocument.F_METACLASS, ClassDocument.F_URI), c.uri()))
                 )
                 .collect(Collectors.toList());
 
