@@ -51,6 +51,7 @@ import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.exists;
 import static com.mongodb.client.model.Projections.computed;
 import static com.mongodb.client.model.Projections.include;
+import static com.mongodb.client.model.Projections.slice;
 import static com.mongodb.client.model.Updates.pushEach;
 import static com.mongodb.client.model.Updates.set;
 import static com.mongodb.client.model.Updates.unset;
@@ -163,15 +164,15 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String fieldName = fieldWithSuffix(ModelDocument.F_MANY_FEATURE, featureId);
 
         final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldName));
-        final Bson projection = include(fieldName);
+        final Bson projection = slice(fieldName, feature.position(), 1);
 
         final ModelDocument instance = documents.find(filter).projection(projection).first();
 
         return Optional.ofNullable(instance)
                 .map(ModelDocument::getManyFeatures)
                 .map(m -> m.get(featureId))
-                .filter(l -> l.size() > feature.position())
-                .map(l -> l.get(feature.position()))
+                .filter(l -> !l.isEmpty())
+                .map(l -> l.get(0))
                 .map(this::deserializeValue);
     }
 
@@ -211,7 +212,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String fieldNameWithPos = fieldWithSuffix(fieldName, Integer.toString(feature.position()));
 
         final Bson filter = and(eq(ModelDocument.F_ID, ownerId), exists(fieldNameWithPos));
-        final Bson projection = include(fieldName);
+        final Bson projection = slice(fieldName, feature.position(), 1);
         final Bson update = set(fieldNameWithPos, serializeValue(value));
 
         final ModelDocument instance = documents.findOneAndUpdate(filter, update, new FindOneAndUpdateOptions().projection(projection));
@@ -219,7 +220,8 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final Optional<V> previousValue = Optional.ofNullable(instance)
                 .map(ModelDocument::getManyFeatures)
                 .map(m -> m.get(featureId))
-                .map(l -> l.get(feature.position()))
+                .filter(l -> !l.isEmpty())
+                .map(l -> l.get(0))
                 .map(this::deserializeValue);
 
         if (!previousValue.isPresent()) {
@@ -261,9 +263,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
         final String fieldName = fieldWithSuffix(ModelDocument.F_MANY_FEATURE, featureId);
 
         final Bson filter = eq(ModelDocument.F_ID, ownerId);
-        final Bson update = size > 0
-                ? pushEach(fieldName, newValues, new PushOptions().position(feature.position()))
-                : set(fieldName, newValues);
+        final Bson update = pushEach(fieldName, newValues, new PushOptions().position(feature.position()));
 
         documents.updateOne(filter, update);
     }
