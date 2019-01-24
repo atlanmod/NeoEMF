@@ -16,7 +16,6 @@ import org.atlanmod.commons.function.Converter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -70,12 +69,10 @@ public interface ManyReferenceMergedAs<M> extends ValueMapper, ManyReferenceMapp
 
         Converter<List<Id>, M> converter = manyReferenceMerger();
 
-        List<Id> ids = this.<M>valueOf(feature.withoutPosition())
-                .map(converter::revert)
-                .orElseThrow(NoSuchElementException::new);
+        List<Id> ids = this.<M>valueOf(feature.withoutPosition()).map(converter::revert).orElse(null);
 
-        if (feature.position() >= ids.size()) {
-            throw new NoSuchElementException();
+        if (isNull(ids) || feature.position() >= ids.size()) {
+            throw new IndexOutOfBoundsException();
         }
 
         Optional<Id> previousId = Optional.of(ids.get(feature.position()));

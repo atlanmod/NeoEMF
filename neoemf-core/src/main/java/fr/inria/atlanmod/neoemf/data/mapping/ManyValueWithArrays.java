@@ -15,7 +15,6 @@ import org.atlanmod.commons.collect.MoreArrays;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -61,10 +60,10 @@ public interface ManyValueWithArrays extends ManyValueMapper {
         checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        V[] values = this.<V[]>valueOf(feature.withoutPosition()).orElseThrow(NoSuchElementException::new);
+        V[] values = this.<V[]>valueOf(feature.withoutPosition()).orElse(null);
 
-        if (feature.position() >= values.length) {
-            throw new NoSuchElementException();
+        if (isNull(values) || feature.position() >= values.length) {
+            throw new IndexOutOfBoundsException();
         }
 
         Optional<V> previousValue = Optional.of(values[feature.position()]);

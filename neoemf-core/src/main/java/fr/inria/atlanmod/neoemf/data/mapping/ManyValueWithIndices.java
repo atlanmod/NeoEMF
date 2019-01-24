@@ -16,7 +16,6 @@ import org.atlanmod.commons.collect.SizedIterator;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -59,8 +58,9 @@ public interface ManyValueWithIndices extends ManyValueMapper {
         checkNotNull(value, "value");
 
         Optional<V> previousValue = valueOf(feature);
+
         if (!previousValue.isPresent()) {
-            throw new NoSuchElementException();
+            throw new IndexOutOfBoundsException();
         }
 
         valueForNullable(feature, value);

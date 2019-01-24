@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -403,13 +402,13 @@ public abstract class AbstractDataMapperTest extends AbstractUnitTest {
 
         assertThat(catchThrowable(() ->
                 assertThat(m.set(sfBase.withPosition(0), value0)).isNotPresent()
-        )).isInstanceOf(NoSuchElementException.class);
+        )).isInstanceOf(IndexOutOfBoundsException.class);
 
         m.add(sfBase.withPosition(0), value0);
 
         assertThat(catchThrowable(() ->
                 assertThat(m.set(sfBase.withPosition(1), value1)).isNotPresent()
-        )).isInstanceOf(NoSuchElementException.class);
+        )).isInstanceOf(IndexOutOfBoundsException.class);
     }
 
     /**

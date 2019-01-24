@@ -178,7 +178,7 @@ class StoreAdapterTest extends AbstractTest {
 
         assertThat(
                 catchThrowable(() -> store.set(object, eFeature, 0, value0))
-        ).isExactlyInstanceOf(NoSuchElementException.class);
+        ).isExactlyInstanceOf(IndexOutOfBoundsException.class);
 
         store.add(object, eFeature, 0, value0);
         assertThat(store.get(object, eFeature, 0)).isEqualTo(value0);

@@ -21,7 +21,6 @@ import org.atlanmod.commons.collect.MoreStreams;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -145,11 +144,14 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        V previousValue = graph.getVertex(feature.owner())
-                .flatMap(v -> v.replaceValue(feature, feature.position(), value))
-                .orElseThrow(NoSuchElementException::new);
+        Optional<V> previousValue = graph.getVertex(feature.owner())
+                .flatMap(v -> v.replaceValue(feature, feature.position(), value));
 
-        return Optional.of(previousValue);
+        if (!previousValue.isPresent()) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        return previousValue;
     }
 
     @Override
@@ -286,12 +288,15 @@ class DefaultBlueprintsBackend extends AbstractBlueprintsBackend {
         checkNotNull(feature, "feature");
         checkNotNull(reference, "reference");
 
-        Id previousId = graph.getVertex(feature.owner())
+        Optional<Id> previousId = graph.getVertex(feature.owner())
                 .flatMap(v -> v.replaceReference(feature, feature.position(), reference))
-                .map(ElementVertex::getElementId)
-                .orElseThrow(NoSuchElementException::new);
+                .map(ElementVertex::getElementId);
 
-        return Optional.of(previousId);
+        if (!previousId.isPresent()) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        return previousId;
     }
 
     @Override

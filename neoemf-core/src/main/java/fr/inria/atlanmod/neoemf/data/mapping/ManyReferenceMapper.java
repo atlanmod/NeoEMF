@@ -13,7 +13,6 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -63,10 +62,10 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @return an {@link Optional} containing the previous reference of the {@code feature}, or {@link Optional#empty()}
      * if the feature has no reference before
      *
-     * @throws NoSuchElementException if the {@code feature} doesn't exist
-     * @throws NullPointerException   if any parameter is {@code null}
+     * @throws NullPointerException      if any parameter is {@code null}
+     * @throws IndexOutOfBoundsException if {@code index.position < 0 || index.position >= size}
      * @implSpec This method is intended to modify an existing value. If the {@code feature} is not defined,
-     * implementations should not add the value, but throw a {@link NoSuchElementException}.
+     * implementations should not add the value, but throw a {@link IndexOutOfBoundsException}.
      * @see #addReference(ManyFeatureBean, Id)
      * @see #appendReference(SingleFeatureBean, Id)
      */
@@ -80,7 +79,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @param reference the reference to add
      *
      * @throws NullPointerException      if any parameter is {@code null}
-     * @throws IndexOutOfBoundsException if {@code feature#position() > size}
+     * @throws IndexOutOfBoundsException if {@code feature.position > size}
      */
     void addReference(ManyFeatureBean feature, Id reference);
 
@@ -91,7 +90,7 @@ public interface ManyReferenceMapper extends ReferenceMapper {
      * @param collection the values to add
      *
      * @throws NullPointerException      if any parameter is {@code null}
-     * @throws IndexOutOfBoundsException if {@code feature#position() > size}
+     * @throws IndexOutOfBoundsException if {@code feature.position > size}
      */
     void addAllReferences(ManyFeatureBean feature, List<Id> collection);
 

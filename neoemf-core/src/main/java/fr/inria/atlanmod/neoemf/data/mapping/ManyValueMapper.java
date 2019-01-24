@@ -12,7 +12,6 @@ import fr.inria.atlanmod.neoemf.data.bean.ManyFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -63,10 +62,10 @@ public interface ManyValueMapper extends ValueMapper {
      * @return an {@link Optional} containing the previous value of the {@code feature}, or {@link Optional#empty()} if
      * the feature has no value before
      *
-     * @throws NoSuchElementException if the {@code feature} doesn't exist
-     * @throws NullPointerException   if any parameter is {@code null}
+     * @throws NullPointerException      if any parameter is {@code null}
+     * @throws IndexOutOfBoundsException if {@code index.position < 0 || index.position >= size}
      * @implSpec This method is intended to modify an existing value. If the {@code feature} is not defined,
-     * implementations should not add the value, but throw a {@link NoSuchElementException}.
+     * implementations should not add the value, but throw a {@link IndexOutOfBoundsException}.
      * @see #addValue(ManyFeatureBean, Object)
      * @see #appendValue(SingleFeatureBean, Object)
      */
@@ -81,7 +80,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @param <V>     the type of value
      *
      * @throws NullPointerException      if any parameter is {@code null}
-     * @throws IndexOutOfBoundsException if {@code feature#position() > size}
+     * @throws IndexOutOfBoundsException if {@code feature.position > size}
      */
     <V> void addValue(ManyFeatureBean feature, V value);
 
@@ -93,7 +92,7 @@ public interface ManyValueMapper extends ValueMapper {
      * @param <V>        the type of value
      *
      * @throws NullPointerException      if any parameter is {@code null}
-     * @throws IndexOutOfBoundsException if {@code feature#position() > size}
+     * @throws IndexOutOfBoundsException if {@code feature.position > size}
      */
     <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection);
 

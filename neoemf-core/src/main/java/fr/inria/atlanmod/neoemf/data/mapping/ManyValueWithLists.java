@@ -13,7 +13,6 @@ import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -59,10 +58,10 @@ public interface ManyValueWithLists extends ManyValueMapper {
         checkNotNull(feature, "feature");
         checkNotNull(value, "value");
 
-        List<V> values = this.<List<V>>valueOf(feature.withoutPosition()).orElseThrow(NoSuchElementException::new);
+        List<V> values = this.<List<V>>valueOf(feature.withoutPosition()).orElse(null);
 
-        if (feature.position() >= values.size()) {
-            throw new NoSuchElementException();
+        if (isNull(values) || feature.position() >= values.size()) {
+            throw new IndexOutOfBoundsException();
         }
 
         Optional<V> previousValue = Optional.of(values.set(feature.position(), value));
