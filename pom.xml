@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.atlanmod.commons</groupId>
         <artifactId>commons</artifactId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.4-SNAPSHOT</version>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf</groupId>
@@ -113,7 +113,7 @@
     <properties>
         <argLine.global>-XX:+UseConcMarkSweepGC -Xmx2g</argLine.global>
 
-        <commons.version>1.0.3-SNAPSHOT</commons.version>
+        <commons.version>1.0.4-SNAPSHOT</commons.version>
 
         <emf.version>2.15.0</emf.version>
     </properties>
