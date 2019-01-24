@@ -37,10 +37,10 @@ RUN mvn -B install -DskipTests -pl !neoemf-tests  \
  && rm -rf /root/.m2/* /tmp/*
 
 # Install JProfiler agent
-RUN wget https://download-keycdn.ej-technologies.com/jprofiler/jprofiler_linux_10_0_4.tar.gz -P /tmp/ \
- && tar -xzf /tmp/jprofiler_linux_10_0_4.tar.gz -C /usr/local \
- && mv /usr/local/jprofiler10.0.4 /usr/local/jprofiler \
- && rm /tmp/jprofiler_linux_10_0_4.tar.gz
+RUN wget https://download-keycdn.ej-technologies.com/jprofiler/jprofiler_linux_10_1_5.tar.gz -P /tmp/ \
+ && tar -xzf /tmp/jprofiler_linux_10_1_5.tar.gz -C /usr/local \
+ && mv /usr/local/jprofiler10.1.5 /usr/local/jprofiler \
+ && rm /tmp/jprofiler_linux_10_1_5.tar.gz
 
 EXPOSE 8849
 
