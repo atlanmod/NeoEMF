@@ -68,7 +68,7 @@ import static org.atlanmod.commons.Preconditions.checkNotNull;
 class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferenceAs<String> {
 
     /**
-     *
+     * A {@link org.atlanmod.commons.io.serializer.Serializer} that converts feature values in a Base64 representation.
      */
     @Nonnull
     private final StringSerializer<Object> serializer = StringSerializerFactory.base64(BinarySerializerFactory.getInstance().forAny());
@@ -352,11 +352,29 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
 
     // region MongoDB
 
+    /**
+     * Serializes the specified {@code value}.
+     *
+     * @param value the object to serialize
+     *
+     * @return the serialized object
+     *
+     * @see #deserializeValue(String)
+     */
     @Nonnull
     private <T> String serializeValue(T value) {
         return serializer.convert(value);
     }
 
+    /**
+     * Deserializes an object from the specified {@code value}.
+     *
+     * @param value the serialized object
+     *
+     * @return the deserialized object
+     *
+     * @see #serializeValue(Object)
+     */
     @Nonnull
     @SuppressWarnings("unchecked")
     private <T> T deserializeValue(String value) {
