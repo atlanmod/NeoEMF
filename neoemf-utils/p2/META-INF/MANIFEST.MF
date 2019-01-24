@@ -3,6 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: NeoEMF Utils P2
 Bundle-Vendor: Atlanmod, Inria, LS2N, and IMT Nantes
 Bundle-SymbolicName: neoemf-utils.p2
-Bundle-Version: 1.0.3.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.emf.compare

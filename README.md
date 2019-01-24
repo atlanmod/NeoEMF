@@ -81,14 +81,14 @@ To add the dependency of the specific implementation you want to use, simply use
 Where `{name}` is any of:
 *   Blueprints:
     -   TinkerGraph : `blueprints-core`
-    -   Neo4j : `blueprints-neo4j` *(requires `blueprints-core`)*
+    -   Neo4j: `blueprints-neo4j` *(requires `blueprints-core`)*
 *   MapDB : `mapdb`
 *   BerkeleyDB: `berkeleydb`
 *   HBase: `hbase`
 
 ### Snapshots
 
-Snapshots are automatically build from the `master` and are available throught Maven using `1.0.3-SNAPSHOT`.
+Snapshots are automatically build from the `master` and are available throught Maven using `2.0.0-SNAPSHOT`.
 -   Javadoc: [neoemf][snapshot-doc]
 -   Eclipse Plugin: [neoemf][snapshot-plugin]
 
