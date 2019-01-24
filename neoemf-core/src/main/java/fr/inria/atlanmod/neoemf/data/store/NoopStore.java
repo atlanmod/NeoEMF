@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperChain;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * configuration.
  */
 @ParametersAreNonnullByDefault
-public class NoopStore extends AbstractMapperDecorator<Backend> implements Store {
+public class NoopStore extends AbstractDataMapperChain<Backend> implements Store {
 
     /**
      * Constructs a new {@code NoopStore} between the given {@code resource} and the {@code backend}.

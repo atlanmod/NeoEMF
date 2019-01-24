@@ -26,12 +26,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.atlanmod.commons.Preconditions.checkNotNull;
 
 /**
- * An abstract {@link DataMapper} wrapper that delegates method calls to an internal {@link DataMapper}.
+ * An abstract {@link DataMapper} that delegates method calls to a {@link DataMapper} chain.
  *
  * @param <M> the type of the inner {@link DataMapper}
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractMapperDecorator<M extends DataMapper> extends AbstractDataMapper {
+public abstract class AbstractDataMapperChain<M extends DataMapper> extends AbstractDataMapper {
 
     /**
      * The next mapper to notify.
@@ -39,13 +39,13 @@ public abstract class AbstractMapperDecorator<M extends DataMapper> extends Abst
     private M next;
 
     /**
-     * Returns the nexy mapper to notify.
+     * Returns the next mapper to notify.
      *
      * @return the next mapper
      */
     @Nonnull
     protected M next() {
-        return next;
+        return checkNotNull(next, "next");
     }
 
     /**
@@ -54,8 +54,7 @@ public abstract class AbstractMapperDecorator<M extends DataMapper> extends Abst
      * @param next the next mapper
      */
     protected void next(M next) {
-        checkNotNull(next, "next");
-        this.next = next;
+        this.next = checkNotNull(next, "next");
     }
 
     @Override
@@ -90,6 +89,7 @@ public abstract class AbstractMapperDecorator<M extends DataMapper> extends Abst
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public void removeContainer(Id id) {
         next.removeContainer(id);
     }
@@ -102,6 +102,7 @@ public abstract class AbstractMapperDecorator<M extends DataMapper> extends Abst
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public boolean metaClassFor(Id id, ClassBean metaClass) {
         return next.metaClassFor(id, metaClass);
     }
@@ -188,6 +189,7 @@ public abstract class AbstractMapperDecorator<M extends DataMapper> extends Abst
     }
 
     @Override
+    @OverridingMethodsMustInvokeSuper
     public <V> void addAllValues(ManyFeatureBean feature, List<? extends V> collection) {
         next.addAllValues(feature, collection);
     }

@@ -9,7 +9,7 @@
 package fr.inria.atlanmod.neoemf.data.store;
 
 import fr.inria.atlanmod.neoemf.data.Backend;
-import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperChain;
 
 import java.util.Objects;
 
@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * An abstract {@link Store} wrapper that delegates method calls to an internal {@link Store}.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractStore extends AbstractMapperDecorator<Store> implements Store, Comparable<AbstractStore> {
+public abstract class AbstractStore extends AbstractDataMapperChain<Store> implements Store, Comparable<AbstractStore> {
 
     /**
      * The order of this store in the chain.

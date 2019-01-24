@@ -13,7 +13,7 @@ import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 import fr.inria.atlanmod.neoemf.config.InvalidConfigException;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
-import fr.inria.atlanmod.neoemf.data.mapping.AbstractMapperDecorator;
+import fr.inria.atlanmod.neoemf.data.mapping.AbstractDataMapperChain;
 import fr.inria.atlanmod.neoemf.data.store.listener.RecordingStoreListener;
 import fr.inria.atlanmod.neoemf.data.store.listener.StoreStats;
 
@@ -258,6 +258,6 @@ class StoreFactoryTest extends AbstractTest {
      * @return the inner store
      */
     private Store getInnerStore(Store store) {
-        return getValue(store, INNER_MAPPER_FIELDNAME, AbstractMapperDecorator.class, Store.class);
+        return getValue(store, INNER_MAPPER_FIELDNAME, AbstractDataMapperChain.class, Store.class);
     }
 }
