@@ -2,6 +2,7 @@ package fr.inria.atlanmod.neoemf.data.mongodb.context;
 
 import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
+import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
 import de.flapdoodle.embed.mongo.config.IMongodConfig;
 import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
@@ -37,7 +38,12 @@ class MongoDbCluster {
     /**
      * Facility for testing MongoDB.
      */
-    private static MongodExecutable mongo;
+    private static MongodExecutable mongoExecutable;
+
+    /**
+     * MongoDB process.
+     */
+    private static MongodProcess mongoProcess;
 
     /**
      * The server host.
@@ -60,7 +66,7 @@ class MongoDbCluster {
      * @return {@code true} if the cluster has been successfully initialized
      */
     public static boolean isInitialized() {
-        return initialized && nonNull(mongo);
+        return initialized && nonNull(mongoExecutable);
     }
 
     /**
@@ -96,8 +102,8 @@ class MongoDbCluster {
                     .version(Version.Main.DEVELOPMENT)
                     .build();
 
-            mongo = starter.prepare(mongodConfig);
-            mongo.start();
+            mongoExecutable = starter.prepare(mongodConfig);
+            mongoProcess = mongoExecutable.start();
 
             host = mongodConfig.net().getServerAddress().getHostAddress();
             port = mongodConfig.net().getPort();
@@ -118,7 +124,8 @@ class MongoDbCluster {
     private static void close() {
         try {
             Log.info("Shutting down the MongoDB cluster...");
-            mongo.stop();
+            mongoProcess.stop();
+            mongoExecutable.stop();
 
             reset();
         }
@@ -130,7 +137,8 @@ class MongoDbCluster {
      * Resets the current configuration.
      */
     private static void reset() {
-        mongo = null;
+        mongoProcess = null;
+        mongoExecutable = null;
         host = null;
         port = 0;
     }
