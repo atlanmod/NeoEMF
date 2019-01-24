@@ -28,8 +28,9 @@ public class ContainerDocument {
     @Nonnull
     public static final String F_ID = "id";
 
+    // TODO Use the converter of the calling Backend
     @Nonnull
-    private final static Converter<Id, String> CONVERTER = IdConverters.withHexString();
+    private static final Converter<Id, String> CONVERTER = IdConverters.withHexString();
 
     /**
      * The identifier of the owner of this container.
@@ -43,6 +44,13 @@ public class ContainerDocument {
     @BsonProperty(F_ID)
     private int id;
 
+    /**
+     * Converts the specified {@code bean} in a {@link ContainerDocument}.
+     *
+     * @param bean the bean
+     *
+     * @return the document
+     */
     @Nonnull
     public static ContainerDocument fromBean(SingleFeatureBean bean) {
         ContainerDocument c = new ContainerDocument();
@@ -67,6 +75,11 @@ public class ContainerDocument {
         this.id = id;
     }
 
+    /**
+     * Converts this document in a {@link SingleFeatureBean}.
+     *
+     * @return a bean
+     */
     @Nonnull
     public SingleFeatureBean toBean() {
         return SingleFeatureBean.of(CONVERTER.revert(owner), id);

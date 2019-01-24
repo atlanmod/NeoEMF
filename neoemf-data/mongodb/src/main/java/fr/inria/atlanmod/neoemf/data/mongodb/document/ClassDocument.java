@@ -1,6 +1,7 @@
 package fr.inria.atlanmod.neoemf.data.mongodb.document;
 
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
+import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 
 import org.bson.codecs.pojo.annotations.BsonProperty;
 
@@ -37,6 +38,13 @@ public class ClassDocument {
     @BsonProperty(F_URI)
     private String uri;
 
+    /**
+     * Converts the specified {@code bean} in a {@link ClassDocument}.
+     *
+     * @param bean the bean
+     *
+     * @return the document
+     */
     @Nonnull
     public static ClassDocument fromBean(ClassBean bean) {
         ClassDocument m = new ClassDocument();
@@ -61,6 +69,11 @@ public class ClassDocument {
         this.uri = uri;
     }
 
+    /**
+     * Converts this document in a {@link SingleFeatureBean}.
+     *
+     * @return a bean
+     */
     @Nonnull
     public ClassBean toBean() {
         return ClassBean.of(name, uri);
