@@ -276,7 +276,7 @@ public final class BoundInMemoryBackend extends AbstractInMemoryBackend {
          */
         private void closeAll() {
             if (!isClosed()) {
-                Log.info("Cleaning BoundInMemoryBackend#DataHolder");
+                Log.debug("Cleaning BoundInMemoryBackend#DataHolder");
 
                 containers.close();
                 instances.close();
