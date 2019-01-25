@@ -251,6 +251,10 @@
                                 <title>HBase</title>
                                 <packages>fr.inria.atlanmod.neoemf.data.hbase*</packages>
                             </group>
+                            <group>
+                                <title>MongoDB (beta)</title>
+                                <packages>fr.inria.atlanmod.neoemf.data.mongodb*</packages>
+                            </group>
                         </groups>
                     </configuration>
                 </plugin>
