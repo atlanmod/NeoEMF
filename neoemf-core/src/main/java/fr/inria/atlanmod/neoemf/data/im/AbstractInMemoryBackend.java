@@ -211,7 +211,7 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
         /**
          * The estimated number of entries in maps.
          */
-        protected static final long ENTRIES = (long) Math.pow(2, 20);
+        protected static final long ENTRIES = (long) Math.pow(2, 16);
 
         /**
          * The estimated size of an {@link Id}.

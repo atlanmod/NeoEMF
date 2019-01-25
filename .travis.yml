@@ -31,9 +31,6 @@ install:
   # Resolve all dependencies
   - mvn -B -V -q -DskipTests install
 
-before_script:
-  - echo "MAVEN_OPTS='-Xmx2g'" > ~/.mavenrc
-
 script:
   # Build and test with code coverage (add `verify sonar:sonar` to enable the Sonar analysis)
   - mvn -B jacoco:prepare-agent test jacoco:report jacoco:report-aggregate
