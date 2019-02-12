@@ -648,8 +648,8 @@ class StoreAdapterTest extends AbstractTest {
     @Test
     void testResolveUpdateInstanceOf() {
         // Resolve the instance of the object
-        Optional<EClass> resolvedClass = store.resolveInstanceOf(id);
-        assertThat(resolvedClass).contains(eClass);
+        EClass resolvedClass = store.resolveInstanceOf(id);
+        assertThat(resolvedClass).isEqualTo(eClass);
 
         // Resolve and rebuild the object
         PersistentEObject resolvedObject = store.resolve(id);

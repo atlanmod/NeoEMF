@@ -677,14 +677,11 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Nonnull
     @Override
-    public Optional<EClass> resolveInstanceOf(Id id) {
-        Optional<EClass> instanceOf = store.metaClassOf(id).map(ClassBean::get);
-
-        if (!instanceOf.isPresent()) {
-            throw new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id.toHexString()));
-        }
-
-        return instanceOf;
+    public EClass resolveInstanceOf(Id id) {
+        return store.metaClassOf(id)
+                .map(ClassBean::get)
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format("Element '%s' does not have an associated EClass", id.toHexString())));
     }
 
     @Override
@@ -714,7 +711,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      */
     @Nonnull
     private PersistentEObject rebuild(Id id) {
-        final EClass eClass = resolveInstanceOf(id).orElseThrow(IllegalStateException::new); // Should never happen
-        return PersistenceFactory.newInstance(eClass, id);
+        return PersistenceFactory.newInstance(resolveInstanceOf(id), id);
     }
 }

@@ -223,7 +223,7 @@ public interface StoreAdapter extends Saveable, Copiable<StoreAdapter>, Internal
      * @return an {@link EClass} representing the meta-class of the element
      */
     @Nonnull
-    Optional<EClass> resolveInstanceOf(Id id);
+    EClass resolveInstanceOf(Id id);
 
     /**
      * Creates the instance of the {@code object} in a {@link ClassBean} object and persists it in the database.
