@@ -284,7 +284,7 @@ public class ListeningStore extends AbstractStore {
     }
 
     /**
-     * Logs the call of a method.
+     * Executes and notifies the call of a method.
      *
      * @param consumer the method to call
      * @param key      the key used during the call
@@ -297,7 +297,7 @@ public class ListeningStore extends AbstractStore {
     }
 
     /**
-     * Logs the call of a method.
+     * Executes and notifies the call of a method.
      *
      * @param consumer the method to call
      * @param key      the key used during the call
@@ -311,7 +311,7 @@ public class ListeningStore extends AbstractStore {
     }
 
     /**
-     * Logs the call of a method and returns the result.
+     * Executes and notifies the call of a method and returns the result.
      *
      * @param function the method to call
      * @param key      the key used during the call
@@ -323,7 +323,7 @@ public class ListeningStore extends AbstractStore {
     }
 
     /**
-     * Logs the call of a method and returns the result.
+     * Executes and notifies the call of a method and returns the result.
      *
      * @param function the method to call
      * @param key      the key used during the call
@@ -346,15 +346,46 @@ public class ListeningStore extends AbstractStore {
                 resultToLog = list;
             }
 
-            final SuccessCallReport<K, V, Object> report = new SuccessCallReport<>(backendReport.get(), getCallingMethod(), key, value, resultToLog);
-            notifyListeners(l -> l.onSuccess(report));
+            notifySuccess(key, value, resultToLog);
             return result;
         }
         catch (Exception e) {
-            final FailureCallReport<K, V> report = new FailureCallReport<>(backendReport.get(), getCallingMethod(), key, value, e);
-            notifyListeners(l -> l.onFailure(report));
+            notifyError(key, value, e);
             throw e;
         }
+    }
+
+    /**
+     * Notifies a successful method call.
+     *
+     * @param key    the key used during the call
+     * @param value  the value of the key
+     * @param result the result of the call
+     */
+    private <K, V, R> void notifySuccess(@Nullable K key, @Nullable V value, R result) {
+        final SuccessCallReport<K, V, Object> report = new SuccessCallReport<>(backendReport.get(), getCallingMethod(), key, value, result);
+        notifyListeners(l -> l.onSuccess(report));
+    }
+
+    /**
+     * Notifies a failed method call.
+     *
+     * @param key   the key used during the call
+     * @param value the value of the key
+     * @param error the exception thrown during the call
+     */
+    private <K, V> void notifyError(@Nullable K key, @Nullable V value, Throwable error) {
+        final FailureCallReport<K, V> report = new FailureCallReport<>(backendReport.get(), getCallingMethod(), key, value, error);
+        notifyListeners(l -> l.onFailure(report));
+    }
+
+    /**
+     * Notifies all listeners.
+     *
+     * @param func the function defining the notification
+     */
+    private void notifyListeners(Consumer<StoreListener> func) {
+        listeners.forEach(func);
     }
 
     /**
@@ -365,22 +396,13 @@ public class ListeningStore extends AbstractStore {
     @Nonnull
     private String getCallingMethod() {
         StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-        for (int i = 3; i < stack.length; i++) {
+        for (int i = 4; i < stack.length; i++) {
             String methodName = stack[i].getMethodName();
-            if (!methodName.startsWith("onCall")) {
+            if (!methodName.startsWith("onCall") && !methodName.startsWith("dispatch")) {
                 return methodName;
             }
         }
 
         throw new IllegalStateException(); // Should never happen
-    }
-
-    /**
-     * Notifies all listeners.
-     *
-     * @param func the function defining the notification
-     */
-    private void notifyListeners(Consumer<StoreListener> func) {
-        listeners.forEach(func);
     }
 }
