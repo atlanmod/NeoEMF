@@ -31,6 +31,7 @@ import org.bson.conversions.Bson;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -209,7 +210,7 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Stream<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         final Iterable<Bson> andFilters = metaClasses.stream()
                 .map(c -> and(
                         eq(concat(ModelDocument.F_METACLASS, ClassDocument.F_NAME), c.name()),
@@ -225,6 +226,6 @@ abstract class AbstractMongoDbBackend extends AbstractBackend implements MongoDb
         return MoreIterables.stream(find)
                 .map(ModelDocument::getId)
                 .map(idConverter::revert)
-                .collect(Collectors.toList());
+                .distinct();
     }
 }

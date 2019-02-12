@@ -21,10 +21,10 @@ import org.atlanmod.commons.service.ServiceDefinition;
 import org.atlanmod.commons.service.ServiceProvider;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -129,9 +129,9 @@ public abstract class AbstractBackend extends AbstractDataMapper implements Back
 
     @Nonnull
     @Override
-    public final Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+    public final Stream<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         if ((metaClass.isAbstract() || metaClass.isInterface()) && strict) {
-            return Collections.emptySet();
+            return Stream.empty();
         }
 
         Set<ClassBean> allInstances = strict ? new HashSet<>() : metaClass.inheritedBy();

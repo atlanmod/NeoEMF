@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -101,7 +102,7 @@ abstract class Abstract${databaseName}Backend extends AbstractBackend implements
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Stream<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         // TODO Implement this method
         throw Throwables.notImplementedYet("allInstancesOf");
     }

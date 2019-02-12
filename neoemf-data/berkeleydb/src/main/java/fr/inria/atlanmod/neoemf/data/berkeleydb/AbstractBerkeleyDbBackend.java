@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -160,11 +161,12 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Stream<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         try (Cursor cursor = instances.openCursor(null, null)) {
             DatabaseEntry dbKey = new DatabaseEntry();
             DatabaseEntry dbValue = new DatabaseEntry();
 
+            // TODO Dynamically load content with an Iterator
             Set<Id> instancesOf = new HashSet<>();
 
             while (cursor.getNext(dbKey, dbValue, LockMode.DEFAULT) == OperationStatus.SUCCESS) {
@@ -173,7 +175,7 @@ abstract class AbstractBerkeleyDbBackend extends AbstractBackend implements Berk
                 }
             }
 
-            return instancesOf;
+            return instancesOf.stream();
         }
         catch (IOException e) {
             throw new DatabaseException(e);

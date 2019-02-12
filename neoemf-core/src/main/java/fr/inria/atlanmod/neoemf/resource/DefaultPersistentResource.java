@@ -203,8 +203,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         Stream<EObject> allInstancesOf;
 
         try {
-            allInstancesOf = MoreIterables.stream(eStore.store().allInstancesOf(ClassBean.from(eClass), strict))
-                    .map(id -> eStore.resolve(id));
+            allInstancesOf = eStore.store().allInstancesOf(ClassBean.from(eClass), strict).map(id -> eStore.resolve(id));
         }
         catch (UnsupportedOperationException e) {
             Log.debug("This mapper doesn't support the lookup of all instances: using standard EMF API instead");

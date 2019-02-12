@@ -13,6 +13,7 @@ import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -56,24 +57,24 @@ public interface ClassMapper {
      * @param metaClass the meta-class to compute the instances of
      * @param strict    {@code true} if the lookup searches for strict instances
      *
-     * @return an {@link Iterable} containing the instances of the {@code metaClass}
+     * @return an {@link Stream} containing the instances of the {@code metaClass}
      *
      * @throws NullPointerException          if any parameter is {@code null}
      * @throws UnsupportedOperationException if the mapper doesn't support the lookup of all instances
      */
     @Nonnull
-    Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict);
+    Stream<Id> allInstancesOf(ClassBean metaClass, boolean strict);
 
     /**
      * Retrieves all instances of the given {@code metaClasses}.
      *
      * @param metaClasses the meta-classes to compute the instances of
      *
-     * @return a {@link Iterable} containing the instances of the {@code metaClasses}
+     * @return a {@link Stream} containing the instances of the {@code metaClasses}
      *
      * @throws NullPointerException          if any parameter is {@code null}
      * @throws UnsupportedOperationException if the mapper doesn't support the lookup of all instances
      */
     @Nonnull
-    Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses);
+    Stream<Id> allInstancesOf(Set<ClassBean> metaClasses);
 }

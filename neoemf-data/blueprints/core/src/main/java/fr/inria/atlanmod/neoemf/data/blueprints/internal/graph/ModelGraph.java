@@ -37,7 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -259,12 +259,12 @@ public class ModelGraph extends IdGraph<ModelGraph> implements Copiable<ModelGra
      * @return an iterable of meta-class vertices
      */
     @Nonnull
-    public Iterable<ClassVertex> getClassVertices(Set<ClassBean> beans) {
+    public Stream<ClassVertex> getClassVertices(Set<ClassBean> beans) {
         return beans.stream()
                 .map(this::getClassVertex)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.toSet());
+                .distinct();
     }
 
     /**

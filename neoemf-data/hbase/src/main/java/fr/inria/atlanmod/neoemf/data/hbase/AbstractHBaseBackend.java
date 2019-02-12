@@ -30,6 +30,7 @@ import org.atlanmod.commons.primitive.Strings;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -231,7 +232,7 @@ abstract class AbstractHBaseBackend extends AbstractBackend implements HBaseBack
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Stream<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         throw new UnsupportedOperationException();
     }
 

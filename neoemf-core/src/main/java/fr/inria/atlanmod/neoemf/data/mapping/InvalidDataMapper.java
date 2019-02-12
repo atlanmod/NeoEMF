@@ -73,13 +73,13 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+    public Stream<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Stream<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         throw e.get();
     }
 
