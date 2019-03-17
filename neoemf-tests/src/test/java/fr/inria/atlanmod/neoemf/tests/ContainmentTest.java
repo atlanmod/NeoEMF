@@ -65,7 +65,7 @@ class ContainmentTest extends AbstractResourceBasedTest {
 
             assertThat(tree1.eInternalContainer()).isEqualTo(tree0);
 
-            assertThat(resource.getAllContents()).hasSize(4);
+            assertThat(resource.getAllContents()).toIterable().hasSize(4);
 
             assertThat(tree0.resource()).isSameAs(resource);
             assertThat(tree1.resource()).isSameAs(resource);
@@ -114,7 +114,7 @@ class ContainmentTest extends AbstractResourceBasedTest {
             assertThat(node0.getManyContainmentReference()).contains(comment0);
 
             // Check everything is accessible from the resource
-            assertThat(resource.getAllContents()).hasSize(4);
+            assertThat(resource.getAllContents()).toIterable().hasSize(4);
         }
     }
 }
