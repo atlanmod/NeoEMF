@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;
 
 import org.atlanmod.commons.AbstractTest;
 import org.junit.jupiter.api.Test;
@@ -16,17 +16,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case about {@link BasicClass}.
+ * A test-case about {@link ProxyClass}.
  */
 @ParametersAreNonnullByDefault
-class BasicClassTest extends AbstractTest {
+class ProxyClassTest extends AbstractTest {
 
     @Test
     void testGetDefault() {
-        BasicClass mc0 = BasicClass.DEFAULT;
+        ProxyClass mc0 = ProxyClass.DEFAULT;
         assertThat(mc0).isNotNull();
         assertThat(mc0.getName()).isEqualTo("EObject");
-        assertThat(mc0.getNamespace()).isEqualTo(BasicNamespace.DEFAULT);
+        assertThat(mc0.getNamespace()).isEqualTo(ProxyPackage.DEFAULT);
     }
 
     @Test
@@ -34,12 +34,12 @@ class BasicClassTest extends AbstractTest {
         String name0 = "mc0";
         String name1 = "mc1";
 
-        BasicNamespace ns = BasicNamespace.DEFAULT;
+        ProxyPackage ns = ProxyPackage.DEFAULT;
 
-        BasicClass mc0 = new BasicClass(ns, name0);
+        ProxyClass mc0 = new ProxyClass(ns, name0);
         assertThat(mc0.getName()).isEqualTo(name0);
 
-        BasicClass mc1 = new BasicClass(ns, name1);
+        ProxyClass mc1 = new ProxyClass(ns, name1);
         assertThat(mc1.getName()).isEqualTo(name1);
 
         assertThat(mc0.getName()).isNotEqualTo(mc1.getName());
@@ -50,13 +50,13 @@ class BasicClassTest extends AbstractTest {
         String name0 = "mc0";
         String name1 = "mc1";
 
-        BasicNamespace ns0 = BasicNamespace.DEFAULT;
-        BasicNamespace ns1 = BasicNamespace.Registry.getInstance().register("prefix0", "uri0");
+        ProxyPackage ns0 = ProxyPackage.DEFAULT;
+        ProxyPackage ns1 = ProxyPackage.Registry.getInstance().register("prefix0", "uri0");
 
-        BasicClass mc0 = new BasicClass(ns0, name0);
+        ProxyClass mc0 = new ProxyClass(ns0, name0);
         assertThat(mc0.getNamespace()).isEqualTo(ns0);
 
-        BasicClass mc1 = new BasicClass(ns1, name1);
+        ProxyClass mc1 = new ProxyClass(ns1, name1);
         assertThat(mc1.getNamespace()).isEqualTo(ns1);
 
         assertThat(mc0.getNamespace()).isNotEqualTo(mc1.getNamespace());
@@ -67,11 +67,11 @@ class BasicClassTest extends AbstractTest {
         String name0 = "mc0";
         String name1 = "mc1";
 
-        BasicNamespace ns0 = BasicNamespace.DEFAULT;
+        ProxyPackage ns0 = ProxyPackage.DEFAULT;
 
-        BasicClass mc0 = new BasicClass(ns0, name0);
-        BasicClass mc0Bis = new BasicClass(ns0, name0);
-        BasicClass mc1 = new BasicClass(ns0, name1);
+        ProxyClass mc0 = new ProxyClass(ns0, name0);
+        ProxyClass mc0Bis = new ProxyClass(ns0, name0);
+        ProxyClass mc1 = new ProxyClass(ns0, name1);
 
         assertThat(mc0.hashCode()).isEqualTo(mc0Bis.hashCode());
         assertThat(mc0.hashCode()).isNotEqualTo(mc1.hashCode());
@@ -83,11 +83,11 @@ class BasicClassTest extends AbstractTest {
         String name0 = "mc0";
         String name1 = "mc1";
 
-        BasicNamespace ns0 = BasicNamespace.DEFAULT;
+        ProxyPackage ns0 = ProxyPackage.DEFAULT;
 
-        BasicClass mc0 = new BasicClass(ns0, name0);
-        BasicClass mc0Bis = new BasicClass(ns0, name0);
-        BasicClass mc1 = new BasicClass(ns0, name1);
+        ProxyClass mc0 = new ProxyClass(ns0, name0);
+        ProxyClass mc0Bis = new ProxyClass(ns0, name0);
+        ProxyClass mc1 = new ProxyClass(ns0, name1);
 
         assertThat(mc0).isEqualTo(mc0Bis);
         assertThat(mc0).isNotEqualTo(mc1);
@@ -103,9 +103,9 @@ class BasicClassTest extends AbstractTest {
         String name0 = "mc0";
         String prefix0 = "uri0";
 
-        BasicNamespace ns0 = BasicNamespace.Registry.getInstance().register(prefix0, "uri0");
+        ProxyPackage ns0 = ProxyPackage.Registry.getInstance().register(prefix0, "uri0");
 
-        BasicClass mc0 = new BasicClass(ns0, name0);
+        ProxyClass mc0 = new ProxyClass(ns0, name0);
 
         assertThat(mc0).hasToString("uri0:mc0");
     }

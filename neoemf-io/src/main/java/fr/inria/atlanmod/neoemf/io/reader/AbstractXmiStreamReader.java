@@ -8,11 +8,11 @@
 
 package fr.inria.atlanmod.neoemf.io.reader;
 
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
-import fr.inria.atlanmod.neoemf.io.bean.Data;
 import fr.inria.atlanmod.neoemf.io.processor.AbstractProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.EcoreMapper;
 import fr.inria.atlanmod.neoemf.io.processor.XPathResolver;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyValue;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
 import org.atlanmod.commons.log.Log;
@@ -54,10 +54,10 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             final String prefixedValue = XmiConstants.format(prefix, name);
 
             if (Objects.equals(XmiConstants.XMI_IDREF, prefixedValue)) { // A reference of the previous element
-                BasicReference reference = new BasicReference()
+                ProxyReference reference = new ProxyReference()
                         .setName(getCurrentElement().getName())
                         .setOwner(getPreviousId())
-                        .setValue(Data.raw(value));
+                        .setValue(ProxyValue.raw(value));
 
                 notifyReference(reference);
 
@@ -66,7 +66,7 @@ public abstract class AbstractXmiStreamReader extends AbstractStreamReader {
             }
 
             if (Objects.equals(XmiConstants.XMI_ID, prefixedValue)) { // The identifier of the current element
-                getCurrentElement().setId(Data.raw(value));
+                getCurrentElement().setId(ProxyValue.raw(value));
 
                 return true;
             }

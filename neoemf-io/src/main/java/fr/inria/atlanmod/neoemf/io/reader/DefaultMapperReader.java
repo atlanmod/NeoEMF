@@ -13,11 +13,11 @@ import fr.inria.atlanmod.neoemf.data.bean.AbstractFeatureBean;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
-import fr.inria.atlanmod.neoemf.io.bean.Data;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyClass;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyValue;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 import fr.inria.atlanmod.neoemf.util.EFeatures;
 
@@ -93,12 +93,12 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
                 .orElseThrow(IllegalStateException::new);
 
         // Create the meta-class
-        BasicClass metaClass = new BasicClass(eClass);
+        ProxyClass metaClass = new ProxyClass(eClass);
 
         // Create the element
-        BasicElement element = new BasicElement()
+        ProxyElement element = new ProxyElement()
                 .setName(name)
-                .setId(Data.resolved(id))
+                .setId(ProxyValue.resolved(id))
                 .setRoot(isRoot)
                 .setMetaClass(metaClass);
 
@@ -157,7 +157,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     }
 
     /**
-     * Reads the value(s) of the {@code eAttribute} for the given {@code bean}.
+     * Reads the value(s) of the {@code eAttribute} for the given {@code feature}.
      *
      * @param feature    the owner of the attribute
      * @param eAttribute the associated EMF attribute
@@ -178,7 +178,7 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     }
 
     /**
-     * Reads the value(s) of the {@code eReference} for the given {@code bean}.
+     * Reads the value(s) of the {@code eReference} for the given {@code feature}.
      *
      * @param feature    the owner of the reference
      * @param eReference the associated EMF reference
@@ -229,11 +229,11 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     private void createAttribute(SingleFeatureBean feature, EAttribute eAttribute, Object value) throws IOException {
         checkFeatureMap(eAttribute);
 
-        BasicAttribute attribute = new BasicAttribute()
+        ProxyAttribute attribute = new ProxyAttribute()
                 .setOwner(feature.owner())
                 .setId(feature.id())
-                .setReal(eAttribute)
-                .setValue(Data.resolved(value));
+                .setOrigin(eAttribute)
+                .setValue(ProxyValue.resolved(value));
 
         notifyAttribute(attribute);
     }
@@ -251,11 +251,11 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
     private Id createReference(SingleFeatureBean feature, EReference eReference, Id value) throws IOException {
         checkFeatureMap(eReference);
 
-        BasicReference reference = new BasicReference()
+        ProxyReference reference = new ProxyReference()
                 .setOwner(feature.owner())
                 .setId(feature.id())
-                .setReal(eReference)
-                .setValue(Data.resolved(value));
+                .setOrigin(eReference)
+                .setValue(ProxyValue.resolved(value));
 
         notifyReference(reference);
 

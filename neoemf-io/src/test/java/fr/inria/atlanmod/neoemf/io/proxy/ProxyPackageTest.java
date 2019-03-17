@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;
 
 import org.atlanmod.commons.AbstractTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,19 +17,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case about {@link BasicNamespace}.
+ * A test-case about {@link ProxyPackage}.
  */
 @ParametersAreNonnullByDefault
-class BasicNamespaceTest extends AbstractTest {
+class ProxyPackageTest extends AbstractTest {
 
     @BeforeEach
     void setUp() {
-        BasicNamespace.Registry.getInstance().clean();
+        ProxyPackage.Registry.getInstance().clean();
     }
 
     @Test
     void testGetDefault() {
-        BasicNamespace ns0 = BasicNamespace.DEFAULT;
+        ProxyPackage ns0 = ProxyPackage.DEFAULT;
         assertThat(ns0).isNotNull();
         assertThat(ns0.getPrefix()).isEqualTo("ecore");
     }
@@ -42,11 +42,11 @@ class BasicNamespaceTest extends AbstractTest {
         String uri0 = "uri0";
         String uri1 = "uri1";
 
-        BasicNamespace ns0 = BasicNamespace.Registry.getInstance().register(prefix0, uri0);
+        ProxyPackage ns0 = ProxyPackage.Registry.getInstance().register(prefix0, uri0);
         assertThat(ns0.getPrefix()).isEqualTo(prefix0);
         assertThat(ns0.getUri()).isEqualTo(uri0);
 
-        BasicNamespace ns1 = BasicNamespace.Registry.getInstance().register(prefix1, uri1);
+        ProxyPackage ns1 = ProxyPackage.Registry.getInstance().register(prefix1, uri1);
         assertThat(ns1.getPrefix()).isNotEqualTo(prefix0).isEqualTo(prefix1);
         assertThat(ns1.getUri()).isNotEqualTo(uri0).isEqualTo(uri1);
     }
@@ -59,9 +59,9 @@ class BasicNamespaceTest extends AbstractTest {
         String uri0 = "uri0";
         String uri1 = "uri1";
 
-        BasicNamespace ns0 = BasicNamespace.Registry.getInstance().register(prefix0, uri0);
-        BasicNamespace ns0Bis = BasicNamespace.Registry.getInstance().register(prefix0, uri0);
-        BasicNamespace ns1 = BasicNamespace.Registry.getInstance().register(prefix1, uri1);
+        ProxyPackage ns0 = ProxyPackage.Registry.getInstance().register(prefix0, uri0);
+        ProxyPackage ns0Bis = ProxyPackage.Registry.getInstance().register(prefix0, uri0);
+        ProxyPackage ns1 = ProxyPackage.Registry.getInstance().register(prefix1, uri1);
 
         assertThat(ns0.hashCode()).isEqualTo(ns0Bis.hashCode());
         assertThat(ns0.hashCode()).isNotEqualTo(ns1.hashCode());
@@ -76,9 +76,9 @@ class BasicNamespaceTest extends AbstractTest {
         String uri0 = "uri0";
         String uri1 = "uri1";
 
-        BasicNamespace ns0 = BasicNamespace.Registry.getInstance().register(prefix0, uri0);
-        BasicNamespace ns0Bis = BasicNamespace.Registry.getInstance().register(prefix0, uri0);
-        BasicNamespace ns1 = BasicNamespace.Registry.getInstance().register(prefix1, uri1);
+        ProxyPackage ns0 = ProxyPackage.Registry.getInstance().register(prefix0, uri0);
+        ProxyPackage ns0Bis = ProxyPackage.Registry.getInstance().register(prefix0, uri0);
+        ProxyPackage ns1 = ProxyPackage.Registry.getInstance().register(prefix1, uri1);
 
         assertThat(ns0).isSameAs(ns0Bis);
         assertThat(ns0).isNotSameAs(ns1).isNotEqualTo(ns1);
@@ -94,13 +94,13 @@ class BasicNamespaceTest extends AbstractTest {
         String prefix0 = "prefix0";
         String uri0 = "uri0";
 
-        BasicNamespace ns0 = BasicNamespace.Registry.getInstance().register(prefix0, uri0);
+        ProxyPackage ns0 = ProxyPackage.Registry.getInstance().register(prefix0, uri0);
         assertThat(ns0).hasToString("prefix0@uri0");
     }
 
     @Test
     void testRegistry() {
-        BasicNamespace.Registry registry = BasicNamespace.Registry.getInstance();
+        ProxyPackage.Registry registry = ProxyPackage.Registry.getInstance();
 
         String prefix0 = "prefix0";
         String uri0 = "uri0";
@@ -108,13 +108,13 @@ class BasicNamespaceTest extends AbstractTest {
         String prefix1 = "prefix1";
         String uri1 = "uri1";
 
-        BasicNamespace ns0 = registry.register(prefix0, uri0);
-        BasicNamespace ns1 = registry.register(prefix1, uri1);
+        ProxyPackage ns0 = registry.register(prefix0, uri0);
+        ProxyPackage ns1 = registry.register(prefix1, uri1);
 
-        BasicNamespace ns0Bis = registry.getByPrefix(prefix0);
+        ProxyPackage ns0Bis = registry.getByPrefix(prefix0);
         assertThat(ns0Bis).isEqualTo(ns0);
 
-        BasicNamespace ns1Bis = registry.getByUri(uri1);
+        ProxyPackage ns1Bis = registry.getByUri(uri1);
         assertThat(ns1Bis).isEqualTo(ns1);
 
         Iterable<String> prefixes = registry.getPrefixes();

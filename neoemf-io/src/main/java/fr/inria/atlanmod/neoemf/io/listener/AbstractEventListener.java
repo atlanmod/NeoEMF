@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.io.listener;
 
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -28,17 +28,17 @@ public abstract class AbstractEventListener implements EventListener {
     }
 
     @Override
-    public void onStartElement(BasicElement element) {
+    public void onStartElement(ProxyElement element) {
         // Do nothing
     }
 
     @Override
-    public void onAttribute(BasicAttribute attribute) {
+    public void onAttribute(ProxyAttribute attribute) {
         // Do nothing
     }
 
     @Override
-    public void onReference(BasicReference reference) {
+    public void onReference(ProxyReference reference) {
         // Do nothing
     }
 

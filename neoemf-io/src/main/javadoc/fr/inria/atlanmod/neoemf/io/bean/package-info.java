@@ -10,4 +10,4 @@
  * Provides simple representations of objects used during import/export.
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;

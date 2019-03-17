@@ -9,9 +9,9 @@
 package fr.inria.atlanmod.neoemf.io.listener;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 
 import org.atlanmod.commons.log.Level;
 import org.atlanmod.commons.log.Log;
@@ -61,7 +61,7 @@ public class LoggingEventListener extends AbstractEventListener {
     }
 
     @Override
-    public void onStartElement(BasicElement element) {
+    public void onStartElement(ProxyElement element) {
         Log.log(level, "[E] {0} : {1} = {2}",
                 element.getMetaClass(),
                 element.getName(),
@@ -71,7 +71,7 @@ public class LoggingEventListener extends AbstractEventListener {
     }
 
     @Override
-    public void onAttribute(BasicAttribute attribute) {
+    public void onAttribute(ProxyAttribute attribute) {
         Log.log(level, "[A]    {0}{1} = {2}",
                 attribute.getName(),
                 attribute.isMany() ? " many[-1]" : Strings.EMPTY,
@@ -79,7 +79,7 @@ public class LoggingEventListener extends AbstractEventListener {
     }
 
     @Override
-    public void onReference(BasicReference reference) {
+    public void onReference(ProxyReference reference) {
         Log.log(level, "[R]    {0}{1} = {2} -{3}> {4}",
                 reference.getName(),
                 reference.isMany() ? " many[-1]" : Strings.EMPTY,

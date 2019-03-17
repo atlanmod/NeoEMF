@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
@@ -20,18 +20,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A simple representation of a {@link fr.inria.atlanmod.neoemf.core.PersistentEObject}.
  */
 @ParametersAreNonnullByDefault
-public class BasicElement extends AbstractNamedElement<BasicElement> {
+public class ProxyElement extends AbstractNamedElement<ProxyElement> {
 
     /**
      * The identifier of this element.
      */
     @Nonnull
-    private Data<Id> id = Data.empty();
+    private ProxyValue<Id> id = ProxyValue.empty();
 
     /**
      * The meta-class of this element.
      */
-    private BasicClass metaClass;
+    private ProxyClass metaClass;
 
     /**
      * Whether this element is the root of a structure.
@@ -44,7 +44,7 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
      * @return the identifier
      */
     @Nonnull
-    public Data<Id> getId() {
+    public ProxyValue<Id> getId() {
         return id;
     }
 
@@ -56,7 +56,7 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
      * @return this instance (for chaining)
      */
     @Nonnull
-    public BasicElement setId(Data<Id> id) {
+    public ProxyElement setId(ProxyValue<Id> id) {
         this.id = id;
 
         return me();
@@ -67,7 +67,7 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
      *
      * @return the meta-class
      */
-    public BasicClass getMetaClass() {
+    public ProxyClass getMetaClass() {
         return metaClass;
     }
 
@@ -79,7 +79,7 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
      * @return this instance (for chaining)
      */
     @Nonnull
-    public BasicElement setMetaClass(BasicClass metaClass) {
+    public ProxyElement setMetaClass(ProxyClass metaClass) {
         this.metaClass = metaClass;
 
         return me();
@@ -102,7 +102,7 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
      * @return this instance (for chaining)
      */
     @Nonnull
-    public BasicElement setRoot(boolean isRoot) {
+    public ProxyElement setRoot(boolean isRoot) {
         this.root = isRoot;
 
         return me();
@@ -122,7 +122,7 @@ public class BasicElement extends AbstractNamedElement<BasicElement> {
             return false;
         }
 
-        BasicElement that = (BasicElement) o;
+        ProxyElement that = (ProxyElement) o;
         return Objects.equals(id, that.id);
     }
 }

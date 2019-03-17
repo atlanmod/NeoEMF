@@ -12,11 +12,11 @@ import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.data.bean.ClassBean;
 import fr.inria.atlanmod.neoemf.data.bean.SingleFeatureBean;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
-import fr.inria.atlanmod.neoemf.io.bean.Data;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyClass;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyValue;
 import fr.inria.atlanmod.neoemf.resource.PersistentResource;
 
 import java.io.IOException;
@@ -45,9 +45,9 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
     @Override
     public void onInitialize() {
         // Create the 'ROOT' node with the default meta-class
-        BasicElement rootElement = new BasicElement()
-                .setId(Data.resolved(PersistentResource.ROOT_ID))
-                .setMetaClass(BasicClass.DEFAULT);
+        ProxyElement rootElement = new ProxyElement()
+                .setId(ProxyValue.resolved(PersistentResource.ROOT_ID))
+                .setMetaClass(ProxyClass.DEFAULT);
 
         createElement(rootElement, true);
     }
@@ -58,14 +58,14 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
     }
 
     @Override
-    public void onStartElement(BasicElement element) throws IOException {
+    public void onStartElement(ProxyElement element) throws IOException {
         super.onStartElement(element);
 
         createElement(element, false);
     }
 
     @Override
-    public void onAttribute(BasicAttribute attribute, List<Object> values) {
+    public void onAttribute(ProxyAttribute attribute, List<Object> values) {
         SingleFeatureBean bean = SingleFeatureBean.of(attribute.getOwner(), attribute.getId());
 
         if (!attribute.isMany()) {
@@ -77,7 +77,7 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
     }
 
     @Override
-    public void onReference(BasicReference reference, List<Id> values) {
+    public void onReference(ProxyReference reference, List<Id> values) {
         SingleFeatureBean bean = SingleFeatureBean.of(reference.getOwner(), reference.getId());
 
         // Update the containment reference if needed
@@ -101,15 +101,15 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
      *
      * @throws NullPointerException if the {@code element} is {@code null}
      */
-    protected void createElement(BasicElement element, boolean ignoreFailure) {
-        BasicClass metaClass = element.getMetaClass();
+    protected void createElement(ProxyElement element, boolean ignoreFailure) {
+        ProxyClass metaClass = element.getMetaClass();
         boolean success = target.metaClassFor(element.getId().getResolved(), ClassBean.of(metaClass.getName(), metaClass.getNamespace().getUri()));
 
         checkState(success || ignoreFailure, "An element with the same Id (%s) is already defined", element.getId().getResolved().toHexString());
 
         // Add the current element as content of the 'ROOT' node
         if (element.isRoot()) {
-            BasicReference rootReference = new BasicReference()
+            ProxyReference rootReference = new ProxyReference()
                     .setOwner(PersistentResource.ROOT_ID)
                     .setName(PersistentResource.ROOT_REFERENCE_NAME)
                     .setId(-1)

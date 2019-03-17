@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
@@ -24,7 +24,7 @@ import static org.atlanmod.commons.Preconditions.checkNotNull;
  * A simple representation of a {@link org.eclipse.emf.ecore.EStructuralFeature}.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, R, V>, R extends EStructuralFeature, V> extends AbstractNamedElement<T> implements Basic<T, R> {
+public abstract class AbstractProxyFeature<T extends AbstractProxyFeature<T, R, V>, R extends EStructuralFeature, V> extends AbstractNamedElement<T> implements Proxy<T, R> {
 
     /**
      * The identifier of element that owns this feature.
@@ -45,7 +45,7 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, R, 
      * The value of this feature.
      */
     @Nonnull
-    private Data<V> value = Data.empty();
+    private ProxyValue<V> value = ProxyValue.empty();
 
     /**
      * The {@link EStructuralFeature} represented by this object.
@@ -53,13 +53,13 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, R, 
     private R eFeature;
 
     @Override
-    public R getReal() {
+    public R getOrigin() {
         return checkNotNull(eFeature, "eFeature");
     }
 
     @Nonnull
     @Override
-    public T setReal(R eFeature) {
+    public T setOrigin(R eFeature) {
         this.eFeature = checkNotNull(eFeature, "eFeature");
 
         return setName(eFeature.getName()).setMany(eFeature.isMany());
@@ -140,7 +140,7 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, R, 
      * @return the value
      */
     @Nonnull
-    public Data<V> getValue() {
+    public ProxyValue<V> getValue() {
         return value;
     }
 
@@ -152,7 +152,7 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, R, 
      * @return this instance (for chaining)
      */
     @Nonnull
-    public T setValue(Data<V> value) {
+    public T setValue(ProxyValue<V> value) {
         this.value = value;
 
         return me();
@@ -175,7 +175,7 @@ public abstract class AbstractBasicFeature<T extends AbstractBasicFeature<T, R, 
             return false;
         }
 
-        AbstractBasicFeature<?, ?, ?> that = (AbstractBasicFeature) o;
+        AbstractProxyFeature<?, ?, ?> that = (AbstractProxyFeature) o;
         return Objects.equals(owner, that.owner);
     }
 }

@@ -9,9 +9,9 @@
 package fr.inria.atlanmod.neoemf.io.util;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 import fr.inria.atlanmod.neoemf.io.writer.Writer;
 
 import java.util.ArrayDeque;
@@ -70,7 +70,7 @@ public final class InMemoryWriter implements Writer {
     }
 
     @Override
-    public void onStartElement(BasicElement element) {
+    public void onStartElement(ProxyElement element) {
         InMemoryElement e = new InMemoryElement(element);
 
         if (previousElements.isEmpty()) {
@@ -86,7 +86,7 @@ public final class InMemoryWriter implements Writer {
     }
 
     @Override
-    public void onAttribute(BasicAttribute attribute) {
+    public void onAttribute(ProxyAttribute attribute) {
         if (isNull(attribute.getOwner()) || attribute.getOwner().equals(previousElements.getLast().id())) {
             previousElements.getLast().attributes().add(attribute);
         }
@@ -100,7 +100,7 @@ public final class InMemoryWriter implements Writer {
     }
 
     @Override
-    public void onReference(BasicReference reference) {
+    public void onReference(ProxyReference reference) {
         if (isNull(reference.getOwner()) || reference.getOwner().equals(previousElements.getLast().id())) {
             previousElements.getLast().references().add(reference);
         }

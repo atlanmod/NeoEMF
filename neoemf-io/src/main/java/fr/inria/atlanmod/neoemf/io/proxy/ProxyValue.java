@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;
 
 import java.util.Objects;
 
@@ -21,14 +21,13 @@ import static org.atlanmod.commons.Preconditions.checkState;
  * A value that can be read, and resolved according to a context.
  */
 @ParametersAreNonnullByDefault
-// FIXME Find a better name for this class!
-public final class Data<V> {
+public final class ProxyValue<V> {
 
     /**
      * An empty data.
      */
     @Nonnull
-    private static final Data<?> EMPTY = new Data<>();
+    private static final ProxyValue<?> EMPTY = new ProxyValue<>();
 
     /**
      * The value, resolved or not according to {@link #resolved}.
@@ -41,24 +40,24 @@ public final class Data<V> {
     private boolean resolved;
 
     /**
-     * Constructs a new empty {@code Data}.
+     * Constructs a new empty {@code ProxyValue}.
      */
-    private Data() {
+    private ProxyValue() {
     }
 
     /**
-     * Constructs a new {@code Data} with its {@code value} and its state.
+     * Constructs a new {@code ProxyValue} with its {@code value} and its state.
      *
      * @param value    the value
      * @param resolved {@code true} if the {@link #value} has been resolved
      */
-    private Data(Object value, boolean resolved) {
+    private ProxyValue(Object value, boolean resolved) {
         this.value = value;
         this.resolved = resolved;
     }
 
     /**
-     * Returns an empty {@code Data}.
+     * Returns an empty {@code ProxyValue}.
      *
      * @param <V> the type of data
      *
@@ -66,13 +65,13 @@ public final class Data<V> {
      */
     @Nonnull
     @SuppressWarnings("unchecked")
-    public static <V> Data<V> empty() {
-        return (Data<V>) EMPTY;
+    public static <V> ProxyValue<V> empty() {
+        return (ProxyValue<V>) EMPTY;
     }
 
     /**
-     * Returns a resolved {@code Data} with its {@code value}. A resolved value corresponds to a value in its final
-     * state.
+     * Returns a resolved {@code ProxyValue} with its {@code value}. A resolved value corresponds to a value in its
+     * final state.
      *
      * @param value the resolved value
      * @param <V>   the type of the value
@@ -80,12 +79,12 @@ public final class Data<V> {
      * @return a resolved data
      */
     @Nonnull
-    public static <V> Data<V> resolved(V value) {
-        return new Data<>(value, true);
+    public static <V> ProxyValue<V> resolved(V value) {
+        return new ProxyValue<>(value, true);
     }
 
     /**
-     * Returns a raw {@code Data} with its {@code value}.
+     * Returns a raw {@code ProxyValue} with its {@code value}.
      *
      * @param value the raw value
      * @param <V>   the type of the value
@@ -93,8 +92,8 @@ public final class Data<V> {
      * @return a raw data
      */
     @Nonnull
-    public static <V> Data<V> raw(Object value) {
-        return new Data<>(value, false);
+    public static <V> ProxyValue<V> raw(Object value) {
+        return new ProxyValue<>(value, false);
     }
 
     /**
@@ -153,7 +152,7 @@ public final class Data<V> {
             return false;
         }
 
-        Data<?> that = (Data) o;
+        ProxyValue<?> that = (ProxyValue) o;
         return resolved == that.resolved && Objects.equals(value, that.value);
     }
 }

@@ -9,11 +9,11 @@
 package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
-import fr.inria.atlanmod.neoemf.io.bean.Data;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyClass;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyValue;
 import fr.inria.atlanmod.neoemf.util.EFeatures;
 
 import org.atlanmod.commons.primitive.Strings;
@@ -55,7 +55,7 @@ public class EcoreMapper extends AbstractProcessor {
     private final Deque<EClass> metaClasses = new ArrayDeque<>();
 
     @Override
-    public void onStartElement(BasicElement element) throws IOException {
+    public void onStartElement(ProxyElement element) throws IOException {
         // Is root
         if (identifiers.isEmpty()) {
             processElementAsRoot(element);
@@ -67,7 +67,7 @@ public class EcoreMapper extends AbstractProcessor {
     }
 
     @Override
-    public void onAttribute(BasicAttribute attribute) throws IOException {
+    public void onAttribute(ProxyAttribute attribute) throws IOException {
         final EStructuralFeature eFeature = getFeature(attribute.getName());
 
         if (isFeatureMap(eFeature)) {
@@ -81,13 +81,13 @@ public class EcoreMapper extends AbstractProcessor {
         else {
             // Otherwise redirect to the reference handler
             final Object rawValue = attribute.getValue().getRaw();
-            BasicReference reference = new BasicReference().setValue(Data.raw(rawValue));
+            ProxyReference reference = new ProxyReference().setValue(ProxyValue.raw(rawValue));
             processReference(reference, EFeatures.asReference(eFeature));
         }
     }
 
     @Override
-    public void onReference(BasicReference reference) throws IOException {
+    public void onReference(ProxyReference reference) throws IOException {
         final EStructuralFeature eFeature = getFeature(reference.getName());
 
         processReference(reference, EFeatures.asReference(eFeature));
@@ -108,13 +108,13 @@ public class EcoreMapper extends AbstractProcessor {
      *
      * @throws NullPointerException if the {@code element} does not have a namespace
      */
-    private void processElementAsRoot(BasicElement element) throws IOException {
+    private void processElementAsRoot(ProxyElement element) throws IOException {
         checkNotNull(element.getMetaClass(), "The root element must have a namespace");
 
         // Retrieve the current EClass & define the meta-class of the current element if not present
-        final BasicClass metaClass = element.getMetaClass();
-        final EClass eClass = getClass(element.getName(), metaClass.getNamespace().getReal());
-        metaClass.setReal(eClass);
+        final ProxyClass metaClass = element.getMetaClass();
+        final EClass eClass = getClass(element.getName(), metaClass.getNamespace().getOrigin());
+        metaClass.setOrigin(eClass);
 
         // Define the element as root node
         element.setRoot(true);
@@ -133,7 +133,7 @@ public class EcoreMapper extends AbstractProcessor {
      *
      * @param element the element representing the feature
      */
-    private void processElementAsFeature(BasicElement element) throws IOException {
+    private void processElementAsFeature(ProxyElement element) throws IOException {
         final EStructuralFeature feature = getFeature(element.getName());
 
         // Check if the feature is a FeatureMap.Entry
@@ -151,11 +151,11 @@ public class EcoreMapper extends AbstractProcessor {
         // Retrieve the type the reference
         if (nonNull(element.getMetaClass())) {
             // The meta-class was specified in the element
-            BasicClass metaClass = element.getMetaClass();
-            metaClass.setReal(resolveClass(metaClass, baseClass));
+            ProxyClass metaClass = element.getMetaClass();
+            metaClass.setOrigin(resolveClass(metaClass, baseClass));
         }
         else {
-            element.setMetaClass(new BasicClass(baseClass));
+            element.setMetaClass(new ProxyClass(baseClass));
         }
 
         processElementAsReference(element, eReference);
@@ -167,17 +167,17 @@ public class EcoreMapper extends AbstractProcessor {
      * @param element    the element representing the reference
      * @param eReference the associated EMF reference
      */
-    private void processElementAsReference(BasicElement element, EReference eReference) throws IOException {
+    private void processElementAsReference(ProxyElement element, EReference eReference) throws IOException {
         notifyStartElement(element);
 
         // Create a reference from the parent to this element
         if (eReference.isContainment()) {
             final Id ownerId = element.getId().getResolved();
-            processReference(new BasicReference().setValue(Data.resolved(ownerId)), eReference);
+            processReference(new ProxyReference().setValue(ProxyValue.resolved(ownerId)), eReference);
         }
 
         identifiers.addLast(element.getId().getResolved());
-        metaClasses.addLast(element.getMetaClass().getReal());
+        metaClasses.addLast(element.getMetaClass().getOrigin());
     }
 
     /**
@@ -186,7 +186,7 @@ public class EcoreMapper extends AbstractProcessor {
      * @param attribute  the attribute to process
      * @param eAttribute the associated EMF attribute
      */
-    private void processAttribute(BasicAttribute attribute, EAttribute eAttribute) throws IOException {
+    private void processAttribute(ProxyAttribute attribute, EAttribute eAttribute) throws IOException {
         final Id ownerId = identifiers.getLast();
         final EClass ownerClass = metaClasses.getLast();
 
@@ -194,8 +194,8 @@ public class EcoreMapper extends AbstractProcessor {
 
         attribute.setOwner(ownerId)
                 .setId(ownerClass.getFeatureID(eAttribute))
-                .setReal(eAttribute)
-                .setValue(Data.resolved(resolvedValue));
+                .setOrigin(eAttribute)
+                .setValue(ProxyValue.resolved(resolvedValue));
 
         notifyAttribute(attribute);
     }
@@ -206,13 +206,13 @@ public class EcoreMapper extends AbstractProcessor {
      * @param reference  the reference to process
      * @param eReference the associated EMF reference
      */
-    private void processReference(BasicReference reference, EReference eReference) throws IOException {
+    private void processReference(ProxyReference reference, EReference eReference) throws IOException {
         final Id ownerId = identifiers.getLast();
         final EClass ownerClass = metaClasses.getLast();
 
         reference.setOwner(ownerId)
                 .setId(ownerClass.getFeatureID(eReference))
-                .setReal(eReference);
+                .setOrigin(eReference);
 
         // The unique identifier is already set
         if (reference.getValue().isResolved()) {
@@ -229,11 +229,11 @@ public class EcoreMapper extends AbstractProcessor {
      *
      * @param reference the reference to process
      */
-    private void splitReference(BasicReference reference) throws IOException {
+    private void splitReference(ProxyReference reference) throws IOException {
         for (String s : reference.getValue().<String>getRaw().split(Strings.SPACE)) {
             final String trim = s.trim();
             if (!trim.isEmpty()) {
-                notifyReference(BasicReference.copy(reference).setValue(Data.raw(trim)));
+                notifyReference(ProxyReference.copy(reference).setValue(ProxyValue.raw(trim)));
             }
         }
     }
@@ -299,8 +299,8 @@ public class EcoreMapper extends AbstractProcessor {
      * @throws IllegalArgumentException if the {@code superClass} is not the super-type of the sought class
      */
     @Nonnull
-    private EClass resolveClass(BasicClass metaClass, EClass superClass) {
-        final EPackage ePackage = metaClass.getNamespace().getReal();
+    private EClass resolveClass(ProxyClass metaClass, EClass superClass) {
+        final EPackage ePackage = metaClass.getNamespace().getOrigin();
 
         // Is a more specific meta-class defined ?
         if (nonNull(metaClass.getName())) {

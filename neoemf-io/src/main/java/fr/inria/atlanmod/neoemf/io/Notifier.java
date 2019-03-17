@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 
 import java.io.IOException;
 
@@ -38,32 +38,32 @@ public interface Notifier {
      * @param element the element of the new element
      *
      * @see #notifyEndElement()
-     * @see Handler#onStartElement(BasicElement)
+     * @see Handler#onStartElement(ProxyElement)
      */
-    void notifyStartElement(BasicElement element) throws IOException;
+    void notifyStartElement(ProxyElement element) throws IOException;
 
     /**
      * Notifies all registered handlers of a new attribute.
      *
      * @param attribute the new attribute
      *
-     * @see Handler#onAttribute(BasicAttribute)
+     * @see Handler#onAttribute(ProxyAttribute)
      */
-    void notifyAttribute(BasicAttribute attribute) throws IOException;
+    void notifyAttribute(ProxyAttribute attribute) throws IOException;
 
     /**
      * Notifies all registered handlers of a new reference.
      *
      * @param reference the new reference
      *
-     * @see Handler#onReference(BasicReference)
+     * @see Handler#onReference(ProxyReference)
      */
-    void notifyReference(BasicReference reference) throws IOException;
+    void notifyReference(ProxyReference reference) throws IOException;
 
     /**
      * Notifies all registered handlers of the end of the current element.
      *
-     * @see #notifyStartElement(BasicElement)
+     * @see #notifyStartElement(ProxyElement)
      * @see Handler#onEndElement()
      */
     void notifyEndElement() throws IOException;

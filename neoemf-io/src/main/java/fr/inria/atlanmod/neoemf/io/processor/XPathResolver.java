@@ -10,9 +10,9 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.core.IdProvider;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
-import fr.inria.atlanmod.neoemf.io.bean.Data;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyValue;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -75,7 +75,7 @@ public class XPathResolver extends AbstractProcessor {
     }
 
     @Override
-    public void onStartElement(BasicElement element) throws IOException {
+    public void onStartElement(ProxyElement element) throws IOException {
         // If the first element has an identifier, we assume that the file is ID-based.
         if (isNull(ignore)) {
             ignore = element.getId().isPresent();
@@ -87,7 +87,7 @@ public class XPathResolver extends AbstractProcessor {
     }
 
     @Override
-    public void onReference(BasicReference reference) throws IOException {
+    public void onReference(ProxyReference reference) throws IOException {
         resolve(reference);
 
         notifyReference(reference);
@@ -108,7 +108,7 @@ public class XPathResolver extends AbstractProcessor {
      *
      * @param element the element to resolve
      */
-    private void resolve(BasicElement element) {
+    private void resolve(ProxyElement element) {
         if (element.getId().isResolved()) {
             return;
         }
@@ -135,7 +135,7 @@ public class XPathResolver extends AbstractProcessor {
             id = generateId(path);
         }
 
-        element.setId(Data.resolved(id));
+        element.setId(ProxyValue.resolved(id));
     }
 
     /**
@@ -143,7 +143,7 @@ public class XPathResolver extends AbstractProcessor {
      *
      * @param reference the reference to resolve
      */
-    private void resolve(BasicReference reference) {
+    private void resolve(ProxyReference reference) {
         if (reference.getValue().isResolved()) {
             return;
         }
@@ -173,7 +173,7 @@ public class XPathResolver extends AbstractProcessor {
             referencedId = generateId(path);
         }
 
-        reference.setValue(Data.resolved(referencedId));
+        reference.setValue(ProxyValue.resolved(referencedId));
     }
 
     /**
