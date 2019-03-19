@@ -44,7 +44,7 @@ In addition, NeoEMF provides a query API to perform optimized OCL queries over m
 
 ### Latest Release
 
-The most recent release is NeoEMF 1.0.2, released May 21, 2017.
+The most recent release is NeoEMF 2.0.0, released March 20, 2019.
 -   Javadoc: [neoemf][release-doc]
 -   Eclipse Plugin: [neoemf][release-plugin]
 
@@ -54,13 +54,13 @@ To add a dependency on NeoEMF using Maven, use the following:
   <dependency>
     <groupId>fr.inria.atlanmod.neoemf</groupId>
     <artifactId>neoemf-core</artifactId>
-    <version>1.0.2</version>
+    <version>2.0.0</version>
   </dependency>
 
   <dependency>
     <groupId>fr.inria.atlanmod.neoemf</groupId>
     <artifactId>neoemf-io</artifactId>
-    <version>1.0.2</version>
+    <version>2.0.0</version>
   </dependency>
 </dependencies>
 ```
@@ -74,7 +74,7 @@ To add the dependency of the specific implementation you want to use, simply use
 <dependency>
   <groupId>fr.inria.atlanmod.neoemf</groupId>
   <artifactId>neoemf-data-{name}</artifactId>
-  <version>1.0.2</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -85,10 +85,11 @@ Where `{name}` is any of:
 *   MapDB : `mapdb`
 *   BerkeleyDB: `berkeleydb`
 *   HBase: `hbase`
+*   MongoDB: `mongodb` _(beta)_
 
 ### Snapshots
 
-Snapshots are automatically build from the `master` and are available throught Maven using `2.0.0-SNAPSHOT`.
+Snapshots are automatically build from the `master` and are available throught Maven using `2.0.1-SNAPSHOT`.
 -   Javadoc: [neoemf][snapshot-doc]
 -   Eclipse Plugin: [neoemf][snapshot-plugin]
 

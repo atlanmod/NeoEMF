@@ -2,7 +2,7 @@
 <feature
         id="fr.inria.atlanmod.neoemf.data.berkeleydb.feature"
         label="NeoEMF : BerkeleyDB"
-        version="2.0.0.qualifier">
+        version="2.0.0">
 
     <description url="http://www.example.com/description">
         BerkeleyDB implementation of the Core component.
@@ -10,13 +10,13 @@
 
     <includes
             id="fr.inria.atlanmod.neoemf.core.feature"
-            version="2.0.0.qualifier" />
+            version="2.0.0" />
 
     <plugin
             id="fr.inria.atlanmod.neoemf.data.berkeleydb"
             download-size="0"
             install-size="0"
-            version="2.0.0.qualifier"
+            version="2.0.0"
             unpack="false" />
 
     <copyright url="https://www.eclipse.org/legal/epl-2.0/">
