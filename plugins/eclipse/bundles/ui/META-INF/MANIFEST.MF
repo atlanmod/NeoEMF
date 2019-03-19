@@ -4,7 +4,7 @@ Bundle-Name: NeoEMF Eclipse UI
 Bundle-SymbolicName: fr.inria.atlanmod.neoemf.eclipse.ui;singleton:=true
 Bundle-Version: 2.0.0.qualifier
 Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin
-Bundle-Vendor: Atlanmod, Inria, LS2N, and IMT Nantes
+Bundle-Vendor: Atlanmod
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
