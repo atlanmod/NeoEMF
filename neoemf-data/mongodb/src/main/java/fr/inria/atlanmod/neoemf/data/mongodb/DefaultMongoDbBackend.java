@@ -71,6 +71,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
      * A {@link org.atlanmod.commons.io.serializer.Serializer} that converts feature values in a Base64 representation.
      */
     @Nonnull
+    // FIXME Id are converted twice (long -> hexa-string -> base64-string)
     private final StringSerializer<Object> serializer = StringSerializerFactory.base64(BinarySerializerFactory.getInstance().forAny());
 
     /**

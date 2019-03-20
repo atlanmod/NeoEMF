@@ -36,6 +36,7 @@ import static org.atlanmod.commons.Preconditions.checkNotNull;
  */
 @Static
 @ParametersAreNonnullByDefault
+// TODO Replace this static class by a class structure, to eventually support different kind of binding resolver
 public final class Bindings {
 
     private Bindings() {
