@@ -303,27 +303,6 @@
             <properties>
                 <skipTests>true</skipTests>
             </properties>
-            <dependencies>
-
-                <dependency>
-                    <groupId>org.atlanmod.commons</groupId>
-                    <artifactId>commons-core</artifactId>
-                    <version>${commons.version}</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.eclipse.emf</groupId>
-                    <artifactId>org.eclipse.emf.common</artifactId>
-                    <version>${emf.version}</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.eclipse.emf</groupId>
-                    <artifactId>org.eclipse.emf.ecore</artifactId>
-                    <version>${emf.version}</version>
-                </dependency>
-
-            </dependencies>
             <build>
                 <pluginManagement>
                     <plugins>
@@ -333,18 +312,9 @@
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <version>3.0.1</version>
                             <configuration>
-                                <includeDependencySources>true</includeDependencySources>
-                                <dependencySourceIncludes>
-                                    <dependencySourceInclude>org.atlanmod.commons:*</dependencySourceInclude>
-                                    <dependencySourceInclude>org.eclipse.emf:*</dependencySourceInclude>
-                                </dependencySourceIncludes>
                                 <excludePackageNames>
-                                    org.atlanmod.commons*;
                                     fr.inria.atlanmod.neoemf.tests*;
-                                    org.eclipse.emf*;
-                                    javax.annotation*;
                                 </excludePackageNames>
-                                <detectLinks>true</detectLinks>
                                 <links>
                                     <link>https://atlanmod.github.io/Commons/releases/latest/doc/</link>
                                     <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
