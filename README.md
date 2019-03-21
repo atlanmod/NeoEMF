@@ -44,7 +44,7 @@ In addition, NeoEMF provides a query API to perform optimized OCL queries over m
 
 ### Latest Release
 
-The most recent release is NeoEMF 2.0.0, released March 20, 2019.
+The most recent release is NeoEMF 2.0.0, released March 21, 2019.
 -   Javadoc: [neoemf][release-doc]
 -   Eclipse Plugin: [neoemf][release-plugin]
 
