@@ -687,12 +687,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
     @Override
     public void updateInstanceOf(PersistentEObject object) {
         final Id id = refConverter.convert(object);
-
-        // If the object is already present in the cache, then the meta-class is defined
-        if (getCache().contains(id)) {
-            return;
-        }
-
         store.metaClassFor(id, ClassBean.from(object));
         refresh(object);
     }
