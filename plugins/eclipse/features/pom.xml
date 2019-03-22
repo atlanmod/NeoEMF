@@ -5,7 +5,7 @@
     <parent>
         <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
         <artifactId>fr.inria.atlanmod.neoemf.eclipse</artifactId>
-        <version>2.0.0</version>
+        <version>2.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>fr.inria.atlanmod.neoemf.eclipse.features</artifactId>
