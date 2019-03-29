@@ -7,6 +7,7 @@ NeoEMF
 [![Javadoc](https://img.shields.io/badge/javadoc--blue.svg)](https://atlanmod.github.io/NeoEMF/releases/latest/doc/)
 [![Plugin](https://img.shields.io/badge/plugin--blue.svg)](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/)
 [![Licence](https://img.shields.io/badge/licence-EPL--2.0-blue.svg)](https://www.eclipse.org/legal/epl-2.0/)
+[![Javadocs](https://www.javadoc.io/badge/fr.inria.atlanmod.neoemf/neoemf.svg)](https://www.javadoc.io/doc/fr.inria.atlanmod.neoemf/neoemf)
 
 Check out our [wiki][wiki] for further information on the installation, usages, supported backends, code examples, developer resources, etc.
 
