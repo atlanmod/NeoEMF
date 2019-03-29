@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
@@ -18,21 +18,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case about {@link BasicReference}.
+ * A test-case about {@link ProxyReference}.
  */
 @ParametersAreNonnullByDefault
-class BasicReferenceTest extends AbstractTest {
+class ProxyReferenceTest extends AbstractTest {
 
     @Test
     void testName() {
         String name0 = "reference0";
         String name1 = "reference1";
 
-        BasicReference ref0 = new BasicReference();
+        ProxyReference ref0 = new ProxyReference();
         ref0.setName(name0);
         assertThat(ref0.getName()).isEqualTo(name0);
 
-        BasicReference ref1 = new BasicReference();
+        ProxyReference ref1 = new ProxyReference();
         ref1.setName(name1);
         assertThat(ref1.getName()).isEqualTo(name1);
 
@@ -41,7 +41,7 @@ class BasicReferenceTest extends AbstractTest {
 
     @Test
     void testId() {
-        BasicReference ref0 = new BasicReference();
+        ProxyReference ref0 = new ProxyReference();
         ref0.setName("reference0");
         assertThat(ref0.getOwner()).isNull();
 
@@ -57,7 +57,7 @@ class BasicReferenceTest extends AbstractTest {
 
     @Test
     void testMany() {
-        BasicReference ref0 = new BasicReference();
+        ProxyReference ref0 = new ProxyReference();
         ref0.setName("reference0");
         assertThat(ref0.isMany()).isFalse();
 
@@ -70,23 +70,23 @@ class BasicReferenceTest extends AbstractTest {
 
     @Test
     void testIdReference() {
-        BasicReference ref0 = new BasicReference();
+        ProxyReference ref0 = new ProxyReference();
         ref0.setName("reference0");
         assertThat(ref0.getValue().isPresent()).isFalse();
 
         Id idRef0 = Id.getProvider().fromLong(42);
         Id idRef1 = Id.getProvider().fromLong(44);
 
-        ref0.setValue(Data.resolved(idRef0));
+        ref0.setValue(ProxyValue.resolved(idRef0));
         assertThat(ref0.getValue().getResolved()).isEqualTo(idRef0);
 
-        ref0.setValue(Data.resolved(idRef1));
+        ref0.setValue(ProxyValue.resolved(idRef1));
         assertThat(ref0.getValue().getResolved()).isNotEqualTo(idRef0).isEqualTo(idRef1);
     }
 
     @Test
     void testContainment() {
-        BasicReference ref0 = new BasicReference();
+        ProxyReference ref0 = new ProxyReference();
         ref0.setName("reference0");
         assertThat(ref0.isContainment()).isFalse();
 
@@ -99,11 +99,11 @@ class BasicReferenceTest extends AbstractTest {
 
     @Test
     void testHashCode() {
-        BasicReference ref0 = new BasicReference();
+        ProxyReference ref0 = new ProxyReference();
         ref0.setName("reference0");
-        BasicReference ref0Bis = new BasicReference();
+        ProxyReference ref0Bis = new ProxyReference();
         ref0Bis.setName("reference0");
-        BasicReference ref1 = new BasicReference();
+        ProxyReference ref1 = new ProxyReference();
         ref1.setName("reference1");
 
         assertThat(ref0.hashCode()).isEqualTo(ref0Bis.hashCode());
@@ -113,11 +113,11 @@ class BasicReferenceTest extends AbstractTest {
 
     @Test
     void testEquals() {
-        BasicReference ref0 = new BasicReference();
+        ProxyReference ref0 = new ProxyReference();
         ref0.setName("reference0");
-        BasicReference ref0Bis = new BasicReference();
+        ProxyReference ref0Bis = new ProxyReference();
         ref0Bis.setName("reference0");
-        BasicReference ref1 = new BasicReference();
+        ProxyReference ref1 = new ProxyReference();
         ref1.setName("reference1");
 
         assertThat(ref0).isEqualTo(ref0Bis);

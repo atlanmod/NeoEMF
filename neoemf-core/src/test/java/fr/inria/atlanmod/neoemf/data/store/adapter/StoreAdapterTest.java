@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -648,8 +648,8 @@ class StoreAdapterTest extends AbstractTest {
     @Test
     void testResolveUpdateInstanceOf() {
         // Resolve the instance of the object
-        Optional<EClass> resolvedClass = store.resolveInstanceOf(id);
-        assertThat(resolvedClass).contains(eClass);
+        EClass resolvedClass = store.resolveInstanceOf(id);
+        assertThat(resolvedClass).isEqualTo(eClass);
 
         // Resolve and rebuild the object
         PersistentEObject resolvedObject = store.resolve(id);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -9,10 +9,10 @@
 package fr.inria.atlanmod.neoemf.io.util;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyClass;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,25 +20,25 @@ import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * A {@link BasicElement} wrapper that stores all elements in different {@link List}.
+ * A {@link ProxyElement} wrapper that stores all elements in different {@link List}.
  */
 @ParametersAreNonnullByDefault
 public final class InMemoryElement {
 
     /**
-     * The original {@link BasicElement}.
+     * The original {@link ProxyElement}.
      */
-    private final BasicElement element;
+    private final ProxyElement element;
 
     /**
      * A list that holds all attributes of this element.
      */
-    private final List<BasicAttribute> attributes;
+    private final List<ProxyAttribute> attributes;
 
     /**
      * A list that holds all references of this element.
      */
-    private final List<BasicReference> references;
+    private final List<ProxyReference> references;
 
     /**
      * A list that holds all children of this element.
@@ -50,7 +50,7 @@ public final class InMemoryElement {
      *
      * @param element the element to wrap
      */
-    public InMemoryElement(BasicElement element) {
+    public InMemoryElement(ProxyElement element) {
         this.element = element;
 
         this.attributes = new ArrayList<>();
@@ -81,7 +81,7 @@ public final class InMemoryElement {
      *
      * @return the meta-class
      */
-    public BasicClass metaClass() {
+    public ProxyClass metaClass() {
         return element.getMetaClass();
     }
 
@@ -90,7 +90,7 @@ public final class InMemoryElement {
      *
      * @return a mutable list
      */
-    public List<BasicAttribute> attributes() {
+    public List<ProxyAttribute> attributes() {
         return attributes;
     }
 
@@ -99,7 +99,7 @@ public final class InMemoryElement {
      *
      * @return a mutable list
      */
-    public List<BasicReference> references() {
+    public List<ProxyReference> references() {
         return references;
     }
 

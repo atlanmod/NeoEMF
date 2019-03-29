@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;
 
 import org.atlanmod.commons.LazyReference;
 import org.eclipse.emf.ecore.EClass;
@@ -26,57 +26,57 @@ import static org.atlanmod.commons.Preconditions.checkNotNull;
  * A simple representation of a {@link org.eclipse.emf.ecore.EClass}.
  */
 @ParametersAreNonnullByDefault
-public class BasicClass extends AbstractNamedElement<BasicClass> implements Basic<BasicClass, EClass> {
+public class ProxyClass extends AbstractNamedElement<ProxyClass> implements Proxy<ProxyClass, EClass> {
 
     /**
      * The instance of the default meta-class: {@code http://www.eclipse.org/emf/2002/Ecore # EObject}.
      */
     @Nonnull
-    public static final BasicClass DEFAULT = new BasicClass(EcorePackage.eINSTANCE.getEObject());
+    public static final ProxyClass DEFAULT = new ProxyClass(EcorePackage.eINSTANCE.getEObject());
 
     /**
      * The namespace of this meta-class.
      */
     @Nonnull
-    private final BasicNamespace ns;
+    private final ProxyPackage ns;
 
     /**
      * The {@link EClass} represented by this object.
      */
     @Nonnull
     private final LazyReference<EClass> eClass = LazyReference.soft(() -> {
-        final EPackage p = getNamespace().getReal();
+        final EPackage p = getNamespace().getOrigin();
         final EClass c = (EClass) p.getEClassifier(getName());
         checkNotNull(c, "Unable to find EClass '%s' from EPackage '%s'", getName(), p.getNsURI());
         return c;
     });
 
     /**
-     * Constructs a new {@code BasicClass} from the represented meta-class.
+     * Constructs a new {@code ProxyClass} from the represented meta-class.
      *
      * @param eClass the represented meta-class
      */
-    public BasicClass(EClass eClass) {
-        this(BasicNamespace.Registry.getInstance().get(eClass.getEPackage()), eClass.getName());
+    public ProxyClass(EClass eClass) {
+        this(ProxyPackage.Registry.getInstance().get(eClass.getEPackage()), eClass.getName());
         this.eClass.update(eClass);
     }
 
     /**
-     * Constructs a new {@code BasicClass} with the given {@code ns}.
+     * Constructs a new {@code ProxyClass} with the given {@code ns}.
      *
      * @param ns the namespace of this meta-class
      */
-    public BasicClass(BasicNamespace ns) {
+    public ProxyClass(ProxyPackage ns) {
         this(ns, null);
     }
 
     /**
-     * Constructs a new {@code BasicClass} with the given {@code ns} and {@code name}.
+     * Constructs a new {@code ProxyClass} with the given {@code ns} and {@code name}.
      *
      * @param ns   the namespace of this meta-class
      * @param name the name of this meta-class
      */
-    public BasicClass(BasicNamespace ns, @Nullable String name) {
+    public ProxyClass(ProxyPackage ns, @Nullable String name) {
         this.ns = checkNotNull(ns, "ns");
 
         if (nonNull(name)) {
@@ -85,13 +85,13 @@ public class BasicClass extends AbstractNamedElement<BasicClass> implements Basi
     }
 
     @Override
-    public EClass getReal() {
+    public EClass getOrigin() {
         return eClass.get();
     }
 
     @Nonnull
     @Override
-    public BasicClass setReal(EClass eClass) {
+    public ProxyClass setOrigin(EClass eClass) {
         checkNotNull(eClass, "eClass");
         this.eClass.update(eClass);
 
@@ -104,7 +104,7 @@ public class BasicClass extends AbstractNamedElement<BasicClass> implements Basi
      * @return the namespace
      */
     @Nonnull
-    public BasicNamespace getNamespace() {
+    public ProxyPackage getNamespace() {
         return ns;
     }
 
@@ -125,7 +125,7 @@ public class BasicClass extends AbstractNamedElement<BasicClass> implements Basi
             return false;
         }
 
-        BasicClass that = (BasicClass) o;
+        ProxyClass that = (ProxyClass) o;
         return Objects.equals(ns, that.ns);
     }
 

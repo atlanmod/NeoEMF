@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -223,7 +223,7 @@ public interface StoreAdapter extends Saveable, Copiable<StoreAdapter>, Internal
      * @return an {@link EClass} representing the meta-class of the element
      */
     @Nonnull
-    Optional<EClass> resolveInstanceOf(Id id);
+    EClass resolveInstanceOf(Id id);
 
     /**
      * Creates the instance of the {@code object} in a {@link ClassBean} object and persists it in the database.

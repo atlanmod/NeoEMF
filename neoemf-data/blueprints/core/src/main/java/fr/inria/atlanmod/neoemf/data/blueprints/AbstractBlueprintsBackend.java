@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -28,7 +28,7 @@ import org.atlanmod.commons.collect.MoreIterables;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -149,11 +149,11 @@ abstract class AbstractBlueprintsBackend extends AbstractBackend implements Blue
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
-        return MoreIterables.stream(graph.getClassVertices(metaClasses))
+    public Stream<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+        return graph.getClassVertices(metaClasses)
                 .map(ClassVertex::getAllInstancesOf)
                 .flatMap(MoreIterables::stream)
                 .map(ElementVertex::getElementId)
-                .collect(Collectors.toSet());
+                .distinct();
     }
 }

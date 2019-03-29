@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -15,9 +15,9 @@ import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
 
-import org.apache.logging.log4j.util.Strings;
 import org.atlanmod.commons.AbstractFileBasedTest;
 import org.atlanmod.commons.log.Log;
+import org.atlanmod.commons.primitive.Strings;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.junit.jupiter.api.BeforeAll;

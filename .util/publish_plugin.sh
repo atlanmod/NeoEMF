@@ -13,7 +13,7 @@ e() {
 skip() {
     local skipMessage="Skipping $TYPE publication"
 
-    if [ $# -ne 0 ]; then
+    if [[ $# -ne 0 ]]; then
         skipMessage="$skipMessage: $1"
     fi
 
@@ -23,13 +23,13 @@ skip() {
 
 # Check that the context is valid for publication
 checkBuildInfo() {
-    if [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
+    if [[ "$TRAVIS_JDK_VERSION" != "$JDK" ]]; then
         skip "Wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'"
-    elif [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+    elif [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
         skip "Was pull request"
-    elif [ "$TRAVIS_BRANCH" != "master" ]; then
+    elif [[ "$TRAVIS_BRANCH" != "master" ]]; then
         skip "Wrong branch. Expected 'master' but was '$TRAVIS_BRANCH'"
-    elif [ "$TRAVIS_OS_NAME" != "linux" ]; then
+    elif [[ "$TRAVIS_OS_NAME" != "linux" ]]; then
         skip "Wrong OS. Expected 'linux' but was '$TRAVIS_OS_NAME'"
     fi
 }
@@ -43,7 +43,7 @@ generate() {
     mvn -q -B -f plugins/eclipse package
 
     # Check the generation
-    if ! [ -d ${outputDir} ]; then
+    if ! [[ -d ${outputDir} ]]; then
         skip "No $TYPE has been generated"
     fi
 
@@ -53,7 +53,7 @@ generate() {
 
 # Clone the publication branch
 cloneBranch() {
-    if ! [ -d $1 ]; then
+    if ! [[ -d $1 ]]; then
         e "Cloning '$1' branch..."
 
         git config --global user.email "travis@travis-ci.org"
@@ -67,7 +67,7 @@ mergeIntoBranch() {
     e "Merging $TYPE..."
 
     # Remove existing artifacts
-    if [ -d $2 ]; then
+    if [[ -d $2 ]]; then
         git rm --quiet -rf $2
     fi
 
@@ -78,7 +78,7 @@ mergeIntoBranch() {
     git add -Af
 
     # Check differences
-    if [ -z "$(git status --porcelain)" ]; then
+    if [[ -z "$(git status --porcelain)" ]]; then
         skip "No change"
     fi
 }

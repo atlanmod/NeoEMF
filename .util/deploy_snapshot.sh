@@ -13,7 +13,7 @@ e() {
 skip() {
     local skipMessage="Skipping $TYPE publication"
 
-    if [ $# -ne 0 ]; then
+    if [[ $# -ne 0 ]]; then
         skipMessage="$skipMessage: $1"
     fi
 
@@ -23,13 +23,13 @@ skip() {
 
 # Check that the context is valid for deployment
 checkBuildInfo() {
-    if [ "$TRAVIS_JDK_VERSION" != "$JDK" ]; then
+    if [[ "$TRAVIS_JDK_VERSION" != "$JDK" ]]; then
         skip "Wrong JDK. Expected '$JDK' but was '$TRAVIS_JDK_VERSION'"
-    elif [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+    elif [[ "$TRAVIS_PULL_REQUEST" != "false" ]]; then
         skip "Was pull request"
-    elif [ "$TRAVIS_BRANCH" != "master" ]; then
+    elif [[ "$TRAVIS_BRANCH" != "master" ]]; then
         skip "Wrong branch. Expected 'master' but was '$TRAVIS_BRANCH'"
-    elif [ "$TRAVIS_OS_NAME" != "linux" ]; then
+    elif [[ "$TRAVIS_OS_NAME" != "linux" ]]; then
         skip "Wrong OS. Expected 'linux' but was '$TRAVIS_OS_NAME'"
     fi
 

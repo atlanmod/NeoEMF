@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -71,6 +71,7 @@ class DefaultMongoDbBackend extends AbstractMongoDbBackend implements AllReferen
      * A {@link org.atlanmod.commons.io.serializer.Serializer} that converts feature values in a Base64 representation.
      */
     @Nonnull
+    // FIXME Id are converted twice (long -> hexa-string -> base64-string)
     private final StringSerializer<Object> serializer = StringSerializerFactory.base64(BinarySerializerFactory.getInstance().forAny());
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 
 import java.io.IOException;
 
@@ -38,34 +38,34 @@ public interface Handler {
      * @param element the element of the new element
      *
      * @see #onEndElement()
-     * @see Notifier#notifyStartElement(BasicElement)
+     * @see Notifier#notifyStartElement(ProxyElement)
      */
-    void onStartElement(BasicElement element) throws IOException;
+    void onStartElement(ProxyElement element) throws IOException;
 
     /**
      * Handles an attribute in the current element.
      *
      * @param attribute the new attribute
      *
-     * @see #onStartElement(BasicElement)
-     * @see Notifier#notifyAttribute(BasicAttribute)
+     * @see #onStartElement(ProxyElement)
+     * @see Notifier#notifyAttribute(ProxyAttribute)
      */
-    void onAttribute(BasicAttribute attribute) throws IOException;
+    void onAttribute(ProxyAttribute attribute) throws IOException;
 
     /**
      * Handles a reference from the current element to another.
      *
      * @param reference the new reference
      *
-     * @see #onStartElement(BasicElement)
-     * @see Notifier#notifyReference(BasicReference)
+     * @see #onStartElement(ProxyElement)
+     * @see Notifier#notifyReference(ProxyReference)
      */
-    void onReference(BasicReference reference) throws IOException;
+    void onReference(ProxyReference reference) throws IOException;
 
     /**
      * Handles the end of the current element.
      *
-     * @see #onStartElement(BasicElement)
+     * @see #onStartElement(ProxyElement)
      * @see Notifier#notifyEndElement()
      */
     void onEndElement() throws IOException;

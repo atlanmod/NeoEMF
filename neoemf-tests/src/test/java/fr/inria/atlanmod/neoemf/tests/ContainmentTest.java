@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -65,7 +65,7 @@ class ContainmentTest extends AbstractResourceBasedTest {
 
             assertThat(tree1.eInternalContainer()).isEqualTo(tree0);
 
-            assertThat(resource.getAllContents()).hasSize(4);
+            assertThat(resource.getAllContents()).toIterable().hasSize(4);
 
             assertThat(tree0.resource()).isSameAs(resource);
             assertThat(tree1.resource()).isSameAs(resource);
@@ -114,7 +114,7 @@ class ContainmentTest extends AbstractResourceBasedTest {
             assertThat(node0.getManyContainmentReference()).contains(comment0);
 
             // Check everything is accessible from the resource
-            assertThat(resource.getAllContents()).hasSize(4);
+            assertThat(resource.getAllContents()).toIterable().hasSize(4);
         }
     }
 }

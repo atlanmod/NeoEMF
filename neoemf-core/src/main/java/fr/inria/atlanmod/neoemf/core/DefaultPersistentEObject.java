@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -45,6 +45,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.atlanmod.commons.Preconditions.checkInstanceOf;
 import static org.atlanmod.commons.Preconditions.checkNotNull;
@@ -63,6 +64,7 @@ import static org.atlanmod.commons.Preconditions.checkNotNull;
  * @see BoundInMemoryBackend
  * @see PersistenceFactory
  */
+//TODO Save values of transient features in a `BoundInMemoryBackend` instead of a persistent one
 @ParametersAreNonnullByDefault
 public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implements PersistentEObject {
 
@@ -284,8 +286,33 @@ public class DefaultPersistentEObject extends MinimalEStoreEObjectImpl implement
     }
 
     @Override
+    protected boolean eDynamicIsSet(int dynamicFeatureId, EStructuralFeature feature) {
+        if (dynamicFeatureId < 0) {
+            return eOpenIsSet(feature);
+        }
+        else {
+            return eStore().isSet(this, feature);
+        }
+    }
+
+    @Override
     public PersistentEObject eInternalContainer() {
         return lazyContainer.get();
+    }
+
+    @Override
+    public int eContainerFeatureID() {
+        final PersistentEObject container = eInternalContainer();
+
+        if (isNull(container)) {
+            return 0;
+        }
+
+        final EReference containingReference = eStore().getContainingFeature(this);
+
+        return Optional.ofNullable(containingReference.getEOpposite())
+                .map(or -> eClass().getFeatureID(or))
+                .orElseGet(() -> EOPPOSITE_FEATURE_BASE - container.eClass().getFeatureID(containingReference));
     }
 
     /**

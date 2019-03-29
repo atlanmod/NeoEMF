@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -10,9 +10,9 @@ package fr.inria.atlanmod.neoemf.io.processor;
 
 import fr.inria.atlanmod.neoemf.io.AbstractNotifier;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -46,17 +46,17 @@ public final class NoopProcessor extends AbstractNotifier<Handler> implements Pr
     }
 
     @Override
-    public void onStartElement(BasicElement element) throws IOException {
+    public void onStartElement(ProxyElement element) throws IOException {
         notifyStartElement(element);
     }
 
     @Override
-    public void onAttribute(BasicAttribute attribute) throws IOException {
+    public void onAttribute(ProxyAttribute attribute) throws IOException {
         notifyAttribute(attribute);
     }
 
     @Override
-    public void onReference(BasicReference reference) throws IOException {
+    public void onReference(ProxyReference reference) throws IOException {
         notifyReference(reference);
     }
 

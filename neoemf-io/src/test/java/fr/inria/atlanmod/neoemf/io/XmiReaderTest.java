@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -9,9 +9,9 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyClass;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.util.InMemoryElement;
@@ -163,7 +163,7 @@ class XmiReaderTest extends AbstractTest {
         InMemoryElement o;
         InMemoryElement child;
 
-        List<BasicReference> references;
+        List<ProxyReference> references;
 
         references = root.references();
         assertThat(references).hasSize(19);
@@ -232,7 +232,7 @@ class XmiReaderTest extends AbstractTest {
         InMemoryElement o;
         InMemoryElement child;
 
-        List<BasicAttribute> attributes;
+        List<ProxyAttribute> attributes;
 
         attributes = root.attributes();
         assertThat(attributes).hasSize(1); // Assert that 'xmi:version' and 'xmlns' don't exist
@@ -399,7 +399,7 @@ class XmiReaderTest extends AbstractTest {
      * @param nsPrefix  the expected namespace prefix
      * @param name      the expected name
      */
-    private void assertValidMetaClass(BasicClass metaClass, String nsPrefix, String name) {
+    private void assertValidMetaClass(ProxyClass metaClass, String nsPrefix, String name) {
         assertThat(metaClass.getNamespace().getPrefix()).isEqualTo(nsPrefix);
         assertThat(metaClass.getName()).isEqualTo(name);
     }
@@ -413,7 +413,7 @@ class XmiReaderTest extends AbstractTest {
      * @param isMany        {@code true} if the {@code reference} is multi-valued
      * @param isContainment {@code true} if the {@code reference} is a containment
      */
-    private void assertValidReference(BasicReference reference, String name, Id idReference, boolean isMany, boolean isContainment) {
+    private void assertValidReference(ProxyReference reference, String name, Id idReference, boolean isMany, boolean isContainment) {
         assertThat(reference.getName()).isEqualTo(name);
         assertThat(reference.getValue().getResolved()).isEqualTo(idReference);
         assertThat(reference.isContainment()).isEqualTo(isContainment);
@@ -427,7 +427,7 @@ class XmiReaderTest extends AbstractTest {
      * @param name      the expected name
      * @param value     the expected value
      */
-    private void assertValidAttribute(BasicAttribute attribute, String name, Object value) {
+    private void assertValidAttribute(ProxyAttribute attribute, String name, Object value) {
         assertThat(attribute.getName()).isEqualTo(name);
         assertThat(attribute.getValue().getResolved()).isEqualTo(value);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -9,11 +9,11 @@
 package fr.inria.atlanmod.neoemf.io.reader;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
-import fr.inria.atlanmod.neoemf.io.bean.Data;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyClass;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyPackage;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyValue;
 
 import org.atlanmod.commons.primitive.Strings;
 
@@ -58,7 +58,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * A collection that holds all attributes of the {@link #currentElement}.
      */
     @Nonnull
-    private final Deque<BasicAttribute> currentAttributes = new ArrayDeque<>();
+    private final Deque<ProxyAttribute> currentAttributes = new ArrayDeque<>();
 
     /**
      * The current element.
@@ -66,7 +66,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * @see #readStartElement(String, String)
      * @see #flushCurrentElement()
      */
-    private BasicElement currentElement;
+    private ProxyElement currentElement;
 
     /**
      * Whether the current element has to be ignored.
@@ -83,7 +83,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
             parse(in);
         }
         finally {
-            BasicNamespace.Registry.getInstance().clean();
+            ProxyPackage.Registry.getInstance().clean();
         }
     }
 
@@ -112,7 +112,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * @return the current element (mutable)
      */
     @Nonnull
-    public BasicElement getCurrentElement() {
+    public ProxyElement getCurrentElement() {
         return currentElement;
     }
 
@@ -141,10 +141,10 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * @param name the name of the element
      */
     protected final void readStartElement(@Nullable String uri, String name) {
-        currentElement = new BasicElement().setName(name);
+        currentElement = new ProxyElement().setName(name);
 
-        Optional.ofNullable(BasicNamespace.Registry.getInstance().getByUri(Strings.emptyToNull(uri)))
-                .map(BasicClass::new)
+        Optional.ofNullable(ProxyPackage.Registry.getInstance().getByUri(Strings.emptyToNull(uri)))
+                .map(ProxyClass::new)
                 .ifPresent(c -> currentElement.setMetaClass(c));
 
         currentAttributes.clear();
@@ -160,19 +160,19 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
     protected final void readSimpleElement(@Nullable String uri, String name, String value) throws IOException {
         checkState(!identifiers.isEmpty(), "Trying to process an empty root element");
 
-        notifyAttribute(new BasicAttribute().setName(name).setValue(Data.raw(value)));
+        notifyAttribute(new ProxyAttribute().setName(name).setValue(ProxyValue.raw(value)));
     }
 
     /**
-     * Reads a {@link fr.inria.atlanmod.neoemf.io.bean.BasicNamespace} declaration.
+     * Reads a {@link ProxyPackage} declaration.
      *
      * @param prefix the prefix of the namespace
      * @param uri    the URI of the namespace
      *
-     * @see BasicNamespace.Registry#register(String, String)
+     * @see ProxyPackage.Registry#register(String, String)
      */
     protected final void readNamespace(String prefix, String uri) {
-        BasicNamespace.Registry.getInstance().register(prefix, uri);
+        ProxyPackage.Registry.getInstance().register(prefix, uri);
     }
 
     /**
@@ -186,7 +186,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
         notifyStartElement(currentElement);
         identifiers.addLast(currentElement.getId().getResolved());
 
-        for (BasicAttribute a : currentAttributes) {
+        for (ProxyAttribute a : currentAttributes) {
             notifyAttribute(a);
         }
     }
@@ -203,7 +203,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
             return;
         }
 
-        currentAttributes.add(new BasicAttribute().setName(name).setValue(Data.raw(value)));
+        currentAttributes.add(new ProxyAttribute().setName(name).setValue(ProxyValue.raw(value)));
     }
 
     /**
@@ -218,10 +218,10 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
         Matcher m = PATTERN_PREFIXED_VALUE.matcher(prefixedValue);
         checkArgument(m.find(), "Malformed meta-class %s", prefixedValue);
 
-        BasicNamespace ns = BasicNamespace.Registry.getInstance().getByPrefix(m.group(1));
+        ProxyPackage ns = ProxyPackage.Registry.getInstance().getByPrefix(m.group(1));
         String name = m.group(2);
 
-        currentElement.setMetaClass(new BasicClass(ns, name));
+        currentElement.setMetaClass(new ProxyClass(ns, name));
     }
 
     /**

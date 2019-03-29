@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;
 
 import org.eclipse.emf.ecore.EObject;
 
@@ -20,23 +20,22 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @param <R> the type of the represented object
  */
 @ParametersAreNonnullByDefault
-// FIXME Find better name for methods!
-public interface Basic<T extends Basic<T, R>, R extends EObject> {
+public interface Proxy<T extends Proxy<T, R>, R extends EObject> {
 
     /**
-     * Returns the object represented by this object.
+     * Returns the origin of this proxy.
      *
      * @return the represented object
      */
-    R getReal();
+    R getOrigin();
 
     /**
-     * Defines the object represented by this object.
+     * Defines the origin of this proxy.
      *
      * @param r the represented object
      *
      * @return this instance (for chaining)
      */
     @Nonnull
-    T setReal(R r);
+    T setOrigin(R r);
 }

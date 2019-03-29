@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.atlanmod.commons</groupId>
         <artifactId>commons</artifactId>
-        <version>1.0.4-SNAPSHOT</version>
+        <version>1.0.4</version>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf</groupId>
     <artifactId>neoemf</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -113,7 +113,7 @@
     <properties>
         <argLine.global>-XX:+UseConcMarkSweepGC -Xmx2g</argLine.global>
 
-        <commons.version>1.0.4-SNAPSHOT</commons.version>
+        <commons.version>1.0.4</commons.version>
 
         <emf.version>2.15.0</emf.version>
     </properties>
@@ -163,6 +163,29 @@
     </dependencyManagement>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M2</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.5.0</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
         <pluginManagement>
             <plugins>
 
@@ -174,7 +197,7 @@
                     <configuration>
                         <instructions>
                             <Bundle-Version>
-                                2.0.0.${maven.build.timestamp}
+                                2.0.1.${maven.build.timestamp}
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package />
@@ -280,27 +303,6 @@
             <properties>
                 <skipTests>true</skipTests>
             </properties>
-            <dependencies>
-
-                <dependency>
-                    <groupId>org.atlanmod.commons</groupId>
-                    <artifactId>commons-core</artifactId>
-                    <version>${commons.version}</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.eclipse.emf</groupId>
-                    <artifactId>org.eclipse.emf.common</artifactId>
-                    <version>${emf.version}</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.eclipse.emf</groupId>
-                    <artifactId>org.eclipse.emf.ecore</artifactId>
-                    <version>${emf.version}</version>
-                </dependency>
-
-            </dependencies>
             <build>
                 <pluginManagement>
                     <plugins>
@@ -310,18 +312,9 @@
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <version>3.0.1</version>
                             <configuration>
-                                <includeDependencySources>true</includeDependencySources>
-                                <dependencySourceIncludes>
-                                    <dependencySourceInclude>org.atlanmod.commons:*</dependencySourceInclude>
-                                    <dependencySourceInclude>org.eclipse.emf:*</dependencySourceInclude>
-                                </dependencySourceIncludes>
                                 <excludePackageNames>
-                                    org.atlanmod.commons*;
                                     fr.inria.atlanmod.neoemf.tests*;
-                                    org.eclipse.emf*;
-                                    javax.annotation*;
                                 </excludePackageNames>
-                                <detectLinks>true</detectLinks>
                                 <links>
                                     <link>https://atlanmod.github.io/Commons/releases/latest/doc/</link>
                                     <link>http://download.eclipse.org/modeling/emf/emf/javadoc/2.11/</link>
@@ -338,7 +331,7 @@
         <profile>
             <id>allow-snapshots</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <repositories>
                 <repository>

@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
@@ -18,21 +18,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case about {@link BasicAttribute}.
+ * A test-case about {@link ProxyAttribute}.
  */
 @ParametersAreNonnullByDefault
-class BasicAttributeTest extends AbstractTest {
+class ProxyAttributeTest extends AbstractTest {
 
     @Test
     void testName() {
         String name0 = "attribute0";
         String name1 = "attribute1";
 
-        BasicAttribute attr0 = new BasicAttribute();
+        ProxyAttribute attr0 = new ProxyAttribute();
         attr0.setName(name0);
         assertThat(attr0.getName()).isEqualTo(name0);
 
-        BasicAttribute attr1 = new BasicAttribute();
+        ProxyAttribute attr1 = new ProxyAttribute();
         attr1.setName(name1);
         assertThat(attr1.getName()).isEqualTo(name1);
 
@@ -41,7 +41,7 @@ class BasicAttributeTest extends AbstractTest {
 
     @Test
     void testId() {
-        BasicAttribute attr0 = new BasicAttribute();
+        ProxyAttribute attr0 = new ProxyAttribute();
         attr0.setName("attribute0");
         assertThat(attr0.getOwner()).isNull();
 
@@ -57,7 +57,7 @@ class BasicAttributeTest extends AbstractTest {
 
     @Test
     void testMany() {
-        BasicAttribute attr0 = new BasicAttribute();
+        ProxyAttribute attr0 = new ProxyAttribute();
         attr0.setName("attribute0");
         assertThat(attr0.isMany()).isFalse();
 
@@ -70,27 +70,27 @@ class BasicAttributeTest extends AbstractTest {
 
     @Test
     void testValue() {
-        BasicAttribute attr0 = new BasicAttribute();
+        ProxyAttribute attr0 = new ProxyAttribute();
         attr0.setName("attribute0");
         assertThat(attr0.getValue().isPresent()).isFalse();
 
         String value0 = "value0";
         String value1 = "value1";
 
-        attr0.setValue(Data.resolved(value0));
+        attr0.setValue(ProxyValue.resolved(value0));
         assertThat(attr0.getValue().getResolved()).isEqualTo(value0);
 
-        attr0.setValue(Data.resolved(value1));
+        attr0.setValue(ProxyValue.resolved(value1));
         assertThat(attr0.getValue().getResolved()).isNotEqualTo(value0).isEqualTo(value1);
     }
 
     @Test
     void testHashCode() {
-        BasicAttribute attr0 = new BasicAttribute();
+        ProxyAttribute attr0 = new ProxyAttribute();
         attr0.setName("attribute0");
-        BasicAttribute attr0Bis = new BasicAttribute();
+        ProxyAttribute attr0Bis = new ProxyAttribute();
         attr0Bis.setName("attribute0");
-        BasicAttribute attr1 = new BasicAttribute();
+        ProxyAttribute attr1 = new ProxyAttribute();
         attr1.setName("attribute1");
 
         assertThat(attr0.hashCode()).isEqualTo(attr0Bis.hashCode());
@@ -100,11 +100,11 @@ class BasicAttributeTest extends AbstractTest {
 
     @Test
     void testEquals() {
-        BasicAttribute attr0 = new BasicAttribute();
+        ProxyAttribute attr0 = new ProxyAttribute();
         attr0.setName("attribute0");
-        BasicAttribute attr0Bis = new BasicAttribute();
+        ProxyAttribute attr0Bis = new ProxyAttribute();
         attr0Bis.setName("attribute0");
-        BasicAttribute attr1 = new BasicAttribute();
+        ProxyAttribute attr1 = new ProxyAttribute();
         attr1.setName("attribute1");
 
         assertThat(attr0).isEqualTo(attr0Bis);

@@ -1,6 +1,10 @@
-## *2.0.0*
+## *2.0.1*
 
 Current SNAPSHOT.
+
+## *2.0.0*
+
+*Released on 2019-03-21.*
 
 __IMPORTANT NOTE:__ Due to significant changes in data mapping, databases created with a previous version are not compatible with this release.
 No migration helper is provided: the simplest way to transfer the old databases to the new ones, is to export the database into an XMI file and re-import it.

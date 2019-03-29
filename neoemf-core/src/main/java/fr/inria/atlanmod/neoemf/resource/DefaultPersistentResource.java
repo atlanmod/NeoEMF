@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -203,8 +203,7 @@ public class DefaultPersistentResource extends ResourceImpl implements Persisten
         Stream<EObject> allInstancesOf;
 
         try {
-            allInstancesOf = MoreIterables.stream(eStore.store().allInstancesOf(ClassBean.from(eClass), strict))
-                    .map(id -> eStore.resolve(id));
+            allInstancesOf = eStore.store().allInstancesOf(ClassBean.from(eClass), strict).map(id -> eStore.resolve(id));
         }
         catch (UnsupportedOperationException e) {
             Log.debug("This mapper doesn't support the lookup of all instances: using standard EMF API instead");

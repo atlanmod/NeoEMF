@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * A simple representation of a {@link org.eclipse.emf.ecore.EReference}.
  */
 @ParametersAreNonnullByDefault
-public class BasicReference extends AbstractBasicFeature<BasicReference, EReference, Id> {
+public class ProxyReference extends AbstractProxyFeature<ProxyReference, EReference, Id> {
 
     /**
      * Whether this reference is a containment.
@@ -27,21 +27,21 @@ public class BasicReference extends AbstractBasicFeature<BasicReference, ERefere
     private boolean containment;
 
     /**
-     * Creates a new {@code BasicReference} from another, without its values.
+     * Creates a new {@code ProxyReference} from another, without its values.
      *
      * @param base the reference to copy
      *
-     * @return a new {@code BasicReference}
+     * @return a new {@code ProxyReference}
      */
     @Nonnull
-    public static BasicReference copy(BasicReference base) {
-        return new BasicReference().setOwner(base.getOwner()).setId(base.getId()).setReal(base.getReal());
+    public static ProxyReference copy(ProxyReference base) {
+        return new ProxyReference().setOwner(base.getOwner()).setId(base.getId()).setOrigin(base.getOrigin());
     }
 
     @Nonnull
     @Override
-    public BasicReference setReal(EReference eReference) {
-        return super.setReal(eReference).isContainment(eReference.isContainment());
+    public ProxyReference setOrigin(EReference eReference) {
+        return super.setOrigin(eReference).isContainment(eReference.isContainment());
     }
 
     /**
@@ -61,7 +61,7 @@ public class BasicReference extends AbstractBasicFeature<BasicReference, ERefere
      * @return this instance (for chaining)
      */
     @Nonnull
-    public BasicReference isContainment(boolean isContainment) {
+    public ProxyReference isContainment(boolean isContainment) {
         this.containment = isContainment;
 
         return me();

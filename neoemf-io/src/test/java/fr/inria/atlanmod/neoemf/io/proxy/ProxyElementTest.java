@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.bean;
+package fr.inria.atlanmod.neoemf.io.proxy;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 
@@ -18,21 +18,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * A test-case about {@link BasicElement}.
+ * A test-case about {@link ProxyElement}.
  */
 @ParametersAreNonnullByDefault
-class BasicElementTest extends AbstractTest {
+class ProxyElementTest extends AbstractTest {
 
     @Test
     void testName() {
         String name0 = "element0";
         String name1 = "element1";
 
-        BasicElement elt0 = new BasicElement();
+        ProxyElement elt0 = new ProxyElement();
         elt0.setName(name0);
         assertThat(elt0.getName()).isEqualTo(name0);
 
-        BasicElement elt1 = new BasicElement();
+        ProxyElement elt1 = new ProxyElement();
         elt1.setName(name1);
         assertThat(elt1.getName()).isEqualTo(name1);
 
@@ -41,28 +41,28 @@ class BasicElementTest extends AbstractTest {
 
     @Test
     void testId() {
-        BasicElement elt0 = new BasicElement();
+        ProxyElement elt0 = new ProxyElement();
         assertThat(elt0.getId().isPresent()).isFalse();
 
         Id id0 = Id.getProvider().fromLong(42);
         Id id1 = Id.getProvider().fromLong(44);
 
-        elt0.setId(Data.resolved(id0));
+        elt0.setId(ProxyValue.resolved(id0));
         assertThat(elt0.getId().getResolved()).isEqualTo(id0);
 
-        elt0.setId(Data.resolved(id1));
+        elt0.setId(ProxyValue.resolved(id1));
         assertThat(elt0.getId().getResolved()).isNotEqualTo(id0).isEqualTo(id1);
     }
 
     @Test
     void testMetaclass() {
-        BasicNamespace ns = BasicNamespace.DEFAULT;
+        ProxyPackage ns = ProxyPackage.DEFAULT;
 
-        BasicElement elt0 = new BasicElement();
+        ProxyElement elt0 = new ProxyElement();
         assertThat(elt0.getMetaClass()).isNull();
 
-        BasicClass mc0 = new BasicClass(ns, "mc0");
-        BasicClass mc1 = new BasicClass(ns, "mc1");
+        ProxyClass mc0 = new ProxyClass(ns, "mc0");
+        ProxyClass mc1 = new ProxyClass(ns, "mc1");
 
         elt0.setMetaClass(mc0);
         assertThat(elt0.getMetaClass()).isEqualTo(mc0);
@@ -73,7 +73,7 @@ class BasicElementTest extends AbstractTest {
 
     @Test
     void testRoot() {
-        BasicElement elt0 = new BasicElement();
+        ProxyElement elt0 = new ProxyElement();
         assertThat(elt0.isRoot()).isFalse();
 
         elt0.setRoot(true);
@@ -85,14 +85,14 @@ class BasicElementTest extends AbstractTest {
 
     @Test
     void testHashCode() {
-        BasicElement elt0 = new BasicElement();
-        elt0.setId(Data.resolved(Id.getProvider().fromLong(42)));
+        ProxyElement elt0 = new ProxyElement();
+        elt0.setId(ProxyValue.resolved(Id.getProvider().fromLong(42)));
 
-        BasicElement elt0Bis = new BasicElement();
-        elt0Bis.setId(Data.resolved(Id.getProvider().fromLong(42)));
+        ProxyElement elt0Bis = new ProxyElement();
+        elt0Bis.setId(ProxyValue.resolved(Id.getProvider().fromLong(42)));
 
-        BasicElement elt1 = new BasicElement();
-        elt1.setId(Data.resolved(Id.getProvider().fromLong(44)));
+        ProxyElement elt1 = new ProxyElement();
+        elt1.setId(ProxyValue.resolved(Id.getProvider().fromLong(44)));
 
         assertThat(elt0.hashCode()).isEqualTo(elt0Bis.hashCode());
         assertThat(elt0.hashCode()).isNotEqualTo(elt1.hashCode());
@@ -101,14 +101,14 @@ class BasicElementTest extends AbstractTest {
 
     @Test
     void testEquals() {
-        BasicElement elt0 = new BasicElement();
-        elt0.setId(Data.resolved(Id.getProvider().fromLong(42)));
+        ProxyElement elt0 = new ProxyElement();
+        elt0.setId(ProxyValue.resolved(Id.getProvider().fromLong(42)));
 
-        BasicElement elt0Bis = new BasicElement();
-        elt0Bis.setId(Data.resolved(Id.getProvider().fromLong(42)));
+        ProxyElement elt0Bis = new ProxyElement();
+        elt0Bis.setId(ProxyValue.resolved(Id.getProvider().fromLong(42)));
 
-        BasicElement elt1 = new BasicElement();
-        elt1.setId(Data.resolved(Id.getProvider().fromLong(44)));
+        ProxyElement elt1 = new ProxyElement();
+        elt1.setId(ProxyValue.resolved(Id.getProvider().fromLong(44)));
 
         assertThat(elt0).isEqualTo(elt0Bis);
         assertThat(elt0).isNotEqualTo(elt1);
@@ -121,7 +121,7 @@ class BasicElementTest extends AbstractTest {
 
     @Test
     void testToString() {
-        BasicElement elt0 = new BasicElement();
+        ProxyElement elt0 = new ProxyElement();
         elt0.setName("Element0");
 
         assertThat(elt0).hasToString("Element0");

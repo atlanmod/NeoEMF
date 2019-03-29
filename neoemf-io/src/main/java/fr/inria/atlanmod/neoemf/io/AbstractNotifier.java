@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -8,9 +8,9 @@
 
 package fr.inria.atlanmod.neoemf.io;
 
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier {
     }
 
     @Override
-    public void notifyStartElement(BasicElement element) throws IOException {
+    public void notifyStartElement(ProxyElement element) throws IOException {
         checkNotNull(element, "element");
 
         for (H h : handlers) {
@@ -87,7 +87,7 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier {
     }
 
     @Override
-    public void notifyAttribute(BasicAttribute attribute) throws IOException {
+    public void notifyAttribute(ProxyAttribute attribute) throws IOException {
         checkNotNull(attribute, "attribute");
 
         for (H h : handlers) {
@@ -96,7 +96,7 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier {
     }
 
     @Override
-    public void notifyReference(BasicReference reference) throws IOException {
+    public void notifyReference(ProxyReference reference) throws IOException {
         checkNotNull(reference, "reference");
 
         for (H h : handlers) {

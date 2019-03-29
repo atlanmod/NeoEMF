@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -677,25 +677,16 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
 
     @Nonnull
     @Override
-    public Optional<EClass> resolveInstanceOf(Id id) {
-        Optional<EClass> instanceOf = store.metaClassOf(id).map(ClassBean::get);
-
-        if (!instanceOf.isPresent()) {
-            throw new NoSuchElementException(String.format("Element '%s' does not have an associated EClass", id.toHexString()));
-        }
-
-        return instanceOf;
+    public EClass resolveInstanceOf(Id id) {
+        return store.metaClassOf(id)
+                .map(ClassBean::get)
+                .orElseThrow(() -> new NoSuchElementException(
+                        String.format("Element '%s' does not have an associated EClass", id.toHexString())));
     }
 
     @Override
     public void updateInstanceOf(PersistentEObject object) {
         final Id id = refConverter.convert(object);
-
-        // If the object is already present in the cache, then the meta-class is defined
-        if (getCache().contains(id)) {
-            return;
-        }
-
         store.metaClassFor(id, ClassBean.from(object));
         refresh(object);
     }
@@ -714,7 +705,6 @@ public abstract class AbstractStoreAdapter implements StoreAdapter {
      */
     @Nonnull
     private PersistentEObject rebuild(Id id) {
-        final EClass eClass = resolveInstanceOf(id).orElseThrow(IllegalStateException::new); // Should never happen
-        return PersistenceFactory.newInstance(eClass, id);
+        return PersistenceFactory.newInstance(resolveInstanceOf(id), id);
     }
 }

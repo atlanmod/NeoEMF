@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -36,6 +36,7 @@ import static org.atlanmod.commons.Preconditions.checkNotNull;
  */
 @Static
 @ParametersAreNonnullByDefault
+// TODO Replace this static class by a class structure, to eventually support different kind of binding resolver
 public final class Bindings {
 
     private Bindings() {

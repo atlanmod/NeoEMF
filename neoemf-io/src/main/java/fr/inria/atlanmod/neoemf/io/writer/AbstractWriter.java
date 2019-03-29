@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -10,9 +10,9 @@ package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.Handler;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 
 import org.atlanmod.commons.log.Log;
 
@@ -60,7 +60,7 @@ public abstract class AbstractWriter<T> implements Writer {
      * @see #flushAllFeatures()
      */
     @Nonnull
-    private final Map<BasicReference, List<Id>> referencesAccumulator = new HashMap<>();
+    private final Map<ProxyReference, List<Id>> referencesAccumulator = new HashMap<>();
 
     /**
      * A map that holds multi-valued attributes of the current element, waiting to be written.
@@ -68,11 +68,11 @@ public abstract class AbstractWriter<T> implements Writer {
      * @see #flushAllFeatures()
      */
     @Nonnull
-    private final Map<BasicAttribute, List<Object>> attributesAccumulator = new HashMap<>();
+    private final Map<ProxyAttribute, List<Object>> attributesAccumulator = new HashMap<>();
 
     /**
-     * The last multi-valued feature identifier processed by {@link Handler#onAttribute(BasicAttribute)} or {@link
-     * Handler#onReference(BasicReference)}.
+     * The last multi-valued feature identifier processed by {@link Handler#onAttribute(ProxyAttribute)} or {@link
+     * Handler#onReference(ProxyReference)}.
      */
     private int lastManyFeatureId = -1;
 
@@ -89,14 +89,14 @@ public abstract class AbstractWriter<T> implements Writer {
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    public void onStartElement(BasicElement element) throws IOException {
+    public void onStartElement(ProxyElement element) throws IOException {
         flushAllFeatures();
 
         identifiers.addLast(element.getId().getResolved());
     }
 
     @Override
-    public final void onAttribute(BasicAttribute attribute) throws IOException {
+    public final void onAttribute(ProxyAttribute attribute) throws IOException {
         checkEqualTo(identifiers.getLast(), attribute.getOwner(),
                 "%s is not the owner of this attribute (%s)", identifiers.getLast(), attribute.getOwner());
 
@@ -112,7 +112,7 @@ public abstract class AbstractWriter<T> implements Writer {
     }
 
     @Override
-    public final void onReference(BasicReference reference) throws IOException {
+    public final void onReference(ProxyReference reference) throws IOException {
         if (!reference.isContainment()) { // Containment references are processed differently from standard references
             checkEqualTo(identifiers.getLast(), reference.getOwner(),
                     "%s is not the owner of this reference (%s)", identifiers.getLast(), reference.getOwner());
@@ -144,7 +144,7 @@ public abstract class AbstractWriter<T> implements Writer {
      * @param values    the ordered values of the attribute; when the {@code attribute} is single-valued, this parameter
      *                  is a {@link Collections#singletonList(Object)}
      */
-    public abstract void onAttribute(BasicAttribute attribute, List<Object> values) throws IOException;
+    public abstract void onAttribute(ProxyAttribute attribute, List<Object> values) throws IOException;
 
     /**
      * Handles a reference in the current element.
@@ -153,7 +153,7 @@ public abstract class AbstractWriter<T> implements Writer {
      * @param values    the ordered values of the reference; when the {@code reference} is single-valued, this parameter
      *                  is a {@link Collections#singletonList(Object)}
      */
-    public abstract void onReference(BasicReference reference, List<Id> values) throws IOException;
+    public abstract void onReference(ProxyReference reference, List<Id> values) throws IOException;
 
     /**
      * Returns {@code true} if this writer requires the end of the current element before flushing all features,
@@ -186,14 +186,14 @@ public abstract class AbstractWriter<T> implements Writer {
      */
     private void flushAllFeatures() throws IOException {
         if (!referencesAccumulator.isEmpty()) {
-            for (Map.Entry<BasicReference, List<Id>> e : referencesAccumulator.entrySet()) {
+            for (Map.Entry<ProxyReference, List<Id>> e : referencesAccumulator.entrySet()) {
                 onReference(e.getKey(), e.getValue());
             }
             referencesAccumulator.clear();
         }
 
         if (!attributesAccumulator.isEmpty()) {
-            for (Map.Entry<BasicAttribute, List<Object>> e : attributesAccumulator.entrySet()) {
+            for (Map.Entry<ProxyAttribute, List<Object>> e : attributesAccumulator.entrySet()) {
                 onAttribute(e.getKey(), e.getValue());
             }
             attributesAccumulator.clear();

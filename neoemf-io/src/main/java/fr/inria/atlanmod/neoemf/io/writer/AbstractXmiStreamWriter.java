@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -9,12 +9,12 @@
 package fr.inria.atlanmod.neoemf.io.writer;
 
 import fr.inria.atlanmod.neoemf.core.Id;
-import fr.inria.atlanmod.neoemf.io.bean.BasicAttribute;
-import fr.inria.atlanmod.neoemf.io.bean.BasicClass;
-import fr.inria.atlanmod.neoemf.io.bean.BasicElement;
-import fr.inria.atlanmod.neoemf.io.bean.BasicNamespace;
-import fr.inria.atlanmod.neoemf.io.bean.BasicReference;
 import fr.inria.atlanmod.neoemf.io.processor.ValueConverter;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyClass;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyPackage;
+import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
 import org.atlanmod.commons.annotation.Beta;
@@ -73,12 +73,12 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
     }
 
     @Override
-    public final void onStartElement(BasicElement element) throws IOException {
+    public final void onStartElement(ProxyElement element) throws IOException {
         super.onStartElement(element);
 
         final Id id = element.getId().getResolved();
-        final BasicClass metaClass = element.getMetaClass();
-        final BasicNamespace ns = metaClass.getNamespace();
+        final ProxyClass metaClass = element.getMetaClass();
+        final ProxyPackage ns = metaClass.getNamespace();
 
         if (element.isRoot()) {
             writeStartElement(XmiConstants.format(ns.getPrefix(), element.getName()));
@@ -100,7 +100,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
 
         writeAttribute(XMI_ID, id.toHexString());
 
-        classes.add(metaClass.getReal());
+        classes.add(metaClass.getOrigin());
     }
 
     @Override
@@ -113,10 +113,10 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
     }
 
     @Override
-    public final void onAttribute(BasicAttribute attribute, List<Object> values) throws IOException {
+    public final void onAttribute(ProxyAttribute attribute, List<Object> values) throws IOException {
         final ValueConverter converter = ValueConverter.INSTANCE;
 
-        final EAttribute eAttribute = attribute.getReal();
+        final EAttribute eAttribute = attribute.getOrigin();
         if (!attribute.isMany()) {
             writeAttribute(attribute.getName(), converter.revert(values.get(0), eAttribute));
         }
@@ -130,7 +130,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
     }
 
     @Override
-    public final void onReference(BasicReference reference, List<Id> values) throws IOException {
+    public final void onReference(ProxyReference reference, List<Id> values) throws IOException {
         if (reference.isContainment()) {
             return;
         }
@@ -153,7 +153,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
      *
      * @return {@code true} if the element requires an explicit declaration of its type
      */
-    private boolean requiresExplicitType(BasicElement element) {
+    private boolean requiresExplicitType(ProxyElement element) {
         if (element.isRoot()) {
             return false;
         }
@@ -162,7 +162,7 @@ public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
         final EStructuralFeature referencingFeature = containerClass.getEStructuralFeature(element.getName());
 
         final EClass baseType = (EClass) referencingFeature.getEType();
-        final EClass specificType = element.getMetaClass().getReal();
+        final EClass specificType = element.getMetaClass().getOrigin();
 
         return specificType != baseType;
     }

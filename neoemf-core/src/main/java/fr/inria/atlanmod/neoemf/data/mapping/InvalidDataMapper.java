@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2018 Atlanmod, Inria, LS2N, and IMT Nantes.
+ * Copyright (c) 2013 Atlanmod.
  *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v2.0 which accompanies
@@ -73,13 +73,13 @@ public class InvalidDataMapper implements DataMapper {
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
+    public Stream<Id> allInstancesOf(ClassBean metaClass, boolean strict) {
         throw e.get();
     }
 
     @Nonnull
     @Override
-    public Iterable<Id> allInstancesOf(Set<ClassBean> metaClasses) {
+    public Stream<Id> allInstancesOf(Set<ClassBean> metaClasses) {
         throw e.get();
     }
 
