@@ -1,0 +1,6 @@
+/* bootstrap style */
+@import url("https://bootswatch.com/4/slate/bootstrap.min.css");
+
+body {
+    background-color :#212D39;
+}
