@@ -12,7 +12,7 @@ neoemf-tests/
 
 ### NeoEMF: Addons
 archetype/
-plugins/
+plugins/eclipse
 examples/
 
 .keystore
