@@ -22,7 +22,7 @@
         <chronicle-map.version>3.17.1</chronicle-map.version>
         <chronicle-bytes.version>2.17.19</chronicle-bytes.version>
 
-        <log4j.version>2.11.2</log4j.version>
+        <log4j.version>2.13.3</log4j.version>
 
         <cglib.version>3.2.10</cglib.version>
     </properties>
