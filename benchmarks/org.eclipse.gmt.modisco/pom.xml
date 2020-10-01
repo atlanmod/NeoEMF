@@ -27,7 +27,7 @@
         <generated-sources.location>${project.basedir}/src/main/java-gen/</generated-sources.location>
         <models.location>${project.basedir}/src/main/resources/model</models.location>
 
-        <xtext.version>2.17.0.M1</xtext.version>
+        <xtext.version>2.23.0</xtext.version>
     </properties>
 
     <dependencies>
@@ -71,7 +71,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <goals>

@@ -19,14 +19,31 @@
     </description>
 
     <properties>
-        <tycho-plugin.version>1.4.0</tycho-plugin.version>
+        <tycho-plugin.version>1.7.0</tycho-plugin.version>
     </properties>
 
     <repositories>
+        <!--
         <repository>
             <id>eclipse</id>
             <layout>p2</layout>
             <url>http://download.eclipse.org/releases/oxygen</url>
+        </repository>
+        -->
+        <repository>
+            <id>photon</id>
+            <layout>p2</layout>
+            <url>http://download.eclipse.org/releases/photon/</url>
+        </repository>
+        <repository>
+            <id>tools</id>
+            <layout>p2</layout>
+            <url>http://www.elver.org/eclipse/2.1.0/update/</url>
+        </repository>
+        <repository>
+            <id>emf</id>
+            <layout>p2</layout>
+            <url>http://download.eclipse.org/modeling/emf/emf/builds/release/2.15/</url>
         </repository>
     </repositories>
 

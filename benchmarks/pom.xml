@@ -24,10 +24,9 @@
 
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
-
         <neoemf.version>${project.version}</neoemf.version>
-        <cdo.version>4.6.2</cdo.version>
-        <jmh.version>1.21</jmh.version>
+        <cdo.version>4.7.2</cdo.version>
+        <jmh.version>1.25.2</jmh.version>
     </properties>
 
     <dependencyManagement>

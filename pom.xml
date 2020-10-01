@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.atlanmod.commons</groupId>
         <artifactId>commons</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.5</version>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf</groupId>
@@ -112,9 +112,7 @@
 
     <properties>
         <argLine.global>-XX:+UseConcMarkSweepGC -Xmx2g</argLine.global>
-
-        <commons.version>1.0.4</commons.version>
-
+        <commons.version>1.0.5</commons.version>
         <emf.version>2.15.0</emf.version>
     </properties>
 
@@ -167,7 +165,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M2</version>
+                <version>3.0.0-M3</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -192,7 +190,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>4.1.0</version>
+                    <version>5.1.1</version>
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
@@ -215,7 +213,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.0</version>
+                    <version>3.8.1</version>
                     <configuration>
                         <compilerArgs>
                             <!--<arg>-Xlint:all</arg>-->
@@ -226,7 +224,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.2</version>
+                    <version>0.8.6</version>
                     <configuration>
                         <excludes>
                             <exclude>**/tests/*</exclude>
@@ -238,7 +236,7 @@
                     <!-- `deploy-javadoc` profile comes in addition to this configuration -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.0.1</version>
+                    <version>3.2.0</version>
                     <configuration>
                         <overview>overview.html</overview>
                         <groups>
@@ -285,7 +283,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.1</version>
+                    <version>3.0.0-M5</version>
                     <configuration>
                         <excludedGroups>slowest</excludedGroups>
                     </configuration>
@@ -310,7 +308,7 @@
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-javadoc-plugin</artifactId>
-                            <version>3.0.1</version>
+                            <version>3.2.0</version>
                             <configuration>
                                 <excludePackageNames>
                                     fr.inria.atlanmod.neoemf.tests*;

@@ -16,6 +16,10 @@
     <description>
     </description>
 
+    <properties>
+        <guava.version>15.0</guava.version><!-- compatibility issue with Guava/HBase (15.0) -->
+    </properties>
+
     <dependencies>
 
         <!-- Repackaged dependencies -->
@@ -49,7 +53,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>15.0</version><!-- compatibility issue with Guava/HBase (15.0) -->
+            <version>${guava.version}</version>
         </dependency>
 
     </dependencies>

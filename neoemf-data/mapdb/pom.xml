@@ -16,7 +16,7 @@
     <description>MapDB extension of the core component.</description>
 
     <properties>
-        <mapdb.version>3.0.7</mapdb.version>
+        <mapdb.version>3.0.8</mapdb.version>
     </properties>
 
     <dependencies>

@@ -20,10 +20,10 @@
         <models.location>${project.basedir}/src/test/resources/model/</models.location>
 
         <stax.verions>1.0-2</stax.verions>
-        <stax2.version>4.1</stax2.version>
+        <stax2.version>4.2.1</stax2.version>
         <woodstox.version>4.4.1</woodstox.version>
 
-        <xtext.version>2.17.0.M1</xtext.version>
+        <xtext.version>2.23.0</xtext.version>
     </properties>
 
     <dependencies>
