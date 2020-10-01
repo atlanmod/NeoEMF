@@ -1,0 +1,208 @@
+= NeoEMF : Benchmarks
+
+Benchmarks are built with http://openjdk.java.net/projects/code-tools/jmh/[JMH], an highly customizable benchmark harness for Java.
+All JMH options are available, and can be used to customize your execution.
+
+== Building and Running the Benchmarks
+
+To buid and run the benchmarks locally (without using Docker),
+you need to build the module and its dependencies by running the following command (naturally, NeoEMF must be installed):
+
+.Building the Benchmarks
+[source,bash]
+----
+mvn clean package
+----
+
+.Running the Benchmarks
+[source,bash]
+----
+java -jar ./core/target/dist/neoemf-benchmarks.jar <args>
+----
+
+== Available Resources
+
+.Resources
+[cols="20,60,20"]
+|===
+| Id | Full name | Size
+
+| `set1`
+| `fr.inria.atlanmod.kyanos.tests.xmi`
+| 130 KB
+
+|  `set2`
+| `fr.inria.atlanmod.neo4emf.neo4jresolver.xmi`
+| 2 MB
+
+| `set3`
+| `org.eclipse.gmt.modisco.java.kyanos.xmi`
+| 20 MB
+
+| `set4`
+| `org.eclipse.jdt.core.xmi`
+| 420 MB
+
+| `set5`
+| `org.eclipse.jdt.source.all.xmi`
+| 983 MB
+
+|===
+
+== Available Backends
+
+.Backends
+[cols="30,70"]
+|===
+| Id | Description
+
+| `tinker`
+| Tingergraph database
+
+| `neo4j`
+| Neo4j embedded database
+
+| `mapdb`
+| MapDB database
+
+| `berkeleydb`
+| BerkeleyDB database
+
+| `mongodb`
+| MongoDB document database running on a local server
+
+| `hbase`
+| HBase column database running on a local server
+
+| `xmi`
+| Stantard EMF, in an XMI file
+
+| `cdo`
+| CDO, in a H2 embedded, in-memory database
+|===
+
+*NOTE:* `xmi` and `cdo` are not part of NeoEMF, and are used to compare existing solutions.
+
+
+== Benchmark Parameters
+
+In addition to JMH options, some parameters allow you to customize the NeoEMF behavior.
+These parameters are available with the `-p` argument.
+
+*NOTE:* All parameters can be multi-valued by separating them with `,` (without any space).
+They will be executed in different iterations.
+
+=== Adapters
+
+* `a=&lt;adapter&gt;,...` where `&lt;adapter&gt;` is any of:
+tinker, neo4j, mapdb-i, berkeleydb-i, mongodb, hbase, xmi, or cdo.
+
+*Default arguments:* Without specific arguments, benchmarks are executed for all embedded backends:
+- `a=xmi,cdo,neo4j,berkeleydb-i,mapdb-i`
+
+*WARN*: Non-embedded databases (MongoDB and HBase) benchmarks need a running local server (see below).
+
+=== Resources
+
+* `r=&lt;resource&gt;,...` where `&lt;resource&gt;` is any of:
+set1, set2, set3, set4, set5, or  _an absolute file path_.
+
+*WARN:* Only `*.xmi` and `*.zxmi` files that use the http://www.eclipse.org/MoDisco/Java/0.2.incubation/java[Modisco Java] package are allowed
+
+*Default arguments:* Without specific arguments, benchmark queries are executed against datasets 1, 2, and 3:
+- `r=set1,set2,set3`
+
+=== Other Parameters
+
+* `o=&lt;options&gt;,...` where `&lt;options&gt;` is a combination of:
+
+** `A` for auto-saving; *_highly recommended_*
+** `M` for caching meta-classes
+** `C` for caching containers
+** `F` for caching feature values
+** `S` for caching sizes of multi-valued features
+** `L` for logging each database accesses
+* `direct=[true|false]`:
+
+** `true`: the direct import will be used to create datastores
+** `false`: the standard EMF way will be used
+
+== Adapters for non-embedded DBMS
+
+HBase and MongoDB adapter benchmarks need a running database server.
+For the sake of simplification, we strongly suggest to use Docker images for running the servers.
+
+.Running the MongoDB server
+[source,bash]
+----
+docker run -d -p 27017-27019:27017-27019 --name mongodb mongo
+----
+
+.Running the HBase server
+[source,bash]
+----
+docker run -d -h myhbase -p 2181:2181 -p 8080:8080 -p 8085:8085 -p 9090:9090 -p 9095:9095 -p 16000:16000 -p 16010:16010 -p 16201:16201 -p 16301:16301 --name HBase harisekhon/hbase
+----
+
+
+== Running the Benchmarks with Docker
+
+[source,bash]
+----
+docker run \
+  -v <local_directory>:/root/ws \
+  atlanmod/neoemf \
+  <args>
+
+----
+
+Where:
+* `&lt;local_directory&gt;` is the directory where databases and resources are extracted and stored.
+ The usage of this volume is *_highly recommended_*: each Docker instance starts with an empty workspace, and each resource and database must be build before executing benchmarks.
+ This step can take a long time, depending on your system configuration and the size of the resource you want to use.
+
+* `&lt;args&gt;` corresponds to JMH options (with NeoEMF options).
+Possible values are displayed with the `-help` argument.
+
+*Default arguments:* Without specific arguments, all queries are executed with:
+- `a=xmi,cdo,neo4j,berkeleydb-i,mapdb-i`
+- `r=set1,set2,set3`
+- `o=AMC`
+- `direct=true`
+- All default JMH options
+
+*Example:* To run the query `grabats` on XMI and Neo4j, with the resources "set1" and "set3", with feature caching, auto-saving and logging, you need to execute:
+
+[source,bash]
+----
+docker run \
+  -v <local_directory>:/root/ws \
+  atlanmod/neoemf \
+  -p a=xmi,neo4j \
+  -p r=set1,set3 \
+  -p o=FAL \
+  grabats
+----
+
+=== Initialization _(optional)_
+
+Backends have to be created before executing requests on them.
+
+This step is automatically done at the beginning of each benchmark, if the backend does not already exists in the workspace.
+But this process can take a long time, depending on your system configuration and the size of the resource you want to use.
+
+To initialize them, you can firstly execute:
+
+[source,bash]
+----
+docker run \
+  -v <local_directory>:/root/ws \
+  -p a=<adapter>,... \
+  -p r=<resource>,... \
+  -p o=A \
+  init
+----
+
+*NOTE:* Ignore this step if you're not using a local directory: the created resources and databases are not shared between different executions.
+
+*NOTE2:* The creation time is not taken in account in benchmark results, that's why this step is optional.
