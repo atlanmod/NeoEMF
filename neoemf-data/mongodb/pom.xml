@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <groupId>org.atlanmod.neoemf</groupId>
         <artifactId>neoemf-data</artifactId>
-        <version>2.0.1</version>
+        <version>2.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>neoemf-data-mongodb</artifactId>
@@ -70,10 +70,10 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>fr.inria.atlanmod.neoemf.data.mongodb</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.atlanmod.neoemf.data.mongodb</Bundle-SymbolicName>
                         <Export-Package>
-                            !fr.inria.atlanmod.neoemf.data.mongodb.*.internal.*,
-                            fr.inria.atlanmod.neoemf.data.mongodb.*
+                            !org.atlanmod.neoemf.data.mongodb.*.internal.*,
+                            org.atlanmod.neoemf.data.mongodb.*
                         </Export-Package>
                         <Require-Bundle>
                             ${project.groupId}.core

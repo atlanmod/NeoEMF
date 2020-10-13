@@ -2,7 +2,7 @@
 <feature
         id="fr.inria.atlanmod.neoemf.data.hbase.feature"
         label="NeoEMF : HBase"
-        version="2.0.1.qualifier">
+        version="2.0.2.qualifier">
 
     <description url="http://www.example.com/description">
         HBase implementation of the Core component.
@@ -10,13 +10,13 @@
 
     <includes
             id="fr.inria.atlanmod.neoemf.core.feature"
-            version="2.0.1.qualifier" />
+            version="2.0.2.qualifier" />
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.data.hbase"
+            id="org.atlanmod.neoemf.data.hbase"
             download-size="0"
             install-size="0"
-            version="2.0.1.qualifier"
+            version="2.0.2.qualifier"
             unpack="false" />
 
     <copyright url="https://www.eclipse.org/legal/epl-2.0/">

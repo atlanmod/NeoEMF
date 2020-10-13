@@ -2,45 +2,45 @@
 <feature
         id="fr.inria.atlanmod.neoemf.core.feature"
         label="NeoEMF Persistence Framework"
-        version="2.0.1.qualifier">
+        version="2.0.2.qualifier">
 
     <description url="http://www.example.com/description">
         The Core component (store logic and utils, no implementation provided)
     </description>
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.core"
+            id="org.atlanmod.neoemf.core"
             download-size="0"
             install-size="0"
-            version="2.0.1.qualifier"
+            version="2.0.2.qualifier"
             unpack="false" />
 
     <plugin
             id="org.atlanmod.commons"
             download-size="0"
             install-size="0"
-            version="1.0.4"
+            version="1.0.6"
             unpack="false" />
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.io"
+            id="org.atlanmod.neoemf.io"
             download-size="0"
             install-size="0"
-            version="2.0.1.qualifier"
+            version="2.0.2.qualifier"
             unpack="false" />
 
     <plugin
             id="fr.inria.atlanmod.neoemf.eclipse.ui"
             download-size="0"
             install-size="0"
-            version="2.0.1.qualifier"
+            version="2.0.2.qualifier"
             unpack="false" />
 
     <plugin
             id="fr.inria.atlanmod.neoemf.eclipse.examples.core"
             download-size="0"
             install-size="0"
-            version="2.0.1.qualifier"
+            version="2.0.2.qualifier"
             unpack="false" />
 
     <copyright url="https://www.eclipse.org/legal/epl-2.0/">
