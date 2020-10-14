@@ -19,8 +19,8 @@
     </description>
 
     <properties>
-        <chronicle-map.version>3.20.60</chronicle-map.version>
-        <chronicle-bytes.version>2.20.63</chronicle-bytes.version>
+        <chronicle-map.version>3.20.80</chronicle-map.version>
+        <chronicle-bytes.version>2.20.80</chronicle-bytes.version>
         <log4j.version>2.13.3</log4j.version>
         <cglib.version>3.3.0</cglib.version>
     </properties>
@@ -138,7 +138,10 @@
         <dependency>
             <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-utils</artifactId>
+            <!--
             <version>${project.version}</version>
+            -->
+            <version>2.0.1</version>
             <optional>true</optional>
             <type>pom</type>
         </dependency>

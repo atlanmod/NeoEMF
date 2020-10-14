@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.atlanmod.neoemf</groupId>
+        <artifactId>neoemf-data</artifactId>
+        <version>2.0.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>neoemf-data-redis</artifactId>
+
+    <packaging>bundle</packaging>
+    <name>NeoEMF Data Redis</name>
+    <description>Redis extension of the core component.</description>
+
+    <properties>
+        <!-- TODO Declare the version of dependencies -->
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.13.5</version>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- TODO Declare the versionned dependencies -->
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>org.atlanmod.neoemf.data.redis</Bundle-SymbolicName>
+                        <Export-Package>
+                            org.atlanmod.neoemf.data.redis.*
+                        </Export-Package>
+                        <Require-Bundle>
+                            ${project.groupId}.core
+                        </Require-Bundle>
+                    </instructions>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

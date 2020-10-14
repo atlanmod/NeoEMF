@@ -1,0 +1,9 @@
+= Redis Backend
+
+== Running Redis in Docker
+
+[source,shell]
+----
+docker run --name some-redis -d redis redis-server --appendonly yes
+----
+

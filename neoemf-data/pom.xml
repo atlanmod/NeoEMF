@@ -23,6 +23,7 @@
         <module>berkeleydb</module>
         <module>hbase</module>
         <module>mongodb</module>
+        <module>redis</module>
     </modules>
 
     <dependencies>
