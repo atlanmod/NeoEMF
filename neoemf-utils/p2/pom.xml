@@ -23,27 +23,20 @@
     </properties>
 
     <repositories>
-        <!--
         <repository>
-            <id>eclipse</id>
+            <id>emf-compare</id>
             <layout>p2</layout>
-            <url>http://download.eclipse.org/releases/oxygen</url>
+            <url>http://download.eclipse.org/modeling/emf/compare/updates/releases/3.3</url>
         </repository>
-        -->
         <repository>
             <id>photon</id>
             <layout>p2</layout>
-            <url>http://download.eclipse.org/releases/photon/</url>
-        </repository>
-        <repository>
-            <id>tools</id>
-            <layout>p2</layout>
-            <url>http://www.elver.org/eclipse/2.1.0/update/</url>
+            <url>http://download.eclipse.org/releases/2020-12/</url>
         </repository>
         <repository>
             <id>emf</id>
             <layout>p2</layout>
-            <url>http://download.eclipse.org/modeling/emf/emf/builds/release/2.15/</url>
+            <url>http://download.eclipse.org/modeling/emf/emf/builds/release/2.24/</url>
         </repository>
     </repositories>
 

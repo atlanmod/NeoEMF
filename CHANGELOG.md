@@ -1,6 +1,17 @@
-## *2.0.1*
+## *2.1.0*
 
 Current SNAPSHOT.
+
+### Benchmarks
+
+- __\[UPD\]__ `jmh-core` :  `1.28`
+
+### Neoemf-utils
+
+-  __\[UPD\]_ `org.eclipse.emf.compare`: 3.3
+-  __\[UPD\]__ Eclipse Update Site: 2020-09
+- __\[UPD\]__ `org.eclipse.emf` :  2.24
+
 
 ## *2.0.0*
 

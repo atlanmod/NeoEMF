@@ -28,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @Fork(
         value = 1,
         jvmArgsPrepend = {}, // Used to declare the JProfiler agent in the Docker environment: Keep it empty!
-        jvmArgs = {"-Dfile.encoding=utf-8", "-server", "-XX:+UseConcMarkSweepGC"},
+        jvmArgs = {"-Dfile.encoding=utf-8", "-server"},
         jvmArgsAppend = {"-Xmx8g"}
 )
 @ParametersAreNonnullByDefault

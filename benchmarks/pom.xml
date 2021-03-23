@@ -3,15 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <groupId>org.atlanmod.neoemf</groupId>
         <artifactId>neoemf</artifactId>
-        <version>2.0.1-SNAPSHOT</version>
+        <version>2.0.2-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
 
-    <groupId>fr.inria.atlanmod.neoemf.benchmarks</groupId>
+    <groupId>org.atlanmod.neoemf.benchmarks</groupId>
     <artifactId>benchmarks-parent</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.2-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -26,7 +26,7 @@
         <maven.deploy.skip>true</maven.deploy.skip>
         <neoemf.version>${project.version}</neoemf.version>
         <cdo.version>4.7.2</cdo.version>
-        <jmh.version>1.25.2</jmh.version>
+        <jmh.version>1.28</jmh.version>
     </properties>
 
     <dependencyManagement>
@@ -44,9 +44,20 @@
             <!-- NeoEMF -->
 
             <dependency>
-                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <groupId>org.atlanmod.neoemf</groupId>
                 <artifactId>neoemf-core</artifactId>
                 <version>${neoemf.version}</version>
+            </dependency>
+
+
+            <!-- EMF Xcore -->
+
+            <dependency>
+                <groupId>org.atlanmod.unveiling</groupId>
+                <artifactId>org.eclipse.emf.ecore.xcore</artifactId>
+                <type>pom</type>
+                <scope>compile</scope>
+                <version>${unveiling.emf.version}</version>
             </dependency>
 
         </dependencies>
