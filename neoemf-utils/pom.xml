@@ -16,10 +16,6 @@
     <description>
     </description>
 
-    <properties>
-        <guava.version>15.0</guava.version><!-- compatibility issue with Guava/HBase (15.0) -->
-    </properties>
-
     <dependencies>
 
         <!-- Repackaged dependencies -->

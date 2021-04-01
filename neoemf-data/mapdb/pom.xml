@@ -31,7 +31,10 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>15.0</version><!-- compatibility issue with Guava/HBase (15.0) -->
+            <!--
+            <version>15.0</version>
+            -->
+            <!-- compatibility issue with Guava/HBase (15.0) -->
         </dependency>
 
     </dependencies>

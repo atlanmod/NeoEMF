@@ -9,7 +9,6 @@
 package fr.inria.atlanmod.neoemf.data.hbase.context;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.atlanmod.commons.concurrent.MoreThreads;
 import org.atlanmod.commons.log.Log;
@@ -81,18 +80,24 @@ final class HBaseCluster {
 
         try {
             Log.info("Initializing the Hadoop cluster... (This may take several minutes)");
+            hbase = new HBaseTestingUtility();
 
-            Configuration clusterConfig = HBaseConfiguration.create();
+            Configuration configuration = hbase.getConfiguration();
+            /*
+            Do not touch the following lines!!!
+            For some reasons, when trying to get the local host, Hadoop gets the public host name,
+            instead of "localhost" or "127.0.0.1
 
-            hbase = new HBaseTestingUtility(clusterConfig);
+            See: https://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java
+             */
+            configuration.set("hbase.master.hostname", "localhost");
+            configuration.set("hbase.regionserver.ipc.address", "localhost");
+            configuration.set("hbase.unsafe.regionserver.hostname", "localhost");
+
             hbase.startMiniCluster();
-
-            Configuration connectionConfig = hbase.getConnection().getConfiguration();
-            host = connectionConfig.get(HOST_CONFIG);
-            port = Integer.parseInt(connectionConfig.get(PORT_CONFIG));
-
+            host = configuration.get(HOST_CONFIG);
+            port = configuration.getInt(PORT_CONFIG, -1);
             Log.info("Hadoop cluster running at {0}:{1,number,#}", host, port);
-
             MoreThreads.executeAtExit(HBaseCluster::close);
         }
         catch (Throwable e) {
@@ -149,5 +154,9 @@ final class HBaseCluster {
         checkState(isInitialized(), "The mini-cluster has not been initialized");
 
         return port;
+    }
+
+    public static void main(String[] args) {
+        HBaseCluster.init();
     }
 }

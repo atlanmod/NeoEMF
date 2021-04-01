@@ -12,18 +12,20 @@ import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodProcess;
 import de.flapdoodle.embed.mongo.MongodStarter;
-import de.flapdoodle.embed.mongo.config.IMongodConfig;
-import de.flapdoodle.embed.mongo.config.MongodConfigBuilder;
-import de.flapdoodle.embed.mongo.config.RuntimeConfigBuilder;
+import de.flapdoodle.embed.mongo.config.Defaults;
+import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.distribution.Version;
-import de.flapdoodle.embed.process.config.IRuntimeConfig;
+import de.flapdoodle.embed.process.config.RuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
-import de.flapdoodle.embed.process.io.IStreamProcessor;
+import de.flapdoodle.embed.process.io.Processors;
+import de.flapdoodle.embed.process.io.Slf4jLevel;
 
+import de.flapdoodle.embed.process.io.StreamProcessor;
 import org.atlanmod.commons.concurrent.MoreThreads;
-import org.atlanmod.commons.log.Level;
-import org.atlanmod.commons.log.Log;
-import org.atlanmod.commons.log.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
+
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -41,7 +43,7 @@ class MongoDbCluster {
     /**
      * The global logger for MongoDB clusters.
      */
-    private static final Logger LOG = Log.forName("org.mongodb.driver");
+    private static final Logger LOG = LoggerFactory.getLogger("org.mongodb.driver");
 
     /**
      * Facility for testing MongoDB.
@@ -91,22 +93,21 @@ class MongoDbCluster {
         initialized = true;
 
         try {
-            Log.info("Initializing the MongoDB cluster... (This may take several minutes)");
+            LOG.info("Initializing the MongoDB cluster... (This may take several minutes)");
 
             final ProcessOutput processOutput = new ProcessOutput(
-                    new CommonsStreamProcessor(LOG, Level.INFO),
-                    new CommonsStreamProcessor(LOG, Level.ERROR),
-                    new CommonsStreamProcessor(LOG, Level.DEBUG)
+                    Processors.logTo(LOG, Slf4jLevel.INFO),
+                    Processors.logTo(LOG, Slf4jLevel.ERROR),
+                    Processors.logTo(LOG, Slf4jLevel.DEBUG)
             );
 
-            final IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder()
-                    .defaults(Command.MongoD)
+            final RuntimeConfig runtimeConfig = Defaults.runtimeConfigFor(Command.MongoD, LOG)
                     .processOutput(processOutput)
                     .build();
 
             final MongodStarter starter = MongodStarter.getInstance(runtimeConfig);
 
-            final IMongodConfig mongodConfig = new MongodConfigBuilder()
+            final MongodConfig mongodConfig = MongodConfig.builder()
                     .version(Version.Main.DEVELOPMENT)
                     .build();
 
@@ -116,13 +117,13 @@ class MongoDbCluster {
             host = mongodConfig.net().getServerAddress().getHostAddress();
             port = mongodConfig.net().getPort();
 
-            Log.info("MongoDB cluster running at {0}:{1,number,#}", host, port);
+            LOG.info("MongoDB cluster running at {0}:{1,number,#}", host, port);
 
             MoreThreads.executeAtExit(MongoDbCluster::close);
         }
         catch (Throwable e) {
             reset();
-            Log.error(e, "Unable to create the MongoDB cluster");
+            LOG.error("Unable to create the MongoDB cluster", e);
         }
     }
 
@@ -131,7 +132,7 @@ class MongoDbCluster {
      */
     private static void close() {
         try {
-            Log.info("Shutting down the MongoDB cluster...");
+            LOG.info("Shutting down the MongoDB cluster...");
             mongoProcess.stop();
             mongoExecutable.stop();
 
@@ -176,10 +177,10 @@ class MongoDbCluster {
     }
 
     /**
-     * An {@link IStreamProcessor} that logs events on a {@link Logger}.
+     * An {@link StreamProcessor} that logs events on a {@link Logger}.
      */
     @ParametersAreNonnullByDefault
-    private static class CommonsStreamProcessor implements IStreamProcessor {
+    private static class CommonsStreamProcessor implements StreamProcessor {
 
         /**
          * The logger where to log events.
@@ -204,7 +205,7 @@ class MongoDbCluster {
 
         @Override
         public void process(String s) {
-            logger.log(level, s);
+            logger.info(s);
         }
 
         @Override
