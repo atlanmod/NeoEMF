@@ -118,7 +118,7 @@
             'void com.google.common.util.concurrent.Futures.addCallback(ListenableFuture, FutureCallback)'
             needed by Hadoop's  hdfs-server
         -->
-        <guava.version>23.6-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <jdk.module.illegalAccess>deny</jdk.module.illegalAccess>
         <junit.version>5.7.1</junit.version>
     </properties>
