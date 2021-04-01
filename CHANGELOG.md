@@ -8,10 +8,10 @@ Current SNAPSHOT.
 
 ### Neoemf-utils
 
--  __\[UPD\]_ `org.eclipse.emf.compare`: 3.3
+-  __\[UPD\]__ `org.eclipse.emf.compare`: 3.3
 -  __\[UPD\]__ Eclipse Update Site: 2020-09
-- __\[UPD\]__ `org.eclipse.emf` :  2.24
-
+-  __\[UPD\]__ `org.eclipse.emf` :  2.24
+-  __\[UPD\]__ Tychio: 2.2.0
 
 ## *2.0.0*
 
@@ -54,7 +54,7 @@ They are presented as several interfaces and each have their responsibility:
 -   __\[UPD\]__ `BackendFactory#createBackend()` take a `URI` as parameter instead of a `File` to handle distributed `PersistentBackend`
 -   __\[DEL\]__ All backend-specific implementations of `PersistentStore` have been merged with those at `core`-level
 -   __\[DEL\]__ `InvalidStore` has been replaced by `InvalidBackend`
--   __\[DEL\]__ `TransientStore`s have been removed and replaced by `BoundInMemoryBackend` (a lightweigth and shared version of an `DefaultInMemoryBackend`)
+-   __\[DEL\]__ `TransientStore`s have been removed and replaced by `BoundInMemoryBackend` (a lightweight and shared version of an `DefaultInMemoryBackend`)
 
 ### Automation
 -   __\[NEW\]__ `BackendFactory`s are automatically registered at runtime (no need to explicitly register them in the `ResourceSet` registry)
