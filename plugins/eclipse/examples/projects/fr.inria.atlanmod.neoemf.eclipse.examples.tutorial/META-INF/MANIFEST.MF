@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
+Automatic-Module-Name: fr.inria.atlanmod.neoemf.eclipse.examples.tutorial
 Bundle-SymbolicName: fr.inria.atlanmod.neoemf.eclipse.examples.tutorial;singleton:=true
-Bundle-Version: 2.0.2.qualifier
+Bundle-Version: 2.1.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -13,14 +14,14 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.ecore.xcore.lib,
  org.eclipse.xtext.xbase.lib,
- org.atlanmod.neoemf.core;bundle-version="2.0.2";visibility:=reexport,
- org.atlanmod.neoemf.io;bundle-version="2.0.2",
- org.atlanmod.neoemf.data.blueprints.core;bundle-version="2.0.2",
- org.atlanmod.neoemf.data.blueprints.neo4j;bundle-version="2.0.2",
- org.atlanmod.neoemf.data.mapdb;bundle-version="2.0.2",
- org.atlanmod.neoemf.data.berkeleydb;bundle-version="2.0.2",
- org.atlanmod.neoemf.data.hbase;bundle-version="2.0.2"
+ org.atlanmod.neoemf.core,
+ org.atlanmod.neoemf.io,
+ org.atlanmod.neoemf.data.blueprints.core,
+ org.atlanmod.neoemf.data.blueprints.neo4j,
+ org.atlanmod.neoemf.data.mapdb,
+ org.atlanmod.neoemf.data.berkeleydb,
+ org.atlanmod.neoemf.data.hbase
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.emf.ecore,
  org.eclipse.emf.common

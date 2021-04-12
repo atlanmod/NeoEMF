@@ -6,13 +6,12 @@
     <parent>
         <groupId>org.atlanmod.neoemf</groupId>
         <artifactId>neoemf</artifactId>
-        <version>2.0.2-SNAPSHOT</version>
+        <version>2.1.0-SNAPSHOT</version>
         <relativePath>../../../../</relativePath>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
     <artifactId>fr.inria.atlanmod.neoemf.eclipse.configuration</artifactId>
-    <version>2.0.2-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -22,26 +21,29 @@
     <properties>
         <maven.test.skip>true</maven.test.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <tycho-plugin.version>2.0.0</tycho-plugin.version>
+        <tycho-plugin.version>2.3.0</tycho-plugin.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.debug>true</maven.compiler.debug>
+        <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+        <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
     </properties>
 
     <repositories>
         <repository>
-            <id>eclipse</id>
+            <id>2020-12</id>
             <layout>p2</layout>
-            <url>http://download.eclipse.org/releases/photon/</url>
+            <url>http://download.eclipse.org/releases/2020-12/</url>
         </repository>
     </repositories>
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-compiler-plugin</artifactId>
-                <configuration>
-                    <copyResources>false</copyResources>
-                    <useProjectSettings>false</useProjectSettings>
-                </configuration>
+
             </plugin>
 
             <plugin>
@@ -63,6 +65,7 @@
                 <artifactId>target-platform-configuration</artifactId>
                 <configuration>
                     <pomDependencies>consider</pomDependencies>
+                    <executionEnvironment>JavaSE-11</executionEnvironment>
                     <environments>
                         <environment>
                             <os>win32</os>
@@ -82,14 +85,31 @@
                     </environments>
                 </configuration>
             </plugin>
+
+
         </plugins>
 
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                </plugin>
+                
+                <plugin>
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-compiler-plugin</artifactId>
                     <version>${tycho-plugin.version}</version>
+<!--                     <configuration>
+                    	<copyResources>false</copyResources>
+                    	<useProjectSettings>false</useProjectSettings>
+                    	<useJDK>SYSTEM</useJDK>
+                    	<compilerArgs>
+                        	<arg>-warn:-raw,unchecked</arg>
+                    	</compilerArgs>
+                    	<verbose>true</verbose>
+                	</configuration> -->
                 </plugin>
 
                 <plugin>

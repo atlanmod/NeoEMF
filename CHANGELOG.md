@@ -2,16 +2,28 @@
 
 Current SNAPSHOT.
 
+### Neoemf-core
+
+-  __\[UPD\]__ JDK: 11
+-  __\[UPD\]__ `org.google.guava`: 23.6-jre
+
 ### Benchmarks
 
 - __\[UPD\]__ `jmh-core` :  `1.28`
+
+### Neoemf-data
+
+- __\[UPD\]__ `org.eclipse.emf.compare`: 3.3
+- __\[UPD\]__  `hbase.version`: 2.4.2
+- __\[UPD\]__  `hadoop.version`: 3.0.3
+- __\[UPD\]__ `de.flapdoodle.embed.mongo`: 3.0.0
 
 ### Neoemf-utils
 
 -  __\[UPD\]__ `org.eclipse.emf.compare`: 3.3
 -  __\[UPD\]__ Eclipse Update Site: 2020-09
 -  __\[UPD\]__ `org.eclipse.emf` :  2.24
--  __\[UPD\]__ Tychio: 2.2.0
+-  __\[UPD\]__ Tycho: 2.2.0
 
 ## *2.0.0*
 

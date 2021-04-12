@@ -1,43 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-
-    <!-- Features -->
-
-    <feature id="fr.inria.atlanmod.neoemf.core.feature" version="2.0.2.qualifier">
-        <category name="base" />
-    </feature>
-
-    <feature id="fr.inria.atlanmod.neoemf.data.blueprints.core.feature" version="2.0.2.qualifier">
-        <category name="backend" />
-    </feature>
-
-    <feature id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature" version="2.0.2.qualifier">
-        <category name="backend" />
-    </feature>
-
-    <feature id="fr.inria.atlanmod.neoemf.data.mapdb.feature" version="2.0.2.qualifier">
-        <category name="backend" />
-    </feature>
-
-    <feature id="fr.inria.atlanmod.neoemf.data.berkeleydb.feature" version="2.0.2.qualifier">
-        <category name="backend" />
-    </feature>
-
-    <feature id="fr.inria.atlanmod.neoemf.data.hbase.feature" version="2.0.2.qualifier">
-        <category name="backend" />
-    </feature>
-
-    <!-- Catogories -->
-
-    <category-def name="base" label="NeoEMF">
-        <description>
-            NeoEMF base components (no implementation provided, see Adapters components to plug a specific datastore)
-        </description>
-    </category-def>
-
-    <category-def name="backend" label="NeoEMF Adapters" >
-        <description>
-            Backend-specific implementations of NeoEMF. Provided components can be plugged separately to store models in a specific manner. See plugins descriptions for usages.
-        </description>
-    </category-def>
+   <feature id="fr.inria.atlanmod.neoemf.core.feature" version="2.1.0.qualifier">
+      <category name="base"/>
+   </feature>
+   <feature id="fr.inria.atlanmod.neoemf.data.blueprints.core.feature" version="2.1.0.qualifier">
+      <category name="backend"/>
+   </feature>
+   <feature id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature" version="2.1.0.qualifier">
+      <category name="backend"/>
+   </feature>
+   <feature id="fr.inria.atlanmod.neoemf.data.mapdb.feature" version="2.1.0.qualifier">
+      <category name="backend"/>
+   </feature>
+   <feature id="fr.inria.atlanmod.neoemf.data.berkeleydb.feature" version="2.1.0.qualifier">
+      <category name="backend"/>
+   </feature>
+   <feature id="fr.inria.atlanmod.neoemf.data.hbase.feature" version="2.1.0.qualifier">
+      <category name="backend"/>
+   </feature>
+   <category-def name="base" label="NeoEMF">
+      <description>
+         NeoEMF base components (no implementation provided, see Adapters components to plug a specific datastore)
+      </description>
+   </category-def>
+   <category-def name="backend" label="NeoEMF Adapters">
+      <description>
+         Backend-specific implementations of NeoEMF. Provided components can be plugged separately to store models in a specific manner. See plugins descriptions for usages.
+      </description>
+   </category-def>
 </site>

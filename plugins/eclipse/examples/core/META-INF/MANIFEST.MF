@@ -2,14 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NeoEMF Examples Plugin
 Bundle-SymbolicName: fr.inria.atlanmod.neoemf.eclipse.examples.core;singleton:=true
-Bundle-Version: 2.0.2.qualifier
+Automatic-Module-Name: fr.inria.atlanmod.neoemf.eclipse.examples.core,
+Bundle-Version: 2.1.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.ui,
  org.eclipse.ui.ide
 Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.examples.NeoExamplesPlugin
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: fr.inria.atlanmod.neoemf.eclipse.examples
 Bundle-Vendor: Atlanmod
 Import-Package: org.eclipse.core.runtime,
