@@ -126,6 +126,7 @@
 
 **/*.log
 **/java-gen
+**/src-gen
 
 .keystore
 
