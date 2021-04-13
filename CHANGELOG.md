@@ -4,6 +4,7 @@ Current SNAPSHOT.
 
 ### Neoemf-core
 
+-  __\[UPD\]__  `log4j`: 2.14.1 
 -  __\[UPD\]__ JDK: 11
 -  __\[UPD\]__ `org.google.guava`: 23.6-jre
 
