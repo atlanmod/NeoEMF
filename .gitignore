@@ -125,8 +125,13 @@
 **/*.vux
 
 **/*.log
-**/java-gen
-**/src-gen
 
 .keystore
+
+### EMF - Xcore 
+
+**/java-gen
+**/src-gen/
+
+
 
