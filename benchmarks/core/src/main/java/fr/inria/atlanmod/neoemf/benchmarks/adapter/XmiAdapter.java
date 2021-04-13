@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.benchmarks.adapter;
 
 import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
 
+import org.atlanmod.commons.Preconditions;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -40,7 +41,7 @@ public class XmiAdapter extends AbstractAdapter {
     @Nonnull
     @Override
     public URI createUri(Path directory, String fileName) {
-        return URI.createFileURI(directory.resolve(fileName).toFile().getAbsolutePath());
+        return URI.createFileURI(directory.resolve(fileName + ".xmi").toFile().getAbsolutePath());
     }
 
     @Nonnull
