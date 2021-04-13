@@ -43,7 +43,6 @@
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-compiler-plugin</artifactId>
-
             </plugin>
 
             <plugin>
@@ -101,15 +100,10 @@
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-compiler-plugin</artifactId>
                     <version>${tycho-plugin.version}</version>
-<!--                     <configuration>
+                     <configuration>
                     	<copyResources>false</copyResources>
                     	<useProjectSettings>false</useProjectSettings>
-                    	<useJDK>SYSTEM</useJDK>
-                    	<compilerArgs>
-                        	<arg>-warn:-raw,unchecked</arg>
-                    	</compilerArgs>
-                    	<verbose>true</verbose>
-                	</configuration> -->
+                	</configuration>
                 </plugin>
 
                 <plugin>

@@ -108,7 +108,9 @@
     <properties>
         <argLine.global>-Xmx2g --illegal-access=warn --illegal-access=permit --add-exports java.base/jdk.internal.ref=ALL-UNNAMED</argLine.global>
         <commons.version>1.0.6</commons.version>
-        <emf.version>2.15.0</emf.version>
+        <emf.version>[2.15.0,)</emf.version>
+        <xtext.version>2.25.0</xtext.version>
+        <xcore.version>[1.15.0,)</xcore.version>
         <jdk.version>11</jdk.version>
         <maven.compiler.source>${jdk.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.version}</maven.compiler.target>
@@ -222,6 +224,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -249,11 +252,11 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>5.1.1</version>
+                    <version>5.1.2</version>
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
-                            <Bundle-Version>2.0.2.${maven.build.timestamp}</Bundle-Version>
+                            <Bundle-Version>${project.version}</Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package/>
                             <Embed-Dependency>
@@ -443,6 +446,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>

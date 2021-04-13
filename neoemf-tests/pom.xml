@@ -18,8 +18,6 @@
     <properties>
         <generated-sources.location>${project.basedir}/src/test/java-gen/</generated-sources.location>
         <models.location>${project.basedir}/src/test/resources/model/</models.location>
-
-        <xtext.version>2.13.0</xtext.version>
     </properties>
 
     <dependencies>

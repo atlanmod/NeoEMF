@@ -5,13 +5,12 @@
     <parent>
         <groupId>org.atlanmod.neoemf</groupId>
         <artifactId>neoemf</artifactId>
-        <version>2.0.2-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <version>2.1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>org.atlanmod.neoemf.benchmarks</groupId>
     <artifactId>benchmarks-parent</artifactId>
-    <version>2.0.2-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -23,10 +22,11 @@
     </modules>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.deploy.skip>true</maven.deploy.skip>
         <neoemf.version>${project.version}</neoemf.version>
         <cdo.version>4.7.2</cdo.version>
-        <jmh.version>1.28</jmh.version>
+        <jmh.version>1.29</jmh.version>
     </properties>
 
     <dependencyManagement>
@@ -53,11 +53,10 @@
             <!-- EMF Xcore -->
 
             <dependency>
-                <groupId>org.atlanmod.unveiling</groupId>
+                <groupId>org.eclipse.emf</groupId>
                 <artifactId>org.eclipse.emf.ecore.xcore</artifactId>
-                <type>pom</type>
                 <scope>compile</scope>
-                <version>${unveiling.emf.version}</version>
+                <version>${xcore.version}</version>
             </dependency>
 
         </dependencies>

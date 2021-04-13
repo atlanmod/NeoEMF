@@ -284,7 +284,7 @@
                     <dependency>
                         <groupId>org.eclipse.emf</groupId>
                         <artifactId>org.eclipse.emf.codegen</artifactId>
-                        <version>[${emf.version},)</version>
+                        <version>${emf.version}</version>
                     </dependency>
 
                     <dependency>
