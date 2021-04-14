@@ -1,6 +1,5 @@
 os: linux
-sudo: false
-dist: trusty
+dist: focal
 
 language: java
 jdk:
@@ -27,16 +26,16 @@ env:
     #- '~/.m2/repository'
     #- '~/.sonar/cache'
 
-install:
-  - mvn --show-version --quiet -DskipTests clean install
+#install:
   # Resolve all dependencies
   #- mvn -B -V -q -DskipTests clean install
 
 script:
+  - mvn --show-version --quiet -DskipTests clean install
   # Build and test with code coverage (add `verify sonar:sonar` to enable the Sonar analysis)
   #- mvn -B clean jacoco:prepare-agent test jacoco:report jacoco:report-aggregate sonar:sonar
 
-after_success:
+#after_success:
   # Publish code coverage in CodeCov
   #- bash <(curl -s https://codecov.io/bash)
 
