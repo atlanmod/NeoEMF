@@ -21,8 +21,10 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-    - name: Resolve all dependencies
-      run: mvn -B -V -q -DskipTests install
-    - name: Build and test with code coverage (add `verify sonar:sonar` to enable the Sonar analysis)
-      run: mvn -B jacoco:prepare-agent test jacoco:report jacoco:report-aggregate sonar:sonar
+    - name: Build and install main project
+      run: mvn clean install
+    - name: Build Eclipse plugins
+      run: mvn clean package -f plugins/eclipse/pom.xml
+    - name: Build benchmarks
+      run: mvn clean package -f benchmarks/pom.xml
       
