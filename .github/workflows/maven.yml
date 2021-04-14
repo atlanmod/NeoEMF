@@ -59,4 +59,4 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Build benchmarks
-      run: mvn clean package -f benchmarks/pom.xml
+        run: mvn clean package -f benchmarks/pom.xml
