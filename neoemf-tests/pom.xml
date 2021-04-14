@@ -77,6 +77,20 @@
             <scope>test</scope>
         </dependency>
 
+
+        <!-- Test: Eclipse Runtime -->
+
+        <!--
+        Needed for avoiding errors when comparing resources
+         with EMFCompare
+        -->
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.core.runtime</artifactId>
+            <version>[3.20.0,)</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Test: Internal -->
 
         <dependency>
