@@ -3,8 +3,10 @@ sudo: false
 dist: trusty
 
 language: java
-jdk: oraclejdk11
-
+jdk:
+  - oraclejdk11
+  - openjdk11
+  -
 env:
   global:
     # GH_TOKEN
@@ -20,28 +22,30 @@ addons:
     token:
       secure: "Uhl77DZFqL6LJv4SlWWGQB3GimUvP3wxSTUc5/kdhC6yOnxOsgpopMMcmlw3hrxJTs9Q9Ch0E+8RErRqpfBkreWTlr2I6vH/pQolmntSblsks/pSCjT0U/o15Ikkpq6gLzG3IqSlrIGPqSnk9nYxPBEm52628BWJjzb3jCn+BQxiVZvxdr+mFIVgp16abJrGzE5Sp2rbJrsT4cVkOvsNNJuwhEXN69jDfaH3R9WwE/x48fGGfuffvl3pcaxWsLwDsFQtJam9NizMIr+a3VyI7040+veGa0VqtE4MuHqq/RLGMw3qxAjxMQVV3GdZTdxeKzuIqMhVt+Sj529NkZ49n/C1YvK5Lf2chO78RvDGEQ2evWa2kf9JyFjaGhbzSldo/GvMxEiUDyEItASWrwoGsKzlVeahVbLN8cV4SRwS+3wGn1haTUrENaYc0SFMR7I/taDEUNTBhkZ30ixR7G+ltNdaERxe46Rbl8mkwaV0mOjDjeHs0hSRxTEv2NeTNa4fJP71GFzlHIMsKVcCIQCcA3CydU7zin63jLgPiR1JcfyI3E+NE8Qp9kCV7P4Fx+rnMm7rIUwLgrTv7Jp/urFXdSX9DTe4cX7/t9jZ40vD3TQfojzK1J8F5uCalAGmv0/v9uTI8FV1pCYUbAI1GreN4M3lCLai8k79a2gPYX+9rvI="
 
-cache:
-  directories:
-    - '~/.m2/repository'
-    - '~/.sonar/cache'
+#cache:
+  #directories:
+    #- '~/.m2/repository'
+    #- '~/.sonar/cache'
 
 install:
+  - mvn --show-version  --update-snapshots dependency:resolve
+  - mvn --quiet clean compile
   # Resolve all dependencies
-  - mvn -B -V -q -DskipTests clean install
+  #- mvn -B -V -q -DskipTests clean install
 
 script:
   # Build and test with code coverage (add `verify sonar:sonar` to enable the Sonar analysis)
-  - mvn -B clean jacoco:prepare-agent test jacoco:report jacoco:report-aggregate sonar:sonar
+  #- mvn -B clean jacoco:prepare-agent test jacoco:report jacoco:report-aggregate sonar:sonar
 
 after_success:
   # Publish code coverage in CodeCov
-  - bash <(curl -s https://codecov.io/bash)
+  #- bash <(curl -s https://codecov.io/bash)
 
   # Publish Javadoc in Github
-  - bash .util/publish_javadoc.sh
+  #- bash .util/publish_javadoc.sh
 
   # Deploy snapshot in Maven central
-  - bash .util/deploy_snapshot.sh
+  #- bash .util/deploy_snapshot.sh
 
   # Publish update-site of Eclipse plugin in Github
-  - bash .util/publish_plugin.sh
+  #- bash .util/publish_plugin.sh
