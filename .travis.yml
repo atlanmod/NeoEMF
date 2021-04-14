@@ -28,8 +28,7 @@ addons:
     #- '~/.sonar/cache'
 
 install:
-  - mvn --show-version  --update-snapshots dependency:resolve
-  - mvn --quiet clean compile
+  - mvn --show-version --quiet -DskipTests clean install
   # Resolve all dependencies
   #- mvn -B -V -q -DskipTests clean install
 
