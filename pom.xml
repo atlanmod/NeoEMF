@@ -346,8 +346,23 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.0.0-M5</version>
                     <configuration>
+                        <!--
+                        Avoid JDK11 reflexive access warning from FST
+                        -->
                         <argLine>
-                            --illegal-access=permit --add-exports java.base/jdk.internal.ref=ALL-UNNAMED
+                            -XstartOnFirstThread
+                            --illegal-access=permit
+                            --add-exports java.base/jdk.internal.ref=ALL-UNNAMED
+                            --add-opens java.base/java.lang=ALL-UNNAMED
+                            --add-opens java.base/java.math=ALL-UNNAMED
+                            --add-opens java.base/java.net=ALL-UNNAMED
+                            --add-opens java.base/java.text=ALL-UNNAMED
+                            --add-opens java.base/java.util=ALL-UNNAMED
+                            --add-opens java.base/java.util.concurrent=ALL-UNNAMED
+                            --add-opens java.base/sun.nio.ch=ALL-UNNAMED
+                            --add-opens java.base/java.lang.reflect=ALL-UNNAMED
+                            --add-opens java.base/javax.crypto=ALL-UNNAMED
+                            --add-opens java.base/java.io=ALL-UNNAMED
                         </argLine>
                         <excludedGroups>slowest</excludedGroups>
                     </configuration>
