@@ -36,17 +36,17 @@ class BeanSerializerTest extends AbstractSerializerTest {
         Id object = Id.getProvider().fromLong(42);
         Id result = process(object, serializer);
 
-        assertThat(result).isEqualTo(result);
+        assertThat(result).isEqualTo(object);
     }
 
     @Test
     void testSerializeDeserializeIdWithStream() throws IOException {
         BinarySerializer<Id> serializer = BeanSerializerFactory.getInstance().forId();
 
-        Id object = Id.getProvider().fromLong(42);
-        Id result = processWithStream(object, serializer);
+        Id expected = Id.getProvider().fromLong(42);
+        Id result = processWithStream(expected, serializer);
 
-        assertThat(result).isEqualTo(result);
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
@@ -56,7 +56,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
         ClassBean object = ClassBean.of("name0", "uri0");
         ClassBean result = process(object, serializer);
 
-        assertThat(result).isEqualTo(result);
+        assertThat(result).isEqualTo(object);
     }
 
     @Test
@@ -66,7 +66,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
         ClassBean object = ClassBean.of("name0", "uri0");
         ClassBean result = processWithStream(object, serializer);
 
-        assertThat(result).isEqualTo(result);
+        assertThat(result).isEqualTo(object);
     }
 
     @Test
@@ -76,7 +76,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
         SingleFeatureBean object = SingleFeatureBean.of(Id.getProvider().fromLong(42), 10);
         SingleFeatureBean result = process(object, serializer);
 
-        assertThat(result).isEqualTo(result);
+        assertThat(result).isEqualTo(object);
     }
 
     @Test
@@ -86,7 +86,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
         SingleFeatureBean object = SingleFeatureBean.of(Id.getProvider().fromLong(42), 10);
         SingleFeatureBean result = processWithStream(object, serializer);
 
-        assertThat(result).isEqualTo(result);
+        assertThat(result).isEqualTo(object);
     }
 
     @Test
@@ -96,7 +96,7 @@ class BeanSerializerTest extends AbstractSerializerTest {
         ManyFeatureBean object = ManyFeatureBean.of(Id.getProvider().fromLong(42), 10, 0);
         ManyFeatureBean result = process(object, serializer);
 
-        assertThat(result).isEqualTo(result);
+        assertThat(result).isEqualTo(object);
     }
 
     @Test
@@ -106,6 +106,6 @@ class BeanSerializerTest extends AbstractSerializerTest {
         ManyFeatureBean object = ManyFeatureBean.of(Id.getProvider().fromLong(42), 10, 44);
         ManyFeatureBean result = processWithStream(object, serializer);
 
-        assertThat(result).isEqualTo(result);
+        assertThat(result).isEqualTo(object);
     }
 }
