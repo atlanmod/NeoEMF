@@ -350,7 +350,6 @@
                         Avoid JDK11 reflexive access warning from FST
                         -->
                         <argLine>
-                            -XstartOnFirstThread
                             --illegal-access=permit
                             --add-exports java.base/jdk.internal.ref=ALL-UNNAMED
                             --add-opens java.base/java.lang=ALL-UNNAMED
