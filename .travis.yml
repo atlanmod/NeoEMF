@@ -15,11 +15,11 @@ env:
     # CI_DEPLOY_PASSWORD
     - secure: FbSKxzPkjTrkom1EAjqbOKfSLmeWDfUj6FZks5pmTvdO6bFX641HRPOkWQ7o3p0QnXTWIl3KaT6PLCdRlVmIdepHbHjJt1x1HTuD/j82aOxUl1JUhiG3WFWE2V4tOuvABE8eRyvE1uGJ5Ik0F5BXy1QYwlWpbO9VORA3Kz4Xm6yu/kroH2EQlRxJN4LtM6ufDeimfU3LmbSSPs54Et3e45GNzbAw0KmupOvphfr5sJd3xpS3vQMtdHbVlCoDu0/F9ntEgBzwrOphX7rpo90MOU2j8dakAGGMku1DddPEuOckCkn0KjYfcvBwETJWd09my6L3BFCyto3doaYpjv361/GYc5508eYLmGom+AQVybhXTVOzIDn8gdr7UkvgJgeown8STMiiTKfq7HmJ3vTXpNrAXzS6Oa9la2OFa+wW54hs+nABfsPLNkIuaC9X5FXt8X356OgAOv0GUn3EiofMXH928dIXb3kftnF9Y+oS7OE+mwnbp5SfrOOp3TF8v0E3fOuWs/Wfe1QWuDu3+xa7wXfMLLxBb6HqsUV5A4/DaCqwcH4/tMge3PVWJ56jWIpzL33On7wMuzaRnxjbuO6brL3ywLWgXJnuGv2FVfe3CYpLLgT4zstspM/oftREBQlAQffpYQMiaSRuqm+rMbQuXpH2Fi+AO7jA2ENiQBkOk98=
 
-#addons:
-#  sonarcloud:
-#    organization: "atlanmod"
-#    token:
-#      secure: "Uhl77DZFqL6LJv4SlWWGQB3GimUvP3wxSTUc5/kdhC6yOnxOsgpopMMcmlw3hrxJTs9Q9Ch0E+8RErRqpfBkreWTlr2I6vH/pQolmntSblsks/pSCjT0U/o15Ikkpq6gLzG3IqSlrIGPqSnk9nYxPBEm52628BWJjzb3jCn+BQxiVZvxdr+mFIVgp16abJrGzE5Sp2rbJrsT4cVkOvsNNJuwhEXN69jDfaH3R9WwE/x48fGGfuffvl3pcaxWsLwDsFQtJam9NizMIr+a3VyI7040+veGa0VqtE4MuHqq/RLGMw3qxAjxMQVV3GdZTdxeKzuIqMhVt+Sj529NkZ49n/C1YvK5Lf2chO78RvDGEQ2evWa2kf9JyFjaGhbzSldo/GvMxEiUDyEItASWrwoGsKzlVeahVbLN8cV4SRwS+3wGn1haTUrENaYc0SFMR7I/taDEUNTBhkZ30ixR7G+ltNdaERxe46Rbl8mkwaV0mOjDjeHs0hSRxTEv2NeTNa4fJP71GFzlHIMsKVcCIQCcA3CydU7zin63jLgPiR1JcfyI3E+NE8Qp9kCV7P4Fx+rnMm7rIUwLgrTv7Jp/urFXdSX9DTe4cX7/t9jZ40vD3TQfojzK1J8F5uCalAGmv0/v9uTI8FV1pCYUbAI1GreN4M3lCLai8k79a2gPYX+9rvI="
+addons:
+  sonarcloud:
+    organization: "atlanmod"
+    token:
+      secure: "Uhl77DZFqL6LJv4SlWWGQB3GimUvP3wxSTUc5/kdhC6yOnxOsgpopMMcmlw3hrxJTs9Q9Ch0E+8RErRqpfBkreWTlr2I6vH/pQolmntSblsks/pSCjT0U/o15Ikkpq6gLzG3IqSlrIGPqSnk9nYxPBEm52628BWJjzb3jCn+BQxiVZvxdr+mFIVgp16abJrGzE5Sp2rbJrsT4cVkOvsNNJuwhEXN69jDfaH3R9WwE/x48fGGfuffvl3pcaxWsLwDsFQtJam9NizMIr+a3VyI7040+veGa0VqtE4MuHqq/RLGMw3qxAjxMQVV3GdZTdxeKzuIqMhVt+Sj529NkZ49n/C1YvK5Lf2chO78RvDGEQ2evWa2kf9JyFjaGhbzSldo/GvMxEiUDyEItASWrwoGsKzlVeahVbLN8cV4SRwS+3wGn1haTUrENaYc0SFMR7I/taDEUNTBhkZ30ixR7G+ltNdaERxe46Rbl8mkwaV0mOjDjeHs0hSRxTEv2NeTNa4fJP71GFzlHIMsKVcCIQCcA3CydU7zin63jLgPiR1JcfyI3E+NE8Qp9kCV7P4Fx+rnMm7rIUwLgrTv7Jp/urFXdSX9DTe4cX7/t9jZ40vD3TQfojzK1J8F5uCalAGmv0/v9uTI8FV1pCYUbAI1GreN4M3lCLai8k79a2gPYX+9rvI="
 
 cache:
   directories:
@@ -30,7 +30,7 @@ install: true
   - mvn --show-version --quiet -DskipTests clean install
 
 script:
-  - mvn --quiet verify
+  - mvn --quiet verify sonar:sonar
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
