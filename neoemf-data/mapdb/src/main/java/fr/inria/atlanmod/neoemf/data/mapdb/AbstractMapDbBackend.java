@@ -28,6 +28,7 @@ import org.mapdb.Serializer;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -126,13 +127,15 @@ abstract class AbstractMapDbBackend extends AbstractBackend implements MapDbBack
     protected void internalCopyTo(DataMapper target) {
         AbstractMapDbBackend to = (AbstractMapDbBackend) target;
 
+        Objects.requireNonNull(to);
+
         for (Map.Entry<String, Object> entry : database.getAll().entrySet()) {
             Object collection = entry.getValue();
             if (collection instanceof Map) {
                 Map fromMap = (Map) collection;
-                Map toMap = to.database.hashMap(entry.getKey()).open();
-
-                toMap.putAll(fromMap);
+                try(HTreeMap toMap = to.database.hashMap(entry.getKey()).open()) {
+                    toMap.putAll(fromMap);
+                }
             }
             else {
                 throw new UnsupportedOperationException(String.format("Cannot copy MapDB backend: store type %s is not supported", collection.getClass().getSimpleName()));

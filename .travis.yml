@@ -36,7 +36,7 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
 
   # Publish Javadoc in Github
-  #- bash .util/publish_javadoc.sh
+  - bash .util/publish_javadoc.sh
 
   # Deploy snapshot in Maven central
   #- bash .util/deploy_snapshot.sh

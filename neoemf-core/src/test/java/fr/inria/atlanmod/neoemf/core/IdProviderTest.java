@@ -51,8 +51,9 @@ class IdProviderTest extends AbstractTest {
         Id id0Bis = Id.getProvider().fromLong(42);
         Id id1 = Id.getProvider().fromLong(44);
 
-        assertThat(id0).isEqualByComparingTo(id0Bis);
-        assertThat(id0).isLessThan(id1);
+        assertThat(id0)
+                .isEqualByComparingTo(id0Bis)
+                .isLessThan(id1);
         assertThat(id1).isGreaterThan(id0Bis);
     }
 
@@ -82,9 +83,11 @@ class IdProviderTest extends AbstractTest {
         Id id0Bis = Id.getProvider().fromLong(42);
         Id id1 = Id.getProvider().fromLong(44);
 
-        assertThat(id0).isEqualTo(id0Bis);
+
         assertThat(id1).isNotEqualTo(id0Bis);
-        assertThat(id0).isNotEqualTo(id1);
+        assertThat(id0)
+                .isEqualTo(id0Bis)
+                .isNotEqualTo(id1);
     }
 
     @Test

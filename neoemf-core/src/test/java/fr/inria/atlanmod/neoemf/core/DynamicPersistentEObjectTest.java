@@ -29,8 +29,9 @@ class DynamicPersistentEObjectTest extends AbstractTest {
         EObject dynamicObject = new DynamicEObjectImpl();
         PersistentEObject object = PersistentEObject.from(dynamicObject);
 
-        assertThat(object).isNotNull();
-        assertThat(object).isInstanceOf(PersistentEObject.class);
+        assertThat(object)
+                .isNotNull()
+                .isInstanceOf(PersistentEObject.class);
     }
 
     @Test

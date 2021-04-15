@@ -41,7 +41,9 @@ class DefaultPersistentEObjectTest extends AbstractTest {
         PersistentEObject object = new DefaultPersistentEObject();
 
         // Store created on first call
-        assertThat(object.eStore()).isNotNull().isInstanceOf(TransientStoreAdapter.class);
+        assertThat(object.eStore())
+                .isNotNull()
+                .isInstanceOf(TransientStoreAdapter.class);
         object.eStore().close();
     }
 
@@ -67,12 +69,11 @@ class DefaultPersistentEObjectTest extends AbstractTest {
         PersistentEObject o1 = new DefaultPersistentEObject(id);
         PersistentEObject o2 = new DefaultPersistentEObject();
 
-        assertThat(o0).isEqualTo(o1);
-        assertThat(o0).isNotEqualTo(o2);
         assertThat(o1).isNotEqualTo(o2);
-
-        assertThat(o0).isEqualTo(o0);
-        assertThat(o0).isNotEqualTo(null);
-        assertThat(o0).isNotEqualTo(mock(Object.class));
+        assertThat(o0).isEqualTo(o0)
+                .isEqualTo(o1)
+                .isNotEqualTo(o2)
+                .isNotEqualTo(null)
+                .isNotEqualTo(mock(Object.class));
     }
 }
