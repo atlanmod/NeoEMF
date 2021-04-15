@@ -46,7 +46,7 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
      * Example of recognized strings : {@code "&lt;prefix&gt;:&lt;name&gt;"}
      */
     @Nonnull
-    private static final Pattern PATTERN_PREFIXED_VALUE = Pattern.compile("(\\w+):(\\w+)");
+    private static final Pattern PATTERN_PREFIXED_VALUE = Pattern.compile("(\\w{1,128}):(\\w{1,128})");
 
     /**
      * A LIFO that holds the current {@link Id} chain. It contains the current identifier and the previous.
