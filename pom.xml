@@ -262,11 +262,14 @@
                             <goal>prepare-agent</goal>
                         </goals>
                         <configuration>
+                            <!--
                             <destFile>${project.build.directory}/jacoco-unit.exec</destFile>
+                            -->
                             <propertyName>surefire.jacoco.args</propertyName>
                         </configuration>
                     </execution>
 
+                    <!--
                     <execution>
                         <id>after-unit-test-execution</id>
                         <phase>test</phase>
@@ -280,6 +283,7 @@
                             </outputDirectory>
                         </configuration>
                     </execution>
+                    -->
 
                     <!-- Integration Tests -->
                     <!-- Not needed for now

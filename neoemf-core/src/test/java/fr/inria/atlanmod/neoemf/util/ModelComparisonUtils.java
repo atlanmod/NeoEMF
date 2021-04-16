@@ -64,6 +64,8 @@ public final class ModelComparisonUtils {
         final List<Diff> differences = comparison.getDifferences();
 
         // Don't display all differences
-        assertThat(differences.size()).isEqualTo(0).withFailMessage("Models have %d differences", differences.size());
+        assertThat(differences.size())
+                .withFailMessage("Models have %d differences", differences.size())
+                .isZero();
     }
 }
