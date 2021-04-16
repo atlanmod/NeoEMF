@@ -126,6 +126,7 @@
         <sonar.coverage.jacoco.xmlReportPaths>
             ${project.build.directory}/site/jacoco-merged-test-coverage-report/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
+        <surefire.jacoco.args/>
     </properties>
 
     <dependencyManagement>
@@ -265,6 +266,7 @@
                             <propertyName>surefire.jacoco.args</propertyName>
                         </configuration>
                     </execution>
+
                     <execution>
                         <id>after-unit-test-execution</id>
                         <phase>test</phase>
@@ -280,6 +282,7 @@
                     </execution>
 
                     <!-- Integration Tests -->
+                    <!-- Not needed for now
                     <execution>
                         <id>before-integration-test-execution</id>
                         <phase>pre-integration-test</phase>
@@ -304,8 +307,11 @@
                             </outputDirectory>
                         </configuration>
                     </execution>
+                    -->
 
                     <!-- Merge -->
+
+                    <!--
                     <execution>
                         <id>merge-unit-and-integration</id>
                         <phase>post-integration-test</phase>
@@ -313,7 +319,6 @@
                             <goal>merge</goal>
                         </goals>
                         <configuration>
-                            <!-- merge config -->
                             <destFile>${project.build.directory}/jacoco-all.exec</destFile>
                             <fileSets>
                                 <fileSet>
@@ -325,6 +330,9 @@
                             </fileSets>
                         </configuration>
                     </execution>
+                    -->
+
+                    <!--
                     <execution>
                         <id>create-merged-report</id>
                         <phase>post-integration-test</phase>
@@ -338,10 +346,11 @@
                             </outputDirectory>
                         </configuration>
                     </execution>
+                    -->
 
                     <!-- Report Aggregation -->
                     <execution>
-                        <id>report</id>
+                        <id>report-aggregate</id>
                         <goals>
                             <goal>report-aggregate</goal>
                         </goals>
@@ -456,6 +465,7 @@
                         Avoid JDK11 reflexive access warning from FST
                         -->
                         <argLine>
+                            ${surefire.jacoco.args}
                             --illegal-access=permit
                             --add-exports java.base/jdk.internal.ref=ALL-UNNAMED
                             --add-opens java.base/java.lang=ALL-UNNAMED

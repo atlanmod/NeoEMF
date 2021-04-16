@@ -30,7 +30,7 @@ install: true
   - mvn --show-version --quiet -DskipTests clean install
 
 script:
-  - mvn --quiet verify sonar:sonar
+  - mvn --quiet verify sonar:sonar -Dsonar.projectKey=org.atlanmod.neoemf:neoemf
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

@@ -18,10 +18,7 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Admin;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.*;
 import org.osgi.service.component.annotations.Component;
 
 import java.io.IOException;
@@ -72,15 +69,16 @@ public class HBaseBackendFactory extends AbstractBackendFactory<HBaseConfig> {
      *
      * @param tableName the name of the table
      * @param admin     the administrator of the tables
-     *
      * @throws IOException if an I/O occurs when creating tables
      */
     private void createTables(TableName tableName, Admin admin) throws IOException {
         if (!admin.tableExists(tableName)) {
-            HTableDescriptor tableDescriptor = new HTableDescriptor(tableName)
-                    .addFamily(new HColumnDescriptor(AbstractHBaseBackend.FAMILY_PROPERTY))
-                    .addFamily(new HColumnDescriptor(AbstractHBaseBackend.FAMILY_TYPE))
-                    .addFamily(new HColumnDescriptor(AbstractHBaseBackend.FAMILY_CONTAINMENT));
+
+            TableDescriptor tableDescriptor = TableDescriptorBuilder.newBuilder(tableName)
+                    .setColumnFamily(ColumnFamilyDescriptorBuilder.of(AbstractHBaseBackend.FAMILY_PROPERTY))
+                    .setColumnFamily(ColumnFamilyDescriptorBuilder.of(AbstractHBaseBackend.FAMILY_TYPE))
+                    .setColumnFamily(ColumnFamilyDescriptorBuilder.of(AbstractHBaseBackend.FAMILY_CONTAINMENT))
+                    .build();
 
             admin.createTable(tableDescriptor);
         }
