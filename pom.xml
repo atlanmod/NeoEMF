@@ -258,6 +258,7 @@
                     <!-- Unit Tests -->
                     <execution>
                         <id>before-unit-test-execution</id>
+                        <phase>process-test-sources</phase>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
