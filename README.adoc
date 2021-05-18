@@ -1,0 +1,126 @@
+= NeoEMF
+
+image:https://www.travis-ci.org/atlanmod/NeoEMF.svg?branch=master[Build Status,link=https://www.travis-ci.org/atlanmod/NeoEMF]
+image:https://codecov.io/gh/atlanmod/NeoEMF/branch/master/graph/badge.svg[CodeCov,link=https://codecov.io/gh/atlanmod/NeoEMF]
+image:https://api.codacy.com/project/badge/Grade/82af9c0b0354424f93e1044cbdc85a9e[Codacy,link=https://www.codacy.com/app/atlanmod/NeoEMF?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=atlanmod/NeoEMF&amp;utm_campaign=Badge_Grade]
+image:https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf/badge.svg[Maven Central,link=https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf]
+image:https://img.shields.io/badge/javadoc--blue.svg[Javadoc,link=https://atlanmod.github.io/NeoEMF/releases/latest/doc/]
+image:https://img.shields.io/badge/plugin--blue.svg[Plugin,link=https://atlanmod.github.io/NeoEMF/releases/latest/plugin/]
+image:https://img.shields.io/badge/licence-EPL--2.0-blue.svg[Licence,link=https://www.eclipse.org/legal/epl-2.0/]
+image:https://www.javadoc.io/badge/fr.inria.atlanmod.neoemf/neoemf.svg[Javadocs,link=https://www.javadoc.io/doc/fr.inria.atlanmod.neoemf/neoemf]
+
+Check out our https://github.com/atlanmod/NeoEMF/wiki[wiki] for further information on the installation, usages, supported backends, code examples, developer resources, etc.
+
+== What Is NeoEMF?
+
+NeoEMF is developed by the Nantes Modeling Group, https://naomod.github.io[Naomod].
+NeoEMF aims at handling large EMF models in an efficient and scalable way.
+
+NeoEMF is a multi-backend framework developed to allow an easy integration of custom backends depending on user needs.
+
+== Main Features
+
+NeoEMF comes with some features depending on the backend used:
+
+* *Lazy-loading* mechanism: A model is loaded part by part while needed
+* *Caching*: NeoEMF relies on database caches to retrieve EObjects
+  But in some situation where time performance is important this is not enough and it is possible to use application-level caches to speed up information loading
+* *Auto-commit*: For the backend having restrictions on transaction sizes it is possible to use the auto-commit feature to split large transaction into several small ones
+* *Dirty saving*: Handle large models that haven't been persisted to avoid memory overhead
+
+== Why Should I Use NeoEMF?
+
+NeoEMF is fully EMF compliant, that means there is no modification to do to use it with existing EMF based applications.
+
+Additionally, NeoEMF can be plugged with several persistence solutions and is configurable to fit the best your needs (custom caches, in-memory resources, auto-commit,…).
+
+In addition, NeoEMF provides a query API to perform optimized OCL queries over models and reify the results as navigable models.
+
+== Usage
+
+=== Latest Release
+
+The most recent release is NeoEMF 2.0.1, released October 12, 2020.
+- Javadoc: https://atlanmod.github.io/NeoEMF/releases/latest/doc/[neoemf]
+- Eclipse Plugin: https://atlanmod.github.io/NeoEMF/releases/latest/plugin/[neoemf]
+
+To add a dependency on NeoEMF using Maven, use the following:
+
+[source,xml]
+----
+<dependencies>
+  <dependency>
+    <groupId>org.atlanmod.neoemf</groupId>
+    <artifactId>neoemf-core</artifactId>
+    <version>2.0.1</version>
+  </dependency>
+
+  <dependency>
+    <groupId>org.atlanmod.neoemf</groupId>
+    <artifactId>neoemf-io</artifactId>
+    <version>2.0.1</version>
+  </dependency>
+</dependencies>
+----
+
+==== Supported Implementations
+
+All native implementations are located under the `neoemf-data` artifact.
+To add the dependency of the specific implementation you want to use, simply use:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.atlanmod.neoemf</groupId>
+  <artifactId>neoemf-data-{name}</artifactId>
+  <version>2.0.1</version>
+</dependency>
+----
+
+Where `{name}` is any of:
+* Blueprints:
+- TinkerGraph : `blueprints-core`
+- Neo4j: `blueprints-neo4j` _(requires `blueprints-core`)_
+* MapDB : `mapdb`
+* BerkeleyDB: `berkeleydb`
+* HBase: `hbase`
+* MongoDB: `mongodb` _(beta)_
+
+=== Snapshots
+
+Snapshots are automatically build from the `master` and are available through Maven using `2.0.2-SNAPSHOT`.
+- Javadoc: https://atlanmod.github.io/NeoEMF/releases/snapshot/doc/[neoemf]
+- Eclipse Plugin: https://atlanmod.github.io/NeoEMF/releases/snapshot/plugin/[neoemf]
+
+== Installation
+
+Dedicated pages are available in our wiki for the https://github.com/atlanmod/NeoEMF/wiki/Installation[installation] and the https://github.com/atlanmod/NeoEMF/wiki/Build[build].
+
+=== Update Site
+
+The simplest way to install NeoEMF is to use the update-site that is available https://atlanmod.github.io/NeoEMF/releases/latest/plugin/[here].
+Install the *NeoEMF Persistence Framework* component, which provides NeoEMF core classes and utils.
+Select the backend specific implementation(s) you want to plug in NeoEMF.
+
+=== Local Build
+
+You can build locally NeoEMF by following the instructions in the Build section.
+It is then possible to install NeoEMF from the local built update-site, or by importing the generated plugins.
+
+== Benchmarks
+
+A full benchmarks description is available at https://github.com/atlanmod/NeoEMF/tree/master/benchmarks[here].
+
+== Issues
+
+If you experience issues installing or using NeoEMF, you can https://github.com/atlanmod/NeoEMF/issues[submit an issue on github] or contact us at link:mailto:&#x6e;&#x65;&#111;&#101;m&#x66;&#x40;g&#111;&#x6f;&#x67;&#108;&#101;&#103;&#114;&#111;&#x75;&#x70;&#115;&#46;&#99;&#111;&#x6d;[&#x6e;&#x65;&#111;&#101;m&#x66;&#x40;g&#111;&#x6f;&#x67;&#108;&#101;&#103;&#114;&#111;&#x75;&#x70;&#115;&#46;&#99;&#111;&#x6d;]
+
+=== Known issues:
+
+* Only Oxygen plugins are fetched (the compatibility is not ensured for previous Eclipse versions)
+* The Eclipse plugins cannot be built if Maven can not access internet (it is needed to fetch Oxygen p2 repositories)
+* Sometimes the plugin build crashes and/or freezes during p2 index fetching from Oxygen repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.
+
+== Credits
+
+Performance problems and memory leaks are diagnosed with https://www.ej-technologies.com/products/jprofiler/overview.html[Java Profiler]
