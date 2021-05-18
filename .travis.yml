@@ -6,6 +6,10 @@ jdk:
   - oraclejdk11
   - openjdk11
 
+branches:
+  only:
+    - master
+
 env:
   global:
     # GH_TOKEN
@@ -39,7 +43,7 @@ after_success:
   - bash .util/publish_javadoc.sh
 
   # Deploy snapshot in Maven central
-  #- bash .util/deploy_snapshot.sh
+  - bash .util/deploy_snapshot.sh
 
   # Publish update-site of Eclipse plugin in Github
-  #- bash .util/publish_plugin.sh
+  - bash .util/publish_plugin.sh
