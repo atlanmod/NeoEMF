@@ -1,6 +1,6 @@
 #!/bin/bash
 
-JDK="oraclejdk8"
+JDK="oraclejdk11"
 
 TYPE="Eclipse Plugin"
 
