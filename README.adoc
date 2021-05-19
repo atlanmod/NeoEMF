@@ -3,11 +3,11 @@
 image:https://www.travis-ci.org/atlanmod/NeoEMF.svg?branch=master[Build Status,link=https://www.travis-ci.org/atlanmod/NeoEMF]
 image:https://codecov.io/gh/atlanmod/NeoEMF/branch/master/graph/badge.svg[CodeCov,link=https://codecov.io/gh/atlanmod/NeoEMF]
 image:https://api.codacy.com/project/badge/Grade/82af9c0b0354424f93e1044cbdc85a9e[Codacy,link=https://www.codacy.com/app/atlanmod/NeoEMF?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=atlanmod/NeoEMF&amp;utm_campaign=Badge_Grade]
-image:https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf/badge.svg[Maven Central,link=https://maven-badges.herokuapp.com/maven-central/fr.inria.atlanmod.neoemf/neoemf]
+image:https://maven-badges.herokuapp.com/maven-central/org.atlanmod.neoemf/neoemf/badge.svg[Maven Central,link=https://maven-badges.herokuapp.com/maven-central/org.atlanmod.neoemf/neoemf]
 image:https://img.shields.io/badge/javadoc--blue.svg[Javadoc,link=https://atlanmod.github.io/NeoEMF/releases/latest/doc/]
 image:https://img.shields.io/badge/plugin--blue.svg[Plugin,link=https://atlanmod.github.io/NeoEMF/releases/latest/plugin/]
 image:https://img.shields.io/badge/licence-EPL--2.0-blue.svg[Licence,link=https://www.eclipse.org/legal/epl-2.0/]
-image:https://www.javadoc.io/badge/fr.inria.atlanmod.neoemf/neoemf.svg[Javadocs,link=https://www.javadoc.io/doc/fr.inria.atlanmod.neoemf/neoemf]
+image:https://www.javadoc.io/badge/org.atlanmod.neoemf/neoemf.svg[Javadocs,link=https://www.javadoc.io/doc/org.atlanmod.neoemf/neoemf]
 
 Check out our https://github.com/atlanmod/NeoEMF/wiki[wiki] for further information on the installation, usages, supported backends, code examples, developer resources, etc.
 
