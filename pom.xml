@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.atlanmod.commons</groupId>
         <artifactId>commons</artifactId>
-        <version>1.0.6</version>
+        <version>1.1.0</version>
     </parent>
 
     <groupId>org.atlanmod.neoemf</groupId>
@@ -15,7 +15,7 @@
     <version>2.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>NeoEMF</name>
-    <description>An EMF persistence layer</description>
+    <description>A Persistence Layer for the Eclipse Modeling Framework (EMF)</description>
     <url>https://neoemf.atlanmod.org</url>
     <inceptionYear>2013</inceptionYear>
 
@@ -54,16 +54,6 @@
 
     <developers>
         <developer>
-            <name>Amine Benelallam</name>
-            <id>amine.benelallam</id>
-            <email>amine.benallam@gmail.com</email>
-            <roles>
-                <role>admin</role>
-                <role>developer</role>
-            </roles>
-            <timezone>+2</timezone>
-        </developer>
-        <developer>
             <name>Gerson Sunyé</name>
             <id>gerson.sunye</id>
             <email>sunye@protonmail.com</email>
@@ -84,16 +74,6 @@
             <timezone>+2</timezone>
         </developer>
         <developer>
-            <name>Abel Gómez</name>
-            <id>abel.gomez</id>
-            <email>abel.gomez-llana@inria.fr</email>
-            <roles>
-                <role>admin</role>
-                <role>developer</role>
-            </roles>
-            <timezone>+2</timezone>
-        </developer>
-        <developer>
             <name>Yoann Vernageau</name>
             <id>yoann.vernageau</id>
             <email>yoann.vernageau@inria.fr</email>
@@ -107,7 +87,7 @@
 
     <properties>
         <argLine.global>-Xmx2g --illegal-access=warn --illegal-access=permit --add-exports java.base/jdk.internal.ref=ALL-UNNAMED</argLine.global>
-        <commons.version>1.0.6</commons.version>
+        <commons.version>1.1.0</commons.version>
         <emf.version>[2.15.0,)</emf.version>
         <xtext.version>2.25.0</xtext.version>
         <xcore.version>[1.15.0,)</xcore.version>
