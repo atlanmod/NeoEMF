@@ -30,9 +30,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkArgument;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
-import static org.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Guards.checkArgument;
+import static org.atlanmod.commons.Guards.checkNotNull;
+import static org.atlanmod.commons.Guards.checkState;
 
 /**
  * An abstract {@link Reader} that reads data from an {@link InputStream}.
@@ -186,9 +186,11 @@ public abstract class AbstractStreamReader extends AbstractReader<InputStream> {
         notifyStartElement(currentElement);
         identifiers.addLast(currentElement.getId().getResolved());
 
+        notifyStartAttributeList();
         for (ProxyAttribute a : currentAttributes) {
             notifyAttribute(a);
         }
+        notifyEndAttributeList();
     }
 
     /**

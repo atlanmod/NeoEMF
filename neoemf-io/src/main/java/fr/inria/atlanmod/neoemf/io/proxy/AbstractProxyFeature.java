@@ -18,13 +18,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A simple representation of a {@link org.eclipse.emf.ecore.EStructuralFeature}.
  */
 @ParametersAreNonnullByDefault
-public abstract class AbstractProxyFeature<T extends AbstractProxyFeature<T, R, V>, R extends EStructuralFeature, V> extends AbstractNamedElement<T> implements Proxy<T, R> {
+public abstract class AbstractProxyFeature<T extends AbstractProxyFeature<T, R, V>,
+        R extends EStructuralFeature, V> extends AbstractNamedElement<T> implements Proxy<T, R> {
 
     /**
      * The identifier of element that owns this feature.

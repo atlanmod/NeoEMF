@@ -43,6 +43,13 @@ public interface Handler {
     void onStartElement(ProxyElement element) throws IOException;
 
     /**
+     * Handles the start of processing the attributes of the current element
+     *
+     * @see #onEndAttributeList()
+     */
+    void onStartAttributeList() throws IOException;
+
+    /**
      * Handles an attribute in the current element.
      *
      * @param attribute the new attribute
@@ -51,6 +58,14 @@ public interface Handler {
      * @see Notifier#notifyAttribute(ProxyAttribute)
      */
     void onAttribute(ProxyAttribute attribute) throws IOException;
+
+
+    /**
+     * Handles the end of processing the attributes of the current element.
+     *
+     * @see #onStartAttributeList()
+     */
+    void onEndAttributeList() throws IOException;
 
     /**
      * Handles a reference from the current element to another.

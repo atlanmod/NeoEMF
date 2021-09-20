@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iceage="http://www.neoemf.com/tests/iceage">
+  <iceage:Herd>
+    <elements xsi:type="iceage:PrimitiveAttributes" href="file:/Users/sunye/Work/atlanmod/NeoEMF/./neoemf-io/src/test/resources/xmi/proxy-containment.xmi#/0" aString="Primitive Attribute One"/>
+    <children xsi:type="iceage:PrimitiveAttributes" aString="Primitive Attribute Three"/>
+  </iceage:Herd>
+  <iceage:IceAge>
+    <chief xsi:type="iceage:InitializedPrimitive" href="file:/Users/sunye/Work/atlanmod/NeoEMF/./neoemf-io/src/test/resources/xmi/proxy-containment.xmi#/2"/>
+    <resolvingChief xsi:type="iceage:InitializedPrimitive" href="file:/Users/sunye/Work/atlanmod/NeoEMF/./neoemf-io/src/test/resources/xmi/proxy-containment.xmi#/3"/>
+    <followers xsi:type="iceage:InitializedPrimitive" href="file:/Users/sunye/Work/atlanmod/NeoEMF/./neoemf-io/src/test/resources/xmi/proxy-containment.xmi#/4"/>
+    <followers xsi:type="iceage:InitializedPrimitive" href="file:/Users/sunye/Work/atlanmod/NeoEMF/./neoemf-io/src/test/resources/xmi/proxy-containment.xmi#/5"/>
+    <resolvingFollowers xsi:type="iceage:InitializedPrimitive" href="file:/Users/sunye/Work/atlanmod/NeoEMF/./neoemf-io/src/test/resources/xmi/proxy-containment.xmi#/6"/>
+    <resolvingFollowers xsi:type="iceage:InitializedPrimitive" href="file:/Users/sunye/Work/atlanmod/NeoEMF/./neoemf-io/src/test/resources/xmi/proxy-containment.xmi#/7"/>
+    <resolvingMoment href="file:/Users/sunye/Work/atlanmod/NeoEMF/./neoemf-io/src/test/resources/xmi/proxy-containment.xmi#/9"/>
+  </iceage:IceAge>
+  <iceage:IceAge>
+    <moment/>
+    <resolvingMoment/>
+  </iceage:IceAge>
+</xmi:XMI>

@@ -30,8 +30,8 @@ import javax.xml.stream.XMLStreamException;
 public class IndentingXmiStreamWriter extends XmiStreamWriter {
 
     /**
-     * A LIFO that holds the ownerchip of each elements. If an element has at least one child, its associated value is
-     * {@code true}.
+     * A LIFO that holds the ownership of each element.
+     * If an element has at least one child, its associated value is {@code true}.
      *
      * @see #writeEndElement()
      */

@@ -1,0 +1,47 @@
+package org.atlanmod.neoemf.data.neo4j.context;
+
+import fr.inria.atlanmod.neoemf.config.ImmutableConfig;
+import fr.inria.atlanmod.neoemf.context.AbstractLocalContext;
+import fr.inria.atlanmod.neoemf.context.Context;
+import fr.inria.atlanmod.neoemf.data.BackendFactory;
+
+import org.atlanmod.neoemf.data.neo4j.Neo4jBackendFactory;
+import org.atlanmod.neoemf.data.neo4j.config.Neo4jConfig;
+
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+/**
+ * A specific {@link Context} for the Neo4j implementation.
+ */
+@ParametersAreNonnullByDefault
+public abstract class Neo4jContext extends AbstractLocalContext {
+
+    /**
+     * Creates a new {@code BerkeleyDbContext}.
+     *
+     * @return a new context.
+     */
+    @Nonnull
+    public static Context getDefault() {
+        return new Neo4jContext() {
+            @Nonnull
+            @Override
+            public ImmutableConfig config() {
+                return new Neo4jConfig();
+            }
+        };
+    }
+
+    @Nonnull
+    @Override
+    public String name() {
+        return "Neo4j";
+    }
+
+    @Nonnull
+    @Override
+    public BackendFactory factory() {
+        return new Neo4jBackendFactory();
+    }
+}

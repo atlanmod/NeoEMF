@@ -33,8 +33,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkArgument;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkArgument;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A {@link Processor} that transforms simple elements to an EMF structure.
@@ -54,6 +54,18 @@ public class EcoreMapper extends AbstractProcessor {
     @Nonnull
     private final Deque<EClass> metaClasses = new ArrayDeque<>();
 
+    /**
+     * A collection that holds all attributes of the current element.
+     */
+    @Nonnull
+    private final Deque<ProxyAttribute> currentAttributes = new ArrayDeque<>();
+
+    /**
+     * A collection that holds all references of the current element.
+     */
+    @Nonnull
+    private final Deque<ProxyReference> currentReferences = new ArrayDeque<>();
+
     @Override
     public void onStartElement(ProxyElement element) throws IOException {
         // Is root
@@ -67,6 +79,12 @@ public class EcoreMapper extends AbstractProcessor {
     }
 
     @Override
+    public void onStartAttributeList() throws IOException {
+        currentReferences.clear();
+        currentAttributes.clear();
+    }
+
+    @Override
     public void onAttribute(ProxyAttribute attribute) throws IOException {
         final EStructuralFeature eFeature = getFeature(attribute.getName());
 
@@ -75,22 +93,39 @@ public class EcoreMapper extends AbstractProcessor {
         }
 
         if (EFeatures.isAttribute(eFeature)) {
-            // The attribute is well a attribute
-            processAttribute(attribute, EFeatures.asAttribute(eFeature));
+            // The attribute is indeed an attribute
+            attribute.setOrigin(EFeatures.asAttribute(eFeature));
+            currentAttributes.add(attribute);
         }
         else {
             // Otherwise redirect to the reference handler
             final Object rawValue = attribute.getValue().getRaw();
-            ProxyReference reference = new ProxyReference().setValue(ProxyValue.raw(rawValue));
-            processReference(reference, EFeatures.asReference(eFeature));
+            ProxyReference reference = new ProxyReference()
+                    .setValue(ProxyValue.raw(rawValue))
+                    .setOrigin( EFeatures.asReference(eFeature));
+            currentReferences.add(reference);
+        }
+    }
+
+    @Override
+    public void onEndAttributeList() throws IOException {
+        notifyStartAttributeList();
+        for (ProxyAttribute each : currentAttributes) {
+            processAttribute(each);
+        }
+        notifyEndAttributeList();
+
+        for (ProxyReference each : currentReferences) {
+            processReference(each);
         }
     }
 
     @Override
     public void onReference(ProxyReference reference) throws IOException {
         final EStructuralFeature eFeature = getFeature(reference.getName());
+        reference.setOrigin(EFeatures.asReference(eFeature));
 
-        processReference(reference, EFeatures.asReference(eFeature));
+        processReference(reference);
     }
 
     @Override
@@ -173,7 +208,11 @@ public class EcoreMapper extends AbstractProcessor {
         // Create a reference from the parent to this element
         if (eReference.isContainment()) {
             final Id ownerId = element.getId().getResolved();
-            processReference(new ProxyReference().setValue(ProxyValue.resolved(ownerId)), eReference);
+            ProxyReference reference = new ProxyReference()
+                    .setValue(ProxyValue.resolved(ownerId))
+                    .setOrigin(eReference);
+
+            processReference(reference);
         }
 
         identifiers.addLast(element.getId().getResolved());
@@ -184,17 +223,17 @@ public class EcoreMapper extends AbstractProcessor {
      * Processes an attribute.
      *
      * @param attribute  the attribute to process
-     * @param eAttribute the associated EMF attribute
      */
-    private void processAttribute(ProxyAttribute attribute, EAttribute eAttribute) throws IOException {
+    private void processAttribute(ProxyAttribute attribute) throws IOException {
         final Id ownerId = identifiers.getLast();
         final EClass ownerClass = metaClasses.getLast();
 
-        final Object resolvedValue = ValueConverter.INSTANCE.convert(attribute.getValue().getRaw(), eAttribute);
+        final Object resolvedValue = ValueConverter.INSTANCE.convert(attribute.getValue().getRaw(),
+                attribute.getOrigin());
 
+        final int featureID = ownerClass.getFeatureID(attribute.getOrigin());
         attribute.setOwner(ownerId)
-                .setId(ownerClass.getFeatureID(eAttribute))
-                .setOrigin(eAttribute)
+                .setId(featureID)
                 .setValue(ProxyValue.resolved(resolvedValue));
 
         notifyAttribute(attribute);
@@ -204,15 +243,14 @@ public class EcoreMapper extends AbstractProcessor {
      * Processes a reference.
      *
      * @param reference  the reference to process
-     * @param eReference the associated EMF reference
      */
-    private void processReference(ProxyReference reference, EReference eReference) throws IOException {
+    private void processReference(ProxyReference reference) throws IOException {
         final Id ownerId = identifiers.getLast();
         final EClass ownerClass = metaClasses.getLast();
 
+        final int featureID = ownerClass.getFeatureID(reference.getOrigin());
         reference.setOwner(ownerId)
-                .setId(ownerClass.getFeatureID(eReference))
-                .setOrigin(eReference);
+                .setId(featureID);
 
         // The unique identifier is already set
         if (reference.getValue().isResolved()) {

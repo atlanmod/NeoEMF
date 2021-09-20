@@ -27,7 +27,7 @@ import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.START_ELT;
 import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.START_EXPR;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A {@link Processor} that analyses XPath references and transforms them in {@link fr.inria.atlanmod.neoemf.core.Id}.

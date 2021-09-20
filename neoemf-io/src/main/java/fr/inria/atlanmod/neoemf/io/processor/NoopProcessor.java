@@ -51,8 +51,18 @@ public final class NoopProcessor extends AbstractNotifier<Handler> implements Pr
     }
 
     @Override
+    public void onStartAttributeList() throws IOException {
+        notifyStartAttributeList();
+    }
+
+    @Override
     public void onAttribute(ProxyAttribute attribute) throws IOException {
         notifyAttribute(attribute);
+    }
+
+    @Override
+    public void onEndAttributeList() throws IOException {
+        notifyEndAttributeList();
     }
 
     @Override

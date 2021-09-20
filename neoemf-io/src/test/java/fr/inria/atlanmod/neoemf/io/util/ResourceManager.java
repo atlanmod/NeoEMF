@@ -13,6 +13,7 @@ import fr.inria.atlanmod.neoemf.tests.sample.impl.SamplePackageImpl;
 import org.atlanmod.commons.Throwables;
 import org.atlanmod.commons.annotation.Singleton;
 import org.atlanmod.commons.annotation.Static;
+import org.atlanmod.neoemf.tests.iceage.impl.IceagePackageImpl;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -24,13 +25,17 @@ import org.eclipse.gmt.modisco.java.impl.JavaPackageImpl;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A static utility class that manages external resources for I/O tests.
@@ -56,6 +61,16 @@ public final class ResourceManager {
     @Nonnull
     public static URI xmiStandard() {
         return ResourceLoader.getInstance().getResourceUri("/xmi/sampleStandard.xmi");
+    }
+
+    /**
+     * Returns a XMI file with some specific cases: BigDecimal, BigInteger, etc.
+     *
+     * @return the XMI file
+     */
+    @Nonnull
+    public static URI xmiIceAge() {
+        return ResourceLoader.getInstance().getResourceUri("/xmi/iceage.xmi");
     }
 
     /**
@@ -88,19 +103,30 @@ public final class ResourceManager {
         return ResourceLoader.getInstance().getResourceUri("/xmi/sampleWithId.zxmi");
     }
 
+
+    @Nonnull
+    public static URI proxyContainer() {
+        return ResourceManager.ResourceLoader.getInstance().getResourceUri("/xmi/proxy-container.xmi");
+    }
+
+    @Nonnull
+    public static URI proxyContainment() {
+        return ResourceManager.ResourceLoader.getInstance().getResourceUri("/xmi/proxy-containment.xmi");
+    }
+
     /**
      * Registers all {@link EPackage}s used in test-cases.
      */
     public static void registerAllPackages() {
         JavaPackageImpl.init();
         SamplePackageImpl.init();
+        IceagePackageImpl.init();
     }
 
     /**
      * Loads the {@code uri} with standard EMF.
      *
      * @param uri the URI to load
-     *
      * @return the the loaded content
      */
     @Nonnull
@@ -133,9 +159,7 @@ public final class ResourceManager {
          * Retrieves the resource with the given {@code name}.
          *
          * @param name the name of the resource
-         *
          * @return a URI of the resource
-         *
          * @throws NullPointerException if the resource cannot be found
          */
         @Nonnull

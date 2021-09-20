@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:iceage="http://www.neoemf.com/tests/iceage">
+  <iceage:PrimitiveAttributes aString="Primitive Attribute One">
+    <herd href="file:/Users/sunye/Work/atlanmod/NeoEMF/./neoemf-io/src/test/resources/xmi/proxy-container.xmi#/0"/>
+  </iceage:PrimitiveAttributes>
+  <iceage:PrimitiveAttributes aString="Primitive Attribute Two"/>
+  <iceage:InitializedPrimitive/>
+  <iceage:InitializedPrimitive/>
+  <iceage:InitializedPrimitive/>
+  <iceage:InitializedPrimitive/>
+  <iceage:InitializedPrimitive/>
+  <iceage:InitializedPrimitive/>
+  <iceage:Moment date="2021-05-28T15:08:15.886+0200"/>
+  <iceage:Moment/>
+</xmi:XMI>

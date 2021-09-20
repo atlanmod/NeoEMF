@@ -1,0 +1,272 @@
+= Binary File Format
+
+
+```
++----------------------------------------------+
+|                    Header                    |
++----------------------------------------------+
+|                  Attributes                  |
++----------------------------------------------+
+|                    Index                     |
++----------------------------------------------+
+|                  References                  |
++----------------------------------------------+
+|                   Metadata                   |
++----------------------------------------------+
+```
+
+
+== Header
+
+```
++--------+--------+--------+--------+--------+--------+--------+--------+
+|   'n'  |   'e'  |   'o'  |   'e'  |   'm'  |   'f'  |      Version    |
++--------+--------+--------+--------+--------+--------+-----------------+
+|      Options    |          Metadata length          |
++--------+--------+--------+--------+--------+--------+--------+--------+
+|         Attribute length          |        References length          |
++--------+--------+--------+--------+--------+--------+--------+--------+
+|            Index length           |
++--------+--------+--------+--------+
+```
+
+- Unique identifier: 6 bytes
+- Version (Unsigned Short):  2 bytes
+- Options: 2 bytes
+- Metadata frame length (UnsignedInt): 4 bytes
+- Attributes frame length (UnsignedInt): 4 bytes
+- References frame length (UnsignedInt): 4 bytes
+- Index frame length (UnsignedInt): 4 bytes
+- Taille de EClassID en bytes? (UnsignedByte) : 1 byte
+
+
+attributes size
+refernces size
+index size
+
+
+
+== Attributes
+
+- Ordered by EClass ? (not possible)
+
+```
++-------------------------------------+
+| ClassID | BitSet | attribute-values |
++-------------------------------------+
+```
+
+
+- offset
+- list of attributes
+
+
+== Index
+
+.Index Record Format
+[source]
+----
+                                1  1  1  1  1  1
+  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                                               |
+|                  Object ID                    |
+|                                               |
+|                                               |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/                                               /
+/                   Class ID                    /
+/                                               /
+/                                               /
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+----
+
+- Object ID: Long (8 bytes)
+- Class ID: Unsigned Varint (1 - 8 bytes)
+
+.Index Example
+[source]
+----
+  +--------------+--------------+
+0 |       41     |      4       | {index: 0, objectID: 41, classID: 4}
+  +--------------+--------------+
+1 |       49     |      4       | {index: 1, objectID: 49, classID: 4}
+  +--------------+--------------+
+  /      ...     /     ...      /
+  +--------------+--------------+
+n |      14      |      2       | {index: n, objectID: 14, classID: 2}
+  +--------------+--------------+
+----
+
+
+
+=== References
+
+- eobject-id
+- offset
+- list-of-references
+
+```
++---------------------------------------------------+
+| Object Index | Reference Count | Reference values |
++---------------------------------------------------+
+
++---------------------------------------------------+
+| Feature ID | values                               |
++---------------------------------------------------+
+```
+
+
+== MetaData
+
+```
+
++----------------------------------------------+
+|               Number of EObjects             |
++----------------------------------------------+
+|               Number of Packages             |
++----------------------------------------------+
+|                   Contents                   |
++----------------------------------------------+
+```
+
+- Number of EObjects (Unsigned Int) : 4 bytes
+- Number of EPackages (Unsigned Byte) : 1 byte
+- Contents: variable length
+
+=== Example
+
+2 EPackages, with 2 EClasses each
+
+```
++-------------------------------------------------------------+
+| 2                                                           | Number of Packages
++-------------------------------------------------------------+
+| http://www.eclipse.org/MoDisco/Java/0.2.incubation/java#/   | URI Package 1
++-------------------------------------------------------------+
+| http://www.eclipse.org/MoDisco/Java/0.2.incubation/java/    | Namespace
++-------------------------------------------------------------+
+| 2                                                           | Number of EClasses
++-------------------------------------------------------------+
+| EClass 1                                                    |
++-------------------------------------------------------------+
+| EClass 2                                                    |
++-------------------------------------------------------------+
+| http://www.neoemf.org/tests/iceage#/                        | UI Package 2
++-------------------------------------------------------------+
+| http://www.neoemf.org/tests/iceage                          | Namespace
++-------------------------------------------------------------+
+| 2                                                           | Number of EClasses
++-------------------------------------------------------------+
+| EClass 1                                                    |
++-------------------------------------------------------------+
+| EClass 2                                                    |
++-------------------------------------------------------------+
+```
+
+
+=== Package
+
+- URI (String)  : Length, followed by a variable number of bytes
+- Namespace (String) : Length, followed by a variable number of bytes
+- Number of EClasses (Unsigned Short) : 2 byes
+
+
+
+=== Classes
+
+```
++----------------------------------------------+
+| Index | Classifier ID | Name                 |
++----------------------------------------------+
+| Number of EObjects (Instances)               |
++----------------------------------------------+
+| Number of Features                           |
++----------------------------------------------+
+| Feature 0                                    |
++----------------------------------------------+
+| Featue 1                                     |
++----------------------------------------------+
+| ....                                         |
++----------------------------------------------+
+```
+
+- index (unsigned short) : 2 bytes
+- classifierID (unsigned short) : 2 bytes
+- name (String) : variable number of bytes
+- Number of Objects (Unsigned Int): 4 bytes
+- Number of Features (UnsignedByte): 1 byte
+
+
+=== Feature
+
+- feature ID (unsigned short) : 2 bytes
+- name (String) : variable length
+- Feature Properties (BitSet)  : 1 byte
+
+.Flags
+|===
+| Position | Description
+
+| 0
+| Kind (0=Reference, 1=Attribute)
+
+| 1
+| Is Feature Map
+
+| 2
+| Is Container
+
+| 3
+| Is Containment
+
+| 4
+| Is Many
+
+| 5
+| Is Resolve Proxies
+
+| 6
+| Is Transient
+
+| 7
+| Is Volatile
+|===
+
+    static int ATTRIBUTE            = 0;
+    static int FEATURE_MAP          = 1;
+    static int CONTAINER            = 2;
+    static int CONTAINMENT          = 3;
+    static int MANY                 = 4;
+    static int RESOLVE_PROXIES      = 5;
+    static int TRANSIENT            = 6;
+    static int VOLATILE             = 7;
+
+
+
+
+=== EAttribute
+
+isId
+
+- Attribute Type (Enumeration see https://download.eclipse.org/modeling/emf/emf/javadoc/2.5.0/org/eclipse/emf/ecore/EcorePackage.html[EcorePackage])
+
+=== ERefence
+
+.Flags
+|===
+| Position | Description
+
+|
+| Container
+
+|
+| Containment
+
+|
+| FeatureMap
+
+|
+| resolve proxies
+
+|===

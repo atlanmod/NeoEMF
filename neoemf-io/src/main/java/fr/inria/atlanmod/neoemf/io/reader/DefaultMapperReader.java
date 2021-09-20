@@ -119,11 +119,34 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
      * @param eClass the meta-class of the element
      */
     private void readAllFeatures(Id id, EClass eClass) throws IOException {
-        List<Id> containments = new ArrayList<>();
+        // Ensure that attributes are handled before references
 
-        // Read all feature of the element, and notify the next handler
-        for (EStructuralFeature f : eClass.getEAllStructuralFeatures()) {
-            containments.addAll(readFeature(id, eClass, f));
+        notifyStartAttributeList();
+        readAllAttributes(id, eClass);
+        notifyEndAttributeList();
+
+        readAllReferences(id, eClass);
+    }
+
+    /**
+     * Reads all references of a given {@code eClass} for a given {@code id}.
+     *
+     * @param id     the identifier of the element
+     * @param eClass the meta-class of the element
+     */
+    private void readAllReferences(Id id, EClass eClass) throws IOException {
+        // Reads all references of an element and notifies the next handler
+        List<Id> containments = new ArrayList<>();
+        List<EReference> references = eClass.getEAllStructuralFeatures()
+                .stream()
+                .filter(EFeatures::isReference)
+                .map(EFeatures::asReference)
+                .collect(Collectors.toList());
+
+        // Handle references
+        for (EReference each : references) {
+            final SingleFeatureBean bean = SingleFeatureBean.of(id, eClass.getFeatureID(each));
+            containments.addAll(readReference(bean, EFeatures.asReference(each)));
         }
 
         // Read the next element only if containerOf(next) == parent
@@ -131,6 +154,26 @@ public class DefaultMapperReader extends AbstractReader<DataMapper> {
             if (mapper.containerOf(r).map(AbstractFeatureBean::owner).filter(id::equals).isPresent()) {
                 readElement(r, false);
             }
+        }
+    }
+
+    /**
+     * Reads all attributes of a given {@code eClass} for a given {@code id}.
+     *
+     * @param id     the identifier of the element
+     * @param eClass the meta-class of the element
+     */
+    private void readAllAttributes(Id id, EClass eClass) throws IOException {
+        List<EAttribute> attributes = eClass.getEAllStructuralFeatures()
+                .stream()
+                .filter(EFeatures::isAttribute)
+                .map(EFeatures::asAttribute)
+                .collect(Collectors.toList());
+
+        // Handle attributes
+        for (EAttribute each : attributes) {
+            final SingleFeatureBean bean = SingleFeatureBean.of(id, eClass.getFeatureID(each));
+            readAttribute(bean, each);
         }
     }
 

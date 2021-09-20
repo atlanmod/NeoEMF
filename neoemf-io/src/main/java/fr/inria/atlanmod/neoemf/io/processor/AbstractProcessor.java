@@ -34,8 +34,18 @@ public abstract class AbstractProcessor extends AbstractNotifier<Processor> impl
     }
 
     @Override
+    public void onStartAttributeList() throws IOException {
+        notifyStartAttributeList();
+    }
+
+    @Override
     public void onAttribute(ProxyAttribute attribute) throws IOException {
         notifyAttribute(attribute);
+    }
+
+    @Override
+    public void onEndAttributeList() throws IOException {
+        notifyEndAttributeList();
     }
 
     @Override

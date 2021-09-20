@@ -33,7 +33,17 @@ public abstract class AbstractEventListener implements EventListener {
     }
 
     @Override
+    public void onStartAttributeList() {
+        // Do nothing
+    }
+
+    @Override
     public void onAttribute(ProxyAttribute attribute) {
+        // Do nothing
+    }
+
+    @Override
+    public void onEndAttributeList() {
         // Do nothing
     }
 

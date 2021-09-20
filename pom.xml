@@ -107,7 +107,7 @@
 
     <properties>
         <argLine.global>-Xmx2g --illegal-access=warn --illegal-access=permit --add-exports java.base/jdk.internal.ref=ALL-UNNAMED</argLine.global>
-        <commons.version>1.0.6</commons.version>
+        <commons.version>1.1.0-SNAPSHOT</commons.version>
         <emf.version>[2.15.0,)</emf.version>
         <xtext.version>2.25.0</xtext.version>
         <xcore.version>[1.15.0,)</xcore.version>

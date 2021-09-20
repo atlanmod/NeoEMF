@@ -29,8 +29,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkEqualTo;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkEqualTo;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * An abstract {@link Writer} that acts as an accumulator of multi-value features in order to notify them once. This
@@ -96,6 +96,11 @@ public abstract class AbstractWriter<T> implements Writer {
     }
 
     @Override
+    public void onStartAttributeList() throws IOException {
+        // Do nothing
+    }
+
+    @Override
     public final void onAttribute(ProxyAttribute attribute) throws IOException {
         checkEqualTo(identifiers.getLast(), attribute.getOwner(),
                 "%s is not the owner of this attribute (%s)", identifiers.getLast(), attribute.getOwner());
@@ -109,6 +114,11 @@ public abstract class AbstractWriter<T> implements Writer {
             flushLastFeature(attribute.getId());
             attributesAccumulator.computeIfAbsent(attribute, a -> new LinkedList<>()).add(value);
         }
+    }
+
+    @Override
+    public void onEndAttributeList() throws IOException {
+        // Do nothing
     }
 
     @Override

@@ -71,11 +71,21 @@ public class LoggingEventListener extends AbstractEventListener {
     }
 
     @Override
+    public void onStartAttributeList() {
+        Log.log(level, "[AL] Starting attribute list for {0}", currentId);
+    }
+
+    @Override
     public void onAttribute(ProxyAttribute attribute) {
         Log.log(level, "[A]    {0}{1} = {2}",
                 attribute.getName(),
                 attribute.isMany() ? " many[-1]" : Strings.EMPTY,
                 attribute.getValue().getResolved());
+    }
+
+    @Override
+    public void onEndAttributeList() {
+        Log.log(level, "[AL] Ending attribute list for {0}", currentId);
     }
 
     @Override

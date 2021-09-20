@@ -1,0 +1,116 @@
+@Ecore(nsURI="http://www.neoemf.com/tests/iceage")
+@GenModel(modelDirectory="/fr.inria.atlanmod.neoemf.tests.iceage/src",
+	bundleManifest="false"
+	)
+
+package org.atlanmod.neoemf.tests.iceage
+
+import org.eclipse.emf.ecore.EFeatureMapEntry
+
+class IceAge {
+    refers local Element chief
+    refers Element resolvingChief
+    refers local Element[] followers
+    refers Element[] resolvingFollowers
+    contains Moment moment
+    contains resolving Moment resolvingMoment
+}
+
+class Herd {
+    contains resolving Element[] elements opposite herd
+    contains Element[] children opposite parent
+}
+
+class Moment {
+    Date date
+}
+
+abstract class Element {
+    container resolving Herd herd opposite elements
+    container Herd parent opposite children
+}
+
+class PrimitiveAttributes extends Element {
+	boolean aBoolean
+	byte aByte
+	char aChar
+	double aDouble
+	float aFloat
+	int anInt
+	long aLong
+	short aShort
+	String aString
+}
+
+class ComplexAttributes extends Element {
+    Date aDate
+}
+
+
+class MultivaluedAttributes extends Element {
+    String[] multivaluedString
+    int[]    multivaluedInt
+    double[] multivaluedDouble
+}
+
+class InitializedPrimitive extends Element {
+
+	boolean anInitializedBoolean = "false"
+	byte anInitializedByte = "8"
+	char anInitializedChar = "a"
+	double anInitializedDouble = "42.35"
+	float anInitializedFloat = "9.343"
+	int anInitializedInt = "33"
+	long anInitializedLong = "123456789"
+	short anInitializedShort = "23678"
+	String anInitializedString = "Hello World"
+}
+
+class DifferentIntProperties extends Element {
+	volatile int aVolatileInt
+	transient int aTransientInt
+	derived int aDerivedInt
+	readonly int aReadonlyInt
+}
+
+class Numeric  extends Element {
+	BigDecimal aBigDecimal
+	BigInteger aBigInteger
+}
+
+class References  extends Element {
+	contains PrimitiveAttributes[] containmentMultipleReference
+	refers PrimitiveAttributes singleReference
+}
+
+class Folder extends Element {
+    contains Folder[] contents
+    String name
+}
+
+class FeatureMaps extends Element {
+	@ExtendedMetaData(kind="group")
+	unique EFeatureMapEntry featureMapReferenceCollection
+
+	@ExtendedMetaData(kind="group")
+	unique EFeatureMapEntry[] featureMapAttributeCollection
+
+	@ExtendedMetaData(group="#featureMapReferenceCollection")
+	contains transient volatile derived PrimitiveAttributes[] commonPrimitives
+
+	@ExtendedMetaData(group="#featureMapReferenceCollection")
+	contains transient volatile derived PrimitiveAttributes[] exoticPrimitives
+
+	@ExtendedMetaData(group="#featureMapAttributeCollection")
+	unique transient volatile derived String[] featureMapAttributeType1
+
+	@ExtendedMetaData(group="#featureMapAttributeCollection")
+	unique transient volatile derived String[] featureMapAttributeType2
+}
+
+class Mammoth extends Element {
+    String name
+    int age
+    float bodyFat
+    boolean alive
+}

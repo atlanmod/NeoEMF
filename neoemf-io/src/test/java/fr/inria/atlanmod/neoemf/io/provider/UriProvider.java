@@ -9,17 +9,20 @@
 package fr.inria.atlanmod.neoemf.io.provider;
 
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
-
 import org.atlanmod.commons.annotation.Static;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 
-import java.util.stream.Stream;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * An {@link ArgumentsProvider} with all {@link URI}s managed by {@link ResourceManager}, associated with all {@link
@@ -40,7 +43,8 @@ public final class UriProvider {
     }
 
     /**
-     * Returns a stream of all declared {@link URI}s that identify uncompressed resources.
+     * Returns a stream of all declared {@link URI}s that identify uncompressed resources,
+     * that conforms to the: @see <a href="https://github.com/atlanmod/zoo/tree/master/emf.java">Modisco Java Meta-Model</a>
      *
      * @return a stream
      */
@@ -49,6 +53,20 @@ public final class UriProvider {
         return Stream.of(
                 ResourceManager.xmiStandard(),
                 ResourceManager.xmiWithId()
+        );
+    }
+
+    /**
+     * Returns a stream of all declared {@link URI}s that identify uncompressed resources.
+     *
+     * @return a stream
+     */
+    @Nonnull
+    public static Stream<URI> mixedUris() {
+        return Stream.of(
+                ResourceManager.xmiStandard(),
+                ResourceManager.xmiWithId(),
+                ResourceManager.xmiIceAge()
         );
     }
 
@@ -62,6 +80,12 @@ public final class UriProvider {
         return Stream.of(
                 ResourceManager.zxmiStandard(),
                 ResourceManager.zxmiWithId()
+        );
+    }
+
+    public static Stream<Map.Entry<URI, URI>> proxyUris() {
+        return Stream.of(
+                Map.entry(ResourceManager.proxyContainer(), ResourceManager.proxyContainment())
         );
     }
 
@@ -121,6 +145,49 @@ public final class UriProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return uncompressedUris().flatMap(u -> Stream.of(false, true).map(b -> Arguments.of(u, b)));
+        }
+    }
+
+    /**
+     * An {@link ArgumentsProvider} with all mixed (non-Java) {@link URI}s managed by {@link ResourceManager}.
+     * <p>
+     * It does not includes compressed resources.
+     */
+    @ParametersAreNonnullByDefault
+    public static class UncompressedMixed implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return mixedUris().map(Arguments::of);
+        }
+    }
+
+    /**
+     * An {@link ArgumentsProvider} with resouces with proxies {@link URI}s managed by {@link ResourceManager}.
+     * <p>
+     * It does not includes compressed resources.
+     */
+    @ParametersAreNonnullByDefault
+    public static class WithProxies implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
+            return proxyUris().map( (entry) ->
+                    Arguments.of(entry.getKey(), entry.getValue())
+            );
+        }
+    }
+
+    public static class TestData implements ArgumentsProvider {
+
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) throws Exception {
+            URL url = UriProvider.class.getResource("/test-data/");
+            Path dir = Paths.get(url.toURI());
+
+            return Files.list(dir).map(Path::toString)
+                    .map(URI::createURI)
+                    .map(Arguments::of);
         }
     }
 }

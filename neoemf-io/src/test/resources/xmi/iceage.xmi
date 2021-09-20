@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ASCII"?>
+<iceage:Herd xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:iceage="http://www.neoemf.com/tests/iceage">
+  <elements xsi:type="iceage:Numeric" aBigDecimal="1234123456789.01" aBigInteger="1234567890987654321"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aByte="8" aChar="104" aDouble="1.7976931348623157E308" aFloat="3.4028235E38" anInt="-2147483648" aLong="9223372036854775807" aShort="32767" aString="NeoEMF"/>
+  <elements xsi:type="iceage:MultivaluedAttributes">
+    <multivaluedString>Java</multivaluedString>
+    <multivaluedString>Ruby</multivaluedString>
+    <multivaluedString>COBOL</multivaluedString>
+    <multivaluedString>Fortran</multivaluedString>
+    <multivaluedInt>-2147483648</multivaluedInt>
+    <multivaluedInt>2147483647</multivaluedInt>
+    <multivaluedInt>42</multivaluedInt>
+    <multivaluedInt>0</multivaluedInt>
+    <multivaluedDouble>1.7976931348623157E308</multivaluedDouble>
+    <multivaluedDouble>4.9E-324</multivaluedDouble>
+    <multivaluedDouble>2.2250738585072014E-308</multivaluedDouble>
+  </elements>
+  <elements xsi:type="iceage:Folder" name="f1">
+    <contents name="f2">
+      <contents name="f3">
+        <contents name="f4">
+          <contents name="f5">
+            <contents name="f6">
+              <contents/>
+            </contents>
+          </contents>
+        </contents>
+      </contents>
+    </contents>
+  </elements>
+  <elements xsi:type="iceage:FeatureMaps">
+    <commonPrimitives/>
+    <commonPrimitives/>
+    <commonPrimitives/>
+    <exoticPrimitives/>
+    <featureMapAttributeType1>org</featureMapAttributeType1>
+    <featureMapAttributeType1>atlanmod</featureMapAttributeType1>
+    <featureMapAttributeType1>neoemf</featureMapAttributeType1>
+    <featureMapAttributeType2>https://www.eclipse.org/forums/index.php/t/454887/</featureMapAttributeType2>
+  </elements>
+  <elements xsi:type="iceage:ComplexAttributes" aDate="2021-05-28T15:08:16.029+0200"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aBoolean="true"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aByte="127"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aChar="8364"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aDouble="1.7976931348623157E308"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aFloat="3.4028235E38"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aLong="9223372036854775807"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="NeoEMF"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" anInt="-2147483648"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aShort="32767"/>
+  <elements xsi:type="iceage:PrimitiveAttributes"/>
+    <elements xsi:type="iceage:Mammoth" bodyFat="40.0"/>
+  <elements xsi:type="iceage:Mammoth" alive="true"/>
+  <elements xsi:type="iceage:Mammoth" name="Manny"/>
+  <elements xsi:type="iceage:Mammoth" age="10"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+  <elements xsi:type="iceage:PrimitiveAttributes" aString="This is a very long string. Since the same String is written several times, it will be compacted by the serializer"/>
+</iceage:Herd>

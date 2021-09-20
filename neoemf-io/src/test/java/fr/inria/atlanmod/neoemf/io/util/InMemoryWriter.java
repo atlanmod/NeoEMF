@@ -14,6 +14,7 @@ import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
 import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 import fr.inria.atlanmod.neoemf.io.writer.Writer;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -23,8 +24,8 @@ import java.util.Optional;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
-import static org.atlanmod.commons.Preconditions.checkEqualTo;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkEqualTo;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A {@link Writer} that stores all elements in {@link java.util.Collection}s.
@@ -86,6 +87,11 @@ public final class InMemoryWriter implements Writer {
     }
 
     @Override
+    public void onStartAttributeList() throws IOException {
+        // Do nothing
+    }
+
+    @Override
     public void onAttribute(ProxyAttribute attribute) {
         if (isNull(attribute.getOwner()) || attribute.getOwner().equals(previousElements.getLast().id())) {
             previousElements.getLast().attributes().add(attribute);
@@ -97,6 +103,11 @@ public final class InMemoryWriter implements Writer {
 
             e.attributes().add(attribute);
         }
+    }
+
+    @Override
+    public void onEndAttributeList() throws IOException {
+        // Do nothing
     }
 
     @Override

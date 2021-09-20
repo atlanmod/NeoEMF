@@ -48,7 +48,7 @@ import static fr.inria.atlanmod.neoemf.io.util.XmiConstants.XMI_VERSION_ATTR;
 public abstract class AbstractXmiStreamWriter extends AbstractStreamWriter {
 
     /**
-     * A LIFO that holds the current {@link EClass} chain. It contains the current element and the previous.
+     * A LIFO that holds the current {@link EClass} chain. It contains the current element and the previous ones.
      */
     @Nonnull
     private final Deque<EClass> classes = new ArrayDeque<>();

@@ -20,8 +20,8 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkNotNull;
-import static org.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Guards.checkNotNull;
+import static org.atlanmod.commons.Guards.checkState;
 
 /**
  * An abstract {@link Notifier} that provides overall behavior for the management of handlers.
@@ -87,11 +87,25 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier {
     }
 
     @Override
+    public void notifyStartAttributeList() throws IOException {
+        for (H h : handlers) {
+            h.onStartAttributeList();
+        }
+    }
+
+    @Override
     public void notifyAttribute(ProxyAttribute attribute) throws IOException {
         checkNotNull(attribute, "attribute");
 
         for (H h : handlers) {
             h.onAttribute(attribute);
+        }
+    }
+
+    @Override
+    public void notifyEndAttributeList() throws IOException {
+        for (H h : handlers) {
+            h.onEndAttributeList();
         }
     }
 

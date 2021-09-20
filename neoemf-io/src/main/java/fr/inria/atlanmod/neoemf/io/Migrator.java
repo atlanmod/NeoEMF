@@ -9,11 +9,8 @@
 package fr.inria.atlanmod.neoemf.io;
 
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
-import fr.inria.atlanmod.neoemf.io.listener.CountingEventListener;
 import fr.inria.atlanmod.neoemf.io.listener.EventListener;
-import fr.inria.atlanmod.neoemf.io.listener.LoggingEventListener;
-import fr.inria.atlanmod.neoemf.io.listener.ProgressEventListener;
-import fr.inria.atlanmod.neoemf.io.listener.TimerEventListener;
+import fr.inria.atlanmod.neoemf.io.listener.*;
 import fr.inria.atlanmod.neoemf.io.processor.NoopProcessor;
 import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.reader.AbstractReader;
@@ -23,39 +20,26 @@ import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.writer.DefaultMapperWriter;
 import fr.inria.atlanmod.neoemf.io.writer.Writer;
 import fr.inria.atlanmod.neoemf.io.writer.XmiStreamWriter;
-
 import org.atlanmod.commons.annotation.VisibleForTesting;
 import org.atlanmod.commons.log.Level;
 import org.atlanmod.commons.log.Log;
-
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PushbackInputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import org.atlanmod.neoemf.io.binary.BinaryReader;
+import org.atlanmod.neoemf.io.binary.BinaryWriter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.WillNotClose;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkArgument;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
-import static org.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Guards.*;
 
 /**
  * The builder that creates {@link fr.inria.atlanmod.neoemf.io.reader.Reader} and {@link
@@ -101,10 +85,10 @@ public final class Migrator<T> {
     private final Set<Writer> writers = new HashSet<>();
 
     /**
-     * A set that holds all {@link OutputStream}s to close after the migration.
+     * A set that holds all {@link Closeable}s to close after the migration.
      */
     @Nonnull
-    private final Set<OutputStream> streamsToClose = new HashSet<>();
+    private final Set<Closeable> streamsToClose = new HashSet<>();
 
     /**
      * Constructs a new {@code Migrator} with the given arguments.
@@ -118,6 +102,42 @@ public final class Migrator<T> {
     }
 
     //region Readers
+
+    /**
+     * Creates a {@code Migrator} that reads a binary file.
+     *
+     * @param file the binary file to read
+     *
+     * @return a new migrator
+     *
+     * @throws IOException if an I/O error occurs during the creation
+     */
+    @Nonnull
+    public static Migrator<FileChannel> fromBin(File file) throws IOException {
+        checkArgument(file.exists(), "file does not exists : %s", file.getAbsolutePath());
+        checkArgument(!file.isDirectory(), "file must not be a directory");
+        checkArgument(file.canRead(), "file cannot be read");
+
+        RandomAccessFile out = new RandomAccessFile(file, "rw");
+        FileChannel channel = out.getChannel();
+
+        return fromBin(channel);
+    }
+
+    /**
+     * Creates a {@code Migrator} that reads binary content from an {@link FileChannel}.
+     *
+     * @param channel the channel of the binary content to read
+     *
+     * @return a new migrator
+     *
+     * @throws IOException if an I/O error occurs during the creation
+     */
+    @Nonnull
+    public static Migrator<FileChannel> fromBin(FileChannel channel) throws IOException {
+        return new Migrator<>(new BinaryReader(), channel);
+    }
+
 
     /**
      * Creates a {@code Migrator} that reads a XMI file. The file can be compressed.
@@ -285,6 +305,20 @@ public final class Migrator<T> {
         return to(new XmiStreamWriter(stream));
     }
 
+    @Nonnull
+    public Migrator<T> toBin(File file) throws IOException {
+        RandomAccessFile out = new RandomAccessFile(file, "rw");
+        FileChannel channel = out.getChannel();
+        streamsToClose.add(channel);
+
+        return toBin(channel);
+    }
+
+    @Nonnull
+    public Migrator<T> toBin(@WillNotClose FileChannel channel) throws IOException {
+        return to(new BinaryWriter(channel));
+    }
+
     //endregion
 
     //region Listeners
@@ -399,4 +433,5 @@ public final class Migrator<T> {
             }
         }
     }
+
 }

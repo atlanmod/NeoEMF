@@ -149,7 +149,8 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency> <!-- Used by `neoemf-core` : Required for `Resource` comparison -->
+        <!-- Used by `neoemf-core` : Required for `Resource` comparison -->
+        <dependency>
             <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-utils</artifactId>
             <version>${project.version}</version>
@@ -381,5 +382,4 @@
 
         </plugins>
     </build>
-
 </project>

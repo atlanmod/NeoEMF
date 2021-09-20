@@ -43,6 +43,14 @@ public interface Notifier {
     void notifyStartElement(ProxyElement element) throws IOException;
 
     /**
+     * Notifies all registered handlers of the start of processing the attributes of the current element.
+     *
+     * @see #notifyEndAttributeList()
+     * @see Handler#onStartAttributeList()
+     */
+    void notifyStartAttributeList() throws IOException;
+
+    /**
      * Notifies all registered handlers of a new attribute.
      *
      * @param attribute the new attribute
@@ -50,6 +58,14 @@ public interface Notifier {
      * @see Handler#onAttribute(ProxyAttribute)
      */
     void notifyAttribute(ProxyAttribute attribute) throws IOException;
+
+    /**
+     * Notifies all registered handlers of the end of processing the attributes of the current element.
+     *
+     * @see #notifyStartAttributeList() ()
+     * @see Handler#onEndAttributeList() ()
+     */
+    void notifyEndAttributeList() throws IOException;
 
     /**
      * Notifies all registered handlers of a new reference.

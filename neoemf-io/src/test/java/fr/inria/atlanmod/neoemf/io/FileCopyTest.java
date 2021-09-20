@@ -11,22 +11,21 @@ package fr.inria.atlanmod.neoemf.io;
 import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;
 import fr.inria.atlanmod.neoemf.util.ModelComparisonUtils;
-
 import org.atlanmod.commons.AbstractFileBasedTest;
 import org.atlanmod.commons.log.Log;
 import org.atlanmod.commons.primitive.Strings;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+//import org.eclipse.emf.ecore.resource.impl.BinaryResourceImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ArgumentsSource;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A test-case about the copy from a file to another.
@@ -47,9 +46,9 @@ class FileCopyTest extends AbstractFileBasedTest {
      */
     @ParameterizedTest(name = "[{index}] source = {0} ; useCompression = {1}")
     @ArgumentsSource(UriProvider.AllWithBooleans.class)
-    void testCopy(URI uri, Boolean useCompression) throws IOException {
+    void testXmiCopy(URI uri, Boolean useCompression) throws IOException {
         final File targetFile = new File(currentTempFile() + "." + (useCompression ? "z" : Strings.EMPTY) + "xmi");
-        Log.info("Exporting to {0}", targetFile);
+        Log.info("Exporting XMI to {0}", targetFile);
 
         try (InputStream in = new URL(uri.toString()).openStream()) {
             Migrator.fromXmi(in)
