@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.writer;
+package fr.inria.atlanmod.neoemf.io.writer.xmi;
 
 import fr.inria.atlanmod.neoemf.core.Id;
 import fr.inria.atlanmod.neoemf.io.processor.ValueConverter;
@@ -17,6 +17,7 @@ import fr.inria.atlanmod.neoemf.io.proxy.ProxyPackage;
 import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 
+import fr.inria.atlanmod.neoemf.io.writer.AbstractStreamWriter;
 import org.atlanmod.commons.annotation.Beta;
 import org.atlanmod.commons.primitive.Strings;
 import org.eclipse.emf.ecore.EAttribute;

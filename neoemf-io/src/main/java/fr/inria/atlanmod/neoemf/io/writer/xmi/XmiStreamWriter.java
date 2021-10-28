@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.writer;
+package fr.inria.atlanmod.neoemf.io.writer.xmi;
 
 import fr.inria.atlanmod.neoemf.io.util.XmiConstants;
 

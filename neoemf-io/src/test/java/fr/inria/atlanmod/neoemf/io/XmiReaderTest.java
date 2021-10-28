@@ -13,7 +13,7 @@ import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
 import fr.inria.atlanmod.neoemf.io.proxy.ProxyClass;
 import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 import fr.inria.atlanmod.neoemf.io.provider.UriProvider;
-import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
+import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.util.InMemoryElement;
 import fr.inria.atlanmod.neoemf.io.util.InMemoryWriter;
 import fr.inria.atlanmod.neoemf.io.util.ResourceManager;

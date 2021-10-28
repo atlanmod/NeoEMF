@@ -19,10 +19,10 @@ import fr.inria.atlanmod.neoemf.io.processor.Processor;
 import fr.inria.atlanmod.neoemf.io.reader.AbstractReader;
 import fr.inria.atlanmod.neoemf.io.reader.DefaultMapperReader;
 import fr.inria.atlanmod.neoemf.io.reader.Reader;
-import fr.inria.atlanmod.neoemf.io.reader.XmiStreamReader;
+import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.writer.DefaultMapperWriter;
 import fr.inria.atlanmod.neoemf.io.writer.Writer;
-import fr.inria.atlanmod.neoemf.io.writer.XmiStreamWriter;
+import fr.inria.atlanmod.neoemf.io.writer.xmi.XmiStreamWriter;
 
 import org.atlanmod.commons.annotation.VisibleForTesting;
 import org.atlanmod.commons.log.Level;

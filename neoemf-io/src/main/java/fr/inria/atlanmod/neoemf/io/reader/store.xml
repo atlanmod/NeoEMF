@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ecore:EPackage [
+<!ENTITY _0 "http://www.eclipse.org/emf/2002/Ecore">
+<!ENTITY _1 "http://www.eclipse.org/emf/2003/XMLType">
+]>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="test2" nsURI="http://www.example.org/test2" nsPrefix="test2">
+  <eAnnotations source="http://www.eclipse.org/OCL/Import">
+    <details key="ecore" value="http://www.eclipse.org/emf/2002/Ecore"/>
+    <details key="ecore.xml.type" value="http://www.eclipse.org/emf/2003/XMLType"/>
+  </eAnnotations>
+  <eSubpackages name="store" nsURI="https://www.mystore.com/store" nsPrefix="store">
+    <eClassifiers xsi:type="ecore:EClass" name="Product">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Product class documentation"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType &_0;#//EBigInteger"
+          iD="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="category" lowerBound="1"
+          eType="#//store/Category"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType &_0;#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="quantity" eType="ecore:EDataType &_0;#//EBigInteger"
+          derived="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Product quantity derived attribute"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Category">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Category class documentation"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType &_0;#//EBigInteger"
+          iD="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Category id field documentation"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType &_0;#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Category name documentation"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="list" eType="ecore:EDataType &_0;#//EMap"
+          transient="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Supply">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Supply class documentation"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType &_0;#//EBigInteger"
+          iD="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="quantity" eType="ecore:EDataType &_0;#//EBigInteger">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Root documentation of ecore fiel"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="product" eType="#//store/Product">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Association between Product and Supply classes documentations"/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="createdAt" eType="ecore:EDataType &_0;#//EDate"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Order">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="product" lowerBound="1"
+          upperBound="-1" eType="#//store/Product"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType &_0;#//EBigInteger"
+          iD="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="createdAt" eType="ecore:EDataType &_0;#//EDate"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="totalAmount" lowerBound="1"
+          eType="ecore:EDataType &_1;#//Float" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//store/OrderState"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="customer" lowerBound="1"
+          eType="#//store/Customer" eOpposite="#//store/Customer/order"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="OrderState">
+      <eLiterals name="IN_PROCESS" value="4"/>
+      <eLiterals name="SHIPPED" value="1"/>
+      <eLiterals name="DELIVERED" value="2"/>
+      <eLiterals name="SENT_BACK" value="3"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Customer">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" eType="ecore:EDataType &_0;#//EBigInteger"
+          iD="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType &_0;#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="order" upperBound="-1"
+          eType="#//store/Order" eOpposite="#//store/Order/customer"/>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>

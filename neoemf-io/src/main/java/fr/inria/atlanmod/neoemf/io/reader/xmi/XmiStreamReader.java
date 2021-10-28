@@ -6,7 +6,7 @@
  * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
  */
 
-package fr.inria.atlanmod.neoemf.io.reader;
+package fr.inria.atlanmod.neoemf.io.reader.xmi;
 
 import com.ctc.wstx.api.WstxInputProperties;
 
