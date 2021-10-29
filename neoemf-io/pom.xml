@@ -22,6 +22,7 @@
         <stax.verions>1.0-2</stax.verions>
         <stax2.version>4.2.1</stax2.version>
         <woodstox.version>4.4.1</woodstox.version>
+        <jackson.version>2.12.5</jackson.version>
 
     </properties>
 
@@ -89,6 +90,19 @@
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
+        </dependency>
+
+        <!-- JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- Test -->
