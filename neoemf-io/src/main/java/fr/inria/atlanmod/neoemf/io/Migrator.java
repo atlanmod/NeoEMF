@@ -22,6 +22,7 @@ import fr.inria.atlanmod.neoemf.io.reader.Reader;
 import fr.inria.atlanmod.neoemf.io.reader.xmi.XmiStreamReader;
 import fr.inria.atlanmod.neoemf.io.writer.DefaultMapperWriter;
 import fr.inria.atlanmod.neoemf.io.writer.Writer;
+import fr.inria.atlanmod.neoemf.io.writer.json.JsonStreamWriter;
 import fr.inria.atlanmod.neoemf.io.writer.xmi.XmiStreamWriter;
 
 import org.atlanmod.commons.annotation.VisibleForTesting;
@@ -283,6 +284,20 @@ public final class Migrator<T> {
     @Nonnull
     public Migrator<T> toXmi(@WillNotClose OutputStream stream) throws IOException {
         return to(new XmiStreamWriter(stream));
+    }
+
+    /**
+     * Specifies the {@code stream} where to write the data.
+     *
+     * @param stream the file where to write
+     *
+     * @return this migrator (for chaining)
+     *
+     * @throws IOException if an I/O error occurs when writing
+     */
+    @Nonnull
+    public Migrator<T> toJson(@WillNotClose OutputStream stream) throws  IOException {
+        return to(new JsonStreamWriter(stream));
     }
 
     //endregion
