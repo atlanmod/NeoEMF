@@ -21,7 +21,6 @@ public abstract class AbstractJsonStreamWriter extends AbstractStreamWriter  {
 
 	@Override
 	public void onInitialize() throws IOException {
-		// on créé l'URI, on stocke le minimum dans le fichier json (soit "[]")
 		writeStartDocument();
 	}
 

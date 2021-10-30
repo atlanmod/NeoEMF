@@ -287,6 +287,22 @@ public final class Migrator<T> {
     }
 
     /**
+     * Specifies the JSON {@code file} where to write the data.
+     *
+     * @param file the file where to write
+     *
+     * @return this migrator (for chaining)
+     *
+     * @throws IOException if an I/O error occurs during the creation
+     * @see #toXmi(File, boolean)
+     */
+    @Nonnull
+    public Migrator<T> toJson(File file) throws IOException {
+        OutputStream outputStream = new FileOutputStream(file);
+        return toJson(outputStream);
+    }
+
+    /**
      * Specifies the {@code stream} where to write the data.
      *
      * @param stream the file where to write
