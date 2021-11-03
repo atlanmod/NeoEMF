@@ -1,6 +1,6 @@
 name: NeoEMF
-version: 2.0.0
-prerelease: '2.0.1'
+version: 2.0.1
+prerelease: ''
 title: NeoEMF Project
 asciidoc:
   attributes:
@@ -20,8 +20,7 @@ asciidoc:
     - asciidoctor-plantuml
 nav:
 - modules/ROOT/nav.adoc
-- modules/analyse/nav.adoc
-- modules/exigences/nav.adoc
-- modules/architecture/nav.adoc
-- modules/composants/nav.adoc
-- modules/conception/nav.adoc
+- modules/user/nav.adoc
+- modules/developer/nav.adoc
+- modules/research/nav.adoc
+- modules/faq/nav.adoc
