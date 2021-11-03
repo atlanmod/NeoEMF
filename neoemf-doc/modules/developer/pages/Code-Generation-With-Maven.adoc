@@ -1,0 +1,205 @@
+To generate some code from an EMF model, it's possible to use the xText Maven plugin which provides some features, including code generation from an Xcore model.
+
+[,+++<cite>+++https://wiki.eclipse.org/Xcore[Xcore official website]+++</cite>+++]
+____
+Xcore is an extended concrete syntax for Ecore that, in combination with https://www.eclipse.org/Xtext/#xbase[Xbase], transforms it into a fully fledged programming language with high quality tools reminiscent of the Java Development Tools.
+You can use it not only to specify the structure of your model, but also the behavior of your operations and derived features as well as the conversion logic of your data types.
+It eliminates the dividing line between modeling and programming, combining the advantages of each.
+All this is supported for both generated and dynamic https://www.eclipse.org/modeling/emf/[EMF] models.
+____
+
+== Create or Update Existing Models
+
+To use the code generation in Maven, it's necessary to create an Xcore model. There is two way to do that :
+
+* Directly https://wiki.eclipse.org/Xcore#Creating_an_Xcore_model[create an Xcore model].
+* Create or edit existing Ecore or GenModel files, then https://wiki.eclipse.org/Xcore#Converting_a_GenModel_to_an_Xcore_Model[generate an Xcore model] from them. You can easily convert an existing Ecore model to a Xcore model, and vice versa.
+
+See all procedures on the https://wiki.eclipse.org/Xcore[Xcore official website].
+
+*WARNING* :
+When you generate an Xcore model, `pluginID` and `pluginKey` parameters are added to the `@GenModel` annotation in Xcore header.
+*You must remove these parameters when they are included in a Maven project*, otherwise an `IOException` will be thrown during the build :
+they identify Eclipse plugin files (_build.properties_, _plugin.properties_ and _plugin.xml_) which are not useful for code generation, and cannot be found in the project root if you don't insert them.
+
+== Create a Project Using Xcore Code Generation
+
+Some lines must be added to the _pom.xml_.
+
+=== Generate at a Specific JDK Level
+
+The code generation can be configured to follow a specific JDK level:
+
+* Your Xcore model must have a `complianceLevel` parameter in the `@GenModel` annotation. Its value must be greater or equal to the targetted JDK.
++
+For example, if you want to generate a Java 7 code, you have to ensure that this parameter is `complianceLevel="7.0"` ou `complianceLevel="8.0"`.
+
+* The level of generated sources is defined according to the global properties `maven.compiler.source` and `maven.compiler.target`.
+However, if you want to generate code in a different version, you can add the `compilerSourceLevel` and `compilerTargetLevel` parameters in the plugin configuration.
+An example is shown above.
+
+=== Properties
+
+These properties are used on this wiki.
+
+[,xml]
+----
+<properties>
+    ...
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <generated-sources.location>${project.basedir}/src/main/java-gen/</generated-sources.location>
+    <models.location>${project.basedir}/src/main/resources</models.location>
+    ...
+</properties>
+----
+
+=== Dependencies
+
+You need to ensure that all dependencies used in your Xcore file are included in the _pom.xml_.
+
+For a simple Xcore generated file, you just need one dependency which ensures that `@Ecore` and `@GenModel` annotations are well known by compiler.
+
+[,xml]
+----
+<dependency>
+    <groupId>org.eclipse.emf</groupId>
+    <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
+</dependency>
+----
+
+=== Plugins
+
+When you create a new project that needs code generation, you need to add some plugins in your _pom.xml_
+
+1) Cleaning the previously generated code
+
+[,xml]
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-clean-plugin</artifactId>
+    <configuration>
+        <filesets>
+            <fileset>
+                <directory>${generated-sources.location}</directory>
+            </fileset>
+        </filesets>
+    </configuration>
+</plugin>
+----
+
+2) Code generation from Xcore model
+
+_Some plugin dependencies may be added according to your Xcore model_
+
+[,xml]
+----
+<plugin>
+    <groupId>org.eclipse.xtext</groupId>
+    <artifactId>xtext-maven-plugin</artifactId>
+    <executions>
+        <execution>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>generate</goal>
+            </goals>
+        </execution>
+    </executions>
+    <configuration>
+        <encoding>${project.build.sourceEncoding}</encoding> <!-- Default value -->
+        <compilerSourceLevel>${maven.compiler.source}</compilerSourceLevel> <!-- Default value -->
+        <compilerTargetLevel>${maven.compiler.target}</compilerTargetLevel> <!-- Default value -->
+        <languages>
+            <language>
+                <setup>org.eclipse.xtext.ecore.EcoreSupport</setup>
+            </language>
+            <language>
+                <setup>org.eclipse.emf.codegen.ecore.xtext.GenModelSupport</setup>
+            </language>
+            <language>
+                <setup>org.eclipse.emf.ecore.xcore.XcoreStandaloneSetup</setup>
+                <outputConfigurations>
+                    <outputConfiguration>
+                        <outputDirectory>${generated-sources.location}</outputDirectory>
+                    </outputConfiguration>
+                </outputConfigurations>
+            </language>
+        </languages>
+        <sourceRoots>
+            <root>${models.location}</root>
+        </sourceRoots>
+    </configuration>
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.text</groupId>
+            <artifactId>org.eclipse.text</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.codegen.ecore.xtext</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore.xcore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
+        </dependency>
+    </dependencies>
+</plugin>
+----
+
+3) Adding the generated code to the build path
+
+[,xml]
+----
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>build-helper-maven-plugin</artifactId>
+    <executions>
+        <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>add-source</goal>
+            </goals>
+            <configuration>
+                <sources>
+                    <source>${generated-sources.location}</source>
+                </sources>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+----
+
+4) Building the generated code
+
+[,xml]
+----
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+</plugin>
+----
+
+== Known Issues
+
+*[Eclipse] - The code generation cannot be executed with the automatic build* (Issue #26)
+
+In Eclipse, Maven is integrated with the m2e plugin, which required additional connectors to recognize Maven plugins in a _pom.xml_ file.
+
+Unfortunately, there is no connector for the `xtext-maven-plugin` and it must be added to the "ignore-list" of m2e, according to the https://www.eclipse.org/m2e/documentation/m2e-execution-not-covered.html#ignore-plugin-goal[m2e official website] (There is a quick-fix in Eclipse).
+
+In this case, goals that depend on this plugin aren't executed automatically.
+*You need to invoke the build manually to generate the code, everytime you edit the targetted Xcore model*.
+Only code generation is concerned : when code is generated, you should have no problem with it.
+
+Use the following command : `mvn clean compile`.
+
+*[ERROR] ERROR: A generic type in this context must refer to a classifier or a type parameter*
+You can get this error if your `pom.xml` file doesn't contain the following dependencies: `org.eclipse.emf.common` and `org.eclipse.emf.ecore`.
+Note that the error is reported for every primitive type.

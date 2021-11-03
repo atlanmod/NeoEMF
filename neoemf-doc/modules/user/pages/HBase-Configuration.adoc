@@ -1,0 +1,79 @@
+NeoEMF HBase implementation allows to store and distribute models in a HBase cluster.
+Compared to Blueprints and MapDB implementations that rely on embedded databases that are instantiated by the framework, the HBase implementation requires to access an existing HBase server to store a model.
+We detail here how to setup and start a HBase server locally, and access it through NeoEMF.
+
+This page is based on the Apache HBase tutorial available on https://hbase.apache.org/book.html#quickstart[HBase website].
+
+== Download HBase
+
+HBase is not bundled with NeoEMF and has to be https://hbase.apache.org/[downloaded separately].
+Note that NeoEMF has been tested for HBase versions between 0.98 and 1.3.1 (latest version available at the moment), if you have another installed version you may experience compatibility issues.
+Extract the downloaded zip file containing HBase binaries.
+
+== Start HBase
+
+You are required to set `JAVA_HOME` environment variable before starting HBase.
+You can set the variable via your operating system's usual mechanism, but HBase provides a central mechanism, `conf/hbase-env.sh`.
+Edit this file, uncomment the line starting with `JAVA_HOME`, and set it to the appropriate location for your operating system.
+The `JAVA_HOME` variable should be set to a directory which contains the executable file `bin/java`.
+
+You can now start HBase using the following commands:
+
+[,bash]
+----
+cd hbase_directory/bin
+./start-hbase.sh
+----
+
+You should see a message prompted in the console stating that the master node has been started, and a path referencing HBase logs.
+
+*NOTE:*
+The default configuration of HBase uses the `tmp` folder to store data.
+This folder is typically erase upon operating system's reboot.
+You can specify a folder to HBase by editing the file `conf/hbase-site.xml` with the following properties:
+
+[,xml]
+----
+<configuration>
+  <property>
+    <name>hbase.rootdir</name>
+    <value>file:///home/testuser/hbase</value>
+  </property>
+  <property>
+    <name>hbase.zookeeper.property.dataDir</name>
+    <value>/home/testuser/zookeeper</value>
+  </property>
+</configuration>
+----
+
+== Verify HBase is Running
+
+You can monitor HBase by checking http://localhost:16010.
+The database provides a web interface presenting monitoring information, existing tables, etc.
+
+In addition, you can run `./hbase shell` from the `bin` directory of your installation to start a dedicated shell to interact with the database.
+Information on how to use the HBase console is available on the https://hbase.apache.org/book.html#quickstart[HBase tutorial].
+
+== Create a NeoEMF HBase Resource
+
+Once HBase a started, you can use it to store and load NeoEMF resources using the following code.
+NeoEMF provides the `HBaseUri` utility class that allows to create an `URI` containing HBase `host`, `port`, and an embedded `URI` representing the name of the model.
+Note that `2181` is the default port used to connect to HBase.
+
+[,java]
+----
+ImmutableConfig config = new HBaseConfig();
+URI uri = new HBaseUriFactory().createRemoteUri("localhost", 2181, "hbaseModel");
+
+ResourceSet resourceSet = new ResourceSetImpl();
+Resource resource = resourceSet.createResource(uri);
+resource.load(config.asMap());
+
+// Manipulate the resource using the standard EMF API
+resource.getContents()
+
+// [...]
+
+resource.save(config.asMap());
+resource.unload();
+----

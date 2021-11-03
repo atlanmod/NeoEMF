@@ -1,0 +1,8 @@
+.User Guide
+* xref:Releases.adoc[]
+* xref:Installation.adoc[]
+* xref:Supported-Backends.adoc[]
+* xref:Code-Examples.adoc[]
+* xref:Configuration.adoc[]
+* xref:Get-Started.adoc[]
+* xref:HBase-Configuration.adoc[]

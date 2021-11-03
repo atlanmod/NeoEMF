@@ -1,0 +1,56 @@
+NeoEMF is designed to be easily extensible with new backends.
+The current version of the framework embeds three implementations that are optimized for specific modeling operations.
+
+NeoEMF currently supports these different backends:
+
+* *MapDB*: relies on http://www.mapdb.org[MapDB] on-disk maps to store model elements.
+This backend has been designed to provide fast access to atomic operations, such as accessing a single element/attribute and navigating a single reference.
+This implementation is optimized for EMF API-based accesses which typically generates this kind of atomic and fragmented queries calls on the model.
++
+*WARNING:* Can be very slow on Windows (see https://github.com/jankotek/mapdb/issues/789[jankotek/mapdb#789] for more information)
+
+* *BerkeleyDB*: relies on http://www.oracle.com/technetwork/database/database-technologies/berkeleydb/overview[BerkeleyDB] on-disk maps to store model elements.
+Very similar to MapDB.
+* *Blueprints*: relies on the https://github.com/tinkerpop/blueprints/wiki[Tinkerpop Blueprints] to access graph databases.
+The current implementation embeds a Neo4j wrapper for convenience purposes, but Blueprints also allows to access any NoSQL database implementing the Tinkerpop stack, such as http://orientdb.com[OrientDB] or http://titan.thinkaurelius.com[Titan].
+This backend has been designed to benefit from the rich traversal features that graph databases provide, such as fast shortest-path computation, or efficient processing of complex navigation paths.
+These advanced query capabilities have been used in the https://github.com/atlanmod/Mogwai[Mogwaï] tool that maps OCL expressions to graph traversals.
+* *HBase*: relies on the distributed nature of the column-based datastore to enable the development of distributed MDE-based applications.
+In contrast with the previous implementations, the https://hbase.apache.org[HBase] backend offers concurrent read/write capabilities and guarantees ACID properties at model element level.
+It exploits the wide availability of distributed clusters in order to distribute intensive read/write workloads across datanodes.
+The distributed nature of this persistence solution is used in the https://github.com/atlanmod/org.eclipse.atl.atlMR[ATL-MR] tool, a distributed engine for model transformations in the ATL language on top of MapReduce.
+
+== Versions
+
+The table below summarizes the versions of each backend that are currently supported by NeoEMF.
+
+|===
+| Backend | Version
+
+| Default in-memory (ChronicleMap)
+| 3.14.5
+
+| Blueprints
+| 2.6.0
+
+| Neo4j^<<fn1,1>>^
+| 2.1.8
+
+| MapDB
+| 3.0.5
+
+| BerkeleyDB
+| 5.0.73
+
+| HBase
+| 1.3.1
+
+| Hadoop^<<fn2,2>>^
+| 2.8.2
+|===
+
+^1^
+Neo4j is supported through the Blueprints interface.
+
+^2^
+Hadoop is internally used by the HBase implementation.

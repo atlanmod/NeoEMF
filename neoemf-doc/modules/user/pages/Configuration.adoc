@@ -1,0 +1,100 @@
+NeoEMF allows a fine customization of backends and stores through the standard EMF `Resource#save()` and `Resource#load()` methods.
+
+Since NeoEMF v2.0, the configuration of stores and databases has been merged in a single class: `Config`.
+This interface and its abstraction provides common options, stores configuration and methods for building implementations.
+Module-specific implementations provide specific options for their associated database, such as database configuration or data mapping strategy.
+
+== Common Configuration
+
+Stores are used to configure NeoEMF at the application level, in-memory caching, logging, etc.
+They appears between EMF and the backend, in order to intercept calls or add pre/post-processing operations.
+
+Common stores are available for all the backends, and includes:
+
+* *Auto-saving* :        saves/commits the modification to the database regularly _(chunk can be configured)_
+* *Logging* :            logs every calls to the database, with the concerned backend, the name of the method, the parameters and the result(s)
+* *Read-only* :          blocks all write operations
+* *Stats recording* :    records some statistics about the usage of the database _(experimental)_
+* *Container caching* :  caches the container of accessed elements
+* *Meta-class caching* : caches the meta-class of accessed elements
+* *Size caching* :       caches the size of accessed multi-valued features
+* *Feature caching* :    caches the values of accessed features to limit database accesses
+
+*WARNING:*
+Configurations (common and module-specific) are only taken into account for a loaded or saved resource.
+For example, if you want to use auto-save to create a model with massive insertions _(which is strongly recommended)_, you will first need to save the empty resource with the associated option.
+If you don't, every insertions will be saved in an in-memory database, which can cause a massive memory overhead.
+
+=== Example
+
+*NOTE:*
+In the following example, every calls to `MyUriFactory` and `MyConfig` refer to a module-specific implementation of `UriFactory` and `Config`.
+
+[,java]
+----
+// [...]
+
+// Create a new resource
+URI uri = new MyUriFactory().createLocalUri(***);
+Resource resource = resourceSet.createResource(uri);
+
+// Create the map holding the options
+Map<String, Object> options = new MyConfig()
+   .autosave()
+   .cacheContainers()
+   .cacheMetaclasses()
+   .asMap();
+
+// Give the options to the resource
+resource.save(options);
+
+// [Perform the massive insertion here]
+
+// Commit the modifications (if necessary)
+resource.save(options);
+resource.unload();
+----
+
+== Module-Specific Configuration
+
+As they are strongly related to each backend, there is no generic database options.
+
+Each modules provides its own implementation of:
+
+* `UriFactory` to build and link a `URI` to a `BackendFactory`
+* `Config` to customize the backend behavior
+
+=== Blueprints
+
+Because Blueprints is an adapter that can be used for several databases, it exists several implementations:
+
+* `BlueprintsTinkerConfig` to configure a TinkerGraph database
+* `BlueprintsNeo4jConfig` to configure an embbeded Neo4j database
+
+For now, the only additional configuration concern Neo4j, which can add native options with `BlueprintsNeo4jConfig#addNativeOption`.
+These options are not handled by NeoEMF, but processed directly by the database; see `org.neo4j.graphdb.factory.GraphDatabaseSettings` for more information.
+
+*NOTE:*
+When the Blueprints implementation is a transactional database (for example the Neo4j implementation),
+each modifications are grouped into a transaction, that is committed when the resource is saved.
+This transaction may grow significantly if many operations are performed before a resource `Resource#save()` call.
+The auto-save option get around this problem by committing regularly the transaction to the database.
+
+=== MapDB / BerkeleyDB
+
+Because MapDB and BerkeleyDB are two map-based databases, their structure and configuration are sightly identical.
+
+For now, the only additional configuration concern the data mapping strategy, especially for multi-valued features:
+
+* *Indices* : stored separately, identified with their position (`+feature:1=value1, feature:2=value2,...+`)
+* *Arrays*  : grouped and stored in arrays (`+feature=[1=value1, 2=value2,...]+`)
+* *Lists*   : similar to a mapping with arrays, but with lists (`+feature=List[1=value1, 2=value2,...]+`)
+
+*NOTE:*
+These mapping inherits from standard data mapping, available in the core component, and reusable for custom implementations.
+
+=== HBase
+
+For now, HBase have no additional configuration, but it's recommended to use its specific implementation for future modifications.
+Because of its distributed nature, it requires some pre-requisites.
+They are presented in a link:HBase-Configuration[dedicated page].

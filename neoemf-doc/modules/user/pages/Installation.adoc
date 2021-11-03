@@ -1,0 +1,80 @@
+This page details the different way to install NeoEMF and use it in your project. Our plugin is bundled as a maven artifact available on http://search.maven.org/#search%7Cga%7C1%7Cneoemf[maven central] and an Eclipse plugin available on https://atlanmod.github.io/NeoEMF/releases/latest/plugin/[NeoEMF's update site]. If you have any question or issue regarding NeoEMF installation you can https://github.com/atlanmod/NeoEMF/issues[open an issue] or link:neoemf@googlegroups.com[send us a mail].
+
+Once you have succesfully integrated NeoEMF in your project you can browse the documentation of the latest release of the tool https://atlanmod.github.io/NeoEMF/releases/latest/doc/[online], or check our link:Get-Started[tutorials and demonstrations] to get started with the framework.
+
+*Latest release: 1.0.2*
+
+== Maven Installation
+
+The easiest way to integrate NeoEMF in a maven-based application is to use the latest artifact available on http://search.maven.org/#search%7Cga%7C1%7Cneoemf[maven central]. You can integrate NeoEMF in your proejct by adding the following dependency in your `pom` file:
+
+[,xml]
+----
+<dependency>
+  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <artifactId>neoemf-core</artifactId>
+  <version>latest</version>
+</dependency>
+
+<dependency>
+  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <artifactId>neoemf-io</artifactId>
+  <version>latest</version>
+</dependency>
+----
+
+== Eclipse Installation
+
+NeoEMF is bundled in an update site to ease its integration in Eclipse-based client application. You can install NeoEMF using the `+Help->Install New Software+` menu and set the update site URL with the following:
+
+----
+https://atlanmod.github.io/NeoEMF/releases/latest/plugin/
+----
+
+image::https://atlanmod.github.io/NeoEMF/updatesite/img/eclipse-update.png[Update Site Installation]
+
+== Previous Versions
+
+Previous versions are available on maven central, and corresponding update sites can be found online using the following pattern:
+
+----
+https://atlanmod.github.io/NeoEMF/releases/<version_number>/plugin/
+----
+
+For example you can install NeoEMF 1.0.1 using the following update site URL:
+
+----
+https://atlanmod.github.io/NeoEMF/releases/1.0.1/plugin/
+----
+
+Note that previous versions of the documentation are also available online:
+
+[,https://atlanmod.github.io/NeoEMF/releases/<version_number>/doc/```]
+----
+
+
+## Snapshots
+
+Snapshots are automatically build from the `master` branch of the GitHub repository and the corresponding update site is uploaded and available at:
+----
+
+https://atlanmod.github.io/NeoEMF/releases/snapshot/plugin/
+
+----
+
+Note that snapshot builds correspond to the latest version of the development branch, and can contain bugs and issues that will be solved before the next release. The latest version of the documentation can also be found online at the following URL:
+----
+
+https://atlanmod.github.io/NeoEMF/releases/snapshot/doc/
+
+----
+
+Maven artifacts corresponding to the latest snapshot are not published. If you want to use the latest snapshot in your maven application you have to first [build locally](Build) NeoEMF. This will register the latest build in your local maven repository. You can then use the following dependency in your `pom` file:
+
+```xml
+<dependency>
+  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <artifactId>neoemf</artifactId>
+  <version>1.0.3-SNAPSHOT</version>
+</dependency>
+----

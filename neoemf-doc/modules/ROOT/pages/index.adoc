@@ -1,0 +1,25 @@
+== What Is NeoEMF?
+
+NeoEMF is an https://www.atlanmod.org[AtlanMod] research team project that aims at handling large EMF models in an efficient and scalable way.
+
+It is based on our work on Neo4EMF, a scalable and graph-based backend for persisting EMF models.
+
+NeoEMF is a multi-backend framework developed to allow an easy integration of custom backends depending on user needs.
+
+== What Are the Features?
+
+NeoEMF comes with some features depending on the backend used:
+
+* *Lazy-loading* mechanism: A model is loaded part by part while needed
+* *Caching*: NeoEMF relies on database caches to retrieve EObjects
+But in some situation where time performance is important this is not enough and it is possible to use application-level caches to speed up information loading
+* *Auto-commit*: For the backend having restrictions on transaction sizes it is possible to use the auto-commit feature to split large transaction into several small ones
+* *Dirty saving*: Handle large models that haven't been persisted to avoid memory overhead
+
+== Why Should I Use NeoEMF?
+
+NeoEMF is fully EMF compliant, that means there is no modification to do to use it with existing EMF based applications.
+
+Additionally NeoEMF can be plugged with several persistence solutions and is configurable to fit the best your needs (custom caches, in-memory resources, auto-commit,...).
+
+In addition, NeoEMF provides a query API to perform optimized OCL queries over models and reify the results as navigable models.

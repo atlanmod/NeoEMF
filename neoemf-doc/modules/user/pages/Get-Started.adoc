@@ -1,0 +1,195 @@
+The goal of this tutorial is to present NeoEMF through a simple example.
+You can download a zipped version of the project http://neoemf.com/static/neoemf_tutorial.zip[here], or import it in your Eclipse workspace using the `File → New → Example → NeoEMF → NeoEMF Tutorial Project` menu.
+
+== Introduction
+
+In this tutorial you will create a persistent EMF resource using the Neo4j database as a backend.
+To do so, you will define a simple Ecore model, create instances of this model and then store these instances in the persistent EMF resource.
+
+=== Audience
+
+This tutorial is designed for the Eclipse Modeling Framework (https://eclipse.org/modeling/emf/[EMF]) users with a need to handle large-scale models in Java programs.
+
+This tutorial will bring at intermediate level of expertise, where you will be able to use the https://neo4j.com[Neo4j] graph database to store EMF models.
+From this level, you can take yourself at higher level of expertise, understanding how to use NeoEMF with different databases.
+
+=== Prerequisites
+
+Before proceeding with this tutorial you should have a good understanding of EMF.
+If you need more information about EMF, please follow the tutorial available http://eclipsesource.com/blogs/tutorials/emf-tutorial/[here].
+
+A basic understanding of Eclipse IDE is also required because the examples have been compiled using Eclipse IDE.
+
+There is no need to understand Neo4j not graph databases to follow this tutorial.
+However, a basic understanding of Neo4j may help you to manipulate your models directly from the database.
+
+=== Installing NeoEMF
+
+NeoEMF is available as an Eclipse plugin.
+Install it by choosing _Help → Install New Software..._.
+You will need to add the following software site:
+
+https://atlanmod.github.io/NeoEMF/releases/latest/plugin/
+
+Select and install all items.
+
+=== Installing Emfatic
+
+Emfatic will be used as a text editor to create a simple Ecore model.
+It is also available as an Eclipse plugin.
+Install it by choosing _Help → Install New Software..._.
+You will also need to add the following software site:
+
+http://download.eclipse.org/emfatic/update
+
+Select and install all items.
+
+== Creating a New EMF Project
+
+Now create a new EMF project by choosing _File → New → Project..._ from the main menu.
+The dialog offers a couple of different project types.
+Select _Empty EMF Project_ from the category _Eclipse Modeling Framework_ and continue via _Next_.
+
+image::http://neoemf.atlanmod.org/static/img/tutorial/NewEMFProject.png[]
+
+Feel free to use any name for your project ("NeoEMF Tutorial" would be great), and finish the wizard.
+
+=== Creating a Simple Ecore Model
+
+To create and save an EMF resource, you first need an ECore Model.
+There are several ways to create an Ecore Model, here we use https://www.eclipse.org/emfatic/[EMFatic], a textual syntax for ECore models.
+
+From the main menu, choose _File→ New → Other..._ and select _Emfatic file_ from the category _Example EMF Creation Wizard_. Name your file "graph.emf".
+
+Edit your file to create a simple model specifying a simple graph structure, containing Edges and Vertices, and described below:
+
+[,java]
+----
+@namespace(uri="http://atlanmod.neoemf.tutorial", prefix="graph")
+package graph;
+
+class Graph {
+  val Vertice[*] vertices;
+  val Edge[*] edges;
+}
+
+class Vertice {
+  attr String label;
+}
+
+class Edge {
+  ref Vertice from;
+  ref Vertice to;
+}
+----
+
+An alternative textual syntax to create an Ecore Model is https://wiki.eclipse.org/OCL/OCLinEcore[OclInEcore], which is quite similar to EMFatic.
+
+=== Creating an Ecore File
+
+Once the Emfatic file is ready, you need to generate a _.ecore_ file.
+From the contextual menu (right-click on the _graph.emf_ file), choose _Generate Ecore Model_.
+
+image::http://neoemf.atlanmod.org/static/img/tutorial/GenerateEcoreModel.png[]
+
+=== Creating an EMF Generator Model
+
+Now create a new EMF Generator Model by choosing _File → New → Other..._ from the main menu.
+The dialog offers a couple of different wizards.
+Select _EMF Generator Model_ from the category _Eclipse Modeling Framework_ and continue via _Next_.
+
+image::http://neoemf.atlanmod.org/static/img/tutorial/NewEMFGeneratorModel.png[]
+
+== Migrating the Generator Model
+
+After generating the `graph.genmodel` file, you need to migrate it to NeoEMF.
+From the contextual menu, choose _NeoEMF → Migrate EMF Generator Model_.
+
+image::http://neoemf.atlanmod.org/static/img/tutorial/MigrateEMFGeneratorModel.png[]
+
+The migration will modify several properties in the `graph.genmodel` file.
+Basically, it will set the root Class and the root Interface of EMF Classes and Interfaces to use the NeoEMF persistent implementations.
+
+image::http://neoemf.atlanmod.org/static/img/tutorial/NeoEMFMigrator.png[]
+
+=== Generating EMF Model Code
+
+After generating the `graph.genmodel` file, you will be able to generate the Java underlying code for this model.
+Select _Generate Model Code_ from the Project Explorer contextual menu (right-click the `graph.genmodel` file)
+
+image::http://neoemf.atlanmod.org/static/img/tutorial/GenerateModelCode.png[]
+
+The generation will add three new packages to your project.
+If you are familiar with the EMF generated code, you can browse the generated code to observe the differences between the default generated code and the NeoEMF one.
+
+image::http://neoemf.atlanmod.org/static/img/tutorial/AfterCodeGeneration.png[]
+
+== Creating a New NeoEMF resource
+
+Once the Ecore model is ready, we can create instances of this model and store them in a NeoEMF persistent resource.
+
+*Creating a resource*
+
+Creating a resource in NeoEMF is similar to standard EMF.
+Write down the following line to create a resource named "models/myGraph.graphdb" in your current Eclipse project.
+
+*NOTE:*
+The following example concerns a Blueprints backend.
+Because all backends work in the same way, you can replace `BlueprintsTinkerConfig` and `BlueprintsUri` by the module-specific implementations of `Config` and `UriBuilder` related to the backend you want to use. For now, it can be `+MapDb***+` or `+BerkeleyDB***+`.
+
+[,java]
+----
+URI uri = new BlueprintsUriFactory().createLocalUri("models/myGraph.graphdb");
+
+ResourceSet resourceSet = new ResourceSetImpl();
+Resource resource = resourceSet .createResource(uri);
+
+ImmutableConfig config = new BlueprintsTinkerConfig();
+----
+
+*Populating the resource*
+
+Now, write a simple code to create instances of the Graph model and to save the resource:
+
+[,java]
+----
+GraphFactory factory = GraphFactory.eINSTANCE;
+Graph graph = factory.createGraph();
+
+for (int i = 0; i < 100; i++) {
+  Vertice v1 = factory.createVertice();
+  v1.setLabel("Vertice " + i + "a");
+  Vertice v2 = factory.createVertice();
+  v2.setLabel("Vertice " + i + "b");
+  Edge e = factory.createEdge();
+  e.setFrom(v1);
+  e.setTo(v2);
+  graph.getEdges().add(e);
+  graph.getVertices().add(v1);
+  graph.getVertices().add(v2);
+}
+
+resource.getContents().add(graph);
+
+resource.save(config.asMap());
+resource.unload();
+----
+
+*Reading the resource*
+
+[,java]
+----
+resource.load(config.asMap());
+
+Graph graph = (Graph) resource.getContents().get(0);
+for (Edge each : graph.getEdges()) {
+  System.out.println(each.getFrom().getLabel() + "--->" + each.getTo().getLabel());
+}
+
+resource.unload();
+----
+
+== Conclusion
+
+In this tutorial, you have learned how to create a persistent EMF resource with NeoEMF and how to store this resource in a Neo4j database.
+All backends are identical in usage, the only thing that changes is the configuration and the URI definition, used to identify the module.

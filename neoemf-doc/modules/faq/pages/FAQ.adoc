@@ -1,0 +1,47 @@
+=== My persisted model is stored in a Tinkergraph file instead of Neo4j
+
+NeoEMF Blueprints connector uses the Tinkergraph representation as its default serialization mechanism.
+To enable Neo4j-based storage you need to provide a specific option to the `Resource#save()` method using the dedicated `BlueprintsNeo4jConfig`:
+
+[,java]
+----
+resource.save(new BlueprintsNeo4jConfig().asMap());
+----
+
+Note that this builder can be used to set link:Blueprints-Options[Blueprints generic options] as well as link:Neo4j-options[Neo4j specific options].
+
+=== Can I use my existing database in NeoEMF?
+
+Yes, you can save and load a NeoEMF model in your database by specifying its path in the URI used to create a resource:
+
+[,java]
+----
+Resource resource = resourceSet.createResource(<uri_to_my_database>);
+----
+
+Please note that your database has to be link:Supported-Backends[supported by NeoEMF].
+Existing non-modeling data (such as your own application data, manually stored information, etc) will not be accessible through the NeoEMF API.
+
+*WARNING:*
+Using an existing database with the Blueprints-Neo4j connector will lock the database and reject any new connection.
+This is caused by the embedded Neo4j instance that allows only one connection per database.
+
+=== Does NeoEMF support remote Neo4j database?
+
+Not for now, the Blueprints-Neo4j connector uses an embedded Neo4j instance to save models that cannot be accessed and set by the client application.
+Since we received several questions related to this feature we put it on top of our backend integration todo list!
+
+=== I get an `UnsupportedOperationException` when I save a model
+
+NeoEMF is designed to be compatible with existing generated EMF code.
+However, the adapter which is in charge of the transformation from standard EMF objects to NeoEMF objects has not been implemented yet and an `UnsupportedOperationException` is thrown.
+A workaround is to create a new EMF Generator Model using NeoEMF importer and generate the code from it.
+The adapter implementation will be part of a next release.
+
+=== I get `NoSuchMethodError` from Guava
+
+The current version of NeoEMF relies on Guava 15 to be compatible with HBase.
+If you use a newer version of Guava in your project you may get ``NoSuchMethodError``s from NeoEMF or one of its components.
+We recommend to downgrade your Guava version if possible.
+
+Note that the next major release of NeoEMF (1.1.0) will not depend on Guava and will be compatible with any Guava version used in your client application.

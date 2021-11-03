@@ -1,0 +1,234 @@
+= Developers Guide
+
+== Project Organization
+
+=== Maven
+
+Except for some platform-specific artifacts, for instance Eclipse plugins, project should follow Apache Maven's conventions.
+
+All software dependencies should be correctly declared in the Project Object Model (pom.xml file).
+Prefer use a `dependencyManagement` to manage the dependencies, and use `properties` to manage the dependencies version.
+
+=== Package Organization
+
+Keep together classes that implement a same feature.
+Organize packages by features, not by layers.
+Read this http://www.javapractices.com/topic/TopicAction.do?Id=205[article] for more information.
+
+Avoid packages named `beans`, `exceptions`, `factories`, or `collections`.
+
+== Code Conventions
+
+Except for the cases enumerated below, the Java source code should follow Google's Style Guide: https://google.github.io/styleguide/javaguide.html
+
+=== Method Names
+
+Part of the source code is meant to be specialized by automatically generated code.
+To avoid naming conflicts, classes that belong to the `emf.ecore` hierarchy should avoid standard _Getter_ and _Setter_ names.
+
+For instance, access methods for an attribute named `foo` should be:
+
+[,java]
+----
+String foo();          // The Getter
+void foo(String str);  // The Setter
+----
+
+Access methods from other classes should use standard names.
+
+Each class must manage its own fields.
+Except for special cases, getters and setters must not return a mutable collection.
+
+=== Preconditions
+
+Use preconditions instead of assertions or comments for checking conditions that must always be true and invariants in method bodies.
+
+[,java]
+----
+public void foo(int i) {
+  Preconditions.checkArgument(i > 0 && i <= 12, "Out of range");
+  // Method code
+}
+----
+
+=== Annotations (JSR-305)
+
+Use JSR-305 annotations, such as `@Nonnull`, `@Nullable`, `@ParametersAreNonnullByDefault`, etc.
+These annotations are not processed at runtime, but are very useful for static code analysis.
+
+=== Documentation
+
+Every packages, classes, methods and fields should be properly documented.
+
+The package documentation is located in `main/javadoc`, next to the `main/java` directory, and must only contains `package-info.java` files.
+
+== Software quality
+
+Ideally, all methods should be tested in unit tests. For classes and methods related to data management, tests must also be created in the integration tests.
+
+== Design Tips
+
+=== Supertypes should not depend on subtypes.
+
+More precisely, an interface should not reference its implementation classes. For instance, the following code excerpt should be avoided:
+
+[source,java]
+----
+public interface IFactory {
+  IFactory eINSTANCE = FactoryImpl.init();
+}
+----
+
+// Avoid casts
+
+// Avoid conditional behavior
+
+// Design first for testability, then for performance
+
+== How to Contribute
+
+We are constantly looking to improve NeoEMF, and we are happy to receive any contribution that solves a bug, provides a new feature, or improves existing code base.
+This page summarizes the different solutions you have to help us.
+
+=== Report Issues
+
+NeoEMF is bundled with a test suite based on our usage experience and the issues we have solved in the past.
+We are using and testing it every day to improve the quality of the framework.
+However, we cannot spot all the bugs, or test all the possible application scenarios.
+
+If you experience any trouble when installing or using NeoEMF you can open an issue on the https://github.com/atlanmod/NeoEMF/issues[issue tracker].
+Please make sure that a similar issue is not already opened.
+
+You can alternatively contact us directly through our mailing list link:neoemf@googlegroups.com[neoemf@googlegroups.com].
+
+=== Contribute to the Code
+
+You have link:Create-A-New-Module[created your own backend implementation] or a new fancy feature that should be integrated in NeoEMF?
+You can https://github.com/atlanmod/NeoEMF/pulls[submit it in a pull request]!
+In order to facilitate related discussions and speed-up the merge of your pull request make sure to observe the following rules:
+
+* Create *one pull request per feature*: it is way easier for us to integrate relatively small pull requests containing a single feature.
+For example, a pull request can contains code for a new backend or a fix for a bug or a family of related bugs.
+* Provide a *description of the changes* in your pull request: this will help us to understand and check your code efficiently.
+This description may be partially reused in NeoEMF changelog for the next release of the tool.
+* Follow the *package and class naming conventions*: we have a link:Naming-Conventions[wiki page] referencing the package and class naming conventions we use in the project.
+You can of course replace the package prefix `fr.inria.atlanmod` with the one of your institution/company.
+* Any question? *Contact us!* If you have any question regarding the contribution process, or if you want additional information for you pull request please contact us at link:neoemf@googlegroups.com[neoemf@googlegroups.com].
+
+=== Discuss with us!
+
+We are always happy to hear about you and how you are using NeoEMF!
+This helps us to spot the weak points of the framework, and decide which feature should be prioritized in the future.
+If you want to report your user experience with the tool or discuss about possible collaborations please contact us link:neoemf@ogooglegroups.com[by email] or using our https://twitter.com/NeoEMF[twitter account].
+
+== Build
+
+This page details the different steps required to build locally NeoEMF.
+When built and installed in your local maven repository, you can import it in your project using the following maven dependency:
+
+[,xml]
+----
+<dependency>
+  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <artifactId>neoemf-core</artifactId>
+  <version>latest</version>
+</dependency>
+
+<dependency>
+  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <artifactId>neoemf-io</artifactId>
+  <version>latest</version>
+</dependency>
+----
+
+Alternatively, the local build embeds a zipped update site in the `plugins/fr.inria.atlanmod.neoemf.eclipse.update/1.0.2-SNAPSHOT` folder you can install in your Eclipse application.
+
+=== Build with Maven
+
+You can download the source code of the latest release https://github.com/atlanmod/NeoEMF/releases/latest[here] or clone the `master` branch using the following git command:
+
+[,bash]
+----
+git clone -b master --single-branch  https://github.com/atlanmod/NeoEMF.git
+----
+
+Configure Maven's JDK to allocate more memory:
+
+[,bash]
+----
+export MAVEN_OPTS="-XX:PermSize=256m -XX:MaxPermSize=512m -XstartOnFirstThread"
+----
+
+==== Build Core Components
+
+NeoEMF core components are bundled as a set of Jar files that can be imported using the maven dependency mechanism.
+You can build NeoEMF core components by going to the root of the source directory and run the following command:
+
+[,bash]
+----
+mvn clean install
+----
+
+_(optional)_ You can also run the tests by using :
+
+[,bash]
+----
+mvn test (-pl <neoemf-core|neoemf-data|neoemf-io|...>)
+----
+
+Note that building the core components does not create Eclipse plugins and an local version of the update site.
+To generate these additional artifacts see the next section.
+
+==== Build Eclipse Integration Plugins
+
+NeoEMF Eclipse integration plugins provide Eclipse compatible plugins and update site.
+To build these artifacts, you need to run the following command:
+
+[,bash]
+----
+mvn clean install -f plugins/eclipse
+----
+
+NeoEMF plugins and update-site are built and stored in your local maven repository at `plugins/fr.inria.atlanmod.neoemf.eclipse.update/1.0.2-SNAPSHOT`.
+
+=== Build in Eclipse
+
+You can alternatively build NeoEMF directly in Eclipse using the Eclipse Git and Maven integrations plugin.
+
+==== Requirements
+
+In order to import NeoEMF Git repository in Eclipse, you will need the following plugins in your installation (installable from the software repository of your Eclipse release):
+
+* *EGit* : v3.4.2 or later
+* *m2e* : v1.5.1 or later
+
+And the following m2e connectors (installable through `Preferences → Maven → Discovery / m2e Marketplace`):
+
+* *Maven SCM Handler for EGit (m2e-egit)* : v0.14 or later
+* *Tycho Project Configurators (Tycho configurator)* : v0.8.0 or later
+
+Note that additional m2e connectors can be required denpending of your specific installation.
+They can be installed using Eclipse quick fixes available in the `pom` files.
+
+==== Import and Build
+
+* Import the project using `File → Import → Maven → Check out Maven Projects from SCM`
+* Select "git" in the SCM URL field and paste the repository address (https://github.com/atlanmod/NeoEMF.git)
+* Choose your workspace and working sets setting and finish
+
+The projects *project*, *parent*, *core*, *graph*, *graph.blueprints* and *map* will be imported and built.
+
+If you want to import the projects generating Eclipse specific plugins (features, update-site), you have to import them by
+hand using `File → Import → Maven → Existing Maven Projects`, and select the projects under the "plugins" folder in your local repository.
+
+Note that building NeoEMF in Eclipse can take a long time (and a large disk space) because the default SCM connector fetches all the branches of the remote git repository.
+
+=== Issues
+
+If you experience issues installing or using NeoEMF, you can https://github.com/atlanmod/NeoEMF/issues[submit an issue on github] or contact us at neoemf@googlegroups.com
+
+==== Known issues:
+
+* Only Luna plugins are fetched (the compatibility is not ensured for previous Eclipse versions)
+* The Eclipse plugins can not be built if maven can not access internet (it is needed to fetch Luna p2 repositories)
+* Sometimes the plugin build crashes and/or freezes during p2 index fetching from Luna repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.

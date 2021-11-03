@@ -1,0 +1,67 @@
+*NOTE:*
+In the following examples, every calls to `MyUri` and `MyConfig` refer to a module-specific implementation of `UriBuilder` and `Config`.
+
+== Initialize a New Resource
+
+The only code you need to initialize a resource is the same as in standard EMF.
+To ease the integration of NeoEMF (and avoid mistakes), it is recommended to use the `UriBuilder` associated to the database you want to use, findable in each module.
+
+[,java]
+----
+// Creates a new URI to locate a file-based resource.
+URI uri = new MyUriFactory.createLocalUri("<db_path>");
+
+// You can also use UriBuilder#fromServer(host, port, model) to locate a distributed resource, if supported.
+//URI uri = new MyUriFactory().createRemoteUri("host", 10000, "model");
+
+// Creates the resource
+ResourceSet resourceSet = new ResourceSetImpl();
+Resource resource = resourceSet.createResource(uri);
+----
+
+== Save a Resource / Load an Existing Resource
+
+NeoEMF is fully-integrated with EMF, the procedure is so the same.
+
+[,java]
+----
+// Creates a new configuration builder, used to easily configure the behavior of NeoEMF and the inner database.
+// In addition to the options common to all backends, each builder has its own options.
+ImmutableConfig config = new MyConfig()
+  .autoSave(50000)              // A common option
+  .log()                        // Another common option
+  .withOption("key", "value");  // A custom option
+
+// Load an existing resource (optional)
+resource.load(config.asMap());
+
+// Do something on the resource
+
+// Save your modifications
+resource.save(config.asMap());
+
+// Don't forget to unload the resource when you're done with it
+// It shutdown the inner database and clean the memory
+resource.unload();
+----
+
+== Modify an Existing Resource
+
+[,java]
+----
+ImmutableConfig config = new MyConfig()
+  .cacheContainers()
+  .cacheMetaclasses();
+
+URI uri = new MyUriFactory().createLocalUri("<db_path>");
+
+Resource resource = new ResourceSetImpl().createResource(uri);
+resource.load(config.asMap());
+
+// Perform modifications
+MyClass myClass = (MyClass) resource.getContents().get(0);
+myClass.setName("NewName");
+
+resource.save(config.asMap());
+resource.unload();
+----

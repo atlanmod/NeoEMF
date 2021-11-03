@@ -1,0 +1,23 @@
+We have made several research publications to present our approach and address specific problems (both conceptual and technical) we faced during the development.
+You can find here the list of NeoEMF-related publications and the presented slides when they are available.
+
+* *Neo4EMF, a Scalable Persistence Layer for EMF Models*, A. Benelallam, A. Gómez Llana, G. Sunyé, M. Tisi, and D. Launay. In ECMFA 2014, York, United Kingdom, 2014
+(https://hal.inria.fr/file/index/docid/968516/filename/ECMFA2014-Neo4EMF.pdf[article])
+* *Improving Memory Efficiency for Processing Large-Scale Models*, G. Daniel, G. Sunyé, A. Benelallam, and M. Tisi. In BigMDE 2014, York, United Kingdom, 2014
+(http://hal.univ-nantes.fr/file/index/docid/1033188/filename/bigmde14_submission_6_1_.pdf[article])
+* *Map-Based Transparent Persistence for Very Large Models*, A. Gómez Llana, M. Tisi, G. Sunyé, and J. Cabot. In FASE 2015, London, United Kingdom, 2015
+(https://hal.inria.fr/hal-01140776/document[article],
+http://www.slideshare.net/abgolla/fase-2015-mapbased-transparent-persistence-for-very-large-models?qid=3022993e-ae10-43ea-a734-81bb2dbe9f0b&v=&b=&from_search=1[slides])
+* *Mogwaï: a Framework to Handle Complex Queries on Large Models*, G. Daniel, G. Sunyé, and J. Cabot. In RCIS 2016, Grenoble, France, 2016
+(https://hal.archives-ouvertes.fr/hal-01344019/file/document.pdf[article],
+http://www.slideshare.net/g%5F%5Fdaniel/mogwa-a-framework-to-handle-complex-queries-on-large-models[slides],
+http://modeling-languages.com/mogwai-querying-large-models-ocl-nosql-graphdb/[blog post])
+* *PrefetchML: a Framework for Prefetching and Caching Models*, G. Daniel, G. Sunyé, and J. Cabot. In MoDELS 2016, Saint-Malo, France, 2016
+(https://hal.archives-ouvertes.fr/hal-01362149/document[article],
+http://www.slideshare.net/g%5F%5Fdaniel/slide-prefetch[slides],
+http://modeling-languages.com/prefetchml-dsl-prefetching-caching-emf-models/[blog post])
+* *NeoEMF: a Multi-Database Model Persistence Framework for Very Large Models*, G. Daniel, G. Sunyé, A. Benelallam, M. Tisi, Y. Vernageau, A. Gómez Llana, and J. Cabot. In MoDELS 2016 (Tool Demo Track), Saint-Malo, France, 2016
+(http://ceur-ws.org/Vol-1725/demo1.pdf[article],
+http://www.slideshare.net/g%5F%5Fdaniel/slide-neoemf[slides],
+http://modeling-languages.com/neoemf-nosql-database-model-persistence/[blog post])
+* *NeoEMF: a Multi-Database Model Persistence Framework for Very Large Models*, G. Daniel, G. Sunyé, A. Benelallam, M. Tisi, Y. Vernageau, A. Gómez Llana, and J. Cabot. In SCP - Special Issue on MoDELS'16, 2017 (https://hal.archives-ouvertes.fr/hal-01589588/document[article])

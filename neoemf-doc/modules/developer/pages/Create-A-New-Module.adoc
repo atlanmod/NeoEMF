@@ -1,0 +1,825 @@
+In this tutorial we detail how it is possible to extend NeoEMF with a custom backend implementation.
+
+We define a simple mapping on a database named "Paprika", and we show how it can be integrated in NeoEMF and used by end users.
+Of course, all occurences of "Paprika" must be replaced by the name of your backend.
+
+Several modules already exist, you can imitate them if you wish.
+
+*Summary*
+
+____
+. <<1-project-creation,Project Creation>>
+. <<2-a-little-touch-of-maven,A Little Touch of Maven>>
+. <<3-a-pinch-of-organisationn,A Pinch of Organisation>>
+. <<4-implementation,Implementation>>
+ .. <<41-identification-and-location,Identification and Location>>
+ .. <<42-configuration,Configuration>>
+ .. <<43-data-mapping,Data Mapping>>
+  *** <<overused-beans,Overused Beans>>
+  *** <<everyone-has-its-own-responsibility,Everyone Has Its Own Responsibility>>
+  *** <<common-mapping-strategies,Common Mapping Strategies>>
+  *** <<your-mapping-strategy,Your Mapping Strategy>>
+  *** <<some-help,Some Help>>
+ .. <<44-one-factory-to-create-them-all,One Factory to Create Them All>>
+. <<5-services,Services>>
+. <<6-hello-world,Hello World!>>
+. <<7-integration,Integration>>
+ .. <<in-tests,In Tests>>
+  *** <<test-context,Test Context>>
+  *** <<unit-tests,Unit Tests>>
+  *** <<integration-tests,Integration Tests>>
+ .. <<in-eclipse-plugin,In Eclipse Plugin>>
+ .. <<in-benchmarks,In Benchmarks>>
+. <<8-pull-request,Pull request!>>
+____
+
+== 1. Project Creation
+
+The first step before starting to implement your own backend connector is to clone the NeoEMF repository:
+
+[,bash]
+----
+git clone -b master --single-branch https://github.com/atlanmod/NeoEMF.git
+----
+
+*WARNING:*
+We recommand to use the command above instead of the classical `git clone`, because developement and `gh-pages` branches are heavy and not required.
+
+Once your local repository has been clones you can create a local branch that will be used later to submit a pull request:
+
+[,bash]
+----
+git checkout -b paprika
+----
+
+Now you have everything setup to start implementing your own backend connector!
+
+== 2. A Little Touch of Maven
+
+NeoEMF is designed around a modular architecture based on three main components:
+
+* The *core* framework containing the main features of the framework.
+Users typically access NeoEMF through the core API.
+* The *io* component used to interoperate between different modules, and the external world.
+* The *data* components containing backend-related implementations, such as dedicated configuration, data mapping strategy, URI builer, etc.
+
+This architecture allows to have a clear separation between shared code and backend-specific code.
+Supported backends are developped as independent Maven projects that extends `neoemf-data`.
+
+=== 2.1 Create the module with Maven artifact
+
+We recently created a Maven archetype that allow you to create a new module without all the following steps. The structure will be created automatically.
+
+*WARNING:* The archetype is not deployed yet under Maven Central, but you can use it after a `mvn install -f archetype`.
+
+Go to the `neoemf-data` directory, and use the following command in a shell:
+
+[,bash]
+----
+mvn archetype:generate -DarchetypeArtifactId="neoemf-archetype-extension" \
+  -DarchetypeGroupId="fr.inria.atlanmod.neoemf.archetypes" \
+  -DarchetypeVersion="2.0.0-SNAPSHOT" \
+  -DgroupId="fr.inria.atlanmod.neoemf" \
+  -DartifactId="neoemf-data-paprika" \
+  -Dversion="2.0.0-SNAPSHOT" \
+  -Dpackage="fr.inria.atlanmod.neoemf.data.paprika" \
+  -DdatabaseName="Paprika"
+----
+
+Where `databaseName` corresponds to the prefix of all generated classes.
+
+=== 2.2 Create the module manually
+
+To start our new implementation, we create a new folder `paprika` that will contain all the code related to our Paprika-based model mapping.
+Then create a new Maven project using the following command, or your IDE Maven environment:
+
+[,bash]
+----
+mvn archetype:generate -DgroupId=fr.inria.atlanmod.neoemf -DartifactId=neoemf-data-paprika -DinteractiveMode=false
+----
+
+Then update the created `pom.xml` file with the following information:
+
+[,xml]
+----
+[...]
+<parent>
+  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <artifactId>neoemf-data</artifactId>
+  <version>1.0.2-SNAPSHOT</version>
+</parent>
+
+<artifactId>neoemf-data-paprika</artifactId>
+
+<packaging>bundle</packaging>
+
+<name>NeoEMF Data Paprika</name>
+<description>An in-memory backend using Paprika to represent models</description>
+
+<properties>
+  <!-- Ideal to put dependencies versions -->
+</properties>
+
+<dependencies>
+  <!-- Think to use a dependencyManagement section -->
+</dependencies>
+
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>maven-bundle-plugin</artifactId>
+      <configuration>
+        <instructions>
+          <Bundle-SymbolicName>${project.groupId}.data.paprika</Bundle-SymbolicName>
+          <Export-Package>
+            !fr.inria.atlanmod.neoemf.data.paprika.*.internal.*,
+            fr.inria.atlanmod.neoemf.data.paprika.*
+          </Export-Package>
+          <Require-Bundle>
+            ${project.groupId}.core
+          </Require-Bundle>
+        </instructions>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+[...]
+----
+
+This `pom.xml` specifies that the `neoemf-data-paprika` project is a sub-project of `neoemf-data`, inheriting all its dependencies, which include:
+
+* The core component of NeoEMF
+* The common component for Atlanmod projects
+* The JSR-305 implementation, for common annotations
+* The common component of EMF (for `URI` uses)
+* JUnit5 and AssertJ for testing
+
+All the backend implementations have a similar root `pom.xml` file.
+
+The `build` section of the `pom.xml` file tells Maven to generate an Eclipse bundle, and sets the generated `MANIFEST.MF` information such as the bundle name, the exported packages, and the other bundles that are required to use the generated one.
+
+== 3. A Pinch of Organisation
+
+Every modules respects a simple structure to organize the different classes.
+
+In a package named `fr.inria.atlanmod.neoemf.data.paprika` (or use the base package of your organization), you should have the following file structure:
+
+----
+.
++-- config
+|   |-- PaprikaConfig.java
++-- util
+|   |-- PaprikaUriFactory.java
++-- PaprikaBackend.java
++-- PaprikaBackendFactory.java
++-- DefaultPaprikaBackend.java
+----
+
+If you need more packages, feel free to add them.
+
+And don't forget to respect the link:Developers-Guide[developers rules].
+
+== 4. Implementation
+
+All of the following steps can be performed in any order: all classes are related to each other.
+If a class is missing in your project, but present in the example, don't panic, it should appears in next steps.
+
+=== 4.1. Identification and Location
+
+Every databases used in NeoEMF are associated to a dedicated URI scheme.
+This allows the framework to understand from a given resource URI which connector should be used to access the model.
+
+*Example:* If the provided URI is `neo-paprika:/path/to/my/resource/resource.paprika`, the framework parses the scheme `neo-paprika` and associate the provided folder `resource.paprika` to the `PaprikaBackendFactory`.
+
+The URI scheme is automatically created according to the name of the `BackendFactory` identified by the `@FactoryBinding` annotation.
+By default, URI schemes are prefixed by `neo-` to avoid clashes, followed by the `BackendFactory#name()`.
+
+The `@FactoryBinding` annotation is mandatory: it is used to bind a `UriFactory` to a `BackendFactory`.
+This is used by the binding engine to retrieve a `BackendFactory` from a URI scheme, and vice-versa.
+
+The code below shows the class `PaprikaUri` that extends the core class `AbstractUriFactory`.
+
+The `AbstractUriFactory` class defines all methods related to `URI` creation, you don't need to re-implement these methods.
+
+[,java]
+----
+@Component(service = UriFactory.class)
+@FactoryBinding(factory = PaprikaBackendFactory.class)
+@ParametersAreNonnullByDefault
+public class PaprikaUriFactory extends AbstractUriFactory {
+
+  /**
+   * Constructs a new {@code PaprikaUriFactory}.
+  public PaprikaUriFactory () {
+    super(true, false);
+  }
+}
+----
+
+=== 4.2. Configuration
+
+The configuration allows to define the database behavior, the data mapping strategy, etc.
+Everything that can be customized by the user must be declared there.
+Because this configuration can be saved in a file, to keep the state of the backend accross executions, it can also contains internal parameters.
+
+All required options must be initialized in the constructor.
+
+A `Config` subclass should respects the builder pattern, and each methods have to return the current configuration.
+The protected `me()` method can be used: it returns the current configuration in the right type, and avoid a class-cast for abstractions/sub-implementations.
+
+As for `UriFactory`, a `Config` implementation should be annotated with `@FactoryBinding`.
+It allows to retrieve it from the name of a `BackendFactory` by using reflection.
+
+Note that the data mapping strategy is defined by giving the name of the class (see `PaprikaConfig#withDefault()`), this allow to save the mapping in a configuration file and retrieve it in a future executions. We will see later how to process it.
+All methods related to mapping strategies must be prefixed by `with`.
+If your module will only contain a single mapping, this method can be protected and initialized in the constructor.
+
+TIP: You can use the `createKey()` method to create and assemble a composed key.
+
+[,java]
+----
+@Component(service = Config.class, scope = ServiceScope.PROTOTYPE)
+@FactoryBinding(factory = PaprikaBackendFactory.class)
+@ParametersAreNonnullByDefault
+public class PaprikaConfig extends BaseConfig<PaprikaConfig> {
+
+  /**
+   * Constructs a new {@code PaprikaConfig}.
+   */
+  public PaprikaConfig() {
+    // Initialize the default values of this configuration
+    withDefault();
+  }
+
+  /**
+    * Defines the default mapping to use for the created {@link PaprikaBackend}.
+    *
+    * @return this configuration (for chaining)
+    */
+  @Nonnull
+  protected PaprikaConfig withDefault() {
+    // Because the mapping is a read-only option, always use `#setMappingWithCheck(***, false)` to avoid conflicts
+    return setMappingWithCheck("fr.inria.atlanmod.neoemf.data.paprika.DefaultPaprikaBackend", false);
+  }
+
+  // Add other mappings (withLists, withMaps,...)
+  // [...]
+
+  @Nonnull
+  @Override
+  protected Predicate<String> isPersistentKey() {
+    // Add some keys that have to be saved in a configuration file
+    return super.isPersistentKey().or(s -> /* Check the configuration key */);
+  }
+
+  @Nonnull
+  @Override
+  protected Predicate<String> isReadOnlyKey() {
+    // Add some keys that cannot be changed after their first definition
+    return super.isReadOnlyKey().or(s -> /* Check the configuration key */);
+  }
+
+  // Add custom options (addNativeOption,...)
+  // Several methods are available in `BaseConfig` to easily add options
+  // [...]
+}
+----
+
+=== 4.3. Data Mapping
+
+Then comes the more interesting part: the data mapping!
+
+NeoEMF internally translates EMF methods into NeoEMF operations, represented as atomic queries, with a differentiation between attributes and references between elements, that use key/value representations instead of complexe objects.
+This allow to define a common behavior for all modules, and ease the integration with databases.
+
+==== Overused Beans
+
+When you will create your mapping strategy, you will met several beans:
+
+[cols=",,^,^"]
+|===
+| Class | Description | Key | Value
+
+| `Id`
+| Represents the identifier of an element, with a 64-bit representation _(`long` or hexadecimal string)_. +
+Used as key for operations on containers and meta-classes, and as value for all operations related to references between elements.
+| X
+| X
+
+| `SingleFeatureBean`
+| Represents a single-valued feature _(attribute or reference)_ of an element. +
+It's a composed bean, with an `Id`, and the identifier of the feature as an `int`. +
+Used as key for operations on single-valued features, and as value for operations related to containers.
+| X
+| X
+
+| `ManyFeatureBean`
+| Represents a multi-valued feature of an element. +
+It's a composed bean similar to `SingleFeatureBean`, with the position of the feature. +
+Always used as key for operations on multi-valued features.
+| X
+|
+
+| `ClassBean`
+| Represents a meta-class of an element. It contains some methods to retrieve information about the real instance. +
+It's a composed bean, with the name of the meta-class, and its associated URI. +
+Always used as value for operations on meta-classes.
+|
+| X
+|===
+
+To manipulate these beans, several classes are provided in the core component:
+
+* `+**.data.bean.serializer.BeanSerializerFactory+`: A factory that creates optimized ``Serializer``s for each beans, if you need to use a binary representation of beans
+* `+**.core.IdConverters+`: A static class that creates ``Converter``s to transform an `Id` into its raw representation (`Id` to `long` for example, and vice-versa)
+
+==== Everyone Has Its Own Responsibility
+
+The data mapping strategies are used to translate NeoEMF operations into database operations.
+They contain a set of queries to access, store and manipulate a model.
+These operations take the form of atomic methods, such as `valuef`, `valueFor`, `allReferencesOf`, etc.
+
+All these methods are referenced in several interfaces, where each one has its own responsibilities:
+
+|===
+| Class | Responsability | Multiplicity
+
+| `ContainerMapper`
+| container of elements
+| one-to-one
+
+| `ClassMapper`
+| meta-class of elements
+| many-to-one
+
+| `ValueMapper`
+| single-valued attributes of elements
+| one-to-one
+
+| `ReferenceMapper`
+| single-valued references between elements
+| one-to-one
+
+| `ManyValueMapper`
+| multi-valued attributes of elements
+| one-to-many
+
+| `ManyReferenceMapper`
+| multi-valued references between elements
+| one-to-many
+|===
+
+To ease the integration, they are regrouped into a single interface: `DataMapper`, implemented by the `Backend` interface that you will use.
+
+NeoEMF allows to use several data mapping strategy for a same component.
+The different mapping strategies don't have to be compatible with each other:
+The mapping strategy is saved in the configuration file next to the database (only for file-based backends), so, the mapping compatibility is ensured accross several executions: the user will not be able to use a mapping different from the one previously defined.
+
+*NOTE:* The values used with `ValueMapper` and `ManyValueMapper` are only primitives (`int`, `String`, `boolean`,...). Complex objects are converted before any call to these classes.
+The only exception concerns arrays and lists if you want to use a predefined mapping strategy (see next section). Make sure your database supports them before using them.
+
+==== Common Mapping Strategies
+
+Some common data mapping strategies can be used to simplify your development, but they are *optional*.
+
+The first set corresponds to references redirection, where they are processed as values after a conversion to/from the desired type (`Id` ↔ `<T>`) with a `Converter`.
+This is useful if you don't plan to use a different mapping for attributes and references.
+The `IdConverters` class in the core component might be useful in this case.
+
+|===
+| Class | Description | Redirection
+
+| `ReferenceAs<T>`
+| Redirects all calls related to single-valued references
+| `ReferenceMapper` → `ValueMapper`
+
+| `ManyReferenceAs<T>`
+| Similar to `ReferenceAs<T>`, but with multi-valued references
+| `ManyReferenceMapper` → `ManyValueMapper`
+
+| `AllReferenceAs<T>`
+| A combination of `ReferenceAs<T>` and `ManyReferenceAs<T>`
+| --
+
+| `ManyReferenceMergedAs<T>`
+| Merges a set of multi-valued references into a single entity of type `<T>`, then processes the result as a single-valued attribute. +
+For example, you can use a string representation of a `List<Id>`
+| `ManyReferenceMapper` → `ValueMapper`
+|===
+
+The second set corresponds to multi-valued attributes redirection.
+
+|===
+| Class | Description
+
+| `ManyValueWithIndices`
+| Each multi-valued attribute is processed separately. +
+It's a shortcut method that use `valueOf()` and a variant of `valueFor()` directly to manipulate the database, and avoid implementating `addValue()`, `removeValue()`, etc.
+
+| `ManyValueWithArrays`
+| Groups a set of multi-valued attributes into an array, then processes the result as a single-valued attribute. +
+The position of a multi-valued feature is defined by its position in the array.
+
+| `ManyValueWithLists`
+| Similar to `ManyValueWithArrays`, but using `List` instead of arrays.
+|===
+
+Their behavior is not definitive, and can be re-implemented to fit your ideal.
+They are provided as interfaces, and can be combined with others, if they don't conflict (using both `ManyValueWithLists` and `ManyValueWithArrays` together will never be a good idea).
+
+==== Your Mapping Strategy
+
+First, creates the base interface of your module.
+
+For now, it only contains some methods to define the nature of your backend, but it could contains more methods in future.
+
+[,java]
+----
+@ParametersAreNonnullByDefault
+public interface PaprikaBackend extends Backend {
+
+  @Override
+  default boolean isPersistent() {
+    // Is your backend persistent ?
+  }
+
+  @Override
+  default boolean isDistributed() {
+    // Is your backend distributed ?
+  }
+}
+----
+
+Then, creates the base class of your module.
+
+Its goal is to provide a base for all data mapping strategies related to your module, so it should contains methods for database initialization and native operations.
+It can also contains methods common for all your mapping, such as `save()`, `close()`, `copyTo()`, or the mapping of containers and meta-classes.
+
+[,java]
+----
+@ParametersAreNonnullByDefault
+abstract class AbstractPaprikaBackend extends AbstractBackend implements PaprikaBackend, AllReferenceAs<Long> {
+
+  /**
+   * Constructs a new {@code AbstractPaprikaBackend}.
+   */
+  protected AbstractPaprikaBackend() {
+    // Initialize the database
+  }
+
+  @Override
+  protected void internalSave() throws IOException {
+    // Save the last modifications
+  }
+
+  @Override
+  protected void internalClose() throws IOException {
+    // Cleanly close the database and release all associated resources
+  }
+
+  @Override
+  protected void internalCopyTo(DataMapper target) {
+    // This method is called only when `this.getClass() == target.getClass()`
+    AbstractPaprikaBackend to = AbstractPaprikaBackend.class.cast(target);
+
+    // Copy the database of this backend to the database of the target
+  }
+
+  @Nonnull
+  @Override
+  public Converter<Id, Long> referenceConverter() {
+    return IdConverters.withLong();
+  }
+}
+----
+
+Finally, creates the data mapping by implementing all inherited methods.
+
+[,java]
+----
+@ParametersAreNonnullByDefault
+class DefaultPaprikaBackend extends AbstractPaprikaBackend implements ManyValueWithIndices {
+
+  /**
+   * Constructs a new {@code DefaultPaprikaBackend}.
+   */
+  protected DefaultPaprikaBackend() {
+    super();
+
+    // Initialize more...
+  }
+
+  // Implements all methods
+  // [...]
+}
+----
+
+==== Some Help
+
+To ease your development, you can find utility classes and methods in the `org.atlanmod.commons` module:
+
+* Some preconditions, based on https://github.com/google/guava[Guava]
+* An asynchronous logger
+* An efficient in-memory cache, on top of a https://github.com/ben-manes/caffeine[Caffeine] cache
+* Some lazy objects that loads on-demand their value
+* Efficient hashers, on top of https://github.com/OpenHFT/Zero-Allocation-Hashing[Zero Allocation Hashing]; including Murmur3, xxHash, cityHash or farmHash algorithms
+* Several methods related to concurrency, collections, arrays, stream, primitives, etc.
+
+=== 4.4. One Factory to Create Them All
+
+All backends of a same module are created in a single place: the `BackendFactory`. It's the core of a module.
+
+It's a simple class that process the URI built with the `PaprikaUri` and the `PaprikaConfig` -- given in parameters when using `Resource#load()` or `Resource#save()` -- in order to create a `PaprikaBackend`.
+The URI is used to locate the database, while the configuration is used to define the expected behavior of the backend.
+
+As a reminder, the URI scheme is built from the factory's name, so, the name of a `BackendFactory` must be unique.
+See the link:Reserved-URI-Schemes[reserved schemes] to check that the name of your factory is not already used.
+
+The code below shows a common usage of a `BackendFactory`, with URI/configuration analysis.
+
+To create the `Backend` instances, we use reflection: the mapping is defined and stored in the configuration as the fully-qualified name of the `Backend` class.
+To instantiated it, you have to use the `createMapper()` method: The argument correspond to the mapping defined in the `PaprikaConfig`, and the constructor parameters.
+These depend on your implementation.
+
+[,java]
+----
+@Component(service = BackendFactory.class)
+@ParametersAreNonnullByDefault
+public final class PaprikaBackendFactory extends AbstractBackendFactory<PaprikaConfig> {
+
+  /**
+   * Constructs a new {@code PaprikaBackendFactory}.
+   */
+  public PaprikaBackendFactory() {
+    super("paprika");
+  }
+
+  @Nonnull
+  @Override
+  protected Backend createLocalBackend(Path directory, PaprikaConfig config) {
+    // `directory` and `config` are processed from the parameters used with `Resource#save()` or `#load()`
+    // The `directory` is used to locate the database.
+    // The `baseConfig` contains all defined options
+
+    // Retrieve the mapping defined in the configuration
+    String mapping = config.getMapping();
+
+    // Is the read-only mode has been configured ?
+    boolean isReadOnly = config.isReadOnly();
+
+    // Initialize the database
+    // [...]
+
+    // Create the mapping on top of the created database with its arguments
+    return createMapper(mapping, arg1, arg2,...);
+  }
+
+  @Nonnull
+  @Override
+  protected Backend createRemoteBackend(URL url, PaprikaConfig config) {
+      // You can also create a remote back-end from an URL
+  }
+}
+----
+
+== 5. Services
+
+Since `v2.0.0`, NeoEMF uses the `ServiceLoader` to retrieve all services across modules. This implies to declare them in the `resources/META-INF/services` directory. You should have at least three files, declaring the implementation that you have created for each service:
+
+----
+resources/META-INF/services
++-- fr.inria.atlanmod.neoemf.config.Config
++-- fr.inria.atlanmod.neoemf.data.BackendFactory
++-- fr.inria.atlanmod.neoemf.util.UriFactory
+----
+
+Under OSGi, and especially with the Equinox implementation, `ServiceLoader` is not correctly handled. So, we chose to use the Declarative Services. These declarations are automatically registered and configured when building the project, according to the `@Component` annotations.
+
+== 6. Hello World!
+
+Now, you can test your new backend by creating a NeoEMF resource using the classes we defined before.
+
+We create a new default `PaprikaConfig`, without any additional parameter, then locate the resource by using the `PaprikaUriFactory` to identify our `PaprikaBackendFactory`.
+
+You can then test your implementation by adding elements, save, load, traverse a resource, or whatever you want.
+
+[,java]
+----
+ImmutableConfig config = new PaprikaConfig();
+URI uri = new PaprikaUriFactory().createLocalUri(***);
+
+ResourceSet resourceSet = new ResourceSetImpl();
+Resource resource = resourceSet.createResource(uri);
+
+// Only for an existing resource
+//resource.load(config.asMap());
+//resource.getContents()
+
+// Do something on the resource
+// [...]
+
+resource.save(config.asMap());
+resource.unload();
+----
+
+== 7. Integration
+
+=== In Tests
+
+NeoEMF comes with a set of unit tests and integration tests used to ensure the correct behavior of a backend with or without EMF.
+
+==== Test Context
+
+All tests are based in a `Context`, which is a simple class that defines the behavior of your module.
+
+It includes several methods to initialize (useful when using a distributed database), identify or create objects related to a module.
+
+A `Context` can be used for several data mapping strategy, defined by the `Context#config()` method.
+For example, the method `new PaprikaConfig()` returns the default configuration to create a `DefaultPaprikaBackend`. You should have as many similar methods as there are backends in your module.
+
+In tests, create a `fr.inria.atlanmod.neoemf.data.paprika.context` package, then add the following class.
+
+[,java]
+----
+@ParametersAreNonnullByDefault
+public abstract class PaprikaContext extends AbstractLocalContext {
+
+  /**
+   * Creates a new {@code PaprikaContext} with a mapping with indices.
+   *
+   * @return a new context.
+   */
+  @Nonnull
+  public static Context getDefault() {
+    return new PaprikaContext() {
+      @Nonnull
+      @Override
+      public Config config() {
+        return new PaprikaConfig();
+      }
+    };
+  }
+
+  // Add all other mappings as before
+  // [...]
+
+  @Nonnull
+  @Override
+  public String name() {
+    // The display name of your module
+    // Re-implement it in `PaprikaContext` subclasses if you use several mappings
+    return "Paprika";
+  }
+
+  @Nonnull
+  @Override
+  public BackendFactory factory() {
+    return new PaprikaBackendFactory();
+  }
+
+  // Re-implement default methods if necessary
+  // [...]
+}
+----
+
+==== Unit Tests
+
+Then create the following unit tests, by extending the existing ones.
+
+*NOTE:*
+If you have to create some tests that don't inherit from an existing one, use `AbstractTest` as base class.
+You can also inherit from `AbstractUnitTest` if you need a `Context`, or `AbstractFileBasedTest` if you need a temporary file.
+
+Most test-cases don't require any additional test, but don't hesitate to add some if you wish.
+If you want to disable an inherited test, simply override it and annotate it with `@Disabled` with thre reason.
+
+The following test-case ensure the creation of a URI with your `UriFactory`.
+
+[,java]
+----
+@ParametersAreNonnullByDefault
+class PaprikaUriFactoryTest extends AbstractUriFactoryTest {
+
+  @Nonnull
+  @Override
+  protected Context context() {
+    return PaprikaContext.getDefault();
+  }
+}
+----
+
+The following test-case ensure that the correct backend is created from a given `Config`.
+
+[,java]
+----
+@ParametersAreNonnullByDefault
+class PaprikaBackendFactoryTest extends AbstractBackendFactoryTest {
+
+  @Nonnull
+  @Override
+  protected Context context() {
+    return PaprikaContext.getDefault();
+  }
+
+  @Nonnull
+  @Override
+  protected Stream<Arguments> allMappings() {
+    return Stream.of(
+      Arguments.of(new PaprikaConfig(), DefaultPaprikaBackend.class)
+      // Add all other backends of your module with their corresponding configuration
+      // [...]
+    );
+  }
+}
+----
+
+Then, the most important test: the data management test!
+The following test-case ensure the data integrity when using your module by checking every methods at a low-level.
+
+*IMPORTANT:*
+You have to create as many classes as there are backends in your module.
+
+[,java]
+----
+@ParametersAreNonnullByDefault
+class DefaultPaprikaBackendTest extends AbstractDataMapperTest {
+
+  @Nonnull
+  @Override
+  protected Context context() {
+    return PaprikaContext.getDefault();
+  }
+}
+----
+
+==== Integration Tests
+
+Finally, the ultimate step. You need to include your module in integration tests, based on EMF resources.
+
+Defines the dependencies in the `neoemf-tests` module, by including your module, and its associated `test-jar` variant.
+
+[,xml]
+----
+<dependencies>
+  <!-- [...] -->
+
+  <dependency>
+    <groupId>fr.inria.atlanmod.neoemf</groupId>
+    <artifactId>neoemf-data-paprika</artifactId>
+    <version>${project.version}</version>
+  </dependency>
+
+  <dependency>
+    <groupId>fr.inria.atlanmod.neoemf</groupId>
+    <artifactId>neoemf-data-paprika</artifactId>
+    <version>${project.version}</version>
+    <type>test-jar</type>
+    <scope>test</scope>
+  </dependency>
+
+  <!-- [...] -->
+</dependencies>
+----
+
+Then, simply add all `PaprikaContext` implementations in the `fr.inria.atlanmod.neoemf.tests.provider.ContextProvider#allContexts()` method.
+
+That's all, your module is ready. Congratulations!
+
+=== In Eclipse Plugin
+
+For now, skip this part.
+You can use the following tips if you're brave, and imitate the existing modules.
+
+_*-- TODO*_
+
+All following paths are based on the `plugins/eclipse` directory:
+
+* Add the Eclipse feature:
+Create a new directory `features/fr.inria.atlanmod.neoemf.data.paprika.feature` that contains:
+ ** `build.properties`: Only contains `bin.includes=feature.xml`
+ ** `feature.xml`     : The configuration of the Eclipse feature
+ ** `pom.xml`         : The configuration of the Maven module, built as an `eclipse-feature`, with its dependencies
+* Update `features/pom.xml` with the previously created Eclipse feature (under `modules`)
+* Update the update-site generation in `update`
+ ** `pom.xml`     : Add the dependency of the previously created Eclipse feature
+ ** `category.xml`: Add a `feature` in the `backend` category
+* Update examples
+
+=== In Benchmarks
+
+For now, skip this part.
+You can use the following tips if you're brave, and imitate the existing modules.
+
+_*-- TODO*_
+
+* Create a new class `PaprikaAdapter` extending `fr.inria.atlanmod.neoemf.benchmarks.adapter.AbstractPersistentAdapter`.
+(Create an inner subclass for each backend, if necessary)
+* Annotate each adapters with `@AdapterName`
+
+== 8. Pull Request!
+
+Once your new implementation is ready and tested you can submit it in a pull request to push it in the next release of the tool!
+Integrating new backends to NeoEMF is designed to be easy, and the pushed code will benefit of the future release improvements.
+
+If you have any question, or maybe a suggestion, don't hesitate to contact us at neoemf@googlegroups.com

@@ -1,0 +1,105 @@
+This page lists all the available releases of the tool.Latest available release is always presented first. Previous releases are listed to keep a trace of the changes, but shouldn't be used if a newer version is available. Note that you can also check the ongoing modifications in the https://github.com/atlanmod/NeoEMF/blob/master/CHANGELOG.md[CHANGELOG.MD] file at the root of the project repository.
+
+== 1.0.2 (_Latest_) - 2017-06-06
+
+https://github.com/atlanmod/NeoEMF/releases/tag/v1.0.2[Release Notes] | https://github.com/atlanmod/NeoEMF/archive/v1.0.2.zip[Download Sources] | https://atlanmod.github.io/NeoEMF/releases/1.0.2/plugin/[Update Site]
+
+=== Summary
+
+We fixed a set of bugs we found in our experiments and we received in users' feedbacks. Thanks for helping us improving the tool! We also integrated a new experimental integration with EMF Compare, allowing to compare NeoEMF models to other EMF-based models. This feature will remain experimental until the next major release that will remove conflicting Guava dependencies.
+
+We also merged the common features of MapDB and BerkeleyDB backends to improve maintainability and reusability of map-based serialization components.
+
+=== Changelog
+
+==== New Features
+
+* Add experimental EMF Compare integration (will stay experimental as long as Guava issues remain)
+
+==== Bug Fixes
+
+* Fixed https://github.com/atlanmod/NeoEMF/issues/53[Issue #53]: WildCardType '?' in sample (mapdb) throws an exception when accessed in the Editor
+* Fixed https://github.com/atlanmod/NeoEMF/issues/54[Issue #54]: AbstractDirectWrite.toArray is not efficient
+* Fixed https://github.com/atlanmod/NeoEMF/issues/55[Issue #55]: DefaultPersistentEObject.eContainer is not efficient
+* Fixed https://github.com/atlanmod/NeoEMF/issues/56[Issue #56]: Unnecessary backend lookups in Store.eObject(Id)
+* Fixed https://github.com/atlanmod/NeoEMF/issues/68[Issue #68]: Creating contained objects with Epsilon does not work
+
+==== Back-ends
+
+* Merge common code from MapDB & BerkeleyDB in Map module
+* BerkeleyDB remains an experimental backend until the next major release
+
+== 1.0.1 - 2017-01-16
+
+https://github.com/atlanmod/NeoEMF/releases/tag/v1.0.1[Release Notes] | https://github.com/atlanmod/NeoEMF/archive/v1.0.1.zip[Download Sources] | https://atlanmod.github.io/NeoEMF/releases/1.0.1/plugin/[Update Site]
+
+=== Summary
+
+Core modularization to ease new backend integration: all the supported backends are now defined as sub-project of the `data` module. The `Logger` has been updated to work in a dedicated thread, limiting its impact on the application performance. We have improved and rewritten a large part of the JavaDoc and published it on https://atlanmod.github.io/NeoEMF/releases/latest/doc/[NeoEMF website]. Tests are not modular and can be executed on all the supported backends, this allows to develop high quality implementations that benefit of existing tests. We also fixed few issues and updated the dependencies with the latest EMF release. See the <<changelog,changelog>> for a complete description of the updates.
+
+=== Changelog
+
+==== Structure
+
+* `datastore` packages become `data`
+* Backend implementations are now placed under the `fr.inria.atlanmod.neoemf.data` package
+* `graph` package is replaced by `data`: no more structural differentiation in the package structure
+* `+***Map***+` classes representing the MapDB implementation are replaced by `+***MapDb***+`
+* Generalization of `PersistenceURI` and its sub-classes
+* Addition of new common annotations: `@VisibleForTesting` and `@Experimental`
+* `Logger` is now fully-concurrent and extensible: We can use different parallel ``Logger``s. However, these loggers keep the call order.
+* Generalization ``BundleActivator``s
+
+==== Back-ends
+
+* Integration of a new key-value backend implementation: BerkeleyDB _(experimental)_.
+* `ClassInfo` and `ContainerInfo` have now static constructor methods: `from()` and `of()`
+
+==== Tests
+
+* Contextualization of tests: One test-case can be executed by several back-end implementations according to the current `Context` defined by `@Parameterized.Parameters`
+* Test-cases are now tagged
+* Preparation of tests for a future integration of JUnit 5
+* Externalization JUnit ``Rule``s
+* Reorganization of `@After`/`@Before` methods
+* `+All***+` classes become `+Abstract***+`
+* Remove `NeoAssertions` class and its related custom ``Builder``s
+
+==== Documentation
+
+* JavaDoc has been completely revised and completed.
+* Addition of new JavaDoc tags: `@future` and `@note`
+
+==== Bug Fixes
+
+* Fixed https://github.com/atlanmod/NeoEMF/issues/51[issue #51]: Concurrent `Executor` in `Logger` did not stop with the JVM
+* Fixed https://github.com/atlanmod/NeoEMF/issues/52[issue #52]: Partial fix with a `+try...catch+`
+
+==== Dependencies
+
+* Added OSGI dependency `org.osgi`: `6.0.0`
+* Removed OSGI implementation dependency `org.eclipse.osgi`
+* Upgraded `+org.eclipse.emf:***+` dependencies from `2.11.0` to `2.12.0`
+
+== 1.0.0 - 2016-12-06
+
+https://github.com/atlanmod/NeoEMF/releases/tag/v1.0.0[Release Notes] | https://github.com/atlanmod/NeoEMF/archive/v1.0.0.zip[Download Sources] | https://atlanmod.github.io/NeoEMF/releases/1.0.0/plugin/[Update Site]
+
+Initial release of the tool. This first release defines the core components of the framework and the supported backends.
+
+* Core API defninition
+ ** Extension of the EMF API with PersistentResource and PersistentEObject
+ ** Abstract backend architecture
+ ** Support for persistent and transient backends
+ ** Enhanced _load/save_ mechanism to support NeoEMF options
+* Support for Blueprints databases
+ ** Complete model-to-Blueprints mapping
+ ** Neo4j convenience wrapper
+* Support for MapDB databases
+* Support for HBase databases
+* IO module
+ ** Efficient XMI-to-Blueprints parser
+* Benchmarks for all the supported backends
+ ** Comparison with the default XMI serialization
+ ** Comparison with CDO
+ ** Model traversal queries

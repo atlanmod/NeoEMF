@@ -1,0 +1,27 @@
+name: NeoEMF
+version: 2.0.0
+prerelease: '2.0.1'
+title: NeoEMF Project
+asciidoc:
+  attributes:
+    source-language: asciidoc@
+    xrefstyle: short@
+    listing-caption: Listing@
+    example-caption: false
+    version-node-major: '14'
+    version-node: '14.17.1'
+    version-npm: '6.14.18'
+    url-node-releases: https://nodejs.org/en/about/releases/
+    url-chat: https://antora.zulipchat.com
+    url-repo: https://gitlab.com/antora/antora
+    url-asciidoc: https://docs.asciidoctor.org/asciidoc/latest
+    plantuml-server-url: http://www.plantuml.com/plantuml
+  extensions:
+    - asciidoctor-plantuml
+nav:
+- modules/ROOT/nav.adoc
+- modules/analyse/nav.adoc
+- modules/exigences/nav.adoc
+- modules/architecture/nav.adoc
+- modules/composants/nav.adoc
+- modules/conception/nav.adoc

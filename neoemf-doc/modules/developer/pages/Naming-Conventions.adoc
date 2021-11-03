@@ -1,0 +1,41 @@
+This page references the package and class naming conventions used in NeoEMF.
+Please make sure to follow these rules if you want to link:How-To-Contribute[contribute to the framework], this will ease future discussions and speed-up the integration of your code.
+
+== Package Names
+
+NeoEMF packages group classes per feature and not by layers.
+For example the package `fr.inria.atlanmod.neoemf.resource` contains both classes and interfaces related to EMF Resource management.
+We don't use sub-packages such as `impl`, `beans`, `exceptions`, etc.
+
+Package names are defined by singular words. Since each package describes a feature, the name of the feature should be used as the name of package.
+
+Backend-specific classes extending abstract classes of the `core` component are defined in a package with the same name as the `core` one.
+For example, the `MapDbUriFactory` class is defined in the package  `fr.inria.atlanmod.neoemf.data.mapdb.util`, because it extends the class `UriFactory` defined in the package `fr.inria.atlanmod.neoemf.util`.
+
+=== New Features
+
+You can replace the package prefix `fr.inria.atlanmod` with the one of your institution/organization if you link:How-To-Contribute[submit a pull request] containing a new feature.
+If your pull request contains a backend implementation make sure the corresponding code is stored in its own folder following this pattern:
+
+----
+/neoemf-data/<backend_implementation_name>/
+----
+
+== Class Names
+
+Class names must be simple and self-describing.
+
+Use the _Default_ prefix for classes that are the only implementation of their interface.
+For example the class `DefaultPersistentResource` is the only implementation of the `PersistentResource` interface.
+
+=== Configuration/URI subclasses
+
+Classes implementing `Config` should be suffixed with _Config_.
+
+Classes implementing `UriFactory` should be suffixed with _UriFactory_.
+
+=== Data subclasses
+
+Classes implementing `Backend` and `BackendFactory` should be suffixed with _Backend_ and _BackendFactory_, respectively.
+
+Classes implementing `Store` should be suffixed with _Store_.

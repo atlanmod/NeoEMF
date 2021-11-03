@@ -1,0 +1,478 @@
+= Experimental Results
+
+This page summarizes the results presented in the different link:Publications[articles] we have published and the existing projects that integrate NeoEMF as their model perssitence solution.
+
+== NeoEMF/MapDB
+
+NeoEMF MapDB connector has been compared to CDO and XMI serialization in https://hal.inria.fr/hal-01140776/document[this article].
+
+We evaluate the performance of our proposal by comparing different solutions in the running scenario.
+Based on our joint experience with industrial partners, we have reverse-engineered three models from open-source Java projects whose sizes resemble those one can find in real world scenarios (see Table 1).
+Moreover, we have defined a set of queries that are executed on those models.
+The first of these queries is a well-known scenario in http://is.tm.tue.nl/staff/pvgorp/events/grabats2009/submissions/grabats2009_submission_20-final.pdf[academic literature].
+The others have been selected to mimic typical model access patterns in reverse engineering
+
+[cols="^,<,>,>"]
+|===
+| # | Models | Size in XMI | Elements
+
+| 1
+| org.eclipse.gmt.modisco.java
+| 19.3 MB
+| 80665
+
+| 2
+| org.eclipse.jdt.core
+| 420.6 MB
+| 1557007
+
+| 3
+| org.eclipse.jdt.*
+| 984.7 MB
+| 3609454
+|===
+
+*Table 1:* Summary of the Experimental Models
+
+=== Selected backends and execution environment
+
+We have selected NeoEMF/Map, NeoEMF/Graph and CDO for a thorough comparison.
+Only the standard EMF interface methods are used in the experiments that are hence agnostic of which backend they are running on.
+Other backends have been discarded because they do not strictly comply with the standard EMF behavior (e.g. MongoEMF), they require manual modifications in the source models or metamodels (e.g. EMF-fragments), or because we were only able to run a small subset of the experiments on them (e.g. Morsa).
+
+All backends use their respective native EMF generated code for the Java MoDisco metamodel and have been tested in their default configurations with the following exceptions:
+(i) the timeout values for CDO have been increased since the default ones are too low;
+(ii) for the sake of a fairer comparison, some extended features have been disabled in CDO (e.g. audit views and branches);
+and (iii) the Neo4j memory buffers have been tweaked in NeoEMF/Graph to reduce the memory consumption of the embedded Neo4j engine.
+CDO maintains its caching and prefetching facilities with their default values. In the case of NeoEMF/Map and NeoEMF/Graph no high-level caching is performed.
+
+Experiments are run on a laptop with the following configuration:
+Intel Core i7 3740QM (2.70GHz),
+16 GB of DDR3 SDRAM (800MHz),
+Samsung SM841 SATA3 SSD Hard Disk (6GB/s),
+Windows 7 Enterprise 64,
+JRE 1.7.0_40-b43,
+Eclipse 4.4.0,
+EMF 2.10.1,
+NeoEMF/Map uses MapDB 0.9.10,
+NeoEMF/Graph uses Neo4j 1.9.2,
+CDO 4.3.1 runs on top of H2 1.3.168
+
+=== Experiments
+
+==== Experiment I -- Import model from XMI
+
+In this experiment (Table 2) we measure the time taken to load a source experimental model -- that has been previously derived from the Java code and saved in XMI -- and to save it in the selected persistence backend.
+The saved models are the ones used in next experiments.
+This experiment measures the time taken to create models that grow monotonically.
+Only a single configuration (setting the heap size to 8 GB) is used because the XMI model should be completely loaded into memory before saving it in the backend under study.
+
+==== Experiment II -- Simple Model traversal
+
+In this experiment we measure the total time taken to load a model, execute a visitor and unload a model.
+The visitor traverses the full containment tree starting from the root of the model.
+At each step of the traversal the visitor loads the element content from the backend.
+We show the results for the three scalable backends plus the standard XMI-based one.
+Three different maximum heap sizes have been used in this and the following benchmarks to demonstrate how the different backends perform in different configurations: 8GB for demonstrating the performance in an ideal scenario, and 512MB and 256MB to demonstrate how the loading/unloading mechanisms behave in setups with extremely limited memory.
+Table 3 shows the results of this experimentation over the test models.NeoEMF/Map and NeoEMF/Graph are abbreviated as N/M and N/G respectively.
+
+==== Experiment III -- Query without full traversal
+
+Results of an example query of this type are shown in Table 4.
+The query returns all the orphan and non-primitive types by navigating and filtering the _orphanTypes_ association.
+
+==== Experiment IV -- Queries with full traversal
+
+These queries start their computation by accessing the list of all the instances of a particular element type, and then apply a filtering to this list to select the starting points for navigating the model.
+In the experience of our industrial partners, this pattern covers the majority of computational-demanding queries in real world scenarios of the reverse-engineering domain.
+While the first of these queries is well-known in academic literature, the others have been selected to mimic typical model access patterns:
+(i) Grabats returns the set of classes that hold static method declarations having as return type the holding class (i.e., Singleton);
+(ii) Unused Methods returns the set of method declarations that are private and not internally called;
+(iii) Thrown Exceptions per package collects and returns a map of Packages with the Exceptions that may be thrown by any of the methods declared by its contained classes;
+(iv) Invisible Methods returns the set of method declarations that are private or protected;
+and (v) Class Declaration Attributes returns a map associating each Class declaration to the set of its attribute declarations.
+Table 5 summarizes the obtained results.
+
+==== Experiment V -- Model modification and saving
+
+The last experiment aims to measure the overhead introduced by the transactional support provided by the different back-ends.
+Table 6 shows the execution times for renaming all method declarations and saving the modified model.
+
+[cols="^,>,>,>"]
+|===
+| Model | NeoEMF/Map | NeoEMF/Graph | CDO
+
+| 1
+| 9 s
+| 41 s
+| 12 s
+
+| 2
+| 161 s
+| 1161 s
+| 120 s
+
+| 3
+| 412 s
+| 3767 s
+| 301 s
+|===
+
+*Table 2:* Import model from XMI
+
+[cols="^,>,>,>,>"]
+|===
+| Model | XMI | NeoEMF/Map | NeoEMF/Graph | CDO
+
+| 1
+| 4 s
+| 3 s
+| 16 s
+| 14 s
+
+| 2
+| 35 s
+| 25 s
+| 201 s
+| 133 s
+
+| 3
+| 79 s
+| 62 s
+| 708 s
+| 309 s
+|===
+
+*Table 3 (1):* Model traversals (includes loading and unloading time) - Xmx8g
+
+[cols="^,>,>,>,>"]
+|===
+| Model | XMI | NeoEMF/Map | NeoEMF/Graph | CDO
+
+| 1
+| 4 s
+| 3 s
+| 15 s
+| 13 s
+
+| 2
+| _OutOfMemoryError_
+| 121 s
+| 239 s
+| 650 s
+
+| 3
+| _OutOfMemoryError_
+| 443 s
+| 783 s
+| 403 s
+|===
+
+*Table 3 (2):* Model traversals (includes loading and unloading time) - Xmx256m
+
+[cols="^,>,>,>"]
+|===
+| Model | NeoEMF/Map | NeoEMF/Graph | CDO
+
+| 1
+| < 1 s
+| < 1 s
+| < 1 s
+
+| 2
+| < 1 s
+| 2 s
+| < 1 s
+
+| 3
+| < 1 s
+| 19 s
+| 2 s
+|===
+
+*Table 4 (1):* Model queries that do not traverse the model - Xmx8g
+
+[cols="^,,,"]
+|===
+| Model | NeoEMF/Map | NeoEMF/Graph | CDO
+
+| 1
+| < 1 s
+| < 1 s
+| < 1 s
+
+| 2
+| < 1 s
+| 5 s
+| < 1 s
+
+| 3
+| < 1 s
+| 20 s
+| 2 s
+|===
+
+*Table 4 (2):* Model queries that do not traverse the model - Xmx256m
+
+[cols=",,>,>,>"]
+|===
+| Query | Model | NeoEMF/Map | NeoEMF/Graph | CDO
+
+| Grabats
+| 1
+| 1 s
+| 11 s
+| 9 s
+
+| --
+| 2
+| 24 s
+| 188 s
+| 121 s
+
+| --
+| 3
+| 61 s
+| 717 s
+| 299 s
+
+| Unused Methods
+| 1
+| 2 s
+| 17 s
+| 9s
+
+| --
+| 2
+| 36 s
+| 359 s
+| 131 s
+
+| --
+| 3
+| 101 s
+| 1328 s
+| 294 s
+
+| Thrown Exceptions Per Package
+| 1
+| 1 s
+| 10 s
+| 9 s
+
+| --
+| 2
+| 24 s
+| 184 s
+| 120 s
+
+| --
+| 3
+| 62 s
+| 678 s
+| 296 s
+
+| Invisible Methods
+| 1
+| 1 s
+| 11 s
+| 9 s
+
+| --
+| 2
+| 26 s
+|  263 s
+| 119 s
+
+| --
+| 3
+| 119 s
+| 3247 s
+| 320 s
+
+| Class Declaration Attributes
+| 1
+| 1 s
+| 10 s
+| 9 s
+
+| --
+| 2
+| 24 s
+| 183 s
+| 120 s
+
+| --
+| 3
+| 61 s
+| 694 s
+| 294 s
+|===
+
+*Table 5 (1):* Model queries that traverse the model - Xmx8g
+
+[cols=",,>,>,>"]
+|===
+| Query | Model | NeoEMF/Map | NeoEMF/Graph | CDO
+
+| Grabats
+| 1
+| 1 s
+| 11 s
+| 9 s
+
+| --
+| 2
+| 127 s
+| 228 s
+| 665 s
+
+| --
+| 3
+| 480 s
+| 774 s
+| 479 s
+
+| Unused Methods
+| 1
+| 1 s
+| 16 s
+| 9s
+
+| --
+| 2
+| 336 s
+| 467 s
+| 1034 s
+
+| --
+| 3
+| 1290 s
+| 1818 s
+| _OutOfMemoryError_
+
+| Thrown Exceptions Per Package
+| 1
+| 1 s
+| 10 s
+| 8 s
+
+| --
+| 2
+| 119 s
+| 224 s
+| 666 s
+
+| --
+| 3
+| 450 s
+| 758 s
+| 427 s
+
+| Invisible Methods
+| 1
+| 1 s
+| 11 s
+| 9 s
+
+| --
+| 2
+| 158 s
+|  733 s
+| 190 s
+
+| --
+| 3
+| 496 s
+| > 2 h
+| 1404 s
+
+| Class Declaration Attributes
+| 1
+| 1 s
+| 10 s
+| 8 s
+
+| --
+| 2
+| 156 s
+| 226 s
+| 670 s
+
+| --
+| 3
+| 457 s
+| 756 s
+| 460 s
+|===
+
+*Table 5 (2):* Model queries that traverse the model - Xmx256m
+
+[cols="^,>,>,>"]
+|===
+| Model | NeoEMF/Map | NeoEMF/Graph | CDO
+
+| 1
+| 1 s
+| 11 s
+| 9 s
+
+| 2
+| 24 s
+| 191 s
+| 118 s
+
+| 3
+| 62 s
+| 677 s
+| 296 s
+|===
+
+*Table 6 (1):* Model modification and saving - Xmx8g
+
+[cols="^,>,>,>"]
+|===
+| Model | NeoEMF/Map | NeoEMF/Graph | CDO
+
+| 1
+| 1 s
+| 11 s
+| 9 s
+
+| 2
+| 160 s
+| 224 s
+| 723 s
+
+| 3
+| 472 s
+| _OutOfMemoryError_
+| _OutOfMemoryError_
+|===
+
+*Table 6 (1):* Model modification and saving - Xmx256m
+
+=== Discussion
+
+From the analysis of the results, we can observe that NeoEMF/Map performs, in general, better than any other solution when using the standard API.
+Only in scenarios with constrained memory the execution times tend equalize due to excessive garbage collection.
+Nevertheless, other persistence backends tend to be more erratic in those scenarios, running out of memory or presenting big differences in computation times between experiments.
+In the XMI import experiment (Table 6) we can observe that NeoEMF/Map presents import times in the the same order of magnitude than CDO, but it is about a 33% slower for the largest model.
+The simple data model with low-cost operations implemented by NeoEMF/Map contrasts with the more complex data model--and operations--implemented by NeoEMF/Graph which is consistently slower by a factor between 7 and 9.
+It can be observed that NeoEMF/Map is affected by the overhead produced by modifications on big lists that grow monotonically since it does not implement any caching yet.
+Table 7 shows that a traversal of a very large model is much faster (up to 9 times) by using the NeoEMF/Map persistence layer with respect to both a CDO and NeoEMF/Graph.
+However, in scenarios with very constrained memory, some garbage collection overhead can be noticed.
+Additionally, if load and unload times are considered (which are negligible for NeoEMF/Map, NeoEMF/Graph and CDO), NeoEMF/Map also outperforms XMI.
+This is because before executing the traversal, the XMI-based backend needs to parse the whole input model, which is a costly operation.
+It can also be observed that XMI is unable to load the model into memory for small heap sizes.
+
+Queries that do not require traversing a large part of the model are computed in a negligible time both in NeoEMF/Map and CDO.
+NeoEMF/Graph shows higher execution times, specially on bigger models (Table 8).
+In this case, it can be observed that using the rich graph-based data model cannot be exploited when using the standard methods for model traversal.
+The fast model-traversal ability of NeoEMF/Map is exploited by the pattern followed by most of the queries in the modernization domain (Table 9).
+As a result, NeoEMF/Map is consistently faster than other backends for all queries, model sizes and heap sizes.
+Only in few cases NeoEMF/Map has similar performance to CDO, while in other scenarios NeoEMF/Map is up to 9 times faster.
+The low memory consumption of NeoEMF/Map also is revealed, since there appear cases in which CDO behaves more erratically, running out of memory or experiencing slowness issues caused by the garbage collector.
+Typical queries that traverse the model to apply and persist changes perform, in general, significantly better on NeoEMF/Map (Table 10): 5 times faster on average (on big models) and even up to 9 faster (on small models).
+In cases with limited memory, however, CDO may present better results than NeoEMF/Map due to garbage collection overhead.
+Nevertheless, this is not always the case, and CDO also reveals its tendency to run out of memory in such scenarios
