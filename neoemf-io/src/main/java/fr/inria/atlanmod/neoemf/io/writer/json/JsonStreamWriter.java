@@ -32,7 +32,7 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 
 	@Override
 	protected void writeStartElement(String name) throws IOException {
-
+		jGenerator.writeStartObject();
 	}
 
 	@Override
@@ -53,5 +53,6 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 	@Override
 	protected void writeEndDocument() throws IOException {
 		jGenerator.writeEndArray();
+		jGenerator.close();
 	}
 }

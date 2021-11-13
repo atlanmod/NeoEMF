@@ -52,8 +52,8 @@ class JsonWriterTest {
 	}
 
 	public static void main(String[] args) throws IOException {
-		String sourcePath = "D:/Users/Daiki/Documents/Ecole/Universite/Master/M2/Capstone/NeoEMF/neoemf-io/src/test/resources/model/subSampleModel/simplestClass/Sample.ecore";
-		String targePath = "D:/Users/Daiki/Documents/Ecole/Universite/Master/M2/Capstone/NeoEMF/neoemf-io/src/test/resources/test-output/test-write.json";
+		String sourcePath = "neoemf-io/src/test/resources/model/subSampleModel/simplestClass/Sample.ecore";
+		String targePath = "neoemf-io/src/test/resources/test-output/test-write.json";
 		testWrite(sourcePath, targePath);
 	}
 }

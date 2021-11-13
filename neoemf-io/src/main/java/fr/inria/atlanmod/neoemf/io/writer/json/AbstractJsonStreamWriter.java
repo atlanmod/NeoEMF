@@ -22,6 +22,7 @@ public abstract class AbstractJsonStreamWriter extends AbstractStreamWriter  {
 	@Override
 	public void onInitialize() throws IOException {
 		writeStartDocument();
+		writeEndDocument();
 	}
 
 	@Override
