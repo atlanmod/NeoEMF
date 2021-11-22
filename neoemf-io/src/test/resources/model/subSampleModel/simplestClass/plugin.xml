@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin
+      name="%pluginName"
+      id="simplestClass"
+      version="1.0.0"
+      provider-name="%providerName">
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.emf.ecore" export="true"/>
+   </requires>
+
+   <runtime>
+      <library name=".">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated Sample -->
+      <package
+            uri="http://www.neoemf.com/tests/sample"
+            class="fr.inria.atlanmod.neoemf.tests.sample.SamplePackage"
+            genModel="Sample.genmodel"/>
+   </extension>
+
+</plugin>

@@ -186,6 +186,10 @@
             <type>pom</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+        </dependency>
 
     </dependencies>
 

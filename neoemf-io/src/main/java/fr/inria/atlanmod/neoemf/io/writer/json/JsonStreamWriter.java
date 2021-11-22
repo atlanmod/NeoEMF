@@ -13,6 +13,7 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 	protected final ObjectMapper mapper;
 	@Nonnull
 	protected final JsonGenerator jGenerator;
+	protected int id;
 
 	/**
 	 * Constructs a new {@code AbstractStreamWriter} with the given {@code stream}.
@@ -23,6 +24,13 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 		super(stream);
 		mapper = new ObjectMapper();
 		jGenerator = mapper.getFactory().createGenerator(target);
+		id = 0;
+	}
+
+	private int nextId() {
+		int temp = id;
+		id++;
+		return temp;
 	}
 
 	@Override
@@ -33,6 +41,7 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 	@Override
 	protected void writeStartElement(String name) throws IOException {
 		jGenerator.writeStartObject();
+		// jGenerator.writeFieldName();
 	}
 
 	@Override

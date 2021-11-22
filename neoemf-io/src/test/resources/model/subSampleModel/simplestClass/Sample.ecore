@@ -11,7 +11,7 @@
     <details key="featureDelegation" value="Reflective"/>
     <details key="basePackage" value="fr.inria.atlanmod.neoemf.tests"/>
   </eAnnotations>
-  <eClassifiers xsi:type="ecore:EClass" name="Node" abstract="true">
+  <eClassifiers xsi:type="ecore:EClass" name="Node">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="label" unique="false" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
 </ecore:EPackage>

@@ -353,7 +353,7 @@ class XmiReaderTest extends AbstractTest {
 
         try (InputStream in = new URL(uri.toString()).openStream()) {
             Migrator.fromXmi(in)
-                    //.to(writer) TODO
+                    // .to(writer) // TODO
                     .withCounter()
                     .withTimer()
 //                    .withLogger()
