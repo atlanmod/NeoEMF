@@ -41,22 +41,21 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 	@Override
 	protected void writeStartElement(String name) throws IOException {
 		jGenerator.writeStartObject();
-		// jGenerator.writeFieldName();
 	}
 
 	@Override
 	protected void writeAttribute(String name, String value) throws IOException {
-
+		jGenerator.writeStringField(name, value);
 	}
 
 	@Override
 	protected void writeCharacters(String characters) throws IOException {
-
+		jGenerator.writeString(characters);
 	}
 
 	@Override
 	protected void writeEndElement() throws IOException {
-
+		jGenerator.writeEndObject();
 	}
 
 	@Override

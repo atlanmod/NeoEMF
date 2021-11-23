@@ -33,6 +33,14 @@ class JsonWriterTest {
 		));
 	}
 
+	static void populateResource2(Resource resource) {
+		Node node = factory.createLocalNode();
+		node.setLabel("Test");
+		resource.getContents().addAll(Arrays.asList(
+				node
+		));
+	}
+
 	static void testWrite(String targetPath) throws IOException {
 		// java to emfjson-jackson (for testing/comparison purpose)
 		ResourceSet resourceSet = new ResourceSetImpl();
@@ -40,20 +48,14 @@ class JsonWriterTest {
 				.getExtensionToFactoryMap()
 				.put("json", new JsonResourceFactory());
 		Resource resource = resourceSet.createResource(URI.createFileURI(targetPath + "test-jackson-write.json"));
-		populateResource(resource);
+		populateResource(resource); // FIXME not working : error
 		resource.save(null);
 
-		try (DataMapper mapper = new DefaultInMemoryBackend(); InputStream in = new FileInputStream(targetPath + "test-jackson-write.json")) {
-			// java to xmi
-			Migrator.fromXmi(in)
-					.toMapper(mapper)
-					.migrate();
-			Log.info("Exporting to file... [{0}]", targetPath + "test-write.xmi");
-			File targetFileXMI = new File(targetPath + "test-write.xmi");
-			Migrator.fromMapper(mapper).
-					toXmi(targetFileXMI, false)
-					.migrate();
+		// java to xmi
+		// TODO save
 
+		/*
+		try (DataMapper mapper = new DefaultInMemoryBackend(); InputStream in = new FileInputStream(targetPath + "input-test-file.xmi")) {
 			// java to json
 			Log.info("Exporting to file... [{0}]", targetPath + "test-write.json");
 			File targetFileJSON = new File(targetPath + "test-write.json");
@@ -61,6 +63,8 @@ class JsonWriterTest {
 					.toJson(targetFileJSON)
 					.migrate();
 		}
+
+		 */
 
 		// Comparing models loaded from XMI (EMF/NeoEMF reader) and JSON (emfjson-jackson reader)
 		/*

@@ -139,6 +139,7 @@
             <artifactId>emfjson-jackson</artifactId>
             <version>1.3.0</version>
             <type>bundle</type>
+            <scope>test</scope>
         </dependency>
 
         <!-- Test: EMF -->
