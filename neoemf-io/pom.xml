@@ -22,7 +22,7 @@
         <stax.verions>1.0-2</stax.verions>
         <stax2.version>4.2.1</stax2.version>
         <woodstox.version>4.4.1</woodstox.version>
-        <jackson.version>2.12.5</jackson.version>
+        <jackson.version>2.13.0</jackson.version>
 
     </properties>
 

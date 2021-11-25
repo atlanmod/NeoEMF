@@ -12,6 +12,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.emfjson.jackson.resource.JsonResourceFactory;
 
 import java.io.File;
@@ -47,24 +48,33 @@ class JsonWriterTest {
 		resourceSet.getResourceFactoryRegistry()
 				.getExtensionToFactoryMap()
 				.put("json", new JsonResourceFactory());
+		Log.info("Exporting to file... [{0}]", targetPath + "test-jackson-write.json");
 		Resource resource = resourceSet.createResource(URI.createFileURI(targetPath + "test-jackson-write.json"));
-		populateResource(resource); // FIXME not working : error
+		populateResource(resource);
 		resource.save(null);
 
 		// java to xmi
-		// TODO save
+		ResourceSet resourceSet2 = new ResourceSetImpl();
+		resourceSet2.getResourceFactoryRegistry()
+				.getExtensionToFactoryMap()
+				.put("xmi", new XMIResourceFactoryImpl());
+		Log.info("Exporting to file... [{0}]", targetPath + "test-write.xmi");
+		Resource resource2 = resourceSet2.createResource(URI.createFileURI(targetPath + "test-write.xmi"));
+		populateResource(resource2);
+		resource2.save(null);
 
-		/*
-		try (DataMapper mapper = new DefaultInMemoryBackend(); InputStream in = new FileInputStream(targetPath + "input-test-file.xmi")) {
+		try (DataMapper mapper = new DefaultInMemoryBackend(); InputStream in = new FileInputStream(targetPath + "test-write.xmi")) {
 			// java to json
+			Migrator.fromXmi(in)
+					.toMapper(mapper)
+					.migrate();
+
 			Log.info("Exporting to file... [{0}]", targetPath + "test-write.json");
 			File targetFileJSON = new File(targetPath + "test-write.json");
 			Migrator.fromMapper(mapper)
 					.toJson(targetFileJSON)
 					.migrate();
 		}
-
-		 */
 
 		// Comparing models loaded from XMI (EMF/NeoEMF reader) and JSON (emfjson-jackson reader)
 		/*
