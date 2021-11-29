@@ -3,15 +3,16 @@ package fr.inria.atlanmod.neoemf.io.json;
 import fr.inria.atlanmod.neoemf.data.im.DefaultInMemoryBackend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
-import fr.inria.atlanmod.neoemf.tests.sample.Node;
-import fr.inria.atlanmod.neoemf.tests.sample.SampleFactory;
-import fr.inria.atlanmod.neoemf.tests.sample.Value;
+import fr.inria.atlanmod.neoemf.tests.sample.*;
+import fr.inria.atlanmod.neoemf.tests.sample.impl.TypeMapImpl;
 import fr.inria.atlanmod.neoemf.tests.sample.impl.ValueImpl;
 import org.atlanmod.commons.log.Log;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.EObjectEList;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.emfjson.jackson.resource.JsonResourceFactory;
 
@@ -28,17 +29,11 @@ class JsonWriterTest {
 	static void populateResource(Resource resource) {
 		Value val = factory.createValue();
 		val.setValue(10);
+		Value val2 = factory.createValue();
+		val.setValue(12);
 
 		resource.getContents().addAll(Arrays.asList(
 			val
-		));
-	}
-
-	static void populateResource2(Resource resource) {
-		Node node = factory.createLocalNode();
-		node.setLabel("Test");
-		resource.getContents().addAll(Arrays.asList(
-				node
 		));
 	}
 
@@ -75,21 +70,10 @@ class JsonWriterTest {
 					.toJson(targetFileJSON)
 					.migrate();
 		}
-
-		// Comparing models loaded from XMI (EMF/NeoEMF reader) and JSON (emfjson-jackson reader)
-		/*
-		EObject actual = ResourceManager.load(URI.createFileURI(targetFile.toString()));
-		EObject expected = ResourceManager.load(uri);
-
-		ModelComparisonUtils.assertEObjectAreEqual(actual, expected);
-
-		actual.eResource().unload();
-		expected.eResource().unload();
-		 */
 	}
 
 	public static void main(String[] args) throws IOException {
-		String targePath = "neoemf-io/src/test/resources/test-output/simplestClass/";
-		testWrite(targePath);
+		testWrite("neoemf-io/src/test/resources/test-output/simplestClass/");
+
 	}
 }

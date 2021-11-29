@@ -24,6 +24,7 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 		super(stream);
 		mapper = new ObjectMapper();
 		jGenerator = mapper.getFactory().createGenerator(target);
+		jGenerator.useDefaultPrettyPrinter();
 		id = 0;
 	}
 
@@ -39,13 +40,14 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 	}
 
 	@Override
-	protected void writeStartElement(String name) throws IOException {
+	protected void writeStartElement(String namespace, String name) throws IOException {
 		jGenerator.writeStartObject();
+		jGenerator.writeStringField("eClass", namespace + "#//" + name);
 	}
 
 	@Override
-	protected void writeAttribute(String name, String value) throws IOException {
-		jGenerator.writeStringField(name, value);
+	protected void writeAttribute(String name, Object value) throws IOException {
+		jGenerator.writeObjectField(name, value);
 	}
 
 	@Override
