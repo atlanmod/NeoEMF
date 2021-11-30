@@ -55,7 +55,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Guards.checkState;
 
 /**
  * An {@link Adapter} on top of a CDO server.

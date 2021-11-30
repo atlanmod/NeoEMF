@@ -45,7 +45,7 @@ import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 import static com.mongodb.client.model.Updates.setOnInsert;
 import static com.mongodb.client.model.Updates.unset;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * An abstract {@link MongoDbBackend} that provides overall behavior for the management of a MongoDb database.

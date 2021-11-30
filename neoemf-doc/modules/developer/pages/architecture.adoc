@@ -1,0 +1,20 @@
+= Architecture
+
+== Development View
+
+NeoEMF follows Apache Maven's conventions.
+
+Except for some specific artifacts, such as Eclipse plugins,
+the project follows the Apache Maven's https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html[Standard Directory Layout].
+
+All software dependencies are declared in the Project Object Model (pom.xml file).
+Object Models (from all modules) use a `dependencyManagement` to manage the dependencies,
+and use `properties` to manage the dependencies version.
+
+=== Package Organization
+
+Packages keep together classes that implement a same feature.
+We organize packages by features, rather than layers or structure.
+Read this http://www.javapractices.com/topic/TopicAction.do?Id=205[article] for more information.
+
+Avoid packages named `beans`, `exceptions`, `factories`, or `collections`.

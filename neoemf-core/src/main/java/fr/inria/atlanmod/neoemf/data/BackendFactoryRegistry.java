@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * The registry that holds registered {@link org.eclipse.emf.common.util.URI} schemes with their associated {@link

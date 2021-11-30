@@ -53,9 +53,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.WillNotClose;
 
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkArgument;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
-import static org.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Guards.checkArgument;
+import static org.atlanmod.commons.Guards.checkNotNull;
+import static org.atlanmod.commons.Guards.checkState;
 
 /**
  * The builder that creates {@link fr.inria.atlanmod.neoemf.io.reader.Reader} and {@link

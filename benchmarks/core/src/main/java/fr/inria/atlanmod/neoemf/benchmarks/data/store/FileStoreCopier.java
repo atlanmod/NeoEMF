@@ -25,8 +25,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkNotNull;
-import static org.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Guards.checkNotNull;
+import static org.atlanmod.commons.Guards.checkState;
 
 /**
  * A {@link StoreCopier} that copies all the content of a directory into another.

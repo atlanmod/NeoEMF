@@ -25,5 +25,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @see ManyReferenceMapper
  */
 @ParametersAreNonnullByDefault
-public interface DataMapper extends Saveable, Copiable<DataMapper>, ContainerMapper, ClassMapper, ValueMapper, ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
+public interface DataMapper extends Saveable, Copiable<DataMapper>, ContainerMapper, ClassMapper, ValueMapper,
+        ManyValueMapper, ReferenceMapper, ManyReferenceMapper {
 }

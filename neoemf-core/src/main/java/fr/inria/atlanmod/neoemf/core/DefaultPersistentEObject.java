@@ -47,8 +47,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkInstanceOf;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkInstanceOf;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * The default implementation of a {@link PersistentEObject}.

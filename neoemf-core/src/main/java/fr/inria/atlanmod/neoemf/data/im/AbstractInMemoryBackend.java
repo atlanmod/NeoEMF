@@ -39,7 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 import static java.util.Objects.isNull;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * An abstract {@link InMemoryBackend} that provides the default behavior of containers and meta-classes management.

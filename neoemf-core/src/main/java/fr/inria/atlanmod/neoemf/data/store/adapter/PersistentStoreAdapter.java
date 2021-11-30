@@ -19,7 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A {@link fr.inria.atlanmod.neoemf.data.store.adapter.StoreAdapter} that caches the rebuilt {@link

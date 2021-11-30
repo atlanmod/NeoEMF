@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * An abstract {@link BlueprintsBackend} that provides overall behavior for the management of a Blueprints database.

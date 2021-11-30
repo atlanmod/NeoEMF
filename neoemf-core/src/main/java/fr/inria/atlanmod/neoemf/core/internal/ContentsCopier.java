@@ -25,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Guards.checkState;
 
 /**
  * A {@link org.atlanmod.commons.function.Copier} that recursively copies the content related to a {@link
@@ -41,7 +41,7 @@ public final class ContentsCopier implements Copier<StoreAdapter> {
     private final PersistentEObject object;
 
     /**
-     * Contructs a new {@code ContentsCopier} for the specified {@code object}.
+     * Constructs a new {@code ContentsCopier} for the specified {@code object}.
      *
      * @param object the object to copy
      */

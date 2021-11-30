@@ -33,7 +33,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Guards.checkState;
 
 /**
  * A read-only {@link ListIterator} that iterates over all the content of a {@link PersistentEObject}.

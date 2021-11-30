@@ -17,8 +17,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkGreaterThanOrEqualTo;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkGreaterThanOrEqualTo;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * An abstract {@link FeatureBean}.

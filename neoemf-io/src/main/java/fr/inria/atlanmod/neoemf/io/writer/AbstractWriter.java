@@ -29,8 +29,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkEqualTo;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkEqualTo;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * An abstract {@link Writer} that acts as an accumulator of multi-value features in order to notify them once. This

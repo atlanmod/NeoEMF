@@ -23,8 +23,8 @@ import java.util.Optional;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
-import static org.atlanmod.commons.Preconditions.checkEqualTo;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkEqualTo;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A {@link Writer} that stores all elements in {@link java.util.Collection}s.

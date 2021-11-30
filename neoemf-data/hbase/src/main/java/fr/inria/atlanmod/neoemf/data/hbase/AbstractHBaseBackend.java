@@ -36,7 +36,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * An abstract {@link HBaseBackend} that provides overall behavior for the management of a HBase database.

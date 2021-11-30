@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A {@link MapDbBackend} that use a {@link ManyValueWithIndices} mapping for storing features.

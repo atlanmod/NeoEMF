@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkArgument;
+import static org.atlanmod.commons.Guards.checkArgument;
 
 /**
  * A {@link java.util.List} representing the content of the root of a {@link fr.inria.atlanmod.neoemf.resource.PersistentResource},

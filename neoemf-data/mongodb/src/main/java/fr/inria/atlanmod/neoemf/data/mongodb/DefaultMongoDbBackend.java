@@ -56,8 +56,8 @@ import static com.mongodb.client.model.Updates.pushEach;
 import static com.mongodb.client.model.Updates.set;
 import static com.mongodb.client.model.Updates.unset;
 import static java.util.Objects.isNull;
-import static org.atlanmod.commons.Preconditions.checkNotContainsNull;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotContainsNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * The default {@link MongoDbBackend} mapping.

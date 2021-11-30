@@ -44,8 +44,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 
 import static java.util.Objects.isNull;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
-import static org.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Guards.checkNotNull;
+import static org.atlanmod.commons.Guards.checkState;
 
 /**
  * An abstract {@code StoreAdapter}.

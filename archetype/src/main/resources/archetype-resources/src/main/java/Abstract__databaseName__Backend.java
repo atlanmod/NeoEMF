@@ -16,7 +16,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.atlanmod.commons.Throwables;
 
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * An abstract {@link ${databaseName}Backend} that provides overall behavior for the management of a ${databaseName}

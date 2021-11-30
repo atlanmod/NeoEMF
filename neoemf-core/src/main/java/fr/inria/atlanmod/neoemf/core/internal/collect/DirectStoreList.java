@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
-import static org.atlanmod.commons.Preconditions.checkPositionIndex;
+import static org.atlanmod.commons.Guards.checkPositionIndex;
 
 /**
  * A {@link List} representing a multi-valued feature which behaves as a proxy and that delegates its operations to the

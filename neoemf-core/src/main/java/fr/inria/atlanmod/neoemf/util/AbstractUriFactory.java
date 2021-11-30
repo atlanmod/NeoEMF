@@ -24,10 +24,10 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkArgument;
-import static org.atlanmod.commons.Preconditions.checkGreaterThanOrEqualTo;
-import static org.atlanmod.commons.Preconditions.checkLessThanOrEqualTo;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkArgument;
+import static org.atlanmod.commons.Guards.checkGreaterThanOrEqualTo;
+import static org.atlanmod.commons.Guards.checkLessThanOrEqualTo;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * An abstract {@link fr.inria.atlanmod.neoemf.util.UriFactory} that manages the assembly and the construction of {@link

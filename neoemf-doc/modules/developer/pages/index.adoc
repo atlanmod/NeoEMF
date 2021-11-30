@@ -2,20 +2,9 @@
 
 == Project Organization
 
-=== Maven
 
-Except for some platform-specific artifacts, for instance Eclipse plugins, project should follow Apache Maven's conventions.
 
-All software dependencies should be correctly declared in the Project Object Model (pom.xml file).
-Prefer use a `dependencyManagement` to manage the dependencies, and use `properties` to manage the dependencies version.
 
-=== Package Organization
-
-Keep together classes that implement a same feature.
-Organize packages by features, not by layers.
-Read this http://www.javapractices.com/topic/TopicAction.do?Id=205[article] for more information.
-
-Avoid packages named `beans`, `exceptions`, `factories`, or `collections`.
 
 == Code Conventions
 

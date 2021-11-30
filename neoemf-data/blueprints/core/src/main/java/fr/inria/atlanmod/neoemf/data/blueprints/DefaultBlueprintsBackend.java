@@ -29,9 +29,9 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkNotContainsNull;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
-import static org.atlanmod.commons.Preconditions.checkPositionIndex;
+import static org.atlanmod.commons.Guards.checkNotContainsNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
+import static org.atlanmod.commons.Guards.checkPositionIndex;
 
 /**
  * The default {@link BlueprintsBackend} mapping.

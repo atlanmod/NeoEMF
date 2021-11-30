@@ -24,7 +24,7 @@ import java.util.ServiceLoader;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.atlanmod.commons.Preconditions.checkState;
+import static org.atlanmod.commons.Guards.checkState;
 
 /**
  * A {@link StoreCopier} that uses a {@link fr.inria.atlanmod.neoemf.data.DataCopier}.

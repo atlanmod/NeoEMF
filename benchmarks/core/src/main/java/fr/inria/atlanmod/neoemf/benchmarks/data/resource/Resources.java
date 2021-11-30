@@ -36,8 +36,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkArgument;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkArgument;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A class that provides static methods for {@link Resource} management.

@@ -25,7 +25,7 @@ import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.INDEX_SEPARATOR;
 import static fr.inria.atlanmod.neoemf.io.util.XPathConstants.START_ELT;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A structure representing an XPath.

@@ -14,8 +14,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import org.atlanmod.commons.Throwables;
 
-import static org.atlanmod.commons.Preconditions.checkNotContainsNull;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkNotContainsNull;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * The default {@link ${databaseName}Backend} mapping.

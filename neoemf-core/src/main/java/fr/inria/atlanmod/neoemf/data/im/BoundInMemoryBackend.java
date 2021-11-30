@@ -36,7 +36,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkEqualTo;
+import static org.atlanmod.commons.Guards.checkEqualTo;
 
 /**
  * A {@link InMemoryBackend}, bound to a unique {@link fr.inria.atlanmod.neoemf.core.Id}, that stores all elements in

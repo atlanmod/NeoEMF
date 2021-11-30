@@ -33,8 +33,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkArgument;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkArgument;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A {@link Processor} that transforms simple elements to an EMF structure.

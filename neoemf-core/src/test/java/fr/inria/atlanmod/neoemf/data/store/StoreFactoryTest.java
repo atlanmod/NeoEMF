@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.atlanmod.commons.Preconditions.checkInstanceOf;
+import static org.atlanmod.commons.Guards.checkInstanceOf;
 import static org.mockito.Mockito.mock;
 
 /**

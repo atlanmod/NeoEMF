@@ -34,9 +34,9 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static java.util.Objects.nonNull;
-import static org.atlanmod.commons.Preconditions.checkArgument;
-import static org.atlanmod.commons.Preconditions.checkInstanceOf;
-import static org.atlanmod.commons.Preconditions.checkNotNull;
+import static org.atlanmod.commons.Guards.checkArgument;
+import static org.atlanmod.commons.Guards.checkInstanceOf;
+import static org.atlanmod.commons.Guards.checkNotNull;
 
 /**
  * A {@link com.tinkerpop.blueprints.KeyIndexableGraph} able to map the result of each method call to a dedicated
