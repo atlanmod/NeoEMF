@@ -24,5 +24,13 @@
         <blueprints.version>2.6.0</blueprints.version>
         <commons-configuration.version>1.10</commons-configuration.version>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.devialab</groupId>
+            <artifactId>jackson-jsonld-maven</artifactId>
+            <version>0.0.4</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 </project>

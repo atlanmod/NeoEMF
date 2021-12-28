@@ -101,7 +101,7 @@
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
+            <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
         </dependency>
 
@@ -134,6 +134,20 @@
             <artifactId>assertj-core</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.emfjson/emfjson-jackson -->
+        <dependency>
+            <groupId>org.emfjson</groupId>
+            <artifactId>emfjson-jackson</artifactId>
+            <version>1.3.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.emfjson</groupId>
             <artifactId>emfjson-jackson</artifactId>
@@ -144,11 +158,14 @@
 
         <!-- Test: EMF -->
 
+        <!--
         <dependency>
             <groupId>org.eclipse.emf</groupId>
             <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
             <scope>test</scope>
         </dependency>
+
+        -->
 
 
         <!-- Test: Eclipse Runtime -->
@@ -160,7 +177,7 @@
         <dependency>
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.core.runtime</artifactId>
-            <version>[3.20.0,)</version>
+            <version>3.23.0</version>
             <scope>test</scope>
         </dependency>
 

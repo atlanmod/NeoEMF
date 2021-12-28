@@ -220,6 +220,12 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.devialab</groupId>
+            <artifactId>jackson-jsonld-maven</artifactId>
+            <version>0.0.4</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

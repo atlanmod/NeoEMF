@@ -36,6 +36,12 @@
             -->
             <!-- compatibility issue with Guava/HBase (15.0) -->
         </dependency>
+        <dependency>
+            <groupId>com.devialab</groupId>
+            <artifactId>jackson-jsonld-maven</artifactId>
+            <version>0.0.4</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 
