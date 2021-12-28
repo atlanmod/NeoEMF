@@ -1,7 +1,0 @@
-[ {
-  "eClass" : "http://www.neoemf.com/tests/sample#//Value",
-  "value" : 10
-}, {
-  "eClass" : "http://www.neoemf.com/tests/sample#//Value",
-  "value" : 12
-} ]
