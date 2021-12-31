@@ -1,7 +1,10 @@
 package fr.inria.atlanmod.neoemf.io.writer.json;
 
+import fr.inria.atlanmod.neoemf.tests.sample.Node;
 import fr.inria.atlanmod.neoemf.tests.sample.SampleFactory;
 import fr.inria.atlanmod.neoemf.tests.sample.Value;
+import fr.inria.atlanmod.neoemf.tests.sample.impl.LocalNodeImpl;
+import fr.inria.atlanmod.neoemf.tests.sample.impl.PhysicalNodeImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.api.Test;
 
@@ -38,5 +41,27 @@ public class AttributeTest {
             ));
         };
         Helper.testMigration(populator, "AttributeTest/multipleAttribute/");
+    }
+
+    @Test
+    void testMultiValuedAttribute() {
+        Consumer<Resource> populator = resource -> {
+            Node node = factory.createPhysicalNode();
+            node.setLabel("parentNode");
+            Node node1 = factory.createPhysicalNode();
+            node1.setLabel("childrenNode1");
+            node1.setParent(node);
+            Node node2 = factory.createPhysicalNode();
+            node2.setLabel("childrenNode2");
+            node2.setParent(node);
+
+            node.getChildren().add(node1);
+            node.getChildren().add(node2);
+
+            resource.getContents().addAll(Arrays.asList(
+                node, node1, node2
+            ));
+        };
+        Helper.testMigration(populator, "AttributeTest/multiValuedAttribute/");
     }
 }

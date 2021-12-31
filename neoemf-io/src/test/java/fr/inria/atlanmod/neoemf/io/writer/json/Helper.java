@@ -34,44 +34,64 @@ public class Helper {
         return directoryToBeDeleted.delete();
     }
 
+    static private void saveWithEmfJsonJackson(Consumer<Resource> populator, @NotNull String targetPath) throws IOException {
+        ResourceSet resourceSet = new ResourceSetImpl();
+        resourceSet.getResourceFactoryRegistry()
+                .getExtensionToFactoryMap()
+                .put("json", new JsonResourceFactory());
+        Log.info("Exporting to file... [{0}]", currentTargetPath + "test-jackson-write.json");
+        resourceEmfJsonJackson = resourceSet.createResource(URI.createFileURI(currentTargetPath + "test-jackson-write.json"));
+        populator.accept(resourceEmfJsonJackson);
+        resourceEmfJsonJackson.save(null);
+    }
+
+    static private void saveWithEmfXmi(Consumer<Resource> populator, @NotNull String targetPath) throws IOException {
+        ResourceSet resourceSet2 = new ResourceSetImpl();
+        resourceSet2.getResourceFactoryRegistry()
+                .getExtensionToFactoryMap()
+                .put("xmi", new XMIResourceFactoryImpl());
+        Log.info("Exporting to file... [{0}]", currentTargetPath + "test-write.xmi");
+        resourceXmi = resourceSet2.createResource(URI.createFileURI(currentTargetPath + "test-write.xmi"));
+        populator.accept(resourceXmi);
+        resourceXmi.save(null);
+    }
+
+    static private DataMapper getMapperFromXmi() throws IOException {
+        DataMapper mapper = new DefaultInMemoryBackend();
+        InputStream in = new FileInputStream(currentTargetPath + "test-write.xmi");
+        // xmi to mapper
+        Migrator.fromXmi(in)
+                .toMapper(mapper)
+                .migrate();
+        return mapper;
+    }
+
+    static private void mapperToJson(DataMapper mapper) throws IOException {
+        // mapper to json (our implementation)
+        Log.info("Exporting to file... [{0}]", currentTargetPath + "test-write.json");
+        File targetFileJSON = new File(currentTargetPath + "test-write.json");
+        Migrator.fromMapper(mapper)
+                .toJson(targetFileJSON)
+                .migrate();
+    }
+
+
     static void testMigration(Consumer<Resource> populator, @NotNull String targetPath) {
         try {
             currentTargetPath = testOutputPath + targetPath;
             deleteDirectory(currentTargetPath);
 
             // java to emfjson-jackson (for testing/comparison purpose)
-            ResourceSet resourceSet = new ResourceSetImpl();
-            resourceSet.getResourceFactoryRegistry()
-                    .getExtensionToFactoryMap()
-                    .put("json", new JsonResourceFactory());
-            Log.info("Exporting to file... [{0}]", currentTargetPath + "test-jackson-write.json");
-            resourceEmfJsonJackson = resourceSet.createResource(URI.createFileURI(currentTargetPath + "test-jackson-write.json"));
-            populator.accept(resourceEmfJsonJackson);
-            resourceEmfJsonJackson.save(null);
+            saveWithEmfJsonJackson(populator, targetPath);
 
-            // java to xmi (to use in the Migrator input)
-            ResourceSet resourceSet2 = new ResourceSetImpl();
-            resourceSet2.getResourceFactoryRegistry()
-                    .getExtensionToFactoryMap()
-                    .put("xmi", new XMIResourceFactoryImpl());
-            Log.info("Exporting to file... [{0}]", currentTargetPath + "test-write.xmi");
-            resourceXmi = resourceSet2.createResource(URI.createFileURI(currentTargetPath + "test-write.xmi"));
-            populator.accept(resourceXmi);
-            resourceXmi.save(null);
+            // java to xmi (used in the Migrator input)
+            saveWithEmfXmi(populator, targetPath);
 
-            DataMapper mapper = new DefaultInMemoryBackend();
-            InputStream in = new FileInputStream(currentTargetPath + "test-write.xmi");
-            // xmi to mapper
-            Migrator.fromXmi(in)
-                    .toMapper(mapper)
-                    .migrate();
+            // migrate xmi to mapper
+            DataMapper mapper = getMapperFromXmi();
 
-            // mapper to json (our implementation)
-            Log.info("Exporting to file... [{0}]", currentTargetPath + "test-write.json");
-            File targetFileJSON = new File(currentTargetPath + "test-write.json");
-            Migrator.fromMapper(mapper)
-                    .toJson(targetFileJSON)
-                    .migrate();
+            // migrate mapper to json
+            // mapperToJson(mapper);
 
         } catch (IOException e) {
             e.printStackTrace();
