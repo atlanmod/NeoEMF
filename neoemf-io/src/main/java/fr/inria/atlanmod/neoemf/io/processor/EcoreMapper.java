@@ -24,6 +24,8 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -45,6 +47,8 @@ public class EcoreMapper extends AbstractProcessor {
     /**
      * A LIFO that holds the current {@link Id} chain.
      */
+
+   final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
     @Nonnull
     private final Deque<Id> identifiers = new ArrayDeque<>();
 
@@ -112,7 +116,13 @@ public class EcoreMapper extends AbstractProcessor {
         checkNotNull(element.getMetaClass(), "The root element must have a namespace");
 
         // Retrieve the current EClass & define the meta-class of the current element if not present
+        // element is not null
+       // logger.info("ProxyElement is null:: {}", element == null);
         final ProxyClass metaClass = element.getMetaClass();
+        // metaClass is not null
+        //logger.info("metaClass is null:: {}", metaClass == null);
+        // the following condition is true
+        //logger.info("metaClass name space getOrgin is null:: {}", metaClass.getNamespace().getOrigin() == null);
         final EClass eClass = getClass(element.getName(), metaClass.getNamespace().getOrigin());
         metaClass.setOrigin(eClass);
 
@@ -281,8 +291,10 @@ public class EcoreMapper extends AbstractProcessor {
      */
     @Nonnull
     private EClass getClass(String name, EPackage ePackage) {
+
+        logger.info("ePackage is null :: {}", ePackage == null);
         EClass eClass = (EClass) ePackage.getEClassifier(name);
-        checkNotNull(eClass, "Unable to find EClass '%s' from EPackage '%s'", name, ePackage.getNsURI());
+       checkNotNull(eClass, "Unable to find EClass '%s' from EPackage '%s'", name, ePackage.getNsURI());
 
         return eClass;
     }

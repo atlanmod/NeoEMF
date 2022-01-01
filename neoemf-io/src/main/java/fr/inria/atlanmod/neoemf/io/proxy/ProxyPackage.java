@@ -14,18 +14,18 @@ import org.atlanmod.commons.annotation.Static;
 import org.atlanmod.commons.annotation.VisibleForTesting;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.*;
+
 
 import static org.atlanmod.commons.Preconditions.checkNotNull;
+
 
 /**
  * A simple representation of a {@link org.eclipse.emf.ecore.EPackage}.
@@ -38,7 +38,6 @@ public class ProxyPackage implements Proxy<ProxyPackage, EPackage> {
      */
     @Nonnull
     public static final ProxyPackage DEFAULT = Registry.getInstance().register(EcorePackage.eINSTANCE);
-
     /**
      * The prefix of this namespace.
      */
@@ -56,7 +55,18 @@ public class ProxyPackage implements Proxy<ProxyPackage, EPackage> {
      */
     @Nonnull
     private final LazyReference<EPackage> ePackage = LazyReference.soft(() -> {
+        final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+        // Until here we don't have a null object
+        //EPackage p = EPackage.Registry.INSTANCE.getEPackage(getUri());
         EPackage p = EPackage.Registry.INSTANCE.getEPackage(getUri());
+       // EPackage p2 = new EPackageImpl("name", );
+        logger.info("the ePackage :: {}", p);
+        if(p == null){
+            // create an EPackage object
+            //p = EPackage.Registry.INSTANCE.getEPackage("http://www.omg.org/XMI");
+            throw new NullPointerException("The ePackage is null");
+        }
+        logger.info("Epackage name :::::: {}",getUri() );
         checkNotNull(p, "EPackage %s is not registered.", getUri());
         return p;
     });
@@ -75,6 +85,7 @@ public class ProxyPackage implements Proxy<ProxyPackage, EPackage> {
     @Override
     public EPackage getOrigin() {
         return ePackage.get();
+        //return (ePackage != null) ? ePackage.get(): new EPackageImpl("", )
     }
 
     @Nonnull
