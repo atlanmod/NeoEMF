@@ -55,7 +55,7 @@ public class AttributeTest {
 
             return null;
         });*/
-       Helper.testMigration(populator, "AttributeTest/multipleAttribute/");
+      Helper.testMigration(populator, "AttributeTest/multipleAttribute/");
     }
 
     @Test
@@ -73,10 +73,10 @@ public class AttributeTest {
             node.getChildren().add(node1);
             node.getChildren().add(node2);
 
-            resource.getContents().addAll(Arrays.asList(
+            resource.getContents().addAll(List.of(
                 node, node1, node2
             ));
         };
-        Helper.testMigration(populator, "AttributeTest/multiValuedAttribute/");
+       Helper.testMigration(populator, "AttributeTest/multiValuedAttribute/");
     }
 }

@@ -31,7 +31,7 @@ import static org.atlanmod.commons.Preconditions.checkNotNull;
  * A simple representation of a {@link org.eclipse.emf.ecore.EPackage}.
  */
 @ParametersAreNonnullByDefault
-public class ProxyPackage implements Proxy<ProxyPackage, EPackage> {
+public class ProxyPackage extends EPackageImpl implements Proxy<ProxyPackage, EPackage> {
 
     /**
      * The instance of the default namespace: {@code ecore @ http://www.eclipse.org/emf/2002/Ecore}.
@@ -50,23 +50,27 @@ public class ProxyPackage implements Proxy<ProxyPackage, EPackage> {
     @Nonnull
     private final String uri;
 
+    final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
     /**
      * The {@link EPackage} represented by this object.
      */
     @Nonnull
     private final LazyReference<EPackage> ePackage = LazyReference.soft(() -> {
-        final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
         // Until here we don't have a null object
-        //EPackage p = EPackage.Registry.INSTANCE.getEPackage(getUri());
         EPackage p = EPackage.Registry.INSTANCE.getEPackage(getUri());
-       // EPackage p2 = new EPackageImpl("name", );
+
+        logger.info("URI :: {}", getUri());
         logger.info("the ePackage :: {}", p);
-        if(p == null){
+        if(p == null && getUri().equals("http://www.neoemf.com/tests/sample")){
             // create an EPackage object
-            //p = EPackage.Registry.INSTANCE.getEPackage("http://www.omg.org/XMI");
-            throw new NullPointerException("The ePackage is null");
+            p = EPackage.Registry.INSTANCE.getEPackage("http://www.neoemf.com/tests/sample");
+           logger.info("The ePackage is null");
+
+           //p = new ProxyPackage("sample", "http://www.neoemf.com/tests/sample");
         }
-        logger.info("Epackage name :::::: {}",getUri() );
+
         checkNotNull(p, "EPackage %s is not registered.", getUri());
         return p;
     });
@@ -80,6 +84,8 @@ public class ProxyPackage implements Proxy<ProxyPackage, EPackage> {
     private ProxyPackage(String prefix, String uri) {
         this.prefix = prefix;
         this.uri = uri;
+
+       // logger.info("prefix :: {}, namespace :: {}", prefix, uri);
     }
 
     @Override

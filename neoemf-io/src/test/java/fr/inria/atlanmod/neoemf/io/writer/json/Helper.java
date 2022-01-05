@@ -51,7 +51,9 @@ public class Helper {
                 .getExtensionToFactoryMap()
                 .put("xmi", new XMIResourceFactoryImpl());
         Log.info("Exporting to file... [{0}]", currentTargetPath + "test-write.xmi");
-        resourceXmi = resourceSet2.createResource(URI.createFileURI(currentTargetPath + "test-write.xmi"));
+        //resourceXmi = resourceSet2.createResource(URI.createFileURI(targetPath + "test-write.xmi"));
+        resourceXmi = resourceSet2.createResource(URI.createFileURI(currentTargetPath+ "test-write.xmi"));
+        Log.info("targetPath :: ", targetPath);
         populator.accept(resourceXmi);
         resourceXmi.save(null);
     }
@@ -90,6 +92,7 @@ public class Helper {
             // migrate xmi to mapper
             DataMapper mapper = getMapperFromXmi();
 
+           // mapper.save();
             // migrate mapper to json
             // mapperToJson(mapper);
 

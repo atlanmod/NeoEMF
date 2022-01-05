@@ -28,6 +28,8 @@ import fr.inria.atlanmod.neoemf.io.writer.xmi.XmiStreamWriter;
 import org.atlanmod.commons.annotation.VisibleForTesting;
 import org.atlanmod.commons.log.Level;
 import org.atlanmod.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.File;
@@ -401,6 +403,8 @@ public final class Migrator<T> {
         try {
             // Bind handlers and notifiers
             Collection<Handler> handlers = new ArrayList<>(listeners.size() + writers.size());
+            final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+            logger.info("writers :: {}", writers.toArray());
             handlers.addAll(listeners);
             handlers.addAll(writers);
             reader.addNext(new NoopProcessor(handlers));
