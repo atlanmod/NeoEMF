@@ -4,10 +4,10 @@ package fr.inria.atlanmod.neoemf.io.writer.json;
 import fr.inria.atlanmod.neoemf.tests.sample.Node;
 import fr.inria.atlanmod.neoemf.tests.sample.Comment;
 import fr.inria.atlanmod.neoemf.tests.sample.SampleFactory;
+import fr.inria.atlanmod.neoemf.tests.sample.SamplePackage;
 import fr.inria.atlanmod.neoemf.tests.sample.Value;
-import fr.inria.atlanmod.neoemf.tests.sample.impl.LocalNodeImpl;
-import fr.inria.atlanmod.neoemf.tests.sample.impl.PhysicalNodeImpl;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -17,6 +17,11 @@ import java.util.function.Consumer;
 public class AttributeTest {
     // Get the factory
     private final SampleFactory factory = SampleFactory.eINSTANCE;
+
+    @BeforeAll
+    static void initialize() {
+        SamplePackage.eINSTANCE.eClass();
+    }
 
     @Test
     void testSingleAttribute() {
