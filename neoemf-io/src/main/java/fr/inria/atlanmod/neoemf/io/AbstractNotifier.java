@@ -79,7 +79,7 @@ public abstract class AbstractNotifier<H extends Handler> implements Notifier {
 
     @Override
     public void notifyStartElement(ProxyElement element) throws IOException {
-        checkNotNull(element, "element");
+       checkNotNull(element, "element");
 
         for (H h : handlers) {
             h.onStartElement(element);

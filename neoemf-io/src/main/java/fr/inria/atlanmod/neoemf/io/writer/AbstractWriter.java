@@ -139,7 +139,6 @@ public abstract class AbstractWriter<T> implements Writer {
 
     /**
      * Handles an attribute in the current element.
-     *
      * @param attribute the new attribute, without its value
      * @param values    the ordered values of the attribute; when the {@code attribute} is single-valued, this parameter
      *                  is a {@link Collections#singletonList(Object)}

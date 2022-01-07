@@ -1,0 +1,5 @@
+{
+  "eClass" : "http://emfjson.org/domain#//User",
+  "id": 1,
+  "name" : "Bob"
+}

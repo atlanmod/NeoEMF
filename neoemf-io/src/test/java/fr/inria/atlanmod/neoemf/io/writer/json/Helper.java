@@ -4,10 +4,8 @@ import fr.inria.atlanmod.neoemf.data.im.DefaultInMemoryBackend;
 import fr.inria.atlanmod.neoemf.data.mapping.DataMapper;
 import fr.inria.atlanmod.neoemf.io.Migrator;
 import fr.inria.atlanmod.neoemf.tests.sample.SampleFactory;
-import fr.inria.atlanmod.neoemf.tests.sample.SamplePackage;
 import org.atlanmod.commons.log.Log;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
@@ -16,8 +14,6 @@ import org.emfjson.jackson.resource.JsonResourceFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.Map;
 import java.util.function.Consumer;
 
 public class Helper {
@@ -26,7 +22,6 @@ public class Helper {
     private static Resource resourceEmfJsonJackson;
     private static Resource resourceXmi;
     private static String currentTargetPath;
-    private static String packageName = SamplePackage.eNAME;
 
     static boolean deleteDirectory(String path) {
         File directoryToBeDeleted = new File(path);
@@ -43,31 +38,27 @@ public class Helper {
         ResourceSet resourceSet = new ResourceSetImpl();
         resourceSet.getResourceFactoryRegistry()
                 .getExtensionToFactoryMap()
-                .put(packageName, new JsonResourceFactory());
-        Log.info("Exporting to file... [{0}]", currentTargetPath + "test-jacksonjson-write." + packageName);
-        resourceEmfJsonJackson = resourceSet.createResource(URI.createFileURI(currentTargetPath + "test-jacksonjson-write." + packageName));
+                .put("json", new JsonResourceFactory());
+        Log.info("Exporting to file... [{0}]", currentTargetPath + "test-jackson-write.json");
+        resourceEmfJsonJackson = resourceSet.createResource(URI.createFileURI(currentTargetPath + "test-jackson-write.json"));
         populator.accept(resourceEmfJsonJackson);
-        resourceEmfJsonJackson.save(Collections.EMPTY_MAP);
+        resourceEmfJsonJackson.save(null);
     }
 
     static private void saveWithEmfXmi(Consumer<Resource> populator, @NotNull String targetPath) throws IOException {
-        final Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
-        final Map<String, Object> m = reg.getExtensionToFactoryMap();
-        m.put(packageName, new XMIResourceFactoryImpl());
-
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry()
+        ResourceSet resourceSet2 = new ResourceSetImpl();
+        resourceSet2.getResourceFactoryRegistry()
                 .getExtensionToFactoryMap()
-                .put(packageName, new XMIResourceFactoryImpl());
-        Log.info("Exporting to file... [{0}]", currentTargetPath + "test-write-xmi." + packageName);
-        resourceXmi = resourceSet.createResource(URI.createFileURI(currentTargetPath + "test-write-xmi." + packageName));
+                .put("xmi", new XMIResourceFactoryImpl());
+        Log.info("Exporting to file... [{0}]", currentTargetPath + "test-write.xmi");
+        resourceXmi = resourceSet2.createResource(URI.createFileURI(currentTargetPath + "test-write.xmi"));
         populator.accept(resourceXmi);
-        resourceXmi.save(Collections.EMPTY_MAP);
+        resourceXmi.save(null);
     }
 
     static private DataMapper getMapperFromXmi() throws IOException {
         DataMapper mapper = new DefaultInMemoryBackend();
-        InputStream in = new FileInputStream(currentTargetPath + "test-write-xmi." + packageName);
+        InputStream in = new FileInputStream(currentTargetPath + "test-write.xmi");
         // xmi to mapper
         Migrator.fromXmi(in)
                 .toMapper(mapper)
@@ -77,8 +68,8 @@ public class Helper {
 
     static private void mapperToJson(DataMapper mapper) throws IOException {
         // mapper to json (our implementation)
-        Log.info("Exporting to file... [{0}]", currentTargetPath + "test-write-json." + packageName);
-        File targetFileJSON = new File(currentTargetPath + "test-write-json." + packageName);
+        Log.info("Exporting to file... [{0}]", currentTargetPath + "test-write.json");
+        File targetFileJSON = new File(currentTargetPath + "test-write.json");
         Migrator.fromMapper(mapper)
                 .toJson(targetFileJSON)
                 .migrate();

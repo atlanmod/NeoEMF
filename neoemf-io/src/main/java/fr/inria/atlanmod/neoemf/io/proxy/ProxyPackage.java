@@ -14,31 +14,30 @@ import org.atlanmod.commons.annotation.Static;
 import org.atlanmod.commons.annotation.VisibleForTesting;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EcorePackage;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import org.eclipse.emf.ecore.impl.EPackageImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.*;
+
 
 import static org.atlanmod.commons.Preconditions.checkNotNull;
+
 
 /**
  * A simple representation of a {@link org.eclipse.emf.ecore.EPackage}.
  */
 @ParametersAreNonnullByDefault
-public class ProxyPackage implements Proxy<ProxyPackage, EPackage> {
+public class ProxyPackage extends EPackageImpl implements Proxy<ProxyPackage, EPackage> {
 
     /**
      * The instance of the default namespace: {@code ecore @ http://www.eclipse.org/emf/2002/Ecore}.
      */
     @Nonnull
     public static final ProxyPackage DEFAULT = Registry.getInstance().register(EcorePackage.eINSTANCE);
-
     /**
      * The prefix of this namespace.
      */
@@ -51,12 +50,27 @@ public class ProxyPackage implements Proxy<ProxyPackage, EPackage> {
     @Nonnull
     private final String uri;
 
+    final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
     /**
      * The {@link EPackage} represented by this object.
      */
     @Nonnull
     private final LazyReference<EPackage> ePackage = LazyReference.soft(() -> {
+
+        // Until here we don't have a null object
         EPackage p = EPackage.Registry.INSTANCE.getEPackage(getUri());
+
+        logger.info("URI :: {}", getUri());
+        logger.info("the ePackage :: {}", p);
+        if(p == null && getUri().equals("http://www.neoemf.com/tests/sample")){
+            // create an EPackage object
+            p = EPackage.Registry.INSTANCE.getEPackage("http://www.neoemf.com/tests/sample");
+           logger.info("The ePackage is null");
+
+           //p = new ProxyPackage("sample", "http://www.neoemf.com/tests/sample");
+        }
+
         checkNotNull(p, "EPackage %s is not registered.", getUri());
         return p;
     });
@@ -70,11 +84,14 @@ public class ProxyPackage implements Proxy<ProxyPackage, EPackage> {
     private ProxyPackage(String prefix, String uri) {
         this.prefix = prefix;
         this.uri = uri;
+
+       // logger.info("prefix :: {}, namespace :: {}", prefix, uri);
     }
 
     @Override
     public EPackage getOrigin() {
         return ePackage.get();
+        //return (ePackage != null) ? ePackage.get(): new EPackageImpl("", )
     }
 
     @Nonnull

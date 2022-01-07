@@ -60,7 +60,6 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
     @Override
     public void onStartElement(ProxyElement element) throws IOException {
         super.onStartElement(element);
-
         createElement(element, false);
     }
 
@@ -72,9 +71,18 @@ public class DefaultMapperWriter extends AbstractWriter<DataMapper> {
             target.valueFor(bean, values.get(0));
         }
         else {
+            // Old code
             target.appendAllValues(bean, values);
+            // new code
+            /*
+            values.stream().map(v -> {
+                target.valueFor(bean, v);
+               return  null;
+            });*/
+
         }
     }
+
 
     @Override
     public void onReference(ProxyReference reference, List<Id> values) {

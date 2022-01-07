@@ -21,6 +21,14 @@
     <properties>
         <tycho-plugin.version>2.3.0</tycho-plugin.version>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.devialab</groupId>
+            <artifactId>jackson-jsonld-maven</artifactId>
+            <version>0.0.4</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
     <repositories>
         <repository>

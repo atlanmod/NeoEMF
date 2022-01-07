@@ -183,6 +183,12 @@
             <artifactId>jaxb-runtime</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.devialab</groupId>
+            <artifactId>jackson-jsonld-maven</artifactId>
+            <version>0.0.4</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

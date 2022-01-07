@@ -36,6 +36,12 @@
             <artifactId>de.flapdoodle.embed.mongo</artifactId>
             <scope>compile</scope><!-- FIXME Use 'test' scope: 'compile' is used to avoid errors in 'neoemf-tests' -->
         </dependency>
+        <dependency>
+            <groupId>com.devialab</groupId>
+            <artifactId>jackson-jsonld-maven</artifactId>
+            <version>0.0.4</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 
