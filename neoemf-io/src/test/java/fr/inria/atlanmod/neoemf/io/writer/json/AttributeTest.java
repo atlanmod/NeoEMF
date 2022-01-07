@@ -4,6 +4,7 @@ import fr.inria.atlanmod.neoemf.tests.sample.Node;
 import fr.inria.atlanmod.neoemf.tests.sample.SampleFactory;
 import fr.inria.atlanmod.neoemf.tests.sample.SamplePackage;
 import fr.inria.atlanmod.neoemf.tests.sample.Value;
+import fr.inria.atlanmod.neoemf.tests.sample.impl.TypeMapImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ public class AttributeTest {
         Helper.testMigration(populator, "AttributeTest/singleAttribute/");
     }
 
-    @Test
+    /*@Test
     void testMultipleAttributes() {
         Consumer<Resource> populator = resource -> {
             Value val = factory.createValue();
@@ -46,7 +47,7 @@ public class AttributeTest {
             ));
         };
         Helper.testMigration(populator, "AttributeTest/multipleAttribute/");
-    }
+    }*/
 
     @Test
     void testMultiValuedAttribute() {
@@ -64,7 +65,7 @@ public class AttributeTest {
             node.getChildren().add(node2);
 
             resource.getContents().addAll(Arrays.asList(
-                node, node1, node2
+                node
             ));
         };
         Helper.testMigration(populator, "AttributeTest/multiValuedAttribute/");

@@ -100,7 +100,7 @@ public class Helper {
             DataMapper mapper = getMapperFromXmi();
 
             // migrate mapper to json
-            // mapperToJson(mapper);
+            mapperToJson(mapper);
 
         } catch (IOException e) {
             e.printStackTrace();
