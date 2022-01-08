@@ -97,6 +97,7 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
@@ -104,6 +105,7 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${jackson.version}</version>
+            <scope>compile</scope>
         </dependency>
 
 
@@ -137,26 +139,11 @@
             <artifactId>assertj-core</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.emfjson/emfjson-jackson -->
-        <dependency>
-            <groupId>org.emfjson</groupId>
-            <artifactId>emfjson-jackson</artifactId>
-            <version>1.3.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-
-
         <dependency>
             <groupId>org.emfjson</groupId>
             <artifactId>emfjson-jackson</artifactId>
             <version>1.3.0</version>
             <type>bundle</type>
-            <scope>test</scope>
         </dependency>
 
         <!-- Test: EMF -->

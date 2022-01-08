@@ -5,10 +5,12 @@ import fr.inria.atlanmod.neoemf.io.proxy.ProxyAttribute;
 import fr.inria.atlanmod.neoemf.io.proxy.ProxyElement;
 import fr.inria.atlanmod.neoemf.io.proxy.ProxyReference;
 import fr.inria.atlanmod.neoemf.io.writer.AbstractStreamWriter;
+import org.atlanmod.commons.primitive.Strings;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractJsonStreamWriter extends AbstractStreamWriter  {
 	/**
@@ -37,16 +39,26 @@ public abstract class AbstractJsonStreamWriter extends AbstractStreamWriter  {
 		if (!attribute.isMany()) {
 			writeAttribute(attribute.getName(), values.get(0));
 		} else {
-			writeAttribute(attribute.getName(), values);
+			writeMultipleAttributes(attribute.getName(), values);
 		}
 	}
 
 	@Override
 	public void onReference(ProxyReference reference, List<Id> values) throws IOException {
+		if (!reference.isMany()) {
+			writeAttribute(reference.getName(), reference.getValue().getResolved());
+		}
+		else {
+			System.out.println("__________________");
+			System.out.println(reference.getValue().getResolved());
+			System.out.println("__________________");
+			writeAttribute(reference.getName(), reference.getValue().getResolved());
+		}
 	}
 
 	@Override
 	public void onEndElement() throws IOException {
+		super.onEndElement();
 		writeEndElement();
 	}
 
@@ -80,6 +92,16 @@ public abstract class AbstractJsonStreamWriter extends AbstractStreamWriter  {
 	 * @throws IOException if an I/O error occurs when writing
 	 */
 	protected abstract void writeAttribute(String name, Object value) throws IOException;
+
+	/**
+	 * Writes a multi valued attribute.
+	 *
+	 * @param name  the name of the attribute
+	 * @param values multiple values of the attribute
+	 *
+	 * @throws IOException if an I/O error occurs when writing
+	 */
+	protected abstract void writeMultipleAttributes(String name, List<Object> values) throws IOException;
 
 	/**
 	 * Writes characters.

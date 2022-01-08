@@ -34,28 +34,6 @@ public class Helper {
         return directoryToBeDeleted.delete();
     }
 
-    static private void saveWithEmfJsonJackson(Consumer<Resource> populator, @NotNull String targetPath) throws IOException {
-        ResourceSet resourceSet = new ResourceSetImpl();
-        resourceSet.getResourceFactoryRegistry()
-                .getExtensionToFactoryMap()
-                .put("json", new JsonResourceFactory());
-        Log.info("Exporting to file... [{0}]", currentTargetPath + "test-jackson-write.json");
-        resourceEmfJsonJackson = resourceSet.createResource(URI.createFileURI(currentTargetPath + "test-jackson-write.json"));
-        populator.accept(resourceEmfJsonJackson);
-        resourceEmfJsonJackson.save(null);
-    }
-
-    static private void saveWithEmfXmi(Consumer<Resource> populator, @NotNull String targetPath) throws IOException {
-        ResourceSet resourceSet2 = new ResourceSetImpl();
-        resourceSet2.getResourceFactoryRegistry()
-                .getExtensionToFactoryMap()
-                .put("xmi", new XMIResourceFactoryImpl());
-        Log.info("Exporting to file... [{0}]", currentTargetPath + "test-write.xmi");
-        resourceXmi = resourceSet2.createResource(URI.createFileURI(currentTargetPath + "test-write.xmi"));
-        populator.accept(resourceXmi);
-        resourceXmi.save(null);
-    }
-
     static private DataMapper getMapperFromXmi() throws IOException {
         DataMapper mapper = new DefaultInMemoryBackend();
         InputStream in = new FileInputStream(currentTargetPath + "test-write.xmi");
@@ -75,26 +53,20 @@ public class Helper {
                 .migrate();
     }
 
+    static void testMigration(@NotNull String targetPath) throws IOException {
+        currentTargetPath = testOutputPath + targetPath;
+        // deleteDirectory(currentTargetPath);
 
-    static void testMigration(Consumer<Resource> populator, @NotNull String targetPath) {
-        try {
-            currentTargetPath = testOutputPath + targetPath;
-            deleteDirectory(currentTargetPath);
+        // java to emfjson-jackson (for testing/comparison purpose)
+        // saveWithEmfJsonJackson(populator, targetPath);
 
-            // java to emfjson-jackson (for testing/comparison purpose)
-            saveWithEmfJsonJackson(populator, targetPath);
+        // java to xmi (used in the Migrator input)
+        // saveWithEmfXmi(populator, targetPath);
 
-            // java to xmi (used in the Migrator input)
-            saveWithEmfXmi(populator, targetPath);
+        // migrate xmi to mapper
+        DataMapper mapper = getMapperFromXmi();
 
-            // migrate xmi to mapper
-            DataMapper mapper = getMapperFromXmi();
-
-            // migrate mapper to json
-            mapperToJson(mapper);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // migrate mapper to json
+        mapperToJson(mapper);
     }
 }

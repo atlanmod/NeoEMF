@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jsonldjava.utils.Obj;
 import fr.inria.atlanmod.neoemf.io.reader.AbstractStreamReader;
 import org.apache.commons.io.IOUtils;
-import org.emfjson.jackson.resource.JsonResourceFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,12 +24,12 @@ public class AbstractJsonStreamReader extends AbstractStreamReader {
 
 	private final Logger logger = LoggerFactory.getLogger(AbstractJsonStreamReader.class);
 
-	public AbstractJsonStreamReader(){
+	/*public AbstractJsonStreamReader(){
 		JsonReaderHelper.resourceSet.getResourceFactoryRegistry()
 				.getExtensionToFactoryMap()
 				.put("json", new JsonResourceFactory());
 
-	}
+	}*/
 
 	@Override
 	public void parse(@NotNull InputStream stream) throws IOException {

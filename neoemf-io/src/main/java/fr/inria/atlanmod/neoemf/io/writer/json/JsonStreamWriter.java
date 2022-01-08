@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -36,7 +37,6 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 
 	@Override
 	protected void writeStartDocument() throws IOException {
-		jGenerator.writeStartArray();
 	}
 
 	@Override
@@ -51,6 +51,15 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 	}
 
 	@Override
+	protected void writeMultipleAttributes(String name, List<Object> values) throws IOException {
+		jGenerator.writeArrayFieldStart(name);
+		for (Object v : values) {
+			jGenerator.writeObject(v);
+		}
+		jGenerator.writeEndArray();
+	}
+
+	@Override
 	protected void writeCharacters(String characters) throws IOException {
 		jGenerator.writeString(characters);
 	}
@@ -62,7 +71,6 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 
 	@Override
 	protected void writeEndDocument() throws IOException {
-		jGenerator.writeEndArray();
 		jGenerator.close();
 	}
 }
