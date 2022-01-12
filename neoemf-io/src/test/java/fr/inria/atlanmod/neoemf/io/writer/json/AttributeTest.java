@@ -19,10 +19,6 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class AttributeTest {
-    // Get the factory
-    private static final SampleFactory sampleFactory = SampleFactory.eINSTANCE;
-    private static final StoreFactory storeFactory = StoreFactory.eINSTANCE;
-
     @BeforeAll
     static void initialize() {
         SamplePackage.eINSTANCE.eClass();

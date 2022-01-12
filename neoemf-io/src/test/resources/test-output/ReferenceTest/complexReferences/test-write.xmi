@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.univ-nantes.store="http://com/univ-nantes/store">
+  <com.univ-nantes.store:Category name="Fruit" product="/99 /99"/>
+  <com.univ-nantes.store:Customer id="100" name="Fran&#xe7;ois" order="1000"/>
+  <com.univ-nantes.store:OrderItem quantity="5.0" id="1">
+    <product id="/99" name="Peach" quantity="5.0" category="/0"/>
+  </com.univ-nantes.store:OrderItem>
+  <com.univ-nantes.store:OrderItem quantity="10.0" id="2">
+    <product id="/99" name="Apple" quantity="20.0" category="/0"/>
+  </com.univ-nantes.store:OrderItem>
+  <com.univ-nantes.store:Order id="1000" createdAt="2022-01-11T20:03:40.956+0100" state="SHIPPED" customer="100" orderitem="/2 /3"/>
+</xmi:XMI>

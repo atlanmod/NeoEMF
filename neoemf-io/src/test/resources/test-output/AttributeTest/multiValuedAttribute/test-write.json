@@ -1,0 +1,11 @@
+{
+  "eClass" : "http://www.neoemf.com/tests/sample#//PhysicalNode",
+  "label" : "parentNode",
+  "children" : [ {
+    "eClass" : "http://www.neoemf.com/tests/sample#//children",
+    "label" : "childrenNode1"
+  }, {
+    "eClass" : "http://www.neoemf.com/tests/sample#//children",
+    "label" : "childrenNode2"
+  } ]
+}

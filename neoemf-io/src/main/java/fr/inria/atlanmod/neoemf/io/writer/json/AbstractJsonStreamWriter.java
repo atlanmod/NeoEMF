@@ -29,37 +29,50 @@ public abstract class AbstractJsonStreamWriter extends AbstractStreamWriter  {
 
 	@Override
 	public final void onStartElement(ProxyElement element) throws IOException {
+		System.out.println("__________________");
 		super.onStartElement(element);
+		System.out.println("ON START ELEM");
 		writeStartElement(element.getMetaClass().getNamespace().getUri(), element.getName());
+		System.out.println("__________________");
 	}
 
 	@Override
 	public void onAttribute(ProxyAttribute attribute, List<Object> values) throws IOException {
-		System.out.println(attribute.getOrigin().getEAttributeType());
+		System.out.println("__________________");
+		System.out.println(attribute.getName());
 		if (!attribute.isMany()) {
+			System.out.println("SINGLE ATTR");
 			writeAttribute(attribute.getName(), values.get(0));
 		} else {
+			System.out.println("MULTIPLE ATTR");
 			writeMultipleAttributes(attribute.getName(), values);
 		}
+		System.out.println("__________________");
 	}
 
 	@Override
 	public void onReference(ProxyReference reference, List<Id> values) throws IOException {
+		System.out.println("REF");
+		if (reference.isContainment()) {
+			System.out.println("CONTAINMENT");
+			writeStartContainmentReference(reference.getName());
+			return;
+		}
 		if (!reference.isMany()) {
-			writeAttribute(reference.getName(), reference.getValue().getResolved());
+			writeAttribute(reference.getName(), values.get(0).toHexString());
 		}
 		else {
-			System.out.println("__________________");
-			System.out.println(reference.getValue().getResolved());
-			System.out.println("__________________");
-			writeAttribute(reference.getName(), reference.getValue().getResolved());
+			writeAttribute(reference.getName(), values.stream().map(Id::toHexString).collect(Collectors.joining(Strings.SPACE)));
 		}
 	}
 
 	@Override
 	public void onEndElement() throws IOException {
 		super.onEndElement();
+		System.out.println("__________________");
+		System.out.println("ON END ELEM");
 		writeEndElement();
+		System.out.println("__________________");
 	}
 
 	@Override
@@ -111,6 +124,22 @@ public abstract class AbstractJsonStreamWriter extends AbstractStreamWriter  {
 	 * @throws IOException if an I/O error occurs when writing
 	 */
 	protected abstract void writeCharacters(String characters) throws IOException;
+
+	/**
+	 * Writes the start of a containment reference
+	 *
+	 * @param name the name fo the reference
+	 *
+	 * @throws IOException
+	 */
+	protected abstract void writeStartContainmentReference(String name) throws IOException;
+
+	/**
+	 * Writes the end of a containment reference
+	 *
+	 * @throws IOException
+	 */
+	protected abstract void writeEndContainmentReference() throws IOException;
 
 	/**
 	 * Writes the end of the current element.

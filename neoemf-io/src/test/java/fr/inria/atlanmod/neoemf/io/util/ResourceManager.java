@@ -10,6 +10,7 @@ package fr.inria.atlanmod.neoemf.io.util;
 
 //import fr.inria.atlanmod.neoemf.tests.sample.impl.SamplePackageImpl;
 
+import fr.inria.atlanmod.neoemf.tests.sample.impl.SamplePackageImpl;
 import org.atlanmod.commons.Throwables;
 import org.atlanmod.commons.annotation.Singleton;
 import org.atlanmod.commons.annotation.Static;
@@ -20,6 +21,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.gmt.modisco.java.impl.JavaPackageImpl;
 //import org.eclipse.gmt.modisco.java.impl.JavaPackageImpl;
 
 import java.io.IOException;
@@ -92,10 +94,8 @@ public final class ResourceManager {
      * Registers all {@link EPackage}s used in test-cases.
      */
     public static void registerAllPackages() {
-        /*
         JavaPackageImpl.init();
         SamplePackageImpl.init();
-         */
     }
 
     /**

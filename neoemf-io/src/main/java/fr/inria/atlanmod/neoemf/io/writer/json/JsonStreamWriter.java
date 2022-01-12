@@ -1,5 +1,6 @@
 package fr.inria.atlanmod.neoemf.io.writer.json;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -60,13 +61,29 @@ public class JsonStreamWriter extends AbstractJsonStreamWriter {
 	}
 
 	@Override
+	protected void writeStartContainmentReference(String name) throws IOException {
+		jGenerator.writeFieldName(name);
+		jGenerator.writeStartArray();
+	}
+
+	@Override
+	protected void writeEndContainmentReference() throws IOException {
+		jGenerator.writeEndArray();
+	}
+
+	@Override
 	protected void writeCharacters(String characters) throws IOException {
 		jGenerator.writeString(characters);
 	}
 
 	@Override
 	protected void writeEndElement() throws IOException {
-		jGenerator.writeEndObject();
+		try {
+			jGenerator.writeEndObject();
+		} catch (JsonGenerationException e) {
+			jGenerator.writeEndArray();
+			jGenerator.writeEndObject();
+		}
 	}
 
 	@Override

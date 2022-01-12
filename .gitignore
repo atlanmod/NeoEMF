@@ -133,6 +133,3 @@
 **/java-gen
 **/src-gen/
 
-### Tests
-neoemf-io/src/test/resources/test-output/*
-
