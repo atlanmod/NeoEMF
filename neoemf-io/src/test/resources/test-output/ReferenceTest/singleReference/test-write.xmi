@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="ASCII"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:com.univ-nantes.store="http://com/univ-nantes/store">
-  <com.univ-nantes.store:Category name="fruit" product="1"/>
-  <com.univ-nantes.store:Product id="1" name="banana" quantity="5.2" category="/0"/>
-</xmi:XMI>

@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-public class AttributeTest {
+public class WriterTest {
     @BeforeAll
     static void initialize() {
         SamplePackage.eINSTANCE.eClass();
@@ -27,16 +27,16 @@ public class AttributeTest {
 
     @Test
     void testSingleAttribute() throws IOException {
-        Helper.testMigration("AttributeTest/singleAttribute/");
+        Helper.testMigration("GeneratedInstances/singleAttribute/");
     }
 
     @Test
     void testMultipleAttributes() throws IOException {
-        Helper.testMigration("AttributeTest/multipleAttributes/");
+        Helper.testMigration("GeneratedInstances/multipleAttributes/");
     }
 
     @Test
-    void testMultiValuedAttribute() throws IOException {
-        Helper.testMigration("AttributeTest/multiValuedAttribute/");
+    void testMultiContainmentReference() throws IOException {
+        Helper.testMigration("GeneratedInstances/multiContainmentReference/");
     }
 }
