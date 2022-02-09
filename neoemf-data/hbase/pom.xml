@@ -24,7 +24,7 @@
         java.lang.IncompatibleClassChangeError:
             Found interface org.apache.hadoop.hdfs.protocol.HdfsFileStatus, but class was expected
         -->
-        <hadoop.version>3.0.3</hadoop.version><!-- Follow HBase dependencies -->
+        <hadoop.version>3.1.4</hadoop.version><!-- Follow HBase dependencies -->
     </properties>
 
     <dependencies>
