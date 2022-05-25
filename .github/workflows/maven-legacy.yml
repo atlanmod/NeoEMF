@@ -27,9 +27,7 @@ jobs:
       - name: Build plugins with Tycho
         run: mvn -B  -f plugins/eclipse install
       - name: Deploy
-        run: |
-          mvn clean package javadoc:jar source:jar-no-fork gpg:sign install deploy \
-          -DskipTests -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        run: mvn clean package javadoc:jar source:jar-no-fork gpg:sign install deploy -DskipTests -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
