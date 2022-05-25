@@ -55,3 +55,11 @@ jobs:
 
         #-s .util/settings.xml -DskipTests  clean package javadoc:jar source:jar-no-fork gpg:sign install deploy
         # gpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+
+  install-gpg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install GPG key
+        run: |
+          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
