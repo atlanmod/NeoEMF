@@ -62,6 +62,7 @@ jobs:
             mvn \
               --no-transfer-progress \
               --batch-mode \
+              -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} 
               clean install deploy \
               --settings .util/settings.xml \
               -P deploy-artifacts \
