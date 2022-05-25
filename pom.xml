@@ -134,7 +134,7 @@
 
         <commons-collections.version>4.1</commons-collections.version>
         <commons-configuration.version>1.10</commons-configuration.version>
-        <commons-io.version>2.5</commons-io.version>
+        <commons-io.version>2.11.0</commons-io.version>
         <commons-lang.version>3.5</commons-lang.version>
         <guava.version>15.0</guava.version>
         <osgi.version>6.0.0</osgi.version>
@@ -146,7 +146,7 @@
         <javax-annotations.version>3.0.1</javax-annotations.version>
 
         <assertj.version>3.6.1</assertj.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.2</junit.version>
         <mockito.version>1.10.19</mockito.version>
     </properties>
 
@@ -528,7 +528,7 @@
                 <plugin>
                     <groupId>org.eclipse.xtext</groupId>
                     <artifactId>xtext-maven-plugin</artifactId>
-                    <version>2.9.2</version>
+                    <version>2.26.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
