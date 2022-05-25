@@ -26,14 +26,3 @@ jobs:
         run: mvn -B jacoco:prepare-agent install jacoco:report jacoco:report-aggregate --file pom.xml
       - name: Build plugins with Tycho
         run: mvn -B  -f plugins/eclipse install
-
-
-  publish:
-    name: Publish artifacts
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-     - name: Publish snapshot to Maven central
-       run: .util/publish_snapshot.sh
-     - name: Publish update-site in Github
-       run: .util/publish_eclipse.sh
