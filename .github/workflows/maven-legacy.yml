@@ -26,6 +26,10 @@ jobs:
         run: mvn -B jacoco:prepare-agent install jacoco:report jacoco:report-aggregate --file pom.xml
       - name: Build plugins with Tycho
         run: mvn -B  -f plugins/eclipse install
+      - name: Install gpg secret key
+        run: |
+          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
       - name: Deploy
         run: |
           mvn -P deploy-artifacts \
