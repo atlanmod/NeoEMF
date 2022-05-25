@@ -24,6 +24,8 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn -B jacoco:prepare-agent install jacoco:report jacoco:report-aggregate --file pom.xml
+      - name: Build plugins with Tycho
+        run: mvn -B -q -f plugins/eclipse install
 
 
   publish:
@@ -31,10 +33,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-     - name: Publish code coverage in CodeCov
-       run: <(curl -s https://codecov.io/bash)
-     - name: Publish Javadoc in Github
-       run: .util/publish_javadoc.sh
      - name: Publish snapshot to Maven central
        run: .util/publish_snapshot.sh
      - name: Publish update-site in Github
