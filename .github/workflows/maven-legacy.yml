@@ -26,15 +26,12 @@ jobs:
         run: mvn -B jacoco:prepare-agent install jacoco:report jacoco:report-aggregate --file pom.xml
       - name: Build plugins with Tycho
         run: mvn -B  -f plugins/eclipse install
-      - id: install-secret-key
-        name: Install GPG secret key
-        run: |
-          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
       - name: Deploy
         run: |
-          mvn -P gpg_verify \
+          mvn -P deploy-artifacts \
             --no-transfer-progress \
             --batch-mode -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+            -D skipTests \
             --file pom.xml -s .util/settings.xml verify deploy
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
