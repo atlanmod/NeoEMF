@@ -54,9 +54,16 @@ jobs:
         run: |
             cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
             gpg --list-secret-keys --keyid-format LONG
-      - name: Deploy
+      - name: Publish to Central
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         run: | 
-            mvn -D gpg.passphrase=${{ secrets.GPG_PASSPHRASE }}  clean package  gpg:sign
+            mvn \
+              --no-transfer-progress \
+              --batch-mode
+              -D gpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+              clean deploy
 
 #-s .util/settings.xml -DskipTests  clean package javadoc:jar source:jar-no-fork gpg:sign install deploy
 # gpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
