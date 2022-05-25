@@ -28,13 +28,14 @@ jobs:
 
   publish:
     name: Publish artifacts
+    runs-on: ubuntu-latest
     needs: build
-      steps:
-        - name: Publish code coverage in CodeCov
-          run: bash <(curl -s https://codecov.io/bash)
-        - name: Publish Javadoc in Github
-          run: bash .util/publish_javadoc.sh
-        - name: Publish snapshot to Maven central
-          run: bash .util/publish_snapshot.sh
-        - name: Publish update-site in Github
-          run: bash .util/publish_eclipse.sh
+    steps:
+     - name: Publish code coverage in CodeCov
+       run: bash <(curl -s https://codecov.io/bash)
+     - name: Publish Javadoc in Github
+       run: bash .util/publish_javadoc.sh
+     - name: Publish snapshot to Maven central
+       run: bash .util/publish_snapshot.sh
+     - name: Publish update-site in Github
+       run: bash .util/publish_eclipse.sh
