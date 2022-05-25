@@ -8,7 +8,7 @@ NeoEMF is an [AtlanMod](http://www.emn.fr/z-info/atlanmod/index.php/Main_Page) r
 
 It is based on our work on Neo4EMF, a scalable and graph-based backend for persisting EMF models.
 
-NeoEMF is a multi-backend framework developped to allow an easy integration of custom backends depending on user needs.
+NeoEMF is a multi-backend framework developed to allow an easy integration of custom backends depending on user needs.
 
 ## What are the supported backends?
 
@@ -30,7 +30,7 @@ information loading (**All backends**)
 
 NeoEMF is fully EMF compliant, that means there is no modification to do to use it with existing EMF based applications.
 
-Additionally NeoEMF can be plugged with several persistence solutions (for the moment Blueprints and MapDB) and is configurable to fit the best your needs (custom caches, in-memory resources, auto-commit,...).
+Additionally, NeoEMF can be plugged with several persistence solutions (for the moment Blueprints and MapDB) and is configurable to fit the best your needs (custom caches, in-memory resources, auto-commit,...).
 
 In addition, NeoEMF provides a query API to perform optimized OCL queries over models and reify the results as navigable models.
 
@@ -38,7 +38,7 @@ In addition, NeoEMF provides a query API to perform optimized OCL queries over m
 
 ### Latest release
 
-The most recent release is NeoEMF 1.0.1, released January 16, 2017.
+The most recent release is NeoEMF 1.0.3, released in May 2022.
 - Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/doc/)
 - Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/latest/plugin/)
 
@@ -47,13 +47,13 @@ To add a dependency on NeoEMF using Maven, use the following:
 <dependency>
   <groupId>fr.inria.atlanmod.neoemf</groupId>
   <artifactId>neoemf</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.3</version>
 </dependency>
 ```
 
 ### Snapshots
 
-Snapshots are automatically build from the `master` and are available throught Maven using `1.0.2-SNAPSHOT`.
+Snapshots are automatically build from the `master` and are available throught Maven using `1.0.4-SNAPSHOT`.
 - Javadoc: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/doc/)
 - Eclipse Plugin: [neoemf](https://atlanmod.github.io/NeoEMF/releases/snapshot/plugin/)
 
@@ -127,4 +127,4 @@ If you experience issues installing or using NeoEMF, you can [submit an issue on
  - Sometimes the plugin build crashes and/or freezes during p2 index fetching from Luna repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.
 
 ## Develop your backend implementation
-If you have developped a specific backend implementation that is not covered by the actual release of NeoEMF, you can submit it as a pull request. _(More information to come about custom backend implementations)_
+If you have developed a specific backend implementation that is not covered by the actual release of NeoEMF, you can submit it as a pull request. _(More information to come about custom backend implementations)_
