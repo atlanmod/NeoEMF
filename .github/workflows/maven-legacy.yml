@@ -27,6 +27,7 @@ jobs:
 
   build-plugins:
     runs-on: ubuntu-latest
+    needs: build-bundles
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -40,6 +41,7 @@ jobs:
 
   deploy-bundles:
     runs-on: ubuntu-latest
+    needs: build-bundles
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
@@ -49,4 +51,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Deploy
-        run: mvn -s .util/settings.xml -DskipTests -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}  clean package javadoc:jar source:jar-no-fork gpg:sign install deploy
+        run: mvn -D gpg.passphrase=${{ secrets.GPG_PASSPHRASE }} clean package  gpg:sign
+
+        #-s .util/settings.xml -DskipTests  clean package javadoc:jar source:jar-no-fork gpg:sign install deploy
