@@ -62,10 +62,11 @@ jobs:
             mvn \
               --no-transfer-progress \
               --batch-mode
-              -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+              -P deploy-artifacts \
+              clean install deploy \
               --settings .util/settings.xml \
-              -DskipTests \
-              clean install deploy
+              -DskipTests 
+              
 
 #-s .util/settings.xml -DskipTests  clean package javadoc:jar source:jar-no-fork gpg:sign install deploy
 # gpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
