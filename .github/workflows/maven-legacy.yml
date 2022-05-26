@@ -58,12 +58,14 @@ jobs:
         id: init
         run: |
             VERSION=$(mvn -B help:evaluate -Dexpression='project.version' $@ | grep -v '\[' | tail -1)
+            echo "VERSION=$VERSION" >> $GITHUB_ENV
             echo "$VERSION"
       - name: Publish Snapshot to Central
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-        if: contains(steps.init.output.VERSION, 'SNAPSHOT' )
+          VERSION: $${{ env.VERSION }}
+        if: contains($VERSION, 'SNAPSHOT' )
         run: | 
             mvn \
               --no-transfer-progress \
