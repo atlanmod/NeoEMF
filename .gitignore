@@ -126,3 +126,5 @@
 
 **/*.log
 **/java-gen
+
+**/.vscode

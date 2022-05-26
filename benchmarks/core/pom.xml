@@ -55,22 +55,22 @@
         <!-- NeoEMF -->
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-blueprints-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-blueprints-neo4j</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-mapdb</artifactId>
         </dependency>
 

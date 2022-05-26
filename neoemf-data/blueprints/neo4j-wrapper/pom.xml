@@ -5,7 +5,7 @@
 
     <parent>
         <artifactId>neoemf-data-blueprints</artifactId>
-        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <groupId>org.atlanmod.neoemf</groupId>
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 

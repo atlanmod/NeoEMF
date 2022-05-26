@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <groupId>org.atlanmod.neoemf</groupId>
         <artifactId>neoemf-data-blueprints</artifactId>
         <version>1.0.3-SNAPSHOT</version>
     </parent>
@@ -80,19 +80,19 @@
         <!-- Internal -->
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-io</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>

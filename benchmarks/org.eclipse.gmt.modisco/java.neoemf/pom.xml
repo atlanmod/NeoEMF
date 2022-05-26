@@ -16,7 +16,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-core</artifactId>
         </dependency>
     </dependencies>

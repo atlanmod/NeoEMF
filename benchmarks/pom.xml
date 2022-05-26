@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf</groupId>
+        <groupId>org.atlanmod.neoemf</groupId>
         <artifactId>neoemf</artifactId>
         <version>1.0.2</version>
         <relativePath>../pom.xml</relativePath>
@@ -53,25 +53,25 @@
             <!-- NeoEMF -->
 
             <dependency>
-                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <groupId>org.atlanmod.neoemf</groupId>
                 <artifactId>neoemf-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <groupId>org.atlanmod.neoemf</groupId>
                 <artifactId>neoemf-data-blueprints-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <groupId>org.atlanmod.neoemf</groupId>
                 <artifactId>neoemf-data-blueprints-neo4j</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>fr.inria.atlanmod.neoemf</groupId>
+                <groupId>org.atlanmod.neoemf</groupId>
                 <artifactId>neoemf-data-mapdb</artifactId>
                 <version>${project.version}</version>
             </dependency>
