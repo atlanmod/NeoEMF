@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <category
-            id="fr.inria.atlanmod.neoemf.examples.category"
+            id="org.atlanmod.neoemf.examples.category"
             name="NeoEMF"
             parentCategory="org.eclipse.ui.Examples">
       </category>
@@ -14,7 +14,7 @@
             class="fr.inria.atlanmod.neoemf.eclipse.examples.TutorialWizard"
             hasPages="false"
             icon="icons/full/obj16/neoemf.png"
-            id="fr.inria.atlanmod.neoemf.examples.tutorial"
+            id="org.atlanmod.neoemf.examples.tutorial"
             name="NeoEMF Tutorial Project"
             project="true">
          <description>
@@ -27,7 +27,7 @@
             class="fr.inria.atlanmod.neoemf.eclipse.examples.DemoWizard"
             hasPages="false"
             icon="icons/full/obj16/neoemf.png"
-            id="fr.inria.atlanmod.neoemf.examples.demo"
+            id="org.atlanmod.neoemf.examples.demo"
             name="NeoEMF Demo Project"
             project="true">
          <description>

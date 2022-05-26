@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-        id="fr.inria.atlanmod.neoemf.data.hbase.feature"
+        id="org.atlanmod.neoemf.data.hbase.feature"
         label="NeoEMF : HBase"
         version="1.0.3.qualifier">
 
@@ -9,11 +9,11 @@
     </description>
 
     <includes
-            id="fr.inria.atlanmod.neoemf.core.feature"
+            id="org.atlanmod.neoemf.core.feature"
             version="1.0.3.qualifier" />
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.data.hbase"
+            id="org.atlanmod.neoemf.data.hbase"
             download-size="0"
             install-size="0"
             version="1.0.3"

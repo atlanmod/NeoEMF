@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
     <feature url="features/fr.inria.atlanmod.neoemf.core.feature_1.0.2.jar"
-             id="fr.inria.atlanmod.neoemf.core.feature"
+             id="org.atlanmod.neoemf.core.feature"
              version="1.0.3.qualifier">
         <category name="base" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.blueprints.core.feature_1.0.2.jar"
-             id="fr.inria.atlanmod.neoemf.data.blueprints.core.feature"
+             id="org.atlanmod.neoemf.data.blueprints.core.feature"
              version="1.0.3.qualifier">
         <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature_1.0.2.jar"
-             id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature"
+             id="org.atlanmod.neoemf.data.blueprints.neo4j.feature"
              version="1.0.3.qualifier">
         <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.mapdb.feature_1.0.2.jar"
-             id="fr.inria.atlanmod.neoemf.data.mapdb.feature"
+             id="org.atlanmod.neoemf.data.mapdb.feature"
              version="1.0.3.qualifier">
         <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.berkeleydb.feature_1.0.2.jar"
-             id="fr.inria.atlanmod.neoemf.data.berkeleydb.feature"
+             id="org.atlanmod.neoemf.data.berkeleydb.feature"
              version="1.0.3.qualifier">
         <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.hbase.feature_1.0.2.jar"
-             id="fr.inria.atlanmod.neoemf.data.hbase.feature"
+             id="org.atlanmod.neoemf.data.hbase.feature"
              version="1.0.3.qualifier">
         <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature_1.0.2.jar"
-             id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature"
+             id="org.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature"
              version="1.0.3.qualifier">
         <category name="backend" />
     </feature>
     <feature url="features/fr.inria.atlanmod.neoemf.io.feature_1.0.2.jar"
-             id="fr.inria.atlanmod.neoemf.io.feature"
+             id="org.atlanmod.neoemf.io.feature"
              version="1.0.3.qualifier">
         <category name="utils" />
     </feature>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="fr.inria.atlanmod.neoemf.core.feature"
+      id="org.atlanmod.neoemf.core.feature"
       label="NeoEMF Persistence Framework"
       version="1.0.3.qualifier">
 
@@ -109,21 +109,21 @@ This Agreement is governed by the laws of the State of New York and the intellec
    </requires>
 
    <plugin
-         id="fr.inria.atlanmod.neoemf.core"
+         id="org.atlanmod.neoemf.core"
          download-size="0"
          install-size="0"
          version="1.0.3"
          unpack="false"/>
 
    <plugin
-         id="fr.inria.atlanmod.neoemf.eclipse.ui"
+         id="org.atlanmod.neoemf.eclipse.ui"
          download-size="0"
          install-size="0"
          version="1.0.3.qualifier"
          unpack="false"/>
 
    <plugin
-         id="fr.inria.atlanmod.neoemf.eclipse.examples"
+         id="org.atlanmod.neoemf.eclipse.examples"
          download-size="0"
          install-size="0"
          version="0.0.0"

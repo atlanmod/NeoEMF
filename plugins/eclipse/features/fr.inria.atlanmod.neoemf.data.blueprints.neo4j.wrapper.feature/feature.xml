@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-        id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature"
+        id="org.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature"
         label="Neo4j Convenience Wrapper"
         version="1.0.3.qualifier">
 
@@ -9,7 +9,7 @@
     </description>
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper"
+            id="org.atlanmod.neoemf.data.blueprints.neo4j.wrapper"
             download-size="0"
             install-size="0"
             version="1.0.3"

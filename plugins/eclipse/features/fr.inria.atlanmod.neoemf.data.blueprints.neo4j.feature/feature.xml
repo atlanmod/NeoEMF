@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-        id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature"
+        id="org.atlanmod.neoemf.data.blueprints.neo4j.feature"
         label="NeoEMF : Blueprints Neo4j"
         version="1.0.3.qualifier">
 
@@ -9,7 +9,7 @@
     </description>
 
     <includes
-            id="fr.inria.atlanmod.neoemf.data.blueprints.core.feature"
+            id="org.atlanmod.neoemf.data.blueprints.core.feature"
             version="1.0.3.qualifier" />
 
     <requires>
@@ -31,7 +31,7 @@
     </requires>
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.data.blueprints.neo4j"
+            id="org.atlanmod.neoemf.data.blueprints.neo4j"
             download-size="0"
             install-size="0"
             version="1.0.3"

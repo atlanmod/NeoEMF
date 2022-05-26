@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-        id="fr.inria.atlanmod.neoemf.data.berkeleydb.feature"
+        id="org.atlanmod.neoemf.data.berkeleydb.feature"
         label="NeoEMF : BerkeleyDB (experimental)"
         version="1.0.3.qualifier">
 
@@ -9,7 +9,7 @@
     </description>
 
     <includes
-            id="fr.inria.atlanmod.neoemf.core.feature"
+            id="org.atlanmod.neoemf.core.feature"
             version="1.0.3.qualifier" />
 
     <requires>
@@ -31,7 +31,7 @@
     </requires>
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.data.berkeleydb"
+            id="org.atlanmod.neoemf.data.berkeleydb"
             download-size="0"
             install-size="0"
             version="1.0.3"

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NeoEMF Examples Plugin
-Bundle-SymbolicName: fr.inria.atlanmod.neoemf.eclipse.examples;singleton:=true
+Bundle-SymbolicName: org.atlanmod.neoemf.eclipse.examples;singleton:=true
 Bundle-Version: 1.0.3.qualifier
 Require-Bundle: org.eclipse.ui;bundle-version="3.106.0",
  org.eclipse.ui.ide;bundle-version="3.10.1",
@@ -10,5 +10,5 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.106.0",
 Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.examples.NeoEMFExamplesPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: fr.inria.atlanmod.neoemf.eclipse.examples
+Export-Package: org.atlanmod.neoemf.eclipse.examples
 Bundle-Vendor: Atlanmod INRIA LINA Mines Nantes

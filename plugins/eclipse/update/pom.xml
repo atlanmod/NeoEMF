@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
+        <groupId>org.atlanmod.neoemf.plugins</groupId>
         <artifactId>neoemf-eclipse</artifactId>
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>fr.inria.atlanmod.neoemf.eclipse.update</artifactId>
+    <artifactId>org.atlanmod.neoemf.eclipse.update</artifactId>
 
     <packaging>eclipse-repository</packaging>
 
@@ -18,50 +18,50 @@
 
     <dependencies>
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
+            <groupId>org.atlanmod.neoemf.plugins</groupId>
+            <artifactId>org.atlanmod.neoemf.core.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.core.feature</artifactId>
+            <groupId>org.atlanmod.neoemf.plugins</groupId>
+            <artifactId>org.atlanmod.neoemf.data.blueprints.core.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.data.mapdb.feature</artifactId>
+            <groupId>org.atlanmod.neoemf.plugins</groupId>
+            <artifactId>org.atlanmod.neoemf.data.mapdb.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.data.berkeleydb.feature</artifactId>
+            <groupId>org.atlanmod.neoemf.plugins</groupId>
+            <artifactId>org.atlanmod.neoemf.data.berkeleydb.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.data.hbase.feature</artifactId>
+            <groupId>org.atlanmod.neoemf.plugins</groupId>
+            <artifactId>org.atlanmod.neoemf.data.hbase.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</artifactId>
+            <groupId>org.atlanmod.neoemf.plugins</groupId>
+            <artifactId>org.atlanmod.neoemf.data.blueprints.neo4j.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.io.feature</artifactId>
+            <groupId>org.atlanmod.neoemf.plugins</groupId>
+            <artifactId>org.atlanmod.neoemf.io.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature</artifactId>
+            <groupId>org.atlanmod.neoemf.plugins</groupId>
+            <artifactId>org.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

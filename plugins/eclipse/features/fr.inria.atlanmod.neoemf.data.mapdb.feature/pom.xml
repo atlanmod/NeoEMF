@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-        <artifactId>fr.inria.atlanmod.neoemf.eclipse.features</artifactId>
+        <groupId>org.atlanmod.neoemf.plugins</groupId>
+        <artifactId>org.atlanmod.neoemf.eclipse.features</artifactId>
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>fr.inria.atlanmod.neoemf.data.mapdb.feature</artifactId>
+    <artifactId>org.atlanmod.neoemf.data.mapdb.feature</artifactId>
 
     <packaging>eclipse-feature</packaging>
 
@@ -25,8 +25,8 @@
         </dependency>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.plugins</groupId>
-            <artifactId>fr.inria.atlanmod.neoemf.core.feature</artifactId>
+            <groupId>org.atlanmod.neoemf.plugins</groupId>
+            <artifactId>org.atlanmod.neoemf.core.feature</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

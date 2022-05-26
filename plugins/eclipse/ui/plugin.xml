@@ -8,7 +8,7 @@
                 contributorClass="org.eclipse.emf.ecore.presentation.EcoreActionBarContributor"
                 default="false"
                 icon="platform:/plugin/org.eclipse.emf.edit/icons/full/obj16/ModelFile.gif"
-                id="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor"
+                id="org.atlanmod.neoemf.eclipse.ui.editor.NeoEditor"
                 name="NeoEMF Editor">
         </editor>
     </extension>
@@ -18,7 +18,7 @@
                 description="Create the Ecore model based on other Ecore or EMOF models"
                 extensions="ecore,emof"
                 icon="icons/full/obj16/model.gif"
-                id="fr.inria.atlanmod.neoemf.ui.modelImporterDescriptor"
+                id="org.atlanmod.neoemf.ui.modelImporterDescriptor"
                 name="Ecore model (NeoEMF Native)"
                 wizard="fr.inria.atlanmod.neoemf.eclipse.ui.wizard.NeoModelImporterWizard">
         </modelImporterDescriptor>
@@ -32,7 +32,7 @@
                     icon="icons/full/obj16/neoemf.png"
                     label="&amp;NeoEMF">
                 <command
-                        commandId="fr.inria.atlanmod.neoemf.eclipse.ui.migrate"
+                        commandid="org.atlanmod.neoemf.eclipse.ui.migrate"
                         style="push">
                     <visibleWhen>
                         <with
@@ -51,7 +51,7 @@
                     </visibleWhen>
                 </command>
                 <command
-                        commandId="fr.inria.atlanmod.neoemf.eclipse.ui.openDB"
+                        commandid="org.atlanmod.neoemf.eclipse.ui.openDB"
                         style="push">
                     <visibleWhen>
                         <with
@@ -75,7 +75,7 @@
                 allPopups="false"
                 locationURI="popup:org.eclipse.ui.popup.any?after=additions">
             <command
-                    commandId="fr.inria.atlanmod.neoemf.eclipse.ui.createDynamicInstance"
+                    commandid="org.atlanmod.neoemf.eclipse.ui.createDynamicInstance"
                     style="push">
                 <visibleWhen>
                     <with
@@ -95,17 +95,17 @@
             point="org.eclipse.ui.commands">
         <command
                 defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.MigrateCommand"
-                id="fr.inria.atlanmod.neoemf.eclipse.ui.migrate"
+                id="org.atlanmod.neoemf.eclipse.ui.migrate"
                 name="&amp;Migrate EMF Generator Model">
         </command>
         <command
                 defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.OpenBackendCommand"
-                id="fr.inria.atlanmod.neoemf.eclipse.ui.openDB"
+                id="org.atlanmod.neoemf.eclipse.ui.openDB"
                 name="&amp;Open Model Database">
         </command>
         <command
                 defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.CreateDynamicInstanceCommand"
-                id="fr.inria.atlanmod.neoemf.eclipse.ui.createDynamicInstance"
+                id="org.atlanmod.neoemf.eclipse.ui.createDynamicInstance"
                 name="Create &amp;NeoEMF Dynamic Instance...">
         </command>
     </extension>
@@ -113,7 +113,7 @@
             point="org.eclipse.core.expressions.propertyTesters">
         <propertyTester
                 class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.IsNeoBackendTester"
-                id="fr.inria.atlanmod.neoemf.eclipse.ui.isNeoEMFDB"
+                id="org.atlanmod.neoemf.eclipse.ui.isNeoEMFDB"
                 namespace="fr.inria.atlanmod.neoemf.eclipse.ui"
                 properties="isNeoEMFDB"
                 type="org.eclipse.core.resources.IFolder">
@@ -124,7 +124,7 @@
         <decorator
                 adaptable="true"
                 class="fr.inria.atlanmod.neoemf.eclipse.ui.decorator.NeoDecorator"
-                id="fr.inria.atlanmod.neoemf.ui.neoDBDecorator"
+                id="org.atlanmod.neoemf.ui.neoDBDecorator"
                 label="NeoEMF Database Folder Decorator"
                 objectClass="org.eclipse.core.resources.IFolder"
                 state="true">
@@ -140,7 +140,7 @@
             <action
                     class="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
                     icon="icons/full/obj16/register.png"
-                    id="fr.inria.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
+                    id="org.atlanmod.neoemf.eclipse.ui.action.RegisterMetamodelAction"
                     label="Register EPackages" />
         </objectContribution>
     </extension>
