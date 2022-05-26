@@ -64,7 +64,6 @@ jobs:
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-          VERSION: $${{ env.VERSION }}
         if: contains(env.VERSION, 'SNAPSHOT' )
         run: | 
             mvn \
@@ -72,7 +71,11 @@ jobs:
               --batch-mode \
               clean install deploy \
               --settings .util/settings.xml \
-              -DskipTests 
+              -DskipTests
+      - name: Publish release to Central
+        if: ${{ !contains(env.VERSION, 'SNAPSHOT' ) }}
+        run: |
+          echo "NOT SNAPSHOT"
               
 
 #-s .util/settings.xml -DskipTests  clean package javadoc:jar source:jar-no-fork gpg:sign install deploy
