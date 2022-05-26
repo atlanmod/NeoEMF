@@ -54,10 +54,16 @@ jobs:
         run: |
             cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
             gpg --list-secret-keys --keyid-format LONG
-      - name: Publish to Central
+      - name: Initialize variables
+        id: init
+        run: |
+            VERSION=$(mvn -B help:evaluate -Dexpression='project.version' $@ | grep -v '\[' | tail -1)
+            echo "$VERSION"
+      - name: Publish Snapshot to Central
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        if: steps.init.output.VERSION != *"-SNAPSHOT"
         run: | 
             mvn \
               --no-transfer-progress \
