@@ -19,7 +19,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf</groupId>
+            <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-blueprints-neo4j-wrapper</artifactId>
             <version>${project.version}</version>
         </dependency>
