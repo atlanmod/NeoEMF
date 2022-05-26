@@ -65,7 +65,7 @@ jobs:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
           VERSION: $${{ env.VERSION }}
-        if: contains($VERSION, 'SNAPSHOT' )
+        if: contains(env.VERSION, 'SNAPSHOT' )
         run: | 
             mvn \
               --no-transfer-progress \
