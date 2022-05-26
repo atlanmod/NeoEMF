@@ -63,7 +63,7 @@ jobs:
         env:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-        if: steps.init.output.VERSION != *"-SNAPSHOT"*
+        if: contains(steps.init.output.VERSION, 'SNAPSHOT' )
         run: | 
             mvn \
               --no-transfer-progress \
