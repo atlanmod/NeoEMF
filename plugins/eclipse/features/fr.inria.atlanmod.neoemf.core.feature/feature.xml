@@ -2,7 +2,7 @@
 <feature
       id="org.atlanmod.neoemf.core.feature"
       label="NeoEMF Persistence Framework"
-      version="1.0.3.qualifier">
+      version="1.0.3">
 
    <description url="http://www.example.com/description">
       The Core component (store logic and utils, no implementation provided)
@@ -119,7 +119,7 @@ This Agreement is governed by the laws of the State of New York and the intellec
          id="org.atlanmod.neoemf.eclipse.ui"
          download-size="0"
          install-size="0"
-         version="1.0.3.qualifier"
+         version="1.0.3"
          unpack="false"/>
 
    <plugin

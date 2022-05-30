@@ -2,7 +2,7 @@
 <feature
         id="org.atlanmod.neoemf.data.hbase.feature"
         label="NeoEMF : HBase"
-        version="1.0.3.qualifier">
+        version="1.0.3">
 
     <description url="http://www.example.com/description">
         HBase implementation of the Core component.
@@ -10,7 +10,7 @@
 
     <includes
             id="org.atlanmod.neoemf.core.feature"
-            version="1.0.3.qualifier" />
+            version="1.0.3" />
 
     <plugin
             id="org.atlanmod.neoemf.data.hbase"

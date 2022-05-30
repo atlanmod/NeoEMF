@@ -5,7 +5,7 @@
 
     <groupId>org.atlanmod.neoemf</groupId>
     <artifactId>neoemf</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
 
     <packaging>pom</packaging>
 
@@ -340,7 +340,8 @@
                         <instructions>
                             <Bundle-Version>
                                 <!-- Properties ${osgi.XXX} : Created by build-helper-maven-plugin:parse-version -->
-                                ${osgi.majorVersion}.${osgi.minorVersion}.${osgi.incrementalVersion}<!--.${maven.build.timestamp}-->
+                                ${osgi.majorVersion}.${osgi.minorVersion}.${osgi.incrementalVersion}
+                                <!-- .${maven.build.timestamp} -->
                             </Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package />

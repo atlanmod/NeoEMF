@@ -2,7 +2,7 @@
 <feature
         id="org.atlanmod.neoemf.data.blueprints.neo4j.feature"
         label="NeoEMF : Blueprints Neo4j"
-        version="1.0.3.qualifier">
+        version="1.0.3">
 
     <description url="http://www.example.com/description">
         Blueprints extension using Neo4j. Requires a Neo4j implementation : because we care about you, we have packaged a compatible version of Neo4j in the optional bundle "Neo4j Convenience Wrapper", made with love.
@@ -10,7 +10,7 @@
 
     <includes
             id="org.atlanmod.neoemf.data.blueprints.core.feature"
-            version="1.0.3.qualifier" />
+            version="1.0.3" />
 
     <requires>
         <import plugin="org.eclipse.core.runtime" />

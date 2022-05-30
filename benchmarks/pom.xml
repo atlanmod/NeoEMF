@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.atlanmod.neoemf</groupId>
         <artifactId>neoemf</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>fr.inria.atlanmod.neoemf.benchmarks</groupId>
     <artifactId>benchmarks-parent</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 
     <packaging>pom</packaging>
 
@@ -25,9 +25,7 @@
     <properties>
         <cdo.version>4.3.0</cdo.version>
         <neo4j.version>1.9.6</neo4j.version>
-
         <log4j.version>2.7</log4j.version>
-
         <jmh.version>1.17.1</jmh.version>
     </properties>
 
@@ -147,12 +145,12 @@
             <plugins>
                 <plugin>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>2.4.3</version>
+                    <version>3.3.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>1.5.0</version>
+                    <version>3.0.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>

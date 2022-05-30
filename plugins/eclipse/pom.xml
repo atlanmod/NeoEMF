@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.atlanmod.neoemf</groupId>
         <artifactId>neoemf</artifactId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.3</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>org.atlanmod.neoemf.plugins</groupId>
     <artifactId>neoemf-eclipse</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
 
     <packaging>pom</packaging>
 
@@ -25,7 +25,7 @@
     <modules>
         <module>ui</module>
         <module>features</module>
-	<module>examples</module>
+	    <module>examples</module>
         <module>update</module>
     </modules>
 

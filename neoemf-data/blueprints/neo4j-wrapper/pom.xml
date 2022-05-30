@@ -6,7 +6,7 @@
     <parent>
         <artifactId>neoemf-data-blueprints</artifactId>
         <groupId>org.atlanmod.neoemf</groupId>
-        <version>1.0.3-SNAPSHOT</version>
+        <version>1.0.3</version>
     </parent>
 
     <artifactId>neoemf-data-blueprints-neo4j-wrapper</artifactId>

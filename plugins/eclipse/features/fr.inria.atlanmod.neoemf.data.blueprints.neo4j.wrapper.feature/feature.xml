@@ -2,7 +2,7 @@
 <feature
         id="org.atlanmod.neoemf.data.blueprints.neo4j.wrapper.feature"
         label="Neo4j Convenience Wrapper"
-        version="1.0.3.qualifier">
+        version="1.0.3">
 
     <description url="http://www.example.com/description">
         Optional plugin providing an implementation of Neo4j for "NeoEMF : Blueprints Neo4j" back-end.

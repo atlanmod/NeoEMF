@@ -73,11 +73,22 @@ jobs:
               --settings .util/settings.xml \
               -DskipTests
       - name: Publish release to Central
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         if: ${{ !contains(env.VERSION, 'SNAPSHOT' ) }}
         run: |
-          echo "NOT SNAPSHOT"
-              
+          mvn \
+            --no-transfer-progress \
+            --batch-mode \
+            clean package javadoc:jar source:jar-no-fork gpg:sign install deploy \
+            --settings .util/settings.xml \
+            -DskipTests \
+            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+            -P deploy-artifacts
+          
 
+# mvn clean package javadoc:jar source:jar-no-fork gpg:sign install deploy -DskipTests
 #-s .util/settings.xml -DskipTests  clean package javadoc:jar source:jar-no-fork gpg:sign install deploy
-# -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+#
 

@@ -2,7 +2,7 @@
 <feature
         id="org.atlanmod.neoemf.io.feature"
         label="NeoEMF : I/O"
-        version="1.0.3.qualifier">
+        version="1.0.3">
 
     <description url="http://www.example.com/description">
         Efficient model importer/exporter
@@ -10,7 +10,7 @@
 
     <includes
             id="org.atlanmod.neoemf.core.feature"
-            version="1.0.3.qualifier" />
+            version="1.0.3" />
 
     <plugin
             id="org.atlanmod.neoemf.io"
