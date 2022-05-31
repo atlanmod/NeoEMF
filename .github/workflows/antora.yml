@@ -9,7 +9,7 @@ defaults:
     working-directory: ./neoemf-doc
 
 jobs:
-  node-install:
+  antora-run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
