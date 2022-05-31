@@ -6,11 +6,12 @@ name: Maven Build
 on:
   push:
     branches: [ master ]
+    path-ignore:
+      paths:
+        - neoemf-doc
+
   pull_request:
     branches: [ master ]
-  path-ignore:
-    paths:
-      - neoemf-doc
 
 jobs:
   build-bundles:
