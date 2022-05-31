@@ -1,10 +1,10 @@
-name: Anora Site Build
+name: Antora Site Build
 
 on:
   push:
     branches: [ master ]
-    paths:
-      - neoemf-doc/**
+#    paths:
+#      - neoemf-doc/**
 
 jobs:
   build:
