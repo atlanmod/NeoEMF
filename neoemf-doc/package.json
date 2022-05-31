@@ -10,6 +10,6 @@
   },
 
   "scripts": {
-    "build": "antora --stacktrace generate --url https://cloud.spring.io antora-playbook.yml"
+    "build": "antora --stacktrace generate antora-playbook.yml"
   }
 }

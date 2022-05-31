@@ -1,6 +1,9 @@
 name: Antora Site Build
 
-on: push
+on:
+  push:
+    paths:
+      - "neoemf-doc/**"
 defaults:
   run:
     working-directory: ./neoemf-doc
@@ -18,3 +21,6 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Generate Antora Site
         run: npm run build
+      - name: Show contents
+        run: ls -al ./build
+        
