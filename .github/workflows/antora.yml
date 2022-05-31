@@ -22,5 +22,4 @@ jobs:
       - name: Generate Antora Site
         run: npm run build
       - name: Show contents
-        run: ls -al ./build
-        
+        run: ls -al ./public
