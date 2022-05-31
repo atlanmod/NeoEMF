@@ -1,0 +1,11 @@
+on:
+  push:
+    paths:
+      - neoemf-doc/**
+jobs:
+  name: "Generate site using antora site action"
+  uses: kameshsampath/antora-site-action@v0.3.0
+  with:
+    antora_playbook: ./neoemf-doc/antora-playbook.yml
+    # optional path within the repo, defaults to ${{github.workspace}}
+    # site_sources_path: 'site-sources-folder'
