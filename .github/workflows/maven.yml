@@ -1,13 +1,16 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Maven Build for maintenance branch
+name: Maven Build
 
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  path-ignore:
+    paths:
+      - neoemf-doc
 
 jobs:
   build-bundles:
