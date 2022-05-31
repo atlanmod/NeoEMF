@@ -1,8 +1,4 @@
 name: Anora Site Build
-on:
-  push:
-    branches:
-      - master
 
 on:
   push:
