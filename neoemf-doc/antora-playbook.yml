@@ -1,0 +1,22 @@
+site:
+  title: NeoEMF - Website
+  url: https://atlanmod.univ-nantes.io/neoemf/
+  start_page: NeoEMF:ROOT:index.adoc
+asciidoc:
+  attributes:
+    :plantuml-server-url: http://www.plantuml.com/plantuml
+  extensions:
+    - asciidoctor-plantuml
+content:
+  sources:
+    - url: ../
+      branches: HEAD, main
+      start_path: neoemf-doc
+ui:
+  bundle:
+    url: https://gitlab.univ-nantes.fr/sunye-g/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+runtime:
+  cache_dir: ./.cache/antora
+output:
+  dir: ./public

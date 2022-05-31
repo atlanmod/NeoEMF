@@ -1,0 +1,2 @@
+* xref:neoemf::index.adoc[NeoEMF Docs]
+

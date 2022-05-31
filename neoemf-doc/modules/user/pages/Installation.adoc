@@ -1,23 +1,34 @@
-This page details the different way to install NeoEMF and use it in your project. Our plugin is bundled as a maven artifact available on http://search.maven.org/#search%7Cga%7C1%7Cneoemf[maven central] and an Eclipse plugin available on https://atlanmod.github.io/NeoEMF/releases/latest/plugin/[NeoEMF's update site]. If you have any question or issue regarding NeoEMF installation you can https://github.com/atlanmod/NeoEMF/issues[open an issue] or link:neoemf@googlegroups.com[send us a mail].
+= NeoEMF Installation
 
-Once you have succesfully integrated NeoEMF in your project you can browse the documentation of the latest release of the tool https://atlanmod.github.io/NeoEMF/releases/latest/doc/[online], or check our link:Get-Started[tutorials and demonstrations] to get started with the framework.
+This page details the different way to install NeoEMF and use it in your project.
+Our plugins are bundled as a Maven Artifacts, which are available on http://search.maven.org/#search%7Cga%7C1%7Cneoemf[Maven Ceentral]
+and also as Eclipse Plugins,
+which available on the https://atlanmod.github.io/NeoEMF/releases/latest/plugin/[NeoEMF Update Site].
+If you have any question or issue regarding NeoEMF installation you can https://github.com/atlanmod/NeoEMF/issues[open an issue] or l
+ink:neoemf@googlegroups.com[send us a mail].
 
-*Latest release: 1.0.2*
+Once you have successfully integrated NeoEMF in your project, you can browse the JavaDOc of the latest release on NeoEMF's
+https://atlanmod.github.io/NeoEMF/releases/latest/doc/[Website],
+or check our link:Get-Started[tutorials and demonstrations] to get started with the framework.
+
+*Latest release: 2.1.0*
 
 == Maven Installation
 
-The easiest way to integrate NeoEMF in a maven-based application is to use the latest artifact available on http://search.maven.org/#search%7Cga%7C1%7Cneoemf[maven central]. You can integrate NeoEMF in your proejct by adding the following dependency in your `pom` file:
+The easiest way to integrate NeoEMF in a maven-based application is to use the latest artifact available on
+http://search.maven.org/#search%7Cga%7C1%7Cneoemf[maven central].
+You can integrate NeoEMF in your project by adding the following dependency in your `pom.xml` file:
 
 [,xml]
 ----
 <dependency>
-  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <groupId>org.atlanmod.neoemf</groupId>
   <artifactId>neoemf-core</artifactId>
   <version>latest</version>
 </dependency>
 
 <dependency>
-  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <groupId>org.atlanmod.neoemf</groupId>
   <artifactId>neoemf-io</artifactId>
   <version>latest</version>
 </dependency>
@@ -25,7 +36,8 @@ The easiest way to integrate NeoEMF in a maven-based application is to use the l
 
 == Eclipse Installation
 
-NeoEMF is bundled in an update site to ease its integration in Eclipse-based client application. You can install NeoEMF using the `+Help->Install New Software+` menu and set the update site URL with the following:
+NeoEMF is bundled in an update site to ease its integration in Eclipse-based client application.
+You can install NeoEMF using the menu:Help[Install New Software] menu and set the update site URL with the following:
 
 ----
 https://atlanmod.github.io/NeoEMF/releases/latest/plugin/
@@ -41,7 +53,7 @@ Previous versions are available on maven central, and corresponding update sites
 https://atlanmod.github.io/NeoEMF/releases/<version_number>/plugin/
 ----
 
-For example you can install NeoEMF 1.0.1 using the following update site URL:
+For example, you can install NeoEMF 1.0.1 using the following update site URL:
 
 ----
 https://atlanmod.github.io/NeoEMF/releases/1.0.1/plugin/
@@ -73,8 +85,8 @@ Maven artifacts corresponding to the latest snapshot are not published. If you w
 
 ```xml
 <dependency>
-  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <groupId>org.atlanmod.neoemf</groupId>
   <artifactId>neoemf</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>2.1.1-SNAPSHOT</version>
 </dependency>
 ----

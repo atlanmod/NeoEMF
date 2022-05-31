@@ -1,6 +1,6 @@
 .User Guide
 * xref:Releases.adoc[]
-* xref:Installation.adoc[]
+* xref:Installation.adoc[Installation]
 * xref:Supported-Backends.adoc[]
 * xref:Code-Examples.adoc[]
 * xref:Configuration.adoc[]
