@@ -1,5 +1,7 @@
 = NeoEMF
 
+https://twitter.com/intent/tweet?text=Handling%20large%20EMF%20resources%20in%20an%20efficient%20and%20scalable%20way:&url=https://neoemf.atlanmod.org[image:https://img.shields.io/twitter/url/http/shields.io.svg?style=social[Tweet]]
+
 image:https://www.travis-ci.org/atlanmod/NeoEMF.svg?branch=master[Build Status,link=https://www.travis-ci.org/atlanmod/NeoEMF]
 image:https://codecov.io/gh/atlanmod/NeoEMF/branch/master/graph/badge.svg[CodeCov,link=https://codecov.io/gh/atlanmod/NeoEMF]
 image:https://api.codacy.com/project/badge/Grade/82af9c0b0354424f93e1044cbdc85a9e[Codacy,link=https://www.codacy.com/app/atlanmod/NeoEMF?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=atlanmod/NeoEMF&amp;utm_campaign=Badge_Grade]
