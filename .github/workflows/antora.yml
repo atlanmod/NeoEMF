@@ -20,5 +20,5 @@ jobs:
     runs-on: ubuntu-latest
     needs: node-install
     steps:
-      -name: Generate Antora Site
+      - name: Generate Antora Site
         run: npm run build
