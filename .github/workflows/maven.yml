@@ -13,7 +13,6 @@ on:
 
 jobs:
   build-bundles:
-
     runs-on: ubuntu-latest
 
     steps:
