@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NeoEMF Examples Plugin
-Bundle-SymbolicName: fr.inria.atlanmod.neoemf.eclipse.examples.core;singleton:=true
-Automatic-Module-Name: fr.inria.atlanmod.neoemf.eclipse.examples.core,
+Bundle-SymbolicName: org.atlanmod.neoemf.eclipse.examples.core;singleton:=true
+Automatic-Module-Name: org.atlanmod.neoemf.eclipse.examples.core,
 Bundle-Version: 2.1.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,

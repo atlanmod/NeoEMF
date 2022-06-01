@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
-        <artifactId>fr.inria.atlanmod.neoemf.eclipse.examples.projects</artifactId>
+        <groupId>org.atlanmod.neoemf.eclipse</groupId>
+        <artifactId>org.atlanmod.neoemf.eclipse.examples.projects</artifactId>
         <version>2.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>fr.inria.atlanmod.neoemf.eclipse.examples.demo</artifactId>
+    <artifactId>org.atlanmod.neoemf.eclipse.examples.demo</artifactId>
 
     <name>NeoEMF Eclipse Examples : Demo</name>
 
@@ -17,7 +17,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
+            <groupId>org.atlanmod.neoemf.eclipse</groupId>
             <artifactId>org.eclipse.gmt.modisco.java</artifactId>
             <version>${project.version}</version>
         </dependency>

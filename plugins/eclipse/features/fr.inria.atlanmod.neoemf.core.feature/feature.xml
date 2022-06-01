@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-        id="fr.inria.atlanmod.neoemf.core.feature"
+        id="org.atlanmod.neoemf.core.feature"
         label="NeoEMF Persistence Framework"
         version="2.1.0.qualifier">
 
@@ -30,14 +30,14 @@
             unpack="false" />
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.eclipse.ui"
+            id="org.atlanmod.neoemf.eclipse.ui"
             download-size="0"
             install-size="0"
             version="2.1.0.qualifier"
             unpack="false" />
 
     <plugin
-            id="fr.inria.atlanmod.neoemf.eclipse.examples.core"
+            id="org.atlanmod.neoemf.eclipse.examples.core"
             download-size="0"
             install-size="0"
             version="2.1.0.qualifier"

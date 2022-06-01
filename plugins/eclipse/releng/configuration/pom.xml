@@ -10,8 +10,8 @@
         <relativePath>../../../../</relativePath>
     </parent>
 
-    <groupId>fr.inria.atlanmod.neoemf.eclipse</groupId>
-    <artifactId>fr.inria.atlanmod.neoemf.eclipse.configuration</artifactId>
+    <groupId>org.atlanmod.neoemf.eclipse</groupId>
+    <artifactId>org.atlanmod.neoemf.eclipse.configuration</artifactId>
 
     <packaging>pom</packaging>
 
@@ -93,7 +93,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.10.1</version>
                 </plugin>
                 
                 <plugin>

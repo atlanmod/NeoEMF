@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Automatic-Module-Name: fr.inria.atlanmod.neoemf.eclipse.examples.tutorial
-Bundle-SymbolicName: fr.inria.atlanmod.neoemf.eclipse.examples.tutorial;singleton:=true
+Automatic-Module-Name: org.atlanmod.neoemf.eclipse.examples.tutorial
+Bundle-SymbolicName: org.atlanmod.neoemf.eclipse.examples.tutorial;singleton:=true
 Bundle-Version: 2.1.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
