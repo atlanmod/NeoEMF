@@ -1,13 +1,15 @@
+= Configuration
+
 NeoEMF allows a fine customization of backends and stores through the standard EMF `Resource#save()` and `Resource#load()` methods.
 
 Since NeoEMF v2.0, the configuration of stores and databases has been merged in a single class: `Config`.
-This interface and its abstraction provides common options, stores configuration and methods for building implementations.
+This interface provides common options, stores configuration and methods for building implementations.
 Module-specific implementations provide specific options for their associated database, such as database configuration or data mapping strategy.
 
 == Common Configuration
 
 Stores are used to configure NeoEMF at the application level, in-memory caching, logging, etc.
-They appears between EMF and the backend, in order to intercept calls or add pre/post-processing operations.
+They appear between EMF and the backend, in order to intercept calls or add pre/post-processing operations.
 
 Common stores are available for all the backends, and includes:
 
@@ -20,17 +22,19 @@ Common stores are available for all the backends, and includes:
 * *Size caching* :       caches the size of accessed multi-valued features
 * *Feature caching* :    caches the values of accessed features to limit database accesses
 
-*WARNING:*
-Configurations (common and module-specific) are only taken into account for a loaded or saved resource.
-For example, if you want to use auto-save to create a model with massive insertions _(which is strongly recommended)_, you will first need to save the empty resource with the associated option.
-If you don't, every insertions will be saved in an in-memory database, which can cause a massive memory overhead.
+[WARNING]
+--
+Configurations (common and module-specific) are only taken into account for a loaded or saved resources.
+For instance, if you want to use auto-save to create a model with massive insertions _(which is strongly recommended)_, you will first need to save the empty resource with the associated option.
+Otherwis, every insertions will be saved in an in-memory database, which can cause a massive memory overhead.
+--
+
 
 === Example
 
-*NOTE:*
-In the following example, every calls to `MyUriFactory` and `MyConfig` refer to a module-specific implementation of `UriFactory` and `Config`.
+NOTE: In the following example, every call to `MyUriFactory` and `MyConfig` refer to a module-specific implementation of `UriFactory` and `Config`.
 
-[,java]
+[source,java]
 ----
 // [...]
 
@@ -59,7 +63,7 @@ resource.unload();
 
 As they are strongly related to each backend, there is no generic database options.
 
-Each modules provides its own implementation of:
+Each module provides its own implementation of:
 
 * `UriFactory` to build and link a `URI` to a `BackendFactory`
 * `Config` to customize the backend behavior
@@ -69,16 +73,18 @@ Each modules provides its own implementation of:
 Because Blueprints is an adapter that can be used for several databases, it exists several implementations:
 
 * `BlueprintsTinkerConfig` to configure a TinkerGraph database
-* `BlueprintsNeo4jConfig` to configure an embbeded Neo4j database
+* `BlueprintsNeo4jConfig` to configure an embedded Neo4j database
 
 For now, the only additional configuration concern Neo4j, which can add native options with `BlueprintsNeo4jConfig#addNativeOption`.
 These options are not handled by NeoEMF, but processed directly by the database; see `org.neo4j.graphdb.factory.GraphDatabaseSettings` for more information.
 
-*NOTE:*
+[NOTE]
+--
 When the Blueprints implementation is a transactional database (for example the Neo4j implementation),
-each modifications are grouped into a transaction, that is committed when the resource is saved.
+each modification are grouped into a transaction, that is committed when the resource is saved.
 This transaction may grow significantly if many operations are performed before a resource `Resource#save()` call.
 The auto-save option get around this problem by committing regularly the transaction to the database.
+--
 
 === MapDB / BerkeleyDB
 
@@ -95,6 +101,6 @@ These mapping inherits from standard data mapping, available in the core compone
 
 === HBase
 
-For now, HBase have no additional configuration, but it's recommended to use its specific implementation for future modifications.
+For now, HBase have no additional configuration, but we recommended to use its specific implementation for future modifications.
 Because of its distributed nature, it requires some pre-requisites.
 They are presented in a link:HBase-Configuration[dedicated page].

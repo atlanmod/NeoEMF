@@ -1,5 +1,7 @@
+= Get Started
+
 The goal of this tutorial is to present NeoEMF through a simple example.
-You can download a zipped version of the project http://neoemf.com/static/neoemf_tutorial.zip[here], or import it in your Eclipse workspace using the `File → New → Example → NeoEMF → NeoEMF Tutorial Project` menu.
+You can download a zipped version of the project http://neoemf.atlanmod.org/static/neoemf_tutorial.zip[here], or import it in your Eclipse workspace using the menu:File[New > Example > NeoEMF > NeoEMF Tutorial Project] menu.
 
 == Introduction
 
@@ -26,10 +28,10 @@ However, a basic understanding of Neo4j may help you to manipulate your models d
 === Installing NeoEMF
 
 NeoEMF is available as an Eclipse plugin.
-Install it by choosing _Help → Install New Software..._.
+Install it by choosing menu:Help[Install New Software...].
 You will need to add the following software site:
 
-https://atlanmod.github.io/NeoEMF/releases/latest/plugin/
+https://www.atlanmod.org/NeoEMF/releases/latest/plugin/
 
 Select and install all items.
 
@@ -37,7 +39,7 @@ Select and install all items.
 
 Emfatic will be used as a text editor to create a simple Ecore model.
 It is also available as an Eclipse plugin.
-Install it by choosing _Help → Install New Software..._.
+Install it by choosing menu:Help[Install New Software...].
 You will also need to add the following software site:
 
 http://download.eclipse.org/emfatic/update
@@ -46,7 +48,7 @@ Select and install all items.
 
 == Creating a New EMF Project
 
-Now create a new EMF project by choosing _File → New → Project..._ from the main menu.
+Now create a new EMF project by choosing menu:File[New → Project...] from the main menu.
 The dialog offers a couple of different project types.
 Select _Empty EMF Project_ from the category _Eclipse Modeling Framework_ and continue via _Next_.
 
@@ -59,11 +61,11 @@ Feel free to use any name for your project ("NeoEMF Tutorial" would be great), a
 To create and save an EMF resource, you first need an ECore Model.
 There are several ways to create an Ecore Model, here we use https://www.eclipse.org/emfatic/[EMFatic], a textual syntax for ECore models.
 
-From the main menu, choose _File→ New → Other..._ and select _Emfatic file_ from the category _Example EMF Creation Wizard_. Name your file "graph.emf".
+From the main menu, choose menu:File[New → Other...] and select _Emfatic file_ from the category _Example EMF Creation Wizard_. Name your file "graph.emf".
 
 Edit your file to create a simple model specifying a simple graph structure, containing Edges and Vertices, and described below:
 
-[,java]
+[source,java]
 ----
 @namespace(uri="http://atlanmod.neoemf.tutorial", prefix="graph")
 package graph;
@@ -94,7 +96,7 @@ image::http://neoemf.atlanmod.org/static/img/tutorial/GenerateEcoreModel.png[]
 
 === Creating an EMF Generator Model
 
-Now create a new EMF Generator Model by choosing _File → New → Other..._ from the main menu.
+Now create a new EMF Generator Model by choosing menu:File[New > Other...] from the main menu.
 The dialog offers a couple of different wizards.
 Select _EMF Generator Model_ from the category _Eclipse Modeling Framework_ and continue via _Next_.
 
@@ -133,11 +135,12 @@ Once the Ecore model is ready, we can create instances of this model and store t
 Creating a resource in NeoEMF is similar to standard EMF.
 Write down the following line to create a resource named "models/myGraph.graphdb" in your current Eclipse project.
 
-*NOTE:*
+[NOTE]
+--
 The following example concerns a Blueprints backend.
 Because all backends work in the same way, you can replace `BlueprintsTinkerConfig` and `BlueprintsUri` by the module-specific implementations of `Config` and `UriBuilder` related to the backend you want to use. For now, it can be `+MapDb***+` or `+BerkeleyDB***+`.
 
-[,java]
+[source,java]
 ----
 URI uri = new BlueprintsUriFactory().createLocalUri("models/myGraph.graphdb");
 
@@ -146,12 +149,13 @@ Resource resource = resourceSet .createResource(uri);
 
 ImmutableConfig config = new BlueprintsTinkerConfig();
 ----
+--
 
 *Populating the resource*
 
 Now, write a simple code to create instances of the Graph model and to save the resource:
 
-[,java]
+[source,java]
 ----
 GraphFactory factory = GraphFactory.eINSTANCE;
 Graph graph = factory.createGraph();

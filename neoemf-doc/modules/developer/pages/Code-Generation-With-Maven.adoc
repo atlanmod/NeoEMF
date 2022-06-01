@@ -1,36 +1,46 @@
-To generate some code from an EMF model, it's possible to use the xText Maven plugin which provides some features, including code generation from an Xcore model.
+= Code Generation With Maven
 
-[,+++<cite>+++https://wiki.eclipse.org/Xcore[Xcore official website]+++</cite>+++]
+To generate some code from an EMF model, it's possible to use the xText Maven plugin which provides some features,
+including code generation from an Xcore model.
+
+
+[quote, 'https://wiki.eclipse.org/Xcore[Xcore Website]']
 ____
-Xcore is an extended concrete syntax for Ecore that, in combination with https://www.eclipse.org/Xtext/#xbase[Xbase], transforms it into a fully fledged programming language with high quality tools reminiscent of the Java Development Tools.
-You can use it not only to specify the structure of your model, but also the behavior of your operations and derived features as well as the conversion logic of your data types.
+Xcore is an extended concrete syntax for Ecore that, in combination with https://www.eclipse.org/Xtext/#xbase[Xbase],
+transforms it into a fully fledged programming language with high quality tools reminiscent of the Java Development Tools.
+You can use it not only to specify the structure of your model,
+but also the behavior of your operations and derived features as well as the conversion logic of your data types.
 It eliminates the dividing line between modeling and programming, combining the advantages of each.
 All this is supported for both generated and dynamic https://www.eclipse.org/modeling/emf/[EMF] models.
 ____
 
 == Create or Update Existing Models
 
-To use the code generation in Maven, it's necessary to create an Xcore model. There is two way to do that :
+To use the code generation in Maven, first you need to create an Xcore model.
+There are two ways to achieve that:
 
 * Directly https://wiki.eclipse.org/Xcore#Creating_an_Xcore_model[create an Xcore model].
-* Create or edit existing Ecore or GenModel files, then https://wiki.eclipse.org/Xcore#Converting_a_GenModel_to_an_Xcore_Model[generate an Xcore model] from them. You can easily convert an existing Ecore model to a Xcore model, and vice versa.
+* Create or edit existing Ecore or GenModel files, then https://wiki.eclipse.org/Xcore#Converting_a_GenModel_to_an_Xcore_Model[generate an Xcore model] from them.
+You can easily convert an existing Ecore model to an Xcore model, and vice versa.
 
-See all procedures on the https://wiki.eclipse.org/Xcore[Xcore official website].
+See all procedures on the https://wiki.eclipse.org/Xcore[Xcore Website].
 
-*WARNING* :
+[WARNING]
+====
 When you generate an Xcore model, `pluginID` and `pluginKey` parameters are added to the `@GenModel` annotation in Xcore header.
 *You must remove these parameters when they are included in a Maven project*, otherwise an `IOException` will be thrown during the build :
 they identify Eclipse plugin files (_build.properties_, _plugin.properties_ and _plugin.xml_) which are not useful for code generation, and cannot be found in the project root if you don't insert them.
+====
 
 == Create a Project Using Xcore Code Generation
 
-Some lines must be added to the _pom.xml_.
+Some lines must be added to the `pom.xml` file.
 
 === Generate at a Specific JDK Level
 
 The code generation can be configured to follow a specific JDK level:
 
-* Your Xcore model must have a `complianceLevel` parameter in the `@GenModel` annotation. Its value must be greater or equal to the targetted JDK.
+* Your Xcore model must have a `complianceLevel` parameter in the `@GenModel` annotation. Its value must be greater or equal to the targeted JDK.
 +
 For example, if you want to generate a Java 7 code, you have to ensure that this parameter is `complianceLevel="7.0"` ou `complianceLevel="8.0"`.
 
@@ -40,15 +50,14 @@ An example is shown above.
 
 === Properties
 
-These properties are used on this wiki.
-
-[,xml]
+.The properties used on this document.
+[source,xml]
 ----
 <properties>
     ...
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <generated-sources.location>${project.basedir}/src/main/java-gen/</generated-sources.location>
     <models.location>${project.basedir}/src/main/resources</models.location>
     ...
@@ -57,11 +66,11 @@ These properties are used on this wiki.
 
 === Dependencies
 
-You need to ensure that all dependencies used in your Xcore file are included in the _pom.xml_.
+You need to ensure that all dependencies used in your Xcore file are included in the `pom.xml`.
 
 For a simple Xcore generated file, you just need one dependency which ensures that `@Ecore` and `@GenModel` annotations are well known by compiler.
 
-[,xml]
+[source,xml]
 ----
 <dependency>
     <groupId>org.eclipse.emf</groupId>
@@ -73,9 +82,9 @@ For a simple Xcore generated file, you just need one dependency which ensures th
 
 When you create a new project that needs code generation, you need to add some plugins in your _pom.xml_
 
-1) Cleaning the previously generated code
+==== Cleaning the previously generated code
 
-[,xml]
+[source,xml]
 ----
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -90,11 +99,11 @@ When you create a new project that needs code generation, you need to add some p
 </plugin>
 ----
 
-2) Code generation from Xcore model
+==== Code generation from Xcore model
 
 _Some plugin dependencies may be added according to your Xcore model_
 
-[,xml]
+[source,xml]
 ----
 <plugin>
     <groupId>org.eclipse.xtext</groupId>
@@ -152,9 +161,9 @@ _Some plugin dependencies may be added according to your Xcore model_
 </plugin>
 ----
 
-3) Adding the generated code to the build path
+==== Adding the generated code to the build path
 
-[,xml]
+[source,xml]
 ----
 <plugin>
     <groupId>org.codehaus.mojo</groupId>
@@ -176,9 +185,9 @@ _Some plugin dependencies may be added according to your Xcore model_
 </plugin>
 ----
 
-4) Building the generated code
+==== Building the generated code
 
-[,xml]
+[source,xml]
 ----
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
@@ -200,6 +209,9 @@ Only code generation is concerned : when code is generated, you should have no p
 
 Use the following command : `mvn clean compile`.
 
-*[ERROR] ERROR: A generic type in this context must refer to a classifier or a type parameter*
+[WARNING]
+====
+A generic type in this context must refer to a classifier or a type parameter*
 You can get this error if your `pom.xml` file doesn't contain the following dependencies: `org.eclipse.emf.common` and `org.eclipse.emf.ecore`.
 Note that the error is reported for every primitive type.
+====

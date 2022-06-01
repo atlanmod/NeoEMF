@@ -3,9 +3,6 @@
 == Project Organization
 
 
-
-
-
 == Code Conventions
 
 Except for the cases enumerated below, the Java source code should follow Google's Style Guide: https://google.github.io/styleguide/javaguide.html
@@ -15,9 +12,9 @@ Except for the cases enumerated below, the Java source code should follow Google
 Part of the source code is meant to be specialized by automatically generated code.
 To avoid naming conflicts, classes that belong to the `emf.ecore` hierarchy should avoid standard _Getter_ and _Setter_ names.
 
-For instance, access methods for an attribute named `foo` should be:
+For instance, access methods for a field named `foo` should be:
 
-[,java]
+[source,java]
 ----
 String foo();          // The Getter
 void foo(String str);  // The Setter
@@ -47,13 +44,14 @@ These annotations are not processed at runtime, but are very useful for static c
 
 === Documentation
 
-Every packages, classes, methods and fields should be properly documented.
+Every package, classes, method, and field should be properly documented.
 
-The package documentation is located in `main/javadoc`, next to the `main/java` directory, and must only contains `package-info.java` files.
+The package documentation is located in `main/javadoc`, next to the `main/java` directory, and must only contain `package-info.java` files.
 
-== Software quality
+== Software Quality
 
-Ideally, all methods should be tested in unit tests. For classes and methods related to data management, tests must also be created in the integration tests.
+Ideally, all methods should be tested in unit tests.
+For classes and methods related to data management, tests must also be created in the integration tests.
 
 == Design Tips
 
@@ -85,7 +83,7 @@ NeoEMF is bundled with a test suite based on our usage experience and the issues
 We are using and testing it every day to improve the quality of the framework.
 However, we cannot spot all the bugs, or test all the possible application scenarios.
 
-If you experience any trouble when installing or using NeoEMF you can open an issue on the https://github.com/atlanmod/NeoEMF/issues[issue tracker].
+If you experience any trouble when installing or using NeoEMF you can open an issue on the https://github.com/atlanmod/NeoEMF/issues[Issue Tracker].
 Please make sure that a similar issue is not already opened.
 
 You can alternatively contact us directly through our mailing list link:neoemf@googlegroups.com[neoemf@googlegroups.com].
@@ -97,7 +95,7 @@ You can https://github.com/atlanmod/NeoEMF/pulls[submit it in a pull request]!
 In order to facilitate related discussions and speed-up the merge of your pull request make sure to observe the following rules:
 
 * Create *one pull request per feature*: it is way easier for us to integrate relatively small pull requests containing a single feature.
-For example, a pull request can contains code for a new backend or a fix for a bug or a family of related bugs.
+For example, a pull request can contain code for a new backend or a fix for a bug or a family of related bugs.
 * Provide a *description of the changes* in your pull request: this will help us to understand and check your code efficiently.
 This description may be partially reused in NeoEMF changelog for the next release of the tool.
 * Follow the *package and class naming conventions*: we have a link:Naming-Conventions[wiki page] referencing the package and class naming conventions we use in the project.
@@ -115,16 +113,16 @@ If you want to report your user experience with the tool or discuss about possib
 This page details the different steps required to build locally NeoEMF.
 When built and installed in your local maven repository, you can import it in your project using the following maven dependency:
 
-[,xml]
+[source,xml]
 ----
 <dependency>
-  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <groupId>org.atlanmod.neoemf</groupId>
   <artifactId>neoemf-core</artifactId>
   <version>latest</version>
 </dependency>
 
 <dependency>
-  <groupId>fr.inria.atlanmod.neoemf</groupId>
+  <groupId>org.atlanmod.neoemf</groupId>
   <artifactId>neoemf-io</artifactId>
   <version>latest</version>
 </dependency>
@@ -136,14 +134,14 @@ Alternatively, the local build embeds a zipped update site in the `plugins/fr.in
 
 You can download the source code of the latest release https://github.com/atlanmod/NeoEMF/releases/latest[here] or clone the `master` branch using the following git command:
 
-[,bash]
+[source,bash]
 ----
 git clone -b master --single-branch  https://github.com/atlanmod/NeoEMF.git
 ----
 
 Configure Maven's JDK to allocate more memory:
 
-[,bash]
+[source,bash]
 ----
 export MAVEN_OPTS="-XX:PermSize=256m -XX:MaxPermSize=512m -XstartOnFirstThread"
 ----
@@ -153,14 +151,14 @@ export MAVEN_OPTS="-XX:PermSize=256m -XX:MaxPermSize=512m -XstartOnFirstThread"
 NeoEMF core components are bundled as a set of Jar files that can be imported using the maven dependency mechanism.
 You can build NeoEMF core components by going to the root of the source directory and run the following command:
 
-[,bash]
+[source,bash]
 ----
 mvn clean install
 ----
 
 _(optional)_ You can also run the tests by using :
 
-[,bash]
+[source,bash]
 ----
 mvn test (-pl <neoemf-core|neoemf-data|neoemf-io|...>)
 ----
@@ -173,12 +171,13 @@ To generate these additional artifacts see the next section.
 NeoEMF Eclipse integration plugins provide Eclipse compatible plugins and update site.
 To build these artifacts, you need to run the following command:
 
-[,bash]
+[source,bash]
 ----
 mvn clean install -f plugins/eclipse
 ----
 
-NeoEMF plugins and update-site are built and stored in your local maven repository at `plugins/fr.inria.atlanmod.neoemf.eclipse.update/1.0.2-SNAPSHOT`.
+NeoEMF plugins and update-site are built and stored in your local workspace at
+`./plugins/eclipse/releng/update/target/fr.inria.atlanmod.neoemf.eclipse.update-2.1.0-SNAPSHOT.zip`.
 
 === Build in Eclipse
 
@@ -186,7 +185,8 @@ You can alternatively build NeoEMF directly in Eclipse using the Eclipse Git and
 
 ==== Requirements
 
-In order to import NeoEMF Git repository in Eclipse, you will need the following plugins in your installation (installable from the software repository of your Eclipse release):
+In order to import NeoEMF Git repository in Eclipse,
+you will need the following plugins in your installation (installable from the software repository of your Eclipse release):
 
 * *EGit* : v3.4.2 or later
 * *m2e* : v1.5.1 or later
@@ -214,10 +214,12 @@ Note that building NeoEMF in Eclipse can take a long time (and a large disk spac
 
 === Issues
 
-If you experience issues installing or using NeoEMF, you can https://github.com/atlanmod/NeoEMF/issues[submit an issue on github] or contact us at neoemf@googlegroups.com
+If you experience issues installing or using NeoEMF, you can https://github.com/atlanmod/NeoEMF/issues[submit an issue on GitHub]
+or contact us at neoemf@googlegroups.com
 
 ==== Known issues:
 
 * Only Luna plugins are fetched (the compatibility is not ensured for previous Eclipse versions)
-* The Eclipse plugins can not be built if maven can not access internet (it is needed to fetch Luna p2 repositories)
-* Sometimes the plugin build crashes and/or freezes during p2 index fetching from Luna repositories. It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.
+* The Eclipse plugins can not be built if Maven can not access thr Internet (it is needed to fetch Luna p2 repositories)
+* Sometimes the plugin build crashes and/or freezes during p2 index fetching from Luna repositories.
+It is generally sufficient to cancel the build (`ctrl-c`) and to relaunch it.

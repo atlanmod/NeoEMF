@@ -1,7 +1,7 @@
 .Developers Guide
-* xref:index.adoc[]
-* xref:Code-Generation-With-Maven.adoc[]
-* xref:Create-A-New-Module.adoc[]
-* xref:Naming-Conventions.adoc[]
-* xref:Reserved-URI-Schemes.adoc[]
+* xref:index.adoc[Developers Guide]
+* xref:Code-Generation-With-Maven.adoc[Code Generation with Maven]
+* xref:Create-A-New-Module.adoc[Create a new Backend Module]
+* xref:Naming-Conventions.adoc[Naming Conventions]
+* xref:Reserved-URI-Schemes.adoc[Reserved URI Schemes]
 

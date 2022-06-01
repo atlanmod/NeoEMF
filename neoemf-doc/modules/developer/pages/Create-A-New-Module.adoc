@@ -1,4 +1,6 @@
-= How to create a new database backend 
+= How to create a new database backend
+:sectnums:
+:toc:
 
 In this tutorial we detail how it is possible to extend NeoEMF with a custom backend implementation.
 
@@ -6,35 +8,7 @@ We define a simple mapping on a database named "Paprika", and we show how it can
 Obviously, the name "Paprika" should be replaced by the name of your backend.
 Since several backends already exist, you can use any of them as a source of inspiration.
 
-*Summary*
-
-____
-. <<1-project-creation,Project Creation>>
-. <<2-a-little-touch-of-maven,A Little Touch of Maven>>
-. <<3-a-pinch-of-organisationn,A Pinch of Organisation>>
-. <<4-implementation,Implementation>>
- .. <<41-identification-and-location,Identification and Location>>
- .. <<42-configuration,Configuration>>
- .. <<43-data-mapping,Data Mapping>>
-  *** <<overused-beans,Overused Beans>>
-  *** <<everyone-has-its-own-responsibility,Everyone Has Its Own Responsibility>>
-  *** <<common-mapping-strategies,Common Mapping Strategies>>
-  *** <<your-mapping-strategy,Your Mapping Strategy>>
-  *** <<some-help,Some Help>>
- .. <<44-one-factory-to-create-them-all,One Factory to Create Them All>>
-. <<5-services,Services>>
-. <<6-hello-world,Hello World!>>
-. <<7-integration,Integration>>
- .. <<in-tests,In Tests>>
-  *** <<test-context,Test Context>>
-  *** <<unit-tests,Unit Tests>>
-  *** <<integration-tests,Integration Tests>>
- .. <<in-eclipse-plugin,In Eclipse Plugin>>
- .. <<in-benchmarks,In Benchmarks>>
-. <<8-pull-request,Pull request!>>
-____
-
-== 1. Project Creation
+== Project Creation
 
 The first step before starting to implement your own backend connector is to clone the NeoEMF repository:
 
@@ -59,7 +33,7 @@ git checkout -b paprika
 
 Now you have everything setup to start implementing your own database backend connector!
 
-== 2. A Little Touch of Maven
+== A Little Touch of Maven
 
 NeoEMF is designed around a modular architecture based on three main components:
 
@@ -71,7 +45,7 @@ Users typically access NeoEMF through the core API.
 This architecture provides a clear separation between shared code and backend-specific code.
 Supported backends are developed as independent Maven artifacts, which extend `neoemf-data`.
 
-=== 2.1 Create the module with Maven artifact
+=== Create the module with Maven artifact
 
 We recently created a Maven archetype that allow you to create a new module without all the following steps. The structure will be created automatically.
 
@@ -103,12 +77,12 @@ mvn archetype:generate -DarchetypeArtifactId="neoemf-archetype-extension" \
 
 Where `databaseName` corresponds to the prefix of all generated classes.
 
-=== 2.2 Create the module manually
+=== Create the module manually
 
 To start our new implementation, we create a new folder `paprika` that will contain all the code related to our Paprika-based model mapping.
 Then create a new Maven project using the following command, or your IDE Maven environment:
 
-[,bash]
+[source,bash]
 ----
 mvn archetype:generate -DgroupId=fr.inria.atlanmod.neoemf -DartifactId=neoemf-data-paprika -DinteractiveMode=false
 ----
@@ -174,9 +148,9 @@ All the backend implementations have a similar root `pom.xml` file.
 
 The `build` section of the `pom.xml` file tells Maven to generate an Eclipse bundle, and sets the generated `MANIFEST.MF` information such as the bundle name, the exported packages, and the other bundles that are required to use the generated one.
 
-== 3. A Pinch of Organization
+== A Pinch of Organization
 
-Every modules respects a simple structure to organize the different classes.
+Every module respects a simple structure to organize the different classes.
 
 In a package named `org.atlanmod.neoemf.data.paprika` (or use the base package of your organization), you should have the following file structure:
 
@@ -192,17 +166,16 @@ In a package named `org.atlanmod.neoemf.data.paprika` (or use the base package o
 ----
 
 If you need more packages, feel free to add them.
+ Do not forget to respect the link:Developers-Guide[developers rules].
 
-And don't forget to respect the link:Developers-Guide[developers rules].
+== Implementation
 
-== 4. Implementation
+All the following steps can be performed in any order: all classes are related to each other.
+If a class is missing in your project, but present in the example, don't panic, it should appear in next steps.
 
-All of the following steps can be performed in any order: all classes are related to each other.
-If a class is missing in your project, but present in the example, don't panic, it should appears in next steps.
+=== Identification and Location
 
-=== 4.1. Identification and Location
-
-Every databases used in NeoEMF are associated to a dedicated URI scheme.
+Every database used in NeoEMF are associated to a dedicated URI scheme.
 This allows the framework to understand from a given resource URI which connector should be used to access the model.
 
 *Example:* If the provided URI is `neo-paprika:/path/to/my/resource/resource.paprika`, the framework parses the scheme `neo-paprika` and associate the provided folder `resource.paprika` to the `PaprikaBackendFactory`.
@@ -232,7 +205,7 @@ public class PaprikaUriFactory extends AbstractUriFactory {
 }
 ----
 
-=== 4.2. Configuration
+=== Configuration
 
 The configuration allows to define the database behavior, the data mapping strategy, etc.
 Everything that can be customized by the user must be declared there.
@@ -301,12 +274,12 @@ public class PaprikaConfig extends BaseConfig<PaprikaConfig> {
 }
 ----
 
-=== 4.3. Data Mapping
+=== Data Mapping
 
 Then comes the more interesting part: the data mapping!
 
 NeoEMF internally translates EMF methods into NeoEMF operations, represented as atomic queries, with a differentiation between attributes and references between elements, that use key/value representations instead of complex objects.
-This allow to define a common behavior for all modules, and ease the integration with databases.
+This allows to define a common behavior for all modules, and ease the integration with databases.
 
 ==== Overused Beans
 
@@ -541,7 +514,7 @@ To ease your development, you can find utility classes and methods in the `org.a
 * Efficient hashers, on top of https://github.com/OpenHFT/Zero-Allocation-Hashing[Zero Allocation Hashing]; including Murmur3, xxHash, cityHash or farmHash algorithms
 * Several methods related to concurrency, collections, arrays, stream, primitives, etc.
 
-=== 4.4. One Factory to Create Them All
+=== One Factory to Create Them All
 
 All backends of a same module are created in a single place: the `BackendFactory`. It's the core of a module.
 
@@ -598,9 +571,11 @@ public final class PaprikaBackendFactory extends AbstractBackendFactory<PaprikaC
 }
 ----
 
-== 5. Services
+== Services
 
-Since `v2.0.0`, NeoEMF uses the `ServiceLoader` to retrieve all services across modules. This implies to declare them in the `resources/META-INF/services` directory. You should have at least three files, declaring the implementation that you have created for each service:
+Since `v2.0.0`, NeoEMF uses the `ServiceLoader` to retrieve all services across modules.
+This implies to declare them in the `resources/META-INF/services` directory.
+You should have at least three files, declaring the implementation that you have created for each service:
 
 ----
 resources/META-INF/services
@@ -609,9 +584,11 @@ resources/META-INF/services
 +-- fr.inria.atlanmod.neoemf.util.UriFactory
 ----
 
-Under OSGi, and especially with the Equinox implementation, `ServiceLoader` is not correctly handled. So, we chose to use the Declarative Services. These declarations are automatically registered and configured when building the project, according to the `@Component` annotations.
+Under OSGi, and especially with the Equinox implementation, `ServiceLoader` is not correctly handled.
+So, we chose to use the Declarative Services.
+These declarations are automatically registered and configured when building the project, according to the `@Component` annotations.
 
-== 6. Hello World!
+== Hello World!
 
 Now, you can test your new backend by creating a NeoEMF resource using the classes we defined before.
 
@@ -638,7 +615,7 @@ resource.save(config.asMap());
 resource.unload();
 ----
 
-== 7. Integration
+== Integration
 
 === In Tests
 
@@ -832,7 +809,7 @@ _*-- TODO*_
 (Create an inner subclass for each backend, if necessary)
 * Annotate each adapters with `@AdapterName`
 
-== 8. Pull Request!
+== Pull Request!
 
 Once your new implementation is ready and tested you can submit it in a pull request to push it in the next release of the tool!
 Integrating new backends to NeoEMF is designed to be easy, and the pushed code will benefit of the future release improvements.

@@ -1,12 +1,37 @@
-This page lists all the available releases of the tool.Latest available release is always presented first. Previous releases are listed to keep a trace of the changes, but shouldn't be used if a newer version is available. Note that you can also check the ongoing modifications in the https://github.com/atlanmod/NeoEMF/blob/master/CHANGELOG.md[CHANGELOG.MD] file at the root of the project repository.
+== Releases
 
-== 1.0.2 (_Latest_) - 2017-06-06
+This page lists all the available releases of the tool.
+Latest available release is always presented first.
+Previous releases are listed to keep a trace of the changes, but should not be used if a newer version is available.
+Note that you can also check the ongoing modifications in the
+https://github.com/atlanmod/NeoEMF/blob/master/CHANGELOG.adoc[CHANGELOG]
+file at the root of the project repository.
 
-https://github.com/atlanmod/NeoEMF/releases/tag/v1.0.2[Release Notes] | https://github.com/atlanmod/NeoEMF/archive/v1.0.2.zip[Download Sources] | https://atlanmod.github.io/NeoEMF/releases/1.0.2/plugin/[Update Site]
+== 2.0.0 (_Latest_) - 2022-05-30
+
+* https://github.com/atlanmod/NeoEMF/releases/tag/v1.0.3[Release Notes]
+* https://github.com/atlanmod/NeoEMF/archive/v1.0.3.zip[Download Sources]
+* https://www.atlanmod.org/NeoEMF/releases/1.0.3/plugin/[Update Site]
+
+== 1.0.3 - 2022-05-30
+
+* https://github.com/atlanmod/NeoEMF/releases/tag/v1.0.3[Release Notes]
+* https://github.com/atlanmod/NeoEMF/archive/v1.0.3.zip[Download Sources]
+* https://www.atlanmod.org/NeoEMF/releases/1.0.3/plugin/[Update Site]
+
+== 1.0.2  - 2017-06-06
+
+* https://github.com/atlanmod/NeoEMF/releases/tag/v1.0.2[Release Notes]
+* https://github.com/atlanmod/NeoEMF/archive/v1.0.2.zip[Download Sources]
+* https://www.atlanmod.org/NeoEMF/releases/1.0.2/plugin/[Update Site]
 
 === Summary
 
-We fixed a set of bugs we found in our experiments and we received in users' feedbacks. Thanks for helping us improving the tool! We also integrated a new experimental integration with EMF Compare, allowing to compare NeoEMF models to other EMF-based models. This feature will remain experimental until the next major release that will remove conflicting Guava dependencies.
+We fixed a set of bugs we found in our experiments, and we received in users' feedbacks.
+Thanks for helping us to improve the tool!
+We also integrated a new experimental integration with EMF Compare,
+allowing to compare NeoEMF resources to other EMF-based resources.
+This feature will remain experimental until the next major release that will remove conflicting Guava dependencies.
 
 We also merged the common features of MapDB and BerkeleyDB backends to improve maintainability and reusability of map-based serialization components.
 
@@ -31,11 +56,16 @@ We also merged the common features of MapDB and BerkeleyDB backends to improve m
 
 == 1.0.1 - 2017-01-16
 
-https://github.com/atlanmod/NeoEMF/releases/tag/v1.0.1[Release Notes] | https://github.com/atlanmod/NeoEMF/archive/v1.0.1.zip[Download Sources] | https://atlanmod.github.io/NeoEMF/releases/1.0.1/plugin/[Update Site]
+https://github.com/atlanmod/NeoEMF/releases/tag/v1.0.1[Release Notes] | https://github.com/atlanmod/NeoEMF/archive/v1.0.1.zip[Download Sources] | https://www.atlanmod.org/NeoEMF/releases/1.0.1/plugin/[Update Site]
 
 === Summary
 
-Core modularization to ease new backend integration: all the supported backends are now defined as sub-project of the `data` module. The `Logger` has been updated to work in a dedicated thread, limiting its impact on the application performance. We have improved and rewritten a large part of the JavaDoc and published it on https://atlanmod.github.io/NeoEMF/releases/latest/doc/[NeoEMF website]. Tests are not modular and can be executed on all the supported backends, this allows to develop high quality implementations that benefit of existing tests. We also fixed few issues and updated the dependencies with the latest EMF release. See the <<changelog,changelog>> for a complete description of the updates.
+Core modularization to ease new backend integration: all the supported backends are now defined as sub-module of the `data` module.
+The `Logger` has been updated to work in a dedicated thread, limiting its impact on the application performance.
+We have improved and rewritten a large part of the JavaDoc and published it on https://www.atlanmod.org/NeoEMF/releases/latest/doc/[NeoEMF website].
+Tests are not modular and can be executed on all the supported backends, this allows to develop high quality implementations that benefit of existing tests.
+We also fixed few issues and updated the dependencies with the latest EMF release.
+See the <<changelog,changelog>> for a complete description of the updates.
 
 === Changelog
 
@@ -83,11 +113,11 @@ Core modularization to ease new backend integration: all the supported backends 
 
 == 1.0.0 - 2016-12-06
 
-https://github.com/atlanmod/NeoEMF/releases/tag/v1.0.0[Release Notes] | https://github.com/atlanmod/NeoEMF/archive/v1.0.0.zip[Download Sources] | https://atlanmod.github.io/NeoEMF/releases/1.0.0/plugin/[Update Site]
+https://github.com/atlanmod/NeoEMF/releases/tag/v1.0.0[Release Notes] | https://github.com/atlanmod/NeoEMF/archive/v1.0.0.zip[Download Sources] | https://www.atlanmod.org/NeoEMF/releases/1.0.0/plugin/[Update Site]
 
 Initial release of the tool. This first release defines the core components of the framework and the supported backends.
 
-* Core API defninition
+* Core API definition
  ** Extension of the EMF API with PersistentResource and PersistentEObject
  ** Abstract backend architecture
  ** Support for persistent and transient backends

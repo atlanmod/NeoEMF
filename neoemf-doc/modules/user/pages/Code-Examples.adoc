@@ -1,13 +1,14 @@
-*NOTE:*
-In the following examples, every calls to `MyUri` and `MyConfig` refer to a module-specific implementation of `UriBuilder` and `Config`.
+= Code Examples
+
+NOTE: In the following examples, every call to `MyUri` and `MyConfig` refer to a module-specific implementation of `UriBuilder` and `Config`.
 
 == Initialize a New Resource
 
 The only code you need to initialize a resource is the same as in standard EMF.
 To ease the integration of NeoEMF (and avoid mistakes), it is recommended to use the `UriBuilder` associated to the database you want to use, findable in each module.
 
-[,java]
-----
+[source,java]
+--
 // Creates a new URI to locate a file-based resource.
 URI uri = new MyUriFactory.createLocalUri("<db_path>");
 
@@ -17,13 +18,13 @@ URI uri = new MyUriFactory.createLocalUri("<db_path>");
 // Creates the resource
 ResourceSet resourceSet = new ResourceSetImpl();
 Resource resource = resourceSet.createResource(uri);
-----
+--
 
 == Save a Resource / Load an Existing Resource
 
 NeoEMF is fully-integrated with EMF, the procedure is so the same.
 
-[,java]
+[source,java]
 ----
 // Creates a new configuration builder, used to easily configure the behavior of NeoEMF and the inner database.
 // In addition to the options common to all backends, each builder has its own options.
@@ -47,7 +48,7 @@ resource.unload();
 
 == Modify an Existing Resource
 
-[,java]
+[source,java]
 ----
 ImmutableConfig config = new MyConfig()
   .cacheContainers()

@@ -1,3 +1,5 @@
+= Reserved URI Schemes
+
 NeoEMF relies on EMF's URI schemes to understand which backend to instantiate from a given resource URI.
 This page summarizes the current supported schemes and their corresponding backend.
 
@@ -5,9 +7,11 @@ According to the NeoEMF link:Naming-Conventions[code conventions] schemes are de
 Note that URI schemes also start with the `neo` prefix to avoid name clashes.
 Please follow these guidelines if you want to link:Create-A-New-Module[create a new module].
 
-*NOTE:*
+[NOTE]
+====
 URI schemes are automatically processed by the binding engine that associate a URI scheme with the name of its associated `BackendFactory`.
 In a common use, you should not create your own URI scheme.
+====
 
 |===
 | Scheme | Backend

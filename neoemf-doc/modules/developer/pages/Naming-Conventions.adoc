@@ -1,3 +1,5 @@
+= Naming Conventions
+
 This page references the package and class naming conventions used in NeoEMF.
 Please make sure to follow these rules if you want to link:How-To-Contribute[contribute to the framework], this will ease future discussions and speed-up the integration of your code.
 
@@ -5,7 +7,7 @@ Please make sure to follow these rules if you want to link:How-To-Contribute[con
 
 NeoEMF packages group classes per feature and not by layers.
 For example the package `fr.inria.atlanmod.neoemf.resource` contains both classes and interfaces related to EMF Resource management.
-We don't use sub-packages such as `impl`, `beans`, `exceptions`, etc.
+We do not use sub-packages such as `impl`, `beans`, `exceptions`, etc.
 
 Package names are defined by singular words. Since each package describes a feature, the name of the feature should be used as the name of package.
 
