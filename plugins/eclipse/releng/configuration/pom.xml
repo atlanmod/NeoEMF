@@ -21,7 +21,7 @@
     <properties>
         <maven.test.skip>true</maven.test.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <tycho-plugin.version>2.4.0</tycho-plugin.version>
+        <tycho-plugin.version>2.7.3</tycho-plugin.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.debug>true</maven.compiler.debug>

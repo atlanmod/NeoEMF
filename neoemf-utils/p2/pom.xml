@@ -19,7 +19,7 @@
     </description>
 
     <properties>
-        <tycho-plugin.version>2.3.0</tycho-plugin.version>
+        <tycho-plugin.version>2.7.3</tycho-plugin.version>
     </properties>
 
     <repositories>
