@@ -35,7 +35,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Build and install main project
-        run: mvn clean package -f plugins/eclipse/pom.xml
+        run: mvn clean install -DskipTests
       - name: Build benchmarks
         run: mvn clean package -f benchmarks/pom.xml
 
