@@ -1,4 +1,5 @@
-- NeoEMF Documentation Site
+= NeoEMF Documentation Site
+:navtitle: Atlanmod
 
 == What Is NeoEMF?
 
