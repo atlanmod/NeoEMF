@@ -1,3 +1,5 @@
+- NeoEMF Documentation Site
+
 == What Is NeoEMF?
 
 NeoEMF is an https://www.atlanmod.org[AtlanMod] research team project that aims at handling large EMF models in an efficient and scalable way.
