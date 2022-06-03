@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.atlanmod.commons</groupId>
         <artifactId>commons</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.1</version>
     </parent>
 
     <groupId>org.atlanmod.neoemf</groupId>
@@ -87,7 +87,7 @@
 
     <properties>
         <argLine.global>-Xmx2g --illegal-access=warn --illegal-access=permit --add-exports java.base/jdk.internal.ref=ALL-UNNAMED</argLine.global>
-        <commons.version>1.1.0</commons.version>
+        <commons.version>1.1.1</commons.version>
         <emf.version>[2.15.0,)</emf.version>
         <xtext.version>2.25.0</xtext.version>
         <xcore.version>[1.15.0,)</xcore.version>
@@ -191,7 +191,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M3</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <id>enforce-maven</id>
@@ -356,6 +356,7 @@
                     <extensions>true</extensions>
                     <configuration>
                         <instructions>
+                            <!--Bundle-Version>2.1.0.${maven.build.timestamp}</Bundle-Version-->
                             <Bundle-Version>${project.version}</Bundle-Version>
                             <Bundle-ClassPath>.,{maven-dependencies}</Bundle-ClassPath>
                             <Import-Package/>

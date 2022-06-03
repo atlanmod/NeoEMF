@@ -19,6 +19,20 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
+        <!--
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+        -->
+
+        <dependency>
             <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-core</artifactId>
             <version>${project.version}</version>

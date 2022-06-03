@@ -19,7 +19,6 @@ asciidoc:
   extensions:
     - asciidoctor-plantuml
 nav:
-- modules/ROOT/nav.adoc
 - modules/user/nav.adoc
 - modules/developer/nav.adoc
 - modules/research/nav.adoc

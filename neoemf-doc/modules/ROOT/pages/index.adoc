@@ -1,7 +1,6 @@
 = NeoEMF Documentation Site
-:navtitle: Atlanmod
 
-== What Is NeoEMF?
+== About NeoEMF
 
 NeoEMF is an https://www.atlanmod.org[AtlanMod] research team project that aims at handling large EMF models in an efficient and scalable way.
 
@@ -23,6 +22,6 @@ But in some situation where time performance is important this is not enough and
 
 NeoEMF is fully EMF compliant, that means there is no modification to do to use it with existing EMF based applications.
 
-Additionally NeoEMF can be plugged with several persistence solutions and is configurable to fit the best your needs (custom caches, in-memory resources, auto-commit,...).
+Additionall0y, NeoEMF can be plugged with several persistence solutions and is configurable to fit the best your needs (custom caches, in-memory resources, auto-commit,...).
 
 In addition, NeoEMF provides a query API to perform optimized OCL queries over models and reify the results as navigable models.
