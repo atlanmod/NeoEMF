@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature id="org.atlanmod.neoemf.core.feature" version="2.1.0.qualifier">
+   <feature id="org.atlanmod.neoemf.core.feature" version="2.1.0">
       <category name="base"/>
    </feature>
-   <feature id="org.atlanmod.neoemf.data.blueprints.core.feature" version="2.1.0.qualifier">
+   <feature id="org.atlanmod.neoemf.data.blueprints.core.feature" version="2.1.0">
       <category name="backend"/>
    </feature>
-   <feature id="org.atlanmod.neoemf.data.blueprints.neo4j.feature" version="2.1.0.qualifier">
+   <feature id="org.atlanmod.neoemf.data.blueprints.neo4j.feature" version="2.1.0">
       <category name="backend"/>
    </feature>
-   <feature id="org.atlanmod.neoemf.data.mapdb.feature" version="2.1.0.qualifier">
+   <feature id="org.atlanmod.neoemf.data.mapdb.feature" version="2.1.0">
       <category name="backend"/>
    </feature>
-   <feature id="org.atlanmod.neoemf.data.berkeleydb.feature" version="2.1.0.qualifier">
+   <feature id="org.atlanmod.neoemf.data.berkeleydb.feature" version="2.1.0">
       <category name="backend"/>
    </feature>
-   <feature id="org.atlanmod.neoemf.data.hbase.feature" version="2.1.0.qualifier">
+   <feature id="org.atlanmod.neoemf.data.hbase.feature" version="2.1.0">
       <category name="backend"/>
    </feature>
    <category-def name="base" label="NeoEMF">
