@@ -1,0 +1,133 @@
+= Releasing a new Version
+
+Releasing a new version of NeoEMF requires several steps.
+Some of them require manual changes.
+
+. Update Maven modules to a _Release_ version.
+For instance, from `1.2.3-SNAPSHOT` to `1.2.3`.
+
+. Update Eclipse plugins to a _Release_ version.
+For instance, from `1.2.3.qualifier` to `1.2.3`.
+
+. Upload artifacts to Sonatype
+
+. Release artifacts on oss.sonatype.org
+
+. Update Maven modules to the next _Snapshot_ version.
+For instance, from `1.2.3` to `1.2.4-SNAPSHOT`.
+
+. Update Eclipse plugins to a _Snapshot_ version.
+For instance, from `1.2.3.qualifier` to `1.2.3`.
+
+== Update Maven Modules
+
+Maven artifacts can be automatically update through the command line.
+
+WARNING: Your new version is not 'X.Y.Z'.
+
+[source,shell]
+----
+mvn clean install -DskipTests <1>
+mvn versions:set -DnewVersion='X.Y.Z' <2>
+mvn clean install -DskipTests <3>
+----
+
+<1> Before change the version, ensure that you have installed the current version in your local repository : otherwise, you will have some issues in releasing Eclipse and Benchmarks.
+
+<2> Define the new version. Replace 'X.Y.Z' by the new Release version.
+
+<3> Install the new version in your local repository.
+This will be needed to build the Eclipse plugins.
+
+=== Update the Eclipse Plugins Version
+
+[source,shell]
+----
+mvn clean install -DskipTests -f plugins/eclipse <1>
+----
+
+<1> As for the main project, ensure that you have installed the current version in your local repository.
+
+Edit the  `./plugins/eclipse/releng/configuration/pom.xml` file and update the `parent.version`, according to the new version.
+Do not modify other vers
+
+.File ./plugins/eclipse/releng/configuration/pom.xml
+[source,xml]
+----
+    <parent>
+        <groupId>org.atlanmod.neoemf</groupId>
+        <artifactId>neoemf</artifactId>
+        <version>SET-NEW-VERSION-HERE</version>
+        <relativePath>../../../../</relativePath>
+    </parent>
+----
+
+
+[source,shell]
+----
+mvn versions:set -DnewVersion='X.Y.Z' -f plugins/eclipse <1>
+mvn tycho-versions:set-version -DnewVersion='X.Y.Z' -f plugins/eclipse <2>
+----
+
+
+
+* Define the new version.
+
+*NOTE:* If it's a SNAPSHOT, add `.qualifier` instead of `-SNAPSHOT`.
+
+*NOTE2:* It will remove the `parent.version` in the root `pom.xml` because it's the same of the parent. Re-set it to the current version.
+
+----
+mvn tycho-versions:set-version -DnewVersion='X.Y.Z'
+----
+
+* Update `feature.xml` in features and `category.xml` in the update-site: remove `.qualifier` for NeoEMF dependencies.
+
+* Install the new version in your local repository.
+
+=== In benchmarks project
+
+The procedure is the same as in the main project.
+
+== Publish the release in Github
+
+* Commit *(without push)* the modifications
+* Tag the commit with name `vX.Y.Z`
+
+= Deploy a release
+
+*NOTE:* Only the main project have to be deployed in Maven central !
+
+OSS-RH has some http://central.sonatype.org/pages/ossrh-guide.html[requirements] to accept the release.
+One of them is the signature of the artifacts: A full description is available http://central.sonatype.org/pages/working-with-pgp-signatures.html[here], describing how to create his key.
+
+Maven must be configured to handle signature and deployment.
+The following `settings.xml` file must be filled and placed at the root of your `.m2` directory:
+
+[source,xml]
+----
+<settings>
+    <servers>
+        <server>
+            <id>ossrh</id>
+            <username>{OSS-USERNAME}</username>
+            <password>{OSS-PASSWORD}</password>
+        </server>
+    </servers>
+</settings>
+----
+
+Once is done, you can deploy your artifacts on Maven Central with the following:
+
+----
+mvn clean deploy -DskipTests -P deploy-artifacts
+----
+
+Artifacts are now staged and wait for validation and deployment on the https://oss.sonatype.org[Nexus Repo Manager] (Note that staged artifacts, are not definitive, they can be removed/cancelled): A full description of different steps is available http://central.sonatype.org/pages/releasing-the-deployment.html[here].
+
+== Upgrade to a SNAPSHOT version
+
+Once you have deployed yor artifacts, to avoid overwritten your release, you must upgrade your project in a SNAPSHOT state.
+Repeat the several steps described in the <<upgrade-to-a-release-version,Upgrade to a RELEASE version>> section by adding `-SNAPSHOT` or `.qualifier`.
+
+Once is done, you can now commit and push the changes in GitHub.

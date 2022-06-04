@@ -2,7 +2,7 @@
 <feature
         id="org.atlanmod.neoemf.data.mapdb.feature"
         label="NeoEMF : MapDB"
-        version="2.1.0.qualifier">
+        version="2.1.0">
 
     <description url="http://www.example.com/description">
         MapDB implementation of the Core component.
@@ -10,13 +10,13 @@
 
     <includes
             id="org.atlanmod.neoemf.core.feature"
-            version="2.1.0.qualifier" />
+            version="2.1.0" />
 
     <plugin
             id="org.atlanmod.neoemf.data.mapdb"
             download-size="0"
             install-size="0"
-            version="2.1.0.qualifier"
+            version="2.1.0"
             unpack="false" />
 
     <copyright url="https://www.eclipse.org/legal/epl-2.0/">
