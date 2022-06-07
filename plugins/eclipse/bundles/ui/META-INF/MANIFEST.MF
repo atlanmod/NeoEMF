@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: NeoEMF Eclipse UI
 Automatic-Module-Name: org.atlanmod.neoemf.eclipse.ui,
 Bundle-SymbolicName: org.atlanmod.neoemf.eclipse.ui;singleton:=true
-Bundle-Version: 2.1.0
+Bundle-Version: 2.1.1.qualifier
 Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin
 Bundle-Vendor: Atlanmod
 Bundle-RequiredExecutionEnvironment: JavaSE-11

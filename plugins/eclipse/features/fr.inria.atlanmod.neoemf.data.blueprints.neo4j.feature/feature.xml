@@ -2,7 +2,7 @@
 <feature
         id="org.atlanmod.neoemf.data.blueprints.neo4j.feature"
         label="NeoEMF : Blueprints Neo4j"
-        version="2.1.0">
+        version="2.1.1.qualifier">
 
     <description url="http://www.example.com/description">
         Blueprints extension using Neo4j. Requires a Neo4j implementation : because we care about you, we have packaged a compatible version of Neo4j in the optional bundle "Neo4j Convenience Wrapper", made with love.
@@ -10,13 +10,13 @@
 
     <includes
             id="org.atlanmod.neoemf.data.blueprints.core.feature"
-            version="2.1.0" />
+            version="2.1.1.qualifier" />
 
     <plugin
             id="org.atlanmod.neoemf.data.blueprints.neo4j"
             download-size="0"
             install-size="0"
-            version="2.1.0"
+            version="2.1.1.qualifier"
             unpack="false" />
 
     <copyright url="https://www.eclipse.org/legal/epl-2.0/">

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Automatic-Module-Name: org.eclipse.gmt.modisco.java
 Bundle-SymbolicName: org.eclipse.gmt.modisco.java;singleton:=true
-Bundle-Version: 2.1.0
+Bundle-Version: 2.1.1.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
