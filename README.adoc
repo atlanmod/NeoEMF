@@ -1,5 +1,5 @@
 = NeoEMF
-:current-version: 2.0.1
+:current-version: 2.1.0
 
 image:https://img.shields.io/twitter/url/http/shields.io.svg[Tweet,link=https://twitter.com/intent/tweet?text=Handling%20large%20EMF%20resources%20in%20an%20efficient%20and%20scalable%20way:&url=https://neoemf.atlanmod.org]
 
