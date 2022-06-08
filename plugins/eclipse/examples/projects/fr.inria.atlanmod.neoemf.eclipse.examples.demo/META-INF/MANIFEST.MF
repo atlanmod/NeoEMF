@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Demo
 Automatic-Module-Name: org.atlanmod.neoemf.eclipse.examples.demo
 Bundle-SymbolicName: org.atlanmod.neoemf.eclipse.examples.demo
-Bundle-Version: 2.1.0.qualifier
+Bundle-Version: 2.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.xmi,
