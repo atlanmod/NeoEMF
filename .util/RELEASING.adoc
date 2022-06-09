@@ -81,6 +81,16 @@ mvn tycho-versions:set-version -DnewVersion='X.Y.Z' -f plugins/eclipse <2>
 mvn tycho-versions:set-version -DnewVersion='X.Y.Z'
 ----
 
+
+* Update `MANIFEST.MF`:
+
+Bundle-Version: 2.1.0 -> Bundle-Version: 2.1.1.qualifier
+
+* Update `feature.xml`
+
+update plugins:
+version="2.1.0" -> version="2.1.1.qualifier" ->
+
 * Update `feature.xml` in features and `category.xml` in the update-site: remove `.qualifier` for NeoEMF dependencies.
 
 * Install the new version in your local repository.
@@ -124,6 +134,16 @@ mvn clean deploy -DskipTests -P deploy-artifacts
 ----
 
 Artifacts are now staged and wait for validation and deployment on the https://oss.sonatype.org[Nexus Repo Manager] (Note that staged artifacts, are not definitive, they can be removed/cancelled): A full description of different steps is available http://central.sonatype.org/pages/releasing-the-deployment.html[here].
+
+
+. Go to https://oss.sonatype.org/#welcome
+. Log in
+. In the left, click on "Staging Repositories"
+. Click on refresh (if the repository does not appear)
+. Select the repository: `orgatlanmodneoemf-1005`
+. Click on "Close" and then btn:confirm[]
+. Wait for the validation (click on "Activity" to see the different steps)
+	. Once it is finished, click on btn:Release[] 
 
 == Upgrade to a SNAPSHOT version
 

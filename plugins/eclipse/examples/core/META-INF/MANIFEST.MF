@@ -3,7 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: NeoEMF Examples Plugin
 Bundle-SymbolicName: org.atlanmod.neoemf.eclipse.examples.core;singleton:=true
 Automatic-Module-Name: org.atlanmod.neoemf.eclipse.examples.core,
+<<<<<<< HEAD
 Bundle-Version: 2.1.0
+=======
+Bundle-Version: 2.1.1.qualifier
+>>>>>>> a694573e25c919d1776dd5bbb141f6ec34afc4c3
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.ui,
