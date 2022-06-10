@@ -1,6 +1,17 @@
-== _2.1.0_
+= Change Log
+
+== _2.1.1_
 
 Current SNAPSHOT.
+
+=== Neoemf-data
+
+* *[UPD]* `hbase.version`: 2.4.12
+* *[UPD]* `hadoop.version`: 3.3.3
+
+== _2.1.0_
+
+_Released on 2022-06-04_
 
 === Neoemf-doc
 

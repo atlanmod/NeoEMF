@@ -196,7 +196,7 @@ And the following m2e connectors (installable through `Preferences → Maven →
 * *Maven SCM Handler for EGit (m2e-egit)* : v0.14 or later
 * *Tycho Project Configurators (Tycho configurator)* : v0.8.0 or later
 
-Note that additional m2e connectors can be required denpending of your specific installation.
+Note that additional m2e connectors can be required depending of your specific installation.
 They can be installed using Eclipse quick fixes available in the `pom` files.
 
 ==== Import and Build

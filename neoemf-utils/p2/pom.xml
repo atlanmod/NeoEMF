@@ -26,17 +26,17 @@
         <repository>
             <id>emf-compare</id>
             <layout>p2</layout>
-            <url>http://download.eclipse.org/modeling/emf/compare/updates/releases/latest/</url>
+            <url>https://download.eclipse.org/modeling/emf/compare/updates/releases/3.3</url>
         </repository>
         <repository>
             <id>2020-12</id>
             <layout>p2</layout>
-            <url>http://download.eclipse.org/releases/2020-12/</url>
+            <url>https://download.eclipse.org/releases/2020-12/</url>
         </repository>
         <repository>
             <id>emf</id>
             <layout>p2</layout>
-            <url>http://download.eclipse.org/modeling/emf/emf/builds/release/2.24/</url>
+            <url>https://download.eclipse.org/modeling/emf/emf/builds/release/2.24/</url>
         </repository>
     </repositories>
 

@@ -12,20 +12,16 @@ import fr.inria.atlanmod.neoemf.data.AbstractBackendFactory;
 import fr.inria.atlanmod.neoemf.data.Backend;
 import fr.inria.atlanmod.neoemf.data.BackendFactory;
 import fr.inria.atlanmod.neoemf.data.hbase.config.HBaseConfig;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.osgi.service.component.annotations.Component;
 
-import java.io.IOException;
-import java.net.URL;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.IOException;
+import java.net.URL;
 
 /**
  * A {@link fr.inria.atlanmod.neoemf.data.BackendFactory} that creates {@link HBaseBackend} instances.
