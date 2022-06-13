@@ -18,19 +18,17 @@
 
     <properties>
         <hbase.version>2.4.12</hbase.version>
-        <!--
-        HBase MiniCluster fails to launch if hadopp.version >= 3.1.0
-
-        java.lang.IncompatibleClassChangeError:
-            Found interface org.apache.hadoop.hdfs.protocol.HdfsFileStatus, but class was expected
-        -->
-        <hadoop.version>3.3.3</hadoop.version><!-- Follow HBase dependencies -->
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-testing-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-testing-util</artifactId>
+            <type>test-jar</type>
         </dependency>
         <dependency>
             <groupId>org.apache.hbase</groupId>
@@ -47,14 +45,25 @@
             <dependency>
                 <groupId>org.apache.hbase</groupId>
                 <artifactId>hbase-testing-util</artifactId>
-                <scope>compile</scope>
+                <scope>test</scope>
                 <version>${hbase.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-log4j12</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-reload4j</artifactId>
+                    </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hbase</groupId>
+                <artifactId>hbase-testing-util</artifactId>
+                <scope>test</scope>
+                <type>test-jar</type>
+                <version>${hbase.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.hbase</groupId>
@@ -64,7 +73,7 @@
             <dependency>
                 <groupId>org.junit.vintage</groupId>
                 <artifactId>junit-vintage-engine</artifactId>
-                <version>5.8.2</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -89,7 +98,34 @@
                     </instructions>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/test-jar-with-dependencies.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 

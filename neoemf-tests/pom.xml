@@ -229,6 +229,16 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- I don't know why, some classes are not included into neoemf-data-hbase test-jar -->
+        <!-- This dependency is needed to correctly test the HBase backend-->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-testing-util</artifactId>
+            <type>test-jar</type>
+            <version>${hbase.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
