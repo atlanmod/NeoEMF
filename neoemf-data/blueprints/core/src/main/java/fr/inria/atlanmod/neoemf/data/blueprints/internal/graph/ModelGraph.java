@@ -208,7 +208,7 @@ public class ModelGraph extends IdGraph<ModelGraph> implements Copiable<ModelGra
     }
 
     /**
-     * Retrieves a vertex from the base graph, or executes the function if it does not exists.
+     * Retrieves a vertex from the base graph, or executes the function if it does not exist.
      *
      * @param id     the identifier of the vertex to retrieve
      * @param orElse the function to executes if the vertex if not found in the graph
