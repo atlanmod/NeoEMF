@@ -70,7 +70,7 @@ mvn archetype:generate -DarchetypeArtifactId="neoemf-archetype-extension" \
   -DgroupId="org.atlanmod.neoemf" \
   -DartifactId="neoemf-data-paprika" \
   -Dversion="2.1.0-SNAPSHOT" \
-  -Dpackage="org.atlanmod.neoemf.data.paprika" \
+  -Dpackage="org.atlanmod.neoemf.data.neo4j" \
   -DdatabaseName="Paprika" \
   -Dline.separator=$'\n'
 ----
@@ -79,7 +79,7 @@ Where `databaseName` corresponds to the prefix of all generated classes.
 
 === Create the module manually
 
-To start our new implementation, we create a new folder `paprika` that will contain all the code related to our Paprika-based model mapping.
+To start our new implementation, we create a new folder `neo4j` that will contain all the code related to our Paprika-based model mapping.
 Then create a new Maven project using the following command, or your IDE Maven environment:
 
 [source,bash]
@@ -152,7 +152,7 @@ The `build` section of the `pom.xml` file tells Maven to generate an Eclipse bun
 
 Every module respects a simple structure to organize the different classes.
 
-In a package named `org.atlanmod.neoemf.data.paprika` (or use the base package of your organization), you should have the following file structure:
+In a package named `neo4j` (or use the base package of your organization), you should have the following file structure:
 
 ----
 .
