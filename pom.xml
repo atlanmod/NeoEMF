@@ -103,6 +103,8 @@
         <guava.version>23.6-jre</guava.version>
         <jdk.module.illegalAccess>deny</jdk.module.illegalAccess>
         <junit.version>5.7.1</junit.version>
+        <sonar.organization>atlanmod</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>
             ${project.build.directory}/site/jacoco-merged-test-coverage-report/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
