@@ -25,6 +25,7 @@
 **/.AppleDouble
 **/.LSOverride
 **/.java-version
+**/.tool-versions
 
 # Icon must end with two \r
 **/Icon
@@ -117,6 +118,7 @@
 **/dependency-reduced-pom.xml
 **/buildNumber.properties
 **/.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
 
 ### Others
 

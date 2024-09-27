@@ -16,7 +16,9 @@ import org.atlanmod.commons.log.Log;
 import org.eclipse.emf.compare.Comparison;
 import org.eclipse.emf.compare.Diff;
 import org.eclipse.emf.compare.EMFCompare;
-import org.eclipse.emf.compare.match.IMatchEngine;
+import org.eclipse.emf.compare.match.*;
+import org.eclipse.emf.compare.match.eobject.IEObjectMatcher;
+import org.eclipse.emf.compare.match.impl.MatchEngineFactoryImpl;
 import org.eclipse.emf.compare.match.impl.MatchEngineFactoryRegistryImpl;
 import org.eclipse.emf.compare.scope.DefaultComparisonScope;
 import org.eclipse.emf.compare.scope.IComparisonScope;
@@ -49,6 +51,23 @@ public final class ModelComparisonUtils {
     public static void assertEObjectAreEqual(EObject actual, EObject expected) {
         Log.info("Comparing models...");
 
+
+        // Configure EMF Compare
+        IEObjectMatcher matcher = DefaultMatchEngine.createDefaultEObjectMatcher(UseIdentifiers.NEVER);
+        IComparisonFactory comparisonFactory = new DefaultComparisonFactory(new DefaultEqualityHelperFactory());
+        IMatchEngine.Factory matchEngineFactory = new MatchEngineFactoryImpl(matcher, comparisonFactory);
+        matchEngineFactory.setRanking(20);
+        IMatchEngine.Factory.Registry matchEngineRegistry = new MatchEngineFactoryRegistryImpl();
+
+
+        matchEngineRegistry.add(matchEngineFactory);
+        EMFCompare comparator = EMFCompare.builder().setMatchEngineFactoryRegistry(matchEngineRegistry).build();
+
+        // Compare the two models
+        IComparisonScope scope = EMFCompare.createDefaultScope(expected, actual);
+        //return comparator.compare(scope);
+
+        /*
         IMatchEngine.Factory factory = new LazyMatchEngineFactory(UseIdentifiers.NEVER);
 
         IMatchEngine.Factory.Registry registry = new MatchEngineFactoryRegistryImpl();
@@ -60,7 +79,8 @@ public final class ModelComparisonUtils {
                 .setMatchEngineFactoryRegistry(registry)
                 .build()
                 .compare(scope);
-
+        */
+        Comparison comparison = comparator.compare(scope);
         final List<Diff> differences = comparison.getDifferences();
 
         // Don't display all differences

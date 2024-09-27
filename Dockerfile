@@ -24,7 +24,7 @@
 # -rf json -rff /root/ws/benchmarks/results/${FILENAME}
 #
 
-FROM maven:alpine
+FROM maven:3.8.6-openjdk-11
 
 ENV NEOEMF_HOME /root/ws
 VOLUME $NEOEMF_HOME

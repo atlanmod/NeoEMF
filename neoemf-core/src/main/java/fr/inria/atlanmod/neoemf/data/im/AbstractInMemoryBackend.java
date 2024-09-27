@@ -262,9 +262,8 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
             this.delegate = delegate;
         }
 
-        @Nonnull
         @Override
-        public T read(@SuppressWarnings("rawtypes") Bytes in, @Nullable T using) {
+        public T read(Bytes<?> in, T using) {
             try {
                 return delegate.deserialize(in.inputStream());
             }
@@ -274,13 +273,14 @@ public abstract class AbstractInMemoryBackend extends AbstractBackend implements
         }
 
         @Override
-        public void write(@SuppressWarnings("rawtypes") Bytes out, @Nonnull T value) {
+        public void write(Bytes<?> out, T value) {
             try {
                 delegate.serialize(value, out.outputStream());
             }
             catch (IOException e) {
                 throw Throwables.shouldNeverHappen(e);
             }
+
         }
     }
 }
