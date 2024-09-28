@@ -30,14 +30,14 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Analyze with SonarCloud
-        run: mvn -B jacoco:prepare-agent package jacoco:report jacoco:report-aggregate sonar:sonar -Dsonar.projectKey=org.atlanmod.neoemf:neoemf -Dsonar.organization=atlanmod -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco-aggregate/jacoco.xml
+        run: ./mvnw -B jacoco:prepare-agent package jacoco:report jacoco:report-aggregate sonar:sonar -Dsonar.projectKey=org.atlanmod.neoemf:neoemf -Dsonar.organization=atlanmod -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN -Dsonar.coverage.jacoco.xmlReportPaths=./target/site/jacoco-aggregate/jacoco.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Build and install main project
-        run: mvn clean install -DskipTests
+        run: ./mvnw clean install -DskipTests
       - name: Build benchmarks
-        run: mvn clean package -f benchmarks/pom.xml
+        run: ./mvnw clean package -f benchmarks/pom.xml
 
 
   build-plugins:
@@ -52,7 +52,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Build plugins with Tycho
-        run: mvn -B  -f plugins/eclipse install
+        run: ./mvnw -B  -f plugins/eclipse install
 
   deploy-bundles:
     runs-on: ubuntu-latest
@@ -72,7 +72,7 @@ jobs:
       - name: Initialize variables
         id: init
         run: |
-          VERSION=$(mvn -B help:evaluate -Dexpression='project.version' $@ | grep -v '\[' | tail -1)
+          VERSION=$(./mvnw -B help:evaluate -Dexpression='project.version' $@ | grep -v '\[' | tail -1)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "$VERSION"
       - name: Publish Snapshot to Central
@@ -81,7 +81,7 @@ jobs:
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         if: contains(env.VERSION, 'SNAPSHOT' )
         run: |
-          mvn \
+          ./mvnw \
             --no-transfer-progress \
             --batch-mode \
             clean install deploy \
@@ -93,7 +93,7 @@ jobs:
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         if: ${{ !contains(env.VERSION, 'SNAPSHOT' ) }}
         run: |
-          mvn \
+          ./mvnw \
             --no-transfer-progress \
             --batch-mode \
             clean package javadoc:jar source:jar-no-fork gpg:sign install deploy \
