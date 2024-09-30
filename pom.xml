@@ -519,11 +519,6 @@
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>3.2.4</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>3.7.1</version>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>
