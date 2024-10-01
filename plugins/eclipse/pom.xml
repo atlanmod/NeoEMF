@@ -25,13 +25,14 @@
         <module>releng</module>
     </modules>
 
+
     <dependencies>
         <dependency>
             <!-- Added to solve dependency problem to osgi.extender
                 (&(osgi.extender=osgi.component)(version>=1.4.0)(!(version>=2.0.0))) -->
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr</artifactId>
-            <version>2.1.28</version>
+            <version>${apache.felix.version}</version>
         </dependency>
     </dependencies>
 

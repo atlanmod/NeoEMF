@@ -22,24 +22,31 @@
     <properties>
         <maven.test.skip>true</maven.test.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <tycho-plugin.version>2.7.3</tycho-plugin.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <tycho-plugin.version>4.0.9</tycho-plugin.version>
+        <apache.felix.version>2.2.12</apache.felix.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.debug>true</maven.compiler.debug>
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+        <compare.url>http://download.eclipse.org/modeling/emf/compare/updates/releases/3.3</compare.url>
     </properties>
 
     <repositories>
         <repository>
             <id>emf-compare</id>
             <layout>p2</layout>
-            <url>https://download.eclipse.org/modeling/emf/compare/updates/releases/latest/</url>
+            <url>${compare.url}</url>
         </repository>
         <repository>
-            <id>2020-12</id>
+            <id>2024-12</id>
             <layout>p2</layout>
-            <url>https://download.eclipse.org/releases/2020-12/</url>
+            <url>https://download.eclipse.org/releases/2024-12/</url>
+        </repository>
+        <repository>
+            <id>emf</id>
+            <layout>p2</layout>
+            <url>https://download.eclipse.org/modeling/emf/emf/builds/release/2.39.0/</url>
         </repository>
     </repositories>
 
@@ -70,7 +77,7 @@
                 <artifactId>target-platform-configuration</artifactId>
                 <configuration>
                     <pomDependencies>consider</pomDependencies>
-                    <executionEnvironment>JavaSE-11</executionEnvironment>
+                    <executionEnvironment>JavaSE-17</executionEnvironment>
                     <environments>
                         <environment>
                             <os>win32</os>
@@ -91,7 +98,6 @@
                 </configuration>
             </plugin>
 
-
         </plugins>
 
         <pluginManagement>
@@ -99,7 +105,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.1</version>
+                    <version>3.13.0</version>
                 </plugin>
                 
                 <plugin>
