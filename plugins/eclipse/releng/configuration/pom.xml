@@ -22,7 +22,7 @@
     <properties>
         <maven.test.skip>true</maven.test.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <tycho-plugin.version>4.0.9</tycho-plugin.version>
+        <tycho-plugin.version>4.0.10</tycho-plugin.version>
         <apache.felix.version>2.2.12</apache.felix.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -30,6 +30,7 @@
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
         <compare.url>http://download.eclipse.org/modeling/emf/compare/updates/releases/3.3</compare.url>
+        <maven.required.version>3.9.0</maven.required.version>
     </properties>
 
     <repositories>
@@ -96,6 +97,32 @@
                         </environment>
                     </environments>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <banDuplicatePomDependencyVersions/>
+                                <requireMavenVersion>
+                                    <version>3.8.6</version>
+                                    <message>Invalid Maven version. It should, at least, be 3.9.0</message>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>11</version>
+                                    <message>Invalid Java version. It should, at least, be 11</message>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>
