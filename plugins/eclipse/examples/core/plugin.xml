@@ -3,17 +3,17 @@
 <plugin>
     <extension point="org.eclipse.ui.newWizards">
         <category
-                id="fr.inria.atlanmod.neoemf.eclipse.examples.category"
+                id="org.atlanmod.neoemf.eclipse.examples.category"
                 name="NeoEMF"
                 parentCategory="org.eclipse.ui.Examples">
         </category>
         <wizard
                 canFinishEarly="true"
-                category="org.eclipse.ui.Examples/fr.inria.atlanmod.neoemf.eclipse.examples.category"
-                class="fr.inria.atlanmod.neoemf.eclipse.examples.TutorialWizard"
+                category="org.eclipse.ui.Examples/org.atlanmod.neoemf.eclipse.examples.category"
+                class="org.atlanmod.neoemf.eclipse.examples.TutorialWizard"
                 hasPages="false"
                 icon="icons/full/obj16/neoemf.png"
-                id="fr.inria.atlanmod.neoemf.eclipse.examples.tutorial"
+                id="org.atlanmod.neoemf.eclipse.examples.tutorial"
                 name="NeoEMF Tutorial Project"
                 project="true">
             <description>
@@ -23,11 +23,11 @@
         </wizard>
         <wizard
                 canFinishEarly="true"
-                category="org.eclipse.ui.Examples/fr.inria.atlanmod.neoemf.eclipse.examples.category"
-                class="fr.inria.atlanmod.neoemf.eclipse.examples.DemoWizard"
+                category="org.eclipse.ui.Examples/org.atlanmod.neoemf.eclipse.examples.category"
+                class="org.atlanmod.neoemf.eclipse.examples.DemoWizard"
                 hasPages="false"
                 icon="icons/full/obj16/neoemf.png"
-                id="fr.inria.atlanmod.neoemf.eclipse.examples.demo"
+                id="org.atlanmod.neoemf.eclipse.examples.demo"
                 name="NeoEMF Demo Project"
                 project="true">
             <description>

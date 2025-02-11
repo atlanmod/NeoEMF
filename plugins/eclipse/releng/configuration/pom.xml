@@ -29,8 +29,9 @@
         <maven.compiler.debug>true</maven.compiler.debug>
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
-        <compare.url>http://download.eclipse.org/modeling/emf/compare/updates/releases/3.3</compare.url>
         <maven.required.version>3.9.0</maven.required.version>
+        <compare.url>http://download.eclipse.org/modeling/emf/compare/updates/releases/3.3</compare.url>
+        <emf.url>https://download.eclipse.org/modeling/emf/emf/builds/release/2.39.0/</emf.url>
     </properties>
 
     <repositories>
@@ -47,7 +48,7 @@
         <repository>
             <id>emf</id>
             <layout>p2</layout>
-            <url>https://download.eclipse.org/modeling/emf/emf/builds/release/2.39.0/</url>
+            <url>${emf.url}</url>
         </repository>
     </repositories>
 
@@ -116,8 +117,8 @@
                                     <message>Invalid Maven version. It should, at least, be 3.9.0</message>
                                 </requireMavenVersion>
                                 <requireJavaVersion>
-                                    <version>11</version>
-                                    <message>Invalid Java version. It should, at least, be 11</message>
+                                    <version>17</version>
+                                    <message>Invalid Java version. It should, at least, be 17</message>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>

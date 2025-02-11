@@ -5,11 +5,11 @@
     <!-- Editors -->
 
     <extension point="org.eclipse.ui.editors">
-        <editor class="fr.inria.atlanmod.neoemf.eclipse.ui.editor.NeoEditor"
+        <editor class="org.atlanmod.neoemf.eclipse.ui.editor.NeoEditor"
                 contributorClass="org.eclipse.emf.ecore.presentation.EcoreActionBarContributor"
                 default="false"
                 icon="icons/full/obj16/modelFile.gif"
-                id="fr.inria.atlanmod.neoemf.ui.editor.NeoEditor"
+                id="org.atlanmod.neoemf.ui.editor.NeoEditor"
                 name="NeoEMF Editor">
         </editor>
     </extension>
@@ -20,9 +20,9 @@
         <modelImporterDescriptor description="Create the Ecore model, based on other Ecore or EMOF models"
                                  extensions="ecore,emof"
                                  icon="icons/full/obj16/model.gif"
-                                 id="fr.inria.atlanmod.neoemf.ui.model.importer"
+                                 id="org.atlanmod.neoemf.ui.model.importer"
                                  name="Ecore model (NeoEMF Native)"
-                                 wizard="fr.inria.atlanmod.neoemf.eclipse.ui.wizard.NeoModelImporterWizard">
+                                 wizard="org.atlanmod.neoemf.eclipse.ui.wizard.NeoModelImporterWizard">
         </modelImporterDescriptor>
     </extension>
 
@@ -31,12 +31,12 @@
     <extension point="org.eclipse.ui.menus">
         <menuContribution allPopups="false" locationURI="popup:org.eclipse.ui.popup.any?after=additions">
             <menu icon="icons/full/obj16/neoemf.png" label="NeoEMF">
-                <command commandId="fr.inria.atlanmod.neoemf.ui.backend.open" style="push">
+                <command commandId="org.atlanmod.neoemf.ui.backend.open" style="push">
                     <visibleWhen>
                         <with variable="activeMenuSelection">
                             <iterate ifEmpty="false">
                                 <adapt type="org.eclipse.core.resources.IFolder">
-                                    <test property="fr.inria.atlanmod.neoemf.ui.backend.is" value="true" />
+                                    <test property="org.atlanmod.neoemf.ui.backend.is" value="true" />
                                 </adapt>
                             </iterate>
                         </with>
@@ -45,7 +45,7 @@
 
                 <separator name="additions" visible="true" />
 
-                <command commandId="fr.inria.atlanmod.neoemf.ui.metamodel.migrate" style="push">
+                <command commandId="org.atlanmod.neoemf.ui.metamodel.migrate" style="push">
                     <visibleWhen>
                         <with variable="activeMenuSelection">
                             <iterate ifEmpty="false">
@@ -58,7 +58,7 @@
                 </command>
 
                 <command
-                        commandId="fr.inria.atlanmod.neoemf.ui.metamodel.register"
+                        commandId="org.atlanmod.neoemf.ui.metamodel.register"
                         icon="icons/full/obj16/register.png"
                         style="push">
                     <visibleWhen>
@@ -73,7 +73,7 @@
                 </command>
 
                 <command
-                        commandId="fr.inria.atlanmod.neoemf.ui.metamodel.unregister"
+                        commandId="org.atlanmod.neoemf.ui.metamodel.unregister"
                         icon="icons/full/obj16/unregister.png"
                         style="push">
                     <visibleWhen>
@@ -90,7 +90,7 @@
         </menuContribution>
 
         <menuContribution allPopups="false" locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-            <command commandId="fr.inria.atlanmod.neoemf.ui.model.dynamic.create" style="push">
+            <command commandId="org.atlanmod.neoemf.ui.model.dynamic.create" style="push">
                 <visibleWhen>
                     <with variable="activeMenuSelection">
                         <iterate ifEmpty="false">
@@ -105,33 +105,33 @@
     <!-- Commands -->
 
     <extension point="org.eclipse.ui.commands">
-        <command defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.OpenBackendCommand"
-                 id="fr.inria.atlanmod.neoemf.ui.backend.open"
+        <command defaultHandler="org.atlanmod.neoemf.eclipse.ui.command.OpenBackendCommand"
+                 id="org.atlanmod.neoemf.ui.backend.open"
                  name="Open Model Database" />
 
-        <command defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.MigrateCommand"
-                 id="fr.inria.atlanmod.neoemf.ui.metamodel.migrate"
+        <command defaultHandler="org.atlanmod.neoemf.eclipse.ui.command.MigrateCommand"
+                 id="org.atlanmod.neoemf.ui.metamodel.migrate"
                  name="Migrate EMF Generator Model" />
 
-        <command defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.RegisterMetamodelCommand"
-                 id="fr.inria.atlanmod.neoemf.ui.metamodel.register"
+        <command defaultHandler="org.atlanmod.neoemf.eclipse.ui.command.RegisterMetamodelCommand"
+                 id="org.atlanmod.neoemf.ui.metamodel.register"
                  name="Register EPackages" />
 
-        <command defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.UnregisterMetamodelCommand"
-                 id="fr.inria.atlanmod.neoemf.ui.metamodel.unregister"
+        <command defaultHandler="org.atlanmod.neoemf.eclipse.ui.command.UnregisterMetamodelCommand"
+                 id="org.atlanmod.neoemf.ui.metamodel.unregister"
                  name="Unregister EPackages" />
 
-        <command defaultHandler="fr.inria.atlanmod.neoemf.eclipse.ui.command.CreateDynamicInstanceCommand"
-                 id="fr.inria.atlanmod.neoemf.ui.model.dynamic.create"
+        <command defaultHandler="org.atlanmod.neoemf.eclipse.ui.command.CreateDynamicInstanceCommand"
+                 id="org.atlanmod.neoemf.ui.model.dynamic.create"
                  name="Create NeoEMF Dynamic Instance..." />
     </extension>
 
     <!-- Testers -->
 
     <extension point="org.eclipse.core.expressions.propertyTesters">
-        <propertyTester class="fr.inria.atlanmod.neoemf.eclipse.ui.tester.BackendPropertyTester"
-                        id="fr.inria.atlanmod.neoemf.ui.backend.test"
-                        namespace="fr.inria.atlanmod.neoemf.ui.backend"
+        <propertyTester class="org.atlanmod.neoemf.eclipse.ui.tester.BackendPropertyTester"
+                        id="org.atlanmod.neoemf.ui.backend.test"
+                        namespace="org.atlanmod.neoemf.ui.backend"
                         properties="is"
                         type="org.eclipse.core.resources.IFolder" />
     </extension>
@@ -140,8 +140,8 @@
 
     <extension point="org.eclipse.ui.decorators">
         <decorator
-                class="fr.inria.atlanmod.neoemf.eclipse.ui.decorator.BackendDirectoryDecorator"
-                id="fr.inria.atlanmod.neoemf.ui.backend.decorator"
+                class="org.atlanmod.neoemf.eclipse.ui.decorator.BackendDirectoryDecorator"
+                id="org.atlanmod.neoemf.ui.backend.decorator"
                 label="NeoEMF Database Decorator"
                 state="true"
                 adaptable="true">

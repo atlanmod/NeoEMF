@@ -16,18 +16,18 @@
     <description />
 
     <modules>
-        <module>fr.inria.atlanmod.neoemf.core.feature</module>
+        <module>org.atlanmod.neoemf.core.feature</module>
 
         <!-- Graph-based implementation -->
-        <module>fr.inria.atlanmod.neoemf.data.blueprints.core.feature</module>
-        <module>fr.inria.atlanmod.neoemf.data.blueprints.neo4j.feature</module>
+        <module>org.atlanmod.neoemf.data.blueprints.core.feature</module>
+        <module>org.atlanmod.neoemf.data.blueprints.neo4j.feature</module>
 
         <!-- Map-based implementation -->
-        <module>fr.inria.atlanmod.neoemf.data.mapdb.feature</module>
-        <module>fr.inria.atlanmod.neoemf.data.berkeleydb.feature</module>
+        <module>org.atlanmod.neoemf.data.mapdb.feature</module>
+        <module>org.atlanmod.neoemf.data.berkeleydb.feature</module>
 
         <!-- Column-based implementation -->
-        <module>fr.inria.atlanmod.neoemf.data.hbase.feature</module>
+        <module>org.atlanmod.neoemf.data.hbase.feature</module>
     </modules>
 
 </project>

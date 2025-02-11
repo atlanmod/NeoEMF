@@ -4,9 +4,9 @@ Bundle-Name: NeoEMF Eclipse UI
 Automatic-Module-Name: org.atlanmod.neoemf.eclipse.ui,
 Bundle-SymbolicName: org.atlanmod.neoemf.eclipse.ui;singleton:=true
 Bundle-Version: 2.1.1.qualifier
-Bundle-Activator: fr.inria.atlanmod.neoemf.eclipse.ui.NeoUIPlugin
+Bundle-Activator: org.atlanmod.neoemf.eclipse.ui.NeoUIPlugin
 Bundle-Vendor: Atlanmod
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
@@ -39,10 +39,10 @@ Import-Package: org.eclipse.emf.common,
  org.eclipse.swt,
  org.eclipse.jface,
  org.osgi.framework
-Export-Package: fr.inria.atlanmod.neoemf.eclipse.ui,
- fr.inria.atlanmod.neoemf.eclipse.ui.command,
- fr.inria.atlanmod.neoemf.eclipse.ui.decorator,
- fr.inria.atlanmod.neoemf.eclipse.ui.editor,
- fr.inria.atlanmod.neoemf.eclipse.ui.importer,
- fr.inria.atlanmod.neoemf.eclipse.ui.tester,
- fr.inria.atlanmod.neoemf.eclipse.ui.wizard
+Export-Package: org.atlanmod.neoemf.eclipse.ui,
+ org.atlanmod.neoemf.eclipse.ui.command,
+ org.atlanmod.neoemf.eclipse.ui.decorator,
+ org.atlanmod.neoemf.eclipse.ui.editor,
+ org.atlanmod.neoemf.eclipse.ui.importer,
+ org.atlanmod.neoemf.eclipse.ui.tester,
+ org.atlanmod.neoemf.eclipse.ui.wizard

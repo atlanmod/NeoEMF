@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2013 Atlanmod.
+ *
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v2.0 which accompanies
+ * this distribution, and is available at https://www.eclipse.org/legal/epl-2.0/
+ */
+
+package org.atlanmod.neoemf.eclipse.ui.command;
+
+import org.atlanmod.neoemf.eclipse.ui.MetamodelRegistry;
+
+/**
+ * A {@link org.eclipse.core.commands.IHandler} that registers metamodels.
+ */
+public class RegisterMetamodelCommand extends AbstractMetamodelCommand {
+
+    @Override
+    public void accept(String filePath) {
+        MetamodelRegistry.getInstance().register(filePath);
+    }
+}

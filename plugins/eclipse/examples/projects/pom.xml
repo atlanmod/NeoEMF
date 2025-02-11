@@ -17,8 +17,8 @@
 
     <modules>
         <module>org.eclipse.gmt.modisco.java</module>
-        <module>fr.inria.atlanmod.neoemf.eclipse.examples.demo</module>
-        <module>fr.inria.atlanmod.neoemf.eclipse.examples.tutorial</module>
+        <module>org.atlanmod.neoemf.eclipse.examples.demo</module>
+        <module>org.atlanmod.neoemf.eclipse.examples.tutorial</module>
     </modules>
 
     <properties>

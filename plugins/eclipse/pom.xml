@@ -11,7 +11,6 @@
     </parent>
 
     <artifactId>org.atlanmod.neoemf.eclipse</artifactId>
-    <version>2.1.1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
