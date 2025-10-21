@@ -23,13 +23,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: '22'
-          distribution: 'zulu'
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+          distribution: 'temurin'
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
@@ -41,8 +35,7 @@ jobs:
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./mvnw -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=atlanmod_NeoEMF
+        run: ./mvnw -batch-mode verify
 
 
   build-plugins:
@@ -63,7 +56,7 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Build plugins with Tycho
-        run: ./mvnw -B  -f plugins/eclipse install
+        run: ./mvnw --batch-mode  --file plugins/eclipse install
 
   deploy-bundles:
     runs-on: ubuntu-latest
