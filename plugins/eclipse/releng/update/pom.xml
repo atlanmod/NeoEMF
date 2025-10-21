@@ -20,7 +20,6 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr</artifactId>
-            <version>${apache.felix.version}</version>
         </dependency>
 
         <dependency>

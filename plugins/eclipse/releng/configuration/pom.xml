@@ -20,9 +20,13 @@
     <description/>
 
     <properties>
+        <compare.url>https://download.eclipse.org/modeling/emf/compare/updates/releases/3.3/R202505141345/</compare.url>
+        <eclipse.url>https://download.eclipse.org/releases/2025-09/</eclipse.url>
+        <emf.url>https://download.eclipse.org/modeling/emf/emf/builds/release/2.39.0/</emf.url>
+
         <maven.test.skip>true</maven.test.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
-        <tycho-plugin.version>4.0.10</tycho-plugin.version>
+        <tycho-plugin.version>5.0.0</tycho-plugin.version>
         <apache.felix.version>2.2.12</apache.felix.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -30,8 +34,7 @@
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
         <maven.required.version>3.9.0</maven.required.version>
-        <compare.url>http://download.eclipse.org/modeling/emf/compare/updates/releases/3.3</compare.url>
-        <emf.url>https://download.eclipse.org/modeling/emf/emf/builds/release/2.39.0/</emf.url>
+        <neoemf.version>2.1.0</neoemf.version>
     </properties>
 
     <repositories>
@@ -40,11 +43,13 @@
             <layout>p2</layout>
             <url>${compare.url}</url>
         </repository>
+
         <repository>
-            <id>2024-12</id>
+            <id>eclipse</id>
             <layout>p2</layout>
-            <url>https://download.eclipse.org/releases/2024-12/</url>
+            <url>${eclipse.url}</url>
         </repository>
+
         <repository>
             <id>emf</id>
             <layout>p2</layout>
@@ -133,17 +138,23 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.13.0</version>
+                    <version>3.14.0</version>
                 </plugin>
-                
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>3.6.0</version>
+                </plugin>
+
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-compiler-plugin</artifactId>
                     <version>${tycho-plugin.version}</version>
-                     <configuration>
-                    	<copyResources>false</copyResources>
-                    	<useProjectSettings>false</useProjectSettings>
-                	</configuration>
+                    <configuration>
+                        <copyResources>false</copyResources>
+                        <useProjectSettings>false</useProjectSettings>
+                    </configuration>
                 </plugin>
 
                 <plugin>

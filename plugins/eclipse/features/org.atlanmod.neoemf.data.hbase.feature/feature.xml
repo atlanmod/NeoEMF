@@ -16,7 +16,7 @@
             id="org.atlanmod.neoemf.data.hbase"
             download-size="0"
             install-size="0"
-            version="2.1.1.qualifier"
+            version="0.0.0"
             unpack="false" />
 
     <copyright url="https://www.eclipse.org/legal/epl-2.0/">

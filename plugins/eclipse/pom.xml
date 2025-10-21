@@ -31,8 +31,55 @@
                 (&(osgi.extender=osgi.component)(version>=1.4.0)(!(version>=2.0.0))) -->
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr</artifactId>
-            <version>${apache.felix.version}</version>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.scr</artifactId>
+                <version>2.2.14</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-core</artifactId>
+                <version>${neoemf.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-io</artifactId>
+                <version>${neoemf.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-data-berkeleydb</artifactId>
+                <version>${neoemf.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-data-blueprints-core</artifactId>
+                <version>${neoemf.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-data-blueprints-neo4j</artifactId>
+                <version>${neoemf.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-data-hbase</artifactId>
+                <version>${neoemf.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
 
 </project>

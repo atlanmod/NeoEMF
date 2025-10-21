@@ -16,11 +16,6 @@
     <description>Base feature project (referencing core and ui components).</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.atlanmod.neoemf</groupId>
-            <artifactId>neoemf-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.atlanmod.commons</groupId>
@@ -29,8 +24,12 @@
 
         <dependency>
             <groupId>org.atlanmod.neoemf</groupId>
+            <artifactId>neoemf-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-io</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
