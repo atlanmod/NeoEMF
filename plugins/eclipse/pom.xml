@@ -79,6 +79,12 @@
                 <version>${neoemf.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.atlanmod.neoemf</groupId>
+                <artifactId>neoemf-data-mapdb</artifactId>
+                <version>${neoemf.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
