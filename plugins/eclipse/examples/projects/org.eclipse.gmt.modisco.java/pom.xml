@@ -25,7 +25,6 @@
         <dependency>
         	<groupId>org.atlanmod.neoemf</groupId>
         	<artifactId>neoemf-core</artifactId>
-        	<version>${project.version}</version>
         </dependency>
 
         <dependency>
