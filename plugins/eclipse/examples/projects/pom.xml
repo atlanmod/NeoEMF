@@ -33,7 +33,6 @@
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.scr</artifactId>
-            <version>${apache.felix.version}</version>
         </dependency>
 
         <dependency>
@@ -52,43 +51,36 @@
         <dependency>
             <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-io</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-blueprints-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-blueprints-neo4j</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-berkeleydb</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-mapdb</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.atlanmod.neoemf</groupId>
             <artifactId>neoemf-data-hbase</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- EMF -->
