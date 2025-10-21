@@ -72,7 +72,7 @@ jobs:
           java-version: '22'
 
       - name: Build Update Site with Maven/Tycho
-        run: mvn -q -B -f plugins/eclipse clean install
+        run: ./mvnw --quiet --batch-mode -f plugins/eclipse clean install
 
       - name: Upload Update Site Artifact
         uses: actions/upload-artifact@v4
