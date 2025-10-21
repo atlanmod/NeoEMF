@@ -1,4 +1,5 @@
-### Windows
+
+.util/local-settings.xml
 
 # Windows image file caches
 **/Thumbs.db

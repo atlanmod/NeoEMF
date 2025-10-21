@@ -34,7 +34,7 @@ checkBuildInfo() {
     fi
 
     # Check for SNAPSHOT
-    local version=$(mvn -B help:evaluate -Dexpression='project.version' $@ | grep -v '\[' | tail -1)
+    local version=$(mvn -B help:evaluate -Dexpression='project.version' "$@" | grep -v '\[' | tail -1)
 
     if [[ "$version" != *"-SNAPSHOT" ]]; then
         skip "Was not snapshot ($version)"

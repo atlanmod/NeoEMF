@@ -58,6 +58,34 @@ jobs:
       - name: Build plugins with Tycho
         run: ./mvnw --batch-mode  --file plugins/eclipse install
 
+  deploy-plugins:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Update Site with Maven/Tycho
+        run: mvn -q -B -f plugins/eclipse clean install
+
+      - name: Upload Update Site Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: eclipse-plugin-update-site
+          path: plugins/eclipse/target/repository
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: plugins/eclipse/target/repository
+
   deploy-bundles:
     runs-on: ubuntu-latest
     needs: build-bundles
@@ -105,9 +133,3 @@ jobs:
             -DskipTests \
             -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
             -P deploy-artifacts
-
-
-# mvn clean package javadoc:jar source:jar-no-fork gpg:sign install deploy -DskipTests
-#-s .util/settings.xml -DskipTests  clean package javadoc:jar source:jar-no-fork gpg:sign install deploy
-#
-
