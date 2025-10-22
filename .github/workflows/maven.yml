@@ -74,12 +74,6 @@ jobs:
       - name: Build Update Site with Maven/Tycho
         run: ./mvnw --quiet --batch-mode -f plugins/eclipse clean install
 
-      - name: Upload Update Site Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: eclipse-plugin-update-site
-          path: plugins/eclipse/target/repository
-
 #      - name: Deploy to GitHub Pages
 #        uses: peaceiris/actions-gh-pages@v3
 #        with:
@@ -114,29 +108,29 @@ jobs:
           VERSION=$(./mvnw -B help:evaluate -Dexpression='project.version' $@ | grep -v '\[' | tail -1)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "$VERSION"
-      - name: Publish Snapshot to Central
-        env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-        if: contains(env.VERSION, 'SNAPSHOT' )
-        run: |
-          ./mvnw \
-            --no-transfer-progress \
-            --batch-mode \
-            clean install deploy \
-            --settings .util/settings.xml \
-            -DskipTests
-      - name: Publish release to Central
-        env:
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-        if: ${{ !contains(env.VERSION, 'SNAPSHOT' ) }}
-        run: |
-          ./mvnw \
-            --no-transfer-progress \
-            --batch-mode \
-            clean package javadoc:jar source:jar-no-fork gpg:sign install deploy \
-            --settings .util/settings.xml \
-            -DskipTests \
-            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-            -P deploy-artifacts
+#      - name: Publish Snapshot to Central
+#        env:
+#          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+#          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+#        if: contains(env.VERSION, 'SNAPSHOT' )
+#        run: |
+#          ./mvnw \
+#            --no-transfer-progress \
+#            --batch-mode \
+#            clean install deploy \
+#            --settings .util/settings.xml \
+#            -DskipTests
+#      - name: Publish release to Central
+#        env:
+#          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+#          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+#        if: ${{ !contains(env.VERSION, 'SNAPSHOT' ) }}
+#        run: |
+#          ./mvnw \
+#            --no-transfer-progress \
+#            --batch-mode \
+#            clean package javadoc:jar source:jar-no-fork gpg:sign install deploy \
+#            --settings .util/settings.xml \
+#            -DskipTests \
+#            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+#            -P deploy-artifacts
