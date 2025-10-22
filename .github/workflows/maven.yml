@@ -80,11 +80,18 @@ jobs:
           name: eclipse-plugin-update-site
           path: plugins/eclipse/target/repository
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+#      - name: Deploy to GitHub Pages
+#        uses: peaceiris/actions-gh-pages@v3
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: plugins/eclipse/releng/update/target/repository
+
+      - name: Upload Update Site Artifact
+        uses: actions/upload-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: plugins/eclipse/releng/update/target/repository
+          name: eclipse-plugin-update-site
+          path: plugins/eclipse/releng/update/target/repository
+
 
   deploy-bundles:
     runs-on: ubuntu-latest
