@@ -104,7 +104,7 @@ The procedure is the same as in the main project.
 * Commit *(without push)* the modifications
 * Tag the commit with name `vX.Y.Z`
 
-= Deploy a release
+== Deploy a release
 
 *NOTE:* Only the main project have to be deployed in Maven central !
 

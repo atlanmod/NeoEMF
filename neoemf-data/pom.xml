@@ -32,6 +32,7 @@
         <dependency>
             <groupId>org.atlanmod.commons</groupId>
             <artifactId>commons-core</artifactId>
+            <!--scope>provided</scope-->
         </dependency>
 
         <!-- EMF -->

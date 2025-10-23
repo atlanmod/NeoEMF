@@ -25,6 +25,7 @@
             <groupId>org.atlanmod.neoemf.eclipse</groupId>
             <artifactId>org.atlanmod.neoemf.core.feature</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

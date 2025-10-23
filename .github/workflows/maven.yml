@@ -102,35 +102,16 @@ jobs:
         run: |
           cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
-      - name: Initialize variables
-        id: init
+      - name: Publish to Central
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_PASSWORD }}
         run: |
-          VERSION=$(./mvnw -B help:evaluate -Dexpression='project.version' $@ | grep -v '\[' | tail -1)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "$VERSION"
-#      - name: Publish Snapshot to Central
-#        env:
-#          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-#          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-#        if: contains(env.VERSION, 'SNAPSHOT' )
-#        run: |
-#          ./mvnw \
-#            --no-transfer-progress \
-#            --batch-mode \
-#            clean install deploy \
-#            --settings .util/settings.xml \
-#            -DskipTests
-#      - name: Publish release to Central
-#        env:
-#          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-#          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-#        if: ${{ !contains(env.VERSION, 'SNAPSHOT' ) }}
-#        run: |
-#          ./mvnw \
-#            --no-transfer-progress \
-#            --batch-mode \
-#            clean package javadoc:jar source:jar-no-fork gpg:sign install deploy \
-#            --settings .util/settings.xml \
-#            -DskipTests \
-#            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-#            -P deploy-artifacts
+          ./mvnw \
+            --no-transfer-progress \
+            --batch-mode \
+            clean package javadoc:jar source:jar-no-fork gpg:sign install deploy \
+            --settings .util/settings.xml \
+            -DskipTests \
+            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+            -P deploy-artifacts
