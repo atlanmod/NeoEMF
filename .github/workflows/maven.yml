@@ -102,6 +102,7 @@ jobs:
         run: |
           cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
+
       - name: Publish to Central
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
