@@ -98,12 +98,15 @@ jobs:
           java-version: '22'
           distribution: 'temurin'
           cache: maven
+
       - name: Import GPG signing key
-        uses: crazy-max/ghaction-import-gpg@v5
+        uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
+      - name: List keys
+      - run: gpg -K
 ##      - name: Install GPG key
 #        run: |
 #          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
@@ -119,7 +122,7 @@ jobs:
           ./mvnw \
             --no-transfer-progress \
             --batch-mode \
-            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+            -Dgpg.keyname=${{ secrets.GPG_KEY_ID }} -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} 
             clean package javadoc:jar source:jar-no-fork gpg:sign install deploy \
             --settings .util/settings.xml \
             -DskipTests \
