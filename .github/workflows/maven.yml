@@ -106,6 +106,7 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           ./mvnw \
             --no-transfer-progress \
@@ -113,5 +114,5 @@ jobs:
             clean package javadoc:jar source:jar-no-fork gpg:sign install deploy \
             --settings .util/settings.xml \
             -DskipTests \
-            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+#            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
             -P deploy-artifacts
