@@ -106,7 +106,7 @@ jobs:
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: List keys
-      - run: gpg -K
+        run: gpg -K
 ##      - name: Install GPG key
 #        run: |
 #          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
