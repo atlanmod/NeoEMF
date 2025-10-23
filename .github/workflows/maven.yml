@@ -114,5 +114,4 @@ jobs:
             clean package javadoc:jar source:jar-no-fork gpg:sign install deploy \
             --settings .util/settings.xml \
             -DskipTests \
-#            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
             -P deploy-artifacts
