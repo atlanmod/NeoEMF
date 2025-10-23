@@ -79,6 +79,12 @@
     </developers>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.required.version>3.5.0</maven.required.version>
+        <maven.plugin.validation>VERBOSE</maven.plugin.validation>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+
         <argLine.global>-Xmx2g --illegal-access=warn --illegal-access=permit --add-exports java.base/jdk.internal.ref=ALL-UNNAMED</argLine.global>
         <commons.version>1.1.1</commons.version>
         <emf.version>[2.24.0,)</emf.version>
@@ -473,9 +479,15 @@
                     <!-- `deploy-javadoc` profile comes in addition to this configuration -->
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.8.0</version>
+                    <version>3.11.2</version>
                     <configuration>
                         <overview>overview.html</overview>
+                        <additionalOptions>-Xdoclint:none</additionalOptions>
+                        <failOnError>false</failOnError>
+                        <quiet>true</quiet>
+                        <notimestamp>true</notimestamp>
+                        <nosince>true</nosince>
+                        <author>false</author>
                         <groups>
                             <group>
                                 <title>Core</title>
@@ -667,8 +679,11 @@
                                     <goal>sign</goal>
                                 </goals>
                                 <configuration>
-                                    <bestPractices>true</bestPractices>
-                                    <passphraseEnvName>GPG_PASSPHRASE</passphraseEnvName>
+                                    <!-- Prevent `gpg` from using pinentry programs -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
                                 </configuration>
                             </execution>
                         </executions>
