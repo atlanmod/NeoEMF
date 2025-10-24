@@ -119,6 +119,6 @@ jobs:
 
       - name: Publish to Central
         env:
-          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         run: ./mvnw --no-transfer-progress --batch-mode  --define skipTests --settings .util/settings.xml deploy
