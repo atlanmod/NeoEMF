@@ -562,6 +562,7 @@
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>3.7.1</version>
                 </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
@@ -648,13 +649,26 @@
                         <version>3.3.1</version>
                         <executions>
                             <execution>
-                                <id>attach-sources</id>
+                                <id>attach-sources-main</id>
                                 <goals>
                                     <goal>jar-no-fork</goal>
                                 </goals>
+                                <configuration>
+                                    <classifier>sources</classifier>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>attach-sources-test</id>
+                                <goals>
+                                    <goal>test-jar-no-fork</goal>
+                                </goals>
+                                <configuration>
+                                    <classifier>test-sources</classifier>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
