@@ -112,10 +112,13 @@ jobs:
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-        run: ./mvnw --no-transfer-progress --batch-mode  --define skipTests --activate-profiles deploy-artifacts --define gpg.keyname=${{ secrets.GPG_KEY_ID }} --define gpg.passphrase=${{ secrets.GPG_PASSPHRASE }} clean package
+        run: |
+          ./mvnw --no-transfer-progress --batch-mode  --define skipTests \
+            --activate-profiles deploy-artifacts --define gpg.keyname=${{ secrets.GPG_KEY_ID }} \
+            --define gpg.passphrase=${{ secrets.GPG_PASSPHRASE }} clean package
 
       - name: Publish to Central
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
-          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
         run: ./mvnw --no-transfer-progress --batch-mode  --define skipTests --settings .util/settings.xml deploy
