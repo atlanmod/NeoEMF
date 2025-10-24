@@ -574,6 +574,18 @@
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>3.2.7</version>
                 </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>

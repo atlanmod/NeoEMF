@@ -23,18 +23,20 @@
         <compare.url>https://download.eclipse.org/modeling/emf/compare/updates/releases/3.3/R202505141345/</compare.url>
         <eclipse.url>https://download.eclipse.org/releases/2025-09/</eclipse.url>
         <emf.url>https://download.eclipse.org/modeling/emf/emf/builds/release/2.39.0/</emf.url>
-
+        <jdk.version>17</jdk.version>
         <maven.test.skip>true</maven.test.skip>
         <maven.deploy.skip>true</maven.deploy.skip>
         <tycho-plugin.version>5.0.0</tycho-plugin.version>
         <apache.felix.version>2.2.12</apache.felix.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>${jdk.version}</maven.compiler.source>
+        <maven.compiler.target>${jdk.version}</maven.compiler.target>
         <maven.compiler.debug>true</maven.compiler.debug>
+        <maven.compiler.release>${jdk.version}</maven.compiler.release>
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+        <maven.compiler.release>17</maven.compiler.release>
         <maven.required.version>3.9.0</maven.required.version>
-        <neoemf.version>2.1.0</neoemf.version>
+        <neoemf.version>2.1.1-SNAPSHOT</neoemf.version>
     </properties>
 
     <repositories>
@@ -154,6 +156,9 @@
                     <configuration>
                         <copyResources>false</copyResources>
                         <useProjectSettings>false</useProjectSettings>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <release>${maven.compiler.release}</release>
                     </configuration>
                 </plugin>
 
