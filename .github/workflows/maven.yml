@@ -123,4 +123,5 @@ jobs:
             --no-transfer-progress --batch-mode  --define skipTests \
             --activate-profiles deploy-artifacts --settings .util/settings.xml \
             -Dgpg.keyname=${{ secrets.GPG_KEY_ID }} -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-            clean javadoc:jar package gpg:sign deploy 
+            clean javadoc:jar package gpg:sign deploy
+          ./mvnw --no-transfer-progress --batch-mode  --define skipTests deploy
