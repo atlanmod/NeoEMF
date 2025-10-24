@@ -650,6 +650,7 @@
                         <executions>
                             <execution>
                                 <id>attach-sources-main</id>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>jar-no-fork</goal>
                                 </goals>
@@ -659,6 +660,7 @@
                             </execution>
                             <execution>
                                 <id>attach-sources-test</id>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>test-jar-no-fork</goal>
                                 </goals>
@@ -675,6 +677,7 @@
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
+                                <phase>package</phase>
                                 <goals>
                                     <goal>jar</goal>
                                 </goals>
