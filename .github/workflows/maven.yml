@@ -107,20 +107,17 @@ jobs:
 
       - name: List keys
         run: gpg -K
-##      - name: Install GPG key
-#        run: |
-#          cat <(echo -e "${{ secrets.GPG_PRIVATE_KEY }}") | gpg --batch --import
-#          gpg --list-secret-keys --keyid-format LONG
+
+      - name: Build
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: ./mvnw --no-transfer-progress --batch-mode  --define skipTests --activate-profiles deploy-artifacts \
+          -Dgpg.keyname=${{ secrets.GPG_KEY_ID }} -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
+          clean javadoc:jar package gpg:sign
 
       - name: Publish to Central
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_PASSWORD }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-        run: |
-          ./mvnw \
-            --no-transfer-progress --batch-mode  --define skipTests \
-            --activate-profiles deploy-artifacts --settings .util/settings.xml \
-            -Dgpg.keyname=${{ secrets.GPG_KEY_ID }} -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }} \
-            clean javadoc:jar package gpg:sign deploy 
+        run: ./mvnw --no-transfer-progress --batch-mode  --define skipTests --settings .util/settings.xml deploy
